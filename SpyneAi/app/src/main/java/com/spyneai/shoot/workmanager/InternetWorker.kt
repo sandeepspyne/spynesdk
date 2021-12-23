@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -26,12 +27,15 @@ class InternetWorker(private val appContext: Context, workerParams: WorkerParame
         if (shootLocalRepository.getOldestImage("0").itemId != null
             || shootLocalRepository.getOldestImage("-1").itemId != null){
             if (!appContext.isMyServiceRunning(ImageUploadingService::class.java)){
+                Utilities.saveBool(appContext, AppConstants.UPLOADING_RUNNING, false)
+
                 capture(Events.SERVICE_STARTED,"Started")
                 var action = Actions.START
                 if (getServiceState(appContext) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
                     return Result.success()
 
                 val serviceIntent = Intent(appContext, ImageUploadingService::class.java)
+                serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, InternetWorker::class.simpleName)
                 serviceIntent.action = action.name
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

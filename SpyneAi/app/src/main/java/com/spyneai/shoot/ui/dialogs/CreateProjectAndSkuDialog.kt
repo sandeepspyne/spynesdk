@@ -72,8 +72,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
 
     private fun observeProjectResponse() {
-
-        val s = ""
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
@@ -95,6 +93,9 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     project.categoryName = viewModel.categoryDetails.value?.categoryName
                     project.projectId = it.value.project_id
                     viewModel.insertProject(project)
+
+                    //update shoot session
+                    Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
 
                     if (viewModel.sku.value == null){
                         val sku =  Sku()

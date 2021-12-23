@@ -13,6 +13,8 @@ fun Context.captureEvent(eventName : String, items: HashMap<String,Any?>) {
     val properties = Properties()
     properties.putValue("app_name",getString(R.string.app_name))
     properties.putValue("internet_details",getInternetSpeed())
+    properties.putValue("session_id",Utilities.getPreference(this,AppConstants.SESSION_ID))
+
 
     items.keys.forEach {
         properties.putValue(it,items[it])
@@ -27,6 +29,7 @@ fun Context.captureFailureEvent(eventName : String,items: HashMap<String,Any?>,m
     properties.putValue("message",message)
     properties.putValue("app_name",getString(R.string.app_name))
     properties.putValue("internet_details",getInternetSpeed())
+    properties.putValue("session_id",Utilities.getPreference(this,AppConstants.SESSION_ID))
 
     items.keys.forEach {
         properties.putValue(it,items[it])
@@ -45,6 +48,7 @@ fun Context.captureIdentity(userId : String,items: HashMap<String,Any?>) {
 
     val properties = Properties()
     properties.putValue("app_name",getString(R.string.app_name))
+    properties.putValue("session_id",Utilities.getPreference(this,AppConstants.SESSION_ID))
     properties.putValue("internet_details",getInternetSpeed())
 
     items.keys.forEach {

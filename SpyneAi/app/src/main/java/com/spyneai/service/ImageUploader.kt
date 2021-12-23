@@ -5,31 +5,25 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
-import android.os.Build
-import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.work.*
 import com.google.gson.Gson
 import com.spyneai.*
-import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
-import com.spyneai.interfaces.GcpClient
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
-import com.spyneai.shoot.utils.logUpload
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.ResponseBody
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -39,395 +33,399 @@ class ImageUploader(
     val localRepository: ImageLocalRepository,
     val shootRepository: ShootRepository,
     var listener: Listener,
-    var lastIdentifier: String = "0"
+    var lastIdentifier: String = "0",
+    var imageType: String = AppConstants.REGULAR,
+    var retryCount: Int = 0,
+    var connectionLost: Boolean = false
 ) {
-
     val TAG = "ImageUploader"
 
-    fun start() {
-        Log.d(TAG, "start: ")
-        selectLastImageAndUpload(AppConstants.REGULAR, 0)
+    fun uploadParent(type : String,startedBy : String?) {
+        context.captureEvent("UPLOAD PARENT TRIGGERED",HashMap<String,Any?>().apply {
+            put("type",type)
+            put("service_started_by",startedBy)
+            put("upload_running",Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false))
+        })
+
+        //update triggered value
+        Utilities.saveBool(context, AppConstants.UPLOAD_TRIGGERED, true)
+
+        val handler = Handler(Looper.getMainLooper())
+
+        handler.postDelayed({
+            if (Utilities.getBool(context, AppConstants.UPLOAD_TRIGGERED, true)
+                &&
+                !Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false)
+            ) {
+                if (context.isInternetActive())
+                    GlobalScope.launch(Dispatchers.Default) {
+                        Log.d(TAG, "uploadParent: start")
+                        Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, true)
+                        context.captureEvent("START UPLOADING CALLED",HashMap())
+                        startUploading()
+                    }
+                else {
+                    Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+                    listener.onConnectionLost()
+                    Log.d(TAG, "uploadParent: connection lost")
+                }
+            }
+        }, getRandomNumberInRange().toLong())
     }
 
-    private fun selectLastImageAndUpload(imageType: String, retryCount: Int) {
+    suspend fun startUploading() {
+        do {
+            lastIdentifier = getUniqueIdentifier()
 
-        if (context.isInternetActive()) {
-            GlobalScope.launch(Dispatchers.Default) {
-
-                lastIdentifier = if (retryCount == 0) getUniqueIdentifier() else lastIdentifier
-
-                var skipFlag = -1
-                val image = if (imageType == AppConstants.REGULAR) {
-                    localRepository.getOldestImage("0")
-                } else {
-                    skipFlag = -2
-                    localRepository.getOldestImage("-1")
-                }
-
-                if (image.itemId != null) {
-                    //uploading enqueued
-                    lastIdentifier = image.name + "_" + image.skuId
-
-                    val imageProperties = HashMap<String, Any?>()
+            if (connectionLost){
+                context.captureEvent(
+                    AppConstants.CONNECTION_BREAK,
+                    HashMap<String,Any?>()
                         .apply {
-                            put("iteration_id", lastIdentifier)
-                            put("retry_count", retryCount)
-                            put("image_id", image.imageId)
-                            put("image_local_id", image.itemId)
-                            put("project_id", image.projectId)
-                            put("sku_id", image.skuId)
-                            put("sku_name", image.skuName)
-                            put("upload_status", image.isUploaded)
-                            put("make_done_status", image.isStatusUpdated)
-                            put("image_name", image.name)
-                            put("overlay_id", image.overlayId)
-                            put("sequence", image.sequence)
-                            put("pre_url", image.preSignedUrl)
-                            put("is_reclick", image.isReclick)
-                            put("is_reshoot", image.isReshoot)
-                            put("image_path", image.imagePath)
-                            put("upload_type", imageType)
-                            put("data", Gson().toJson(image))
+                            put("remaining_images",JSONObject().apply {
+                                put("upload_remaining",localRepository.totalRemainingUpload())
+                                put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                            }.toString())
                         }
+                )
+                Utilities.saveBool(context,AppConstants.UPLOADING_RUNNING,false)
+                listener.onConnectionLost()
+                break
+            }
 
-                    context.captureEvent(
-                        AppConstants.IMAGE_SELECTED,
-                        imageProperties
-                    )
+            var skipFlag = -1
 
-                    listener.inProgress(image)
+            var image = localRepository.getOldestImage("0")
 
-                    if (retryCount > 4) {
-                        val dbStatus = if (image.isUploaded != 1)
-                            localRepository.skipImage(image.itemId!!, skipFlag)
-                        else{
-                            localRepository.skipMarkDoneFailedImage(image.itemId!!)
-                            localRepository.markDone(image)
+            if (image.itemId == null) {
+                imageType = AppConstants.SKIPPED
+                image = localRepository.getOldestImage("-1")
+                skipFlag = -2
+            }
+            
+
+            if (image.itemId == null && imageType == AppConstants.SKIPPED) {
+                //make second time skipped images elligible for upload
+                val count = localRepository.updateSkipedImages()
+                val markDoneSkippedCount = localRepository.updateMarkDoneSkipedImages()
+
+                Log.d(TAG, "name: count"+count+" "+markDoneSkippedCount)
+
+                //check if we don"t have any new image clicked while uploading skipped images
+                if (count > 0 || markDoneSkippedCount > 0)
+                    image = localRepository.getOldestImage("-1")
+            }
+
+            if (image.itemId == null){
+                context.captureEvent(
+                    AppConstants.ALL_UPLOADED_BREAK,
+                    HashMap<String,Any?>()
+                        .apply {
+                            put("remaining_images",JSONObject().apply {
+                                put("upload_remaining",localRepository.totalRemainingUpload())
+                                put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                            }.toString())
                         }
+                )
+                break
+            }
+            else {
+                lastIdentifier = image.name + "_" + image.skuId
 
-                        captureEvent(Events.MAX_RETRY,
-                            image,
-                            false,
-                            "Image upload limit reached",
-                            dbStatus)
+                val imageProperties = HashMap<String, Any?>()
+                    .apply {
+                        put("iteration_id", lastIdentifier)
+                        put("retry_count", retryCount)
+                        put("image_id", image.imageId)
+                        put("image_local_id", image.itemId)
+                        put("project_id", image.projectId)
+                        put("sku_id", image.skuId)
+                        put("sku_name", image.skuName)
+                        put("upload_status", image.isUploaded)
+                        put("make_done_status", image.isStatusUpdated)
+                        put("image_name", image.name)
+                        put("overlay_id", image.overlayId)
+                        put("sequence", image.sequence)
+                        put("pre_url", image.preSignedUrl)
+                        put("is_reclick", image.isReclick)
+                        put("is_reshoot", image.isReshoot)
+                        put("image_path", image.imagePath)
+                        put("upload_type", imageType)
+                        put("data", Gson().toJson(image))
+                        put("remaining_images",JSONObject().apply {
+                            put("upload_remaining",localRepository.totalRemainingUpload())
+                            put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                            put("remaining_above", localRepository.getRemainingAbove(image.itemId!!))
+                            put("remaining_above_skipped", localRepository.getRemainingAboveSkipped(image.itemId!!))
+                            put("remaining_below", localRepository.getRemainingBelow(image.itemId!!))
+                            put("remaining_below_skipped", localRepository.getRemainingBelowSkipped(image.itemId!!))
+                        }.toString())
 
-                        startNextUpload(image.itemId!!, false, imageType)
-                        return@launch
                     }
 
-                    if (image.isUploaded == 0 || image.isUploaded == -1) {
-                        if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL) {
-                            when (image.categoryName) {
-                                "Exterior",
-                                "Interior",
-                                "Focus Shoot",
-                                "360int",
-                                "Info" -> {
-                                    uploadImageToGcp(image, imageType, retryCount)
-                                }
-                                else -> {
-                                    val bitmap =
-                                        modifyOrientation(
-                                            BitmapFactory.decodeFile(image.imagePath),
-                                            image.imagePath
-                                        )
+                context.captureEvent(
+                    AppConstants.IMAGE_SELECTED,
+                    imageProperties
+                )
 
-                                    try {
-                                        val s = File(outputDirectory).mkdirs()
-                                        val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
-                                        val ss = outputFile.createNewFile()
+                listener.inProgress(image)
 
-                                        val os: OutputStream = BufferedOutputStream(
-                                            FileOutputStream(outputFile)
-                                        )
-                                        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-                                        os.close()
+                if (retryCount > 4) {
+                    val dbStatus = if (image.isUploaded != 1)
+                        localRepository.skipImage(image.itemId!!, skipFlag)
+                    else {
+                        localRepository.skipMarkDoneFailedImage(image.itemId!!)
+                    }
 
-                                        image.imagePath = outputFile.path
-                                        uploadImageToGcp(image, imageType, retryCount)
-                                    } catch (
-                                        e: Exception
-                                    ) {
-                                        captureEvent(Events.IMAGE_ROTATION_EXCEPTION,
-                                            image,
-                                            false,
-                                            e.localizedMessage)
+                    captureEvent(
+                        Events.MAX_RETRY,
+                        image,
+                        false,
+                        "Image upload limit reached",
+                        dbStatus
+                    )
+                    retryCount = 0
+                    continue
+                }
 
-                                        selectLastImageAndUpload(imageType, retryCount + 1)
-                                    }
-                                }
+                if (image.isUploaded == 0 || image.isUploaded == -1) {
+                    if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL) {
+                        when (image.categoryName) {
+                            "Exterior",
+                            "Interior",
+                            "Focus Shoot",
+                            "360int",
+                            "Info" -> {
+                                val imageUploaded = uploadImage(image)
+
+                                if (!imageUploaded)
+                                    continue
+
+                                val imageMarkedDone = markDoneImage(image)
+                                Log.d(
+                                    TAG, "startUploading: imageMarkedDone " + imageMarkedDone
+                                )
+                                continue
                             }
-                        } else {
-                            val uploadType = if (retryCount == 0) "Direct" else "Retry"
-                            //val uploadType = "Retry"
-                            image.meta = if (image.meta.isNullOrEmpty()) JSONObject().toString() else JSONObject(image.meta).toString()
-                            image.debugData = if (image.debugData.isNullOrEmpty()) JSONObject().toString() else JSONObject(image.debugData).toString()
-
-                            var response = shootRepository.getPreSignedUrl(
-                                uploadType,
-                                image
-                            )
-
-                            captureEvent(Events.GET_PRESIGNED_CALL_INITIATED,image,true,null,
-                            retryCount = retryCount)
-
-                            when (response) {
-                                is Resource.Success -> {
-                                    image.preSignedUrl = response.value.data.presignedUrl
-                                    image.imageId = response.value.data.imageId
-
-                                    captureEvent(Events.GOT_PRESIGNED_IMAGE_URL, image,
-                                        true,
-                                        null,
-                                    response = Gson().toJson(response.value).toString(),
-                                        retryCount = retryCount)
-
-                                    val count = localRepository.addPreSignedUrl(image)
-                                    val updatedImage = localRepository.getImage(image.itemId!!)
-
-                                    captureEvent(
-                                        Events.IS_PRESIGNED_URL_UPDATED,
-                                        updatedImage,
-                                        true,
-                                        null,
-                                        count,
-                                        retryCount = retryCount
+                            else -> {
+                                val bitmap =
+                                    modifyOrientation(
+                                        BitmapFactory.decodeFile(image.imagePath),
+                                        image.imagePath
                                     )
 
-                                    when (image.categoryName) {
-                                        "Exterior",
-                                        "Interior",
-                                        "Focus Shoot",
-                                        "360int",
-                                        "Info" -> {
-                                            uploadImageToGcp(image, imageType, retryCount)
-                                        }
-                                        else -> {
-                                            val bitmap =
-                                                modifyOrientation(
-                                                    BitmapFactory.decodeFile(image.imagePath),
-                                                    image.imagePath
-                                                )
+                                try {
+                                    File(outputDirectory).mkdirs()
+                                    val outputFile = File(
+                                        outputDirectory + System.currentTimeMillis()
+                                            .toString() + ".jpg"
+                                    )
+                                    outputFile.createNewFile()
 
-                                            try {
-                                                val s = File(outputDirectory).mkdirs()
-                                                val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
-                                                val ss = outputFile.createNewFile()
+                                    val os: OutputStream = BufferedOutputStream(
+                                        FileOutputStream(outputFile)
+                                    )
+                                    bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                                    os.close()
 
-                                                val os: OutputStream = BufferedOutputStream(
-                                                    FileOutputStream(outputFile)
-                                                )
-                                                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-                                                os.close()
+                                    image.imagePath = outputFile.path
+                                    val imageUploaded = uploadImage(image)
 
-                                                image.imagePath = outputFile.path
-                                                uploadImageToGcp(image, imageType, retryCount)
-                                            } catch (
-                                                e: Exception
-                                            ) {
-                                                captureEvent(Events.IMAGE_ROTATION_EXCEPTION,
-                                                    image,
-                                                    false,
-                                                    e.localizedMessage)
+                                    if (!imageUploaded)
+                                        continue
 
-                                                selectLastImageAndUpload(imageType, retryCount + 1)
-                                            }
-                                        }
-                                    }
-                                }
-
-                                is Resource.Failure -> {
-                                    if (response.errorMessage == null) {
-                                        captureEvent(
-                                            Events.GET_PRESIGNED_FAILED,
-                                            image,
-                                            false,
-                                            response.errorCode.toString() + ": Http exception from server",
-                                            response = Gson().toJson(response).toString(),
-                                            retryCount = retryCount
-                                        )
-                                        selectLastImageAndUpload(imageType, retryCount + 1)
-                                    } else {
-                                        // if duplicated entry error change status
-                                        if (response.errorCode == 500
-                                            && (response.errorMessage.toString()
-                                                .contains("Duplicate entry")
-                                                    && response.errorMessage.toString()
-                                                .contains("image_name_sku_id"))
-                                        ) {
-                                            captureEvent(
-                                                Events.GET_PRESIGNED_FAILED,
-                                                image,
-                                                false,
-                                                response.errorCode.toString() + ": " + response.errorMessage,
-                                                response = Gson().toJson(response).toString(),
-                                                retryCount = retryCount
-                                            )
-                                            checkImageStatusOnServer(image, imageType, retryCount)
-                                        } else {
-                                            captureEvent(
-                                                Events.GET_PRESIGNED_FAILED,
-                                                image,
-                                                false,
-                                                response.errorCode.toString() + ": " + response.errorMessage,
-                                                response = Gson().toJson(response).toString(),
-                                                retryCount = retryCount
-                                            )
-                                            selectLastImageAndUpload(imageType, retryCount + 1)
-                                        }
-
-                                    }
+                                    val imageMarkedDone = markDoneImage(image)
+                                    Log.d(
+                                        TAG, "startUploading: imageMarkedDone " + imageMarkedDone
+                                    )
+                                    continue
+                                } catch (
+                                    e: Exception
+                                ) {
+                                    captureEvent(
+                                        Events.IMAGE_ROTATION_EXCEPTION,
+                                        image,
+                                        false,
+                                        e.localizedMessage
+                                    )
+                                    retryCount++
+                                    continue
                                 }
                             }
                         }
                     } else {
-                        setStatusUploaed(image, imageType, retryCount)
-                    }
+                        val uploadType = if (retryCount == 1) "Direct" else "Retry"
+                        image.meta =
+                            if (image.meta.isNullOrEmpty()) JSONObject().toString() else JSONObject(
+                                image.meta
+                            ).toString()
+                        image.debugData =
+                            if (image.debugData.isNullOrEmpty()) JSONObject().toString() else JSONObject(
+                                image.debugData
+                            ).toString()
 
-                } else {
-                    logUpload("All Images uploaded")
-                    if (imageType == AppConstants.REGULAR) {
-                        //start skipped images worker
-                        logUpload("Start Skipped Images uploaded")
-                        selectLastImageAndUpload(AppConstants.SKIPPED, 0)
-                    } else {
-                        //make second time skipped images elligible for upload
-                        val count = localRepository.updateSkipedImages()
-                        val markDoneSkippedCount = localRepository.updateMarkDoneSkipedImages()
+                        val gotPresigned = getPresigned(image, uploadType)
 
-                        //check if we don"t have any new image clicked while uploading skipped images
-                        if (count > 0 || markDoneSkippedCount > 0) {
-                            selectLastImageAndUpload(AppConstants.SKIPPED, 0)
-                        } else {
-                            //upload images clicked while service uploading skipped images
-                            deleteTempFiles(File(outputDirectory))
-                            listener.onUploaded(image)
+                        if (!gotPresigned)
+                            continue
+
+                        when (image.categoryName) {
+                            "Exterior",
+                            "Interior",
+                            "Focus Shoot",
+                            "360int",
+                            "Info" -> {
+                                val imageUploaded = uploadImage(image)
+
+                                if (!imageUploaded)
+                                    continue
+
+                                val imageMarkedDone = markDoneImage(image)
+                                Log.d(
+                                    TAG, "startUploading: imageMarkedDone " + imageMarkedDone
+                                )
+                                continue
+                            }
+                            else -> {
+                                val bitmap =
+                                    modifyOrientation(
+                                        BitmapFactory.decodeFile(image.imagePath),
+                                        image.imagePath
+                                    )
+
+                                try {
+                                    File(outputDirectory).mkdirs()
+                                    val outputFile = File(
+                                        outputDirectory + System.currentTimeMillis()
+                                            .toString() + ".jpg"
+                                    )
+                                    outputFile.createNewFile()
+
+                                    val os: OutputStream = BufferedOutputStream(
+                                        FileOutputStream(outputFile)
+                                    )
+                                    bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                                    os.close()
+
+                                    image.imagePath = outputFile.path
+
+                                    val imageUploaded = uploadImage(image)
+
+                                    if (!imageUploaded)
+                                        continue
+
+                                    val imageMarkedDone = markDoneImage(image)
+                                    Log.d(
+                                        TAG, "startUploading: imageMarkedDone " + imageMarkedDone
+                                    )
+                                    continue
+
+                                } catch (
+                                    e: Exception
+                                ) {
+                                    captureEvent(
+                                        Events.IMAGE_ROTATION_EXCEPTION,
+                                        image,
+                                        false,
+                                        e.localizedMessage
+                                    )
+                                    retryCount++
+                                    continue
+                                }
+                            }
                         }
                     }
-                }
-            }
-        } else {
-            listener.onConnectionLost()
-        }
-    }
-
-
-    @Throws(IOException::class)
-    fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String?): Bitmap? {
-        val ei = ExifInterface(image_absolute_path!!)
-        val orientation =
-            ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        return when (orientation) {
-            ExifInterface.ORIENTATION_UNDEFINED,
-            ExifInterface.ORIENTATION_NORMAL,
-                    ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotate(bitmap, 180f)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotate(bitmap, 270f)
-            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flip(bitmap, true, false)
-            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flip(bitmap, false, true)
-            else -> bitmap
-        }
-    }
-
-    fun rotate(bitmap: Bitmap, degrees: Float): Bitmap? {
-        val matrix = Matrix()
-        matrix.postRotate(degrees)
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
-    fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap? {
-        val matrix = Matrix()
-        matrix.preScale(
-            (if (horizontal) -1 else 1.toFloat()) as Float,
-            (if (vertical) -1 else 1.toFloat()) as Float
-        )
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
-
-    private suspend fun checkImageStatusOnServer(image: Image, imageType: String, retryCount: Int) {
-        if (image.imageId != null) {
-            val response = shootRepository.getImageData(image.imageId!!)
-            captureEvent(Events.CHECK_IMAGE_STATUS_ON_SERVER_INITIATED, image, true, null)
-
-            when (response) {
-                is Resource.Success -> {
-                    //send success event
-                    captureEvent(Events.GOT_IMAGE_DATA, image, true,
-                        null,
-                        response = Gson().toJson(response.value).toString())
-
-                    if (response.value.data.status != "Yet to Upload") {
-                        //mark image status uploaded in DB
-                        val isUpdated = localRepository.markDone(image)
-                        //send db update event
+                } else {
+                    if (image.imageId == null) {
                         captureEvent(
-                            Events.IMAGE_DATA_UPDATED_LOCALLY,
+                            AppConstants.IMAGE_ID_NULL,
                             image,
                             true,
-                            null,
-                            isUpdated
+                            null
                         )
-
-                        //upload next image
-                        selectLastImageAndUpload(imageType, retryCount + 1)
-                    }
-                }
-
-                is Resource.Failure -> {
-                    if (response.errorMessage == null) {
-                        captureEvent(
-                            Events.GET_IMAGE_DATA_FAILED,
-                            image,
-                            false,
-                            response.errorCode.toString() + ": Http exception from server",
-                            response = Gson().toJson(response).toString(),
-                            retryCount = retryCount
-                        )
+                        localRepository.markDone(image)
+                        retryCount = 0
+                        continue
                     } else {
-                        captureEvent(
-                            Events.GET_IMAGE_DATA_FAILED,
-                            image,
-                            false,
-                            response.errorCode.toString() + ": " + response.errorMessage,
-                            response = Gson().toJson(response).toString(),
-                            retryCount = retryCount
-                        )
-                    }
+                        val imageMarkedDone = markDoneImage(image)
+                        if (imageMarkedDone)
+                            retryCount = 0
 
-                    //send failure event and upload next
-                    selectLastImageAndUpload(imageType, retryCount + 1)
+                        continue
+
+                    }
                 }
             }
-        } else {
-            captureEvent(Events.CHECK_IMAGE_STATUS_IMAGE_ID_NULL, image, true, null)
-            //upload next image
-            selectLastImageAndUpload(imageType, retryCount + 1)
+        } while (image != null)
+
+        //upload images clicked while service uploading skipped images
+        if (!connectionLost){
+            deleteTempFiles(File(outputDirectory))
+            listener.onUploaded()
+            Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
         }
     }
 
-    private fun getUniqueIdentifier(): String {
-        val SALTCHARS = "abcdefghijklmnopqrstuvwxyz1234567890"
-        val salt = StringBuilder()
-        val rnd = Random()
-        while (salt.length < 7) { // length of the random string.
-            //val index = (rnd.nextFloat() * SALTCHARS.length) as Int
-            val index = rnd.nextInt(SALTCHARS.length)
-            salt.append(SALTCHARS[index])
+    private suspend fun getPresigned(image: Image, uploadType: String): Boolean {
+        var response = shootRepository.getPreSignedUrl(
+            uploadType,
+            image
+        )
+
+        captureEvent(
+            Events.GET_PRESIGNED_CALL_INITIATED, image, true, null,
+            retryCount = retryCount
+        )
+
+        when (response) {
+            is Resource.Failure -> {
+                captureEvent(
+                    Events.GET_PRESIGNED_FAILED,
+                    image,
+                    false,
+                    getErrorMessage(response),
+                    response = Gson().toJson(response).toString(),
+                    retryCount = retryCount,
+                    throwable = response.throwable
+                )
+
+                retryCount++
+                return false
+            }
         }
-        return salt.toString()
+
+        val imagePreSignedRes = (response as Resource.Success).value
+
+        image.preSignedUrl = imagePreSignedRes.data.presignedUrl
+        image.imageId = imagePreSignedRes.data.imageId
+
+        captureEvent(
+            Events.GOT_PRESIGNED_IMAGE_URL, image,
+            true,
+            null,
+            response = Gson().toJson(response.value).toString(),
+            retryCount = retryCount
+        )
+
+        val count = localRepository.addPreSignedUrl(image)
+
+        captureEvent(
+            Events.IS_PRESIGNED_URL_UPDATED,
+            localRepository.getImage(image.itemId!!),
+            true,
+            null,
+            count,
+            retryCount = retryCount
+        )
+
+        return true
     }
 
-    private fun uploadImageToGcp(image: Image, imageType: String, retryCount: Int) {
-        // create RequestBody instance from file
+    private suspend fun uploadImage(image: Image): Boolean {
         val requestFile =
             File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
 
-        //upload image with presigned url
-        val request = GcpClient.buildService(ClipperApi::class.java)
-
-        val call = request.uploadVideo(
-            "application/octet-stream",
+        val uploadResponse = shootRepository.uploadImageToGcp(
             image.preSignedUrl!!,
             requestFile
         )
@@ -435,7 +433,6 @@ class ImageUploader(
         val imageProperties = HashMap<String, Any?>()
             .apply {
                 put("iteration_id", lastIdentifier)
-                put("retry_count", retryCount)
                 put("image_id", image.imageId)
                 put("image_local_id", image.itemId)
                 put("project_id", image.projectId)
@@ -460,145 +457,124 @@ class ImageUploader(
             imageProperties
         )
 
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    onImageUploaded(
-                        image,
-                        imageType,
-                        retryCount,
-                        response.body()
-                    )
-
-                    val count = localRepository.markUploaded(image)
-                    val updatedImage = localRepository.getImage(image.itemId!!)
-
-                    captureEvent(
-                        Events.IS_MARK_GCP_UPLOADED_UPDATED,
-                        updatedImage,
-                        true,
-                        null,
-                        count,
-                        retryCount = retryCount
-                    )
-                } else {
-                    onImageUploadFailed(
-                        imageType,
-                        retryCount,
-                        image,
-                        response.errorBody()?.string()
-                    )
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                onImageUploadFailed(
-                    imageType,
-                    retryCount,
+        when (uploadResponse) {
+            is Resource.Failure -> {
+                captureEvent(
+                    Events.IMAGE_UPLOAD_TO_GCP_FAILED,
                     image,
-                    t.message
+                    false,
+                    getErrorMessage(uploadResponse),
+                    response = Gson().toJson(uploadResponse).toString(),
+                    retryCount = retryCount,
+                    throwable = uploadResponse.throwable
                 )
+                retryCount++
+                return false
             }
+        }
 
-        })
-    }
-
-    private fun onImageUploaded(image: Image,
-                                imageType: String,
-                                retryCount: Int,
-    responseBody: ResponseBody? = null) {
-        captureEvent(Events.IMAGE_UPLOADED_TO_GCP, image,
+        captureEvent(
+            Events.IMAGE_UPLOADED_TO_GCP, image,
             true,
             null,
-        response = Gson().toJson(responseBody).toString(),
-            retryCount = retryCount)
+            response = Gson().toJson(uploadResponse).toString(),
+            retryCount = retryCount
+        )
 
-        GlobalScope.launch(Dispatchers.Default) {
-            setStatusUploaed(image, imageType, retryCount)
-        }
+        val markUploadCount = localRepository.markUploaded(image)
+
+        captureEvent(
+            Events.IS_MARK_GCP_UPLOADED_UPDATED,
+            localRepository.getImage(image.itemId!!),
+            true,
+            null,
+            markUploadCount,
+            retryCount = retryCount
+        )
+
+        return true
     }
 
-    private fun onImageUploadFailed(
-        imageType: String,
-        retryCount: Int,
-        image: Image,
-        error: String?
-    ) {
-        captureEvent(Events.IMAGE_UPLOAD_TO_GCP_FAILED, image, false,
-            error,
-        response = error,
-            retryCount = retryCount)
+    private suspend fun markDoneImage(image: Image): Boolean {
+        val markUploadResponse =
+            shootRepository.markUploaded(image.imageId!!)
 
-        GlobalScope.launch(Dispatchers.Default) {
-            selectLastImageAndUpload(imageType, retryCount + 1)
-        }
-    }
+        captureEvent(
+            Events.MARK_DONE_CALL_INITIATED, image, true, null,
+            retryCount = retryCount
+        )
 
-    private suspend fun setStatusUploaed(image: Image, imageType: String, retryCount: Int) {
-        if (image.imageId == null){
-            localRepository.markDone(image)
-            selectLastImageAndUpload(imageType, 0)
-        }else{
-            val response = shootRepository.markUploaded(image.imageId!!)
-
-            captureEvent(Events.MARK_DONE_CALL_INITIATED,image,true,null,
-                retryCount = retryCount)
-
-            when (response) {
-                is Resource.Success -> {
-                    captureEvent(Events.MARKED_IMAGE_UPLOADED, image, true,
-                        null,
-                        response = Gson().toJson(response.value).toString())
-
-                    val count = localRepository.markStatusUploaded(image)
-                    val updatedImage = localRepository.getImage(image.itemId!!)
-
-                    captureEvent(
-                        Events.IS_MARK_DONE_STATUS_UPDATED,
-                        updatedImage,
-                        true,
-                        null,
-                        count,
-                        retryCount = retryCount
-                    )
-
-                    selectLastImageAndUpload(imageType, 0)
-                }
-
-                is Resource.Failure -> {
-                    if (response.errorMessage == null) {
-                        captureEvent(
-                            Events.MARK_IMAGE_UPLOADED_FAILED,
-                            image,
-                            false,
-                            response.errorCode.toString() + ": Http exception from server",
-                            response = Gson().toJson(response).toString(),
-                            retryCount = retryCount
-                        )
-                    } else {
-                        captureEvent(
-                            Events.MARK_IMAGE_UPLOADED_FAILED,
-                            image,
-                            false,
-                            response.errorCode.toString() + ": " + response.errorMessage,
-                            response = Gson().toJson(response).toString(),
-                            retryCount = retryCount
-                        )
-                    }
-
-                    selectLastImageAndUpload(imageType, retryCount + 1)
-                }
+        when (markUploadResponse) {
+            is Resource.Failure -> {
+                captureEvent(
+                    Events.MARK_IMAGE_UPLOADED_FAILED,
+                    image,
+                    false,
+                    getErrorMessage(markUploadResponse),
+                    response = Gson().toJson(markUploadResponse).toString(),
+                    retryCount = retryCount,
+                    throwable = markUploadResponse.throwable
+                )
+                retryCount++
+                return false
             }
         }
+
+        captureEvent(
+            Events.MARKED_IMAGE_UPLOADED, image, true,
+            null,
+            response = Gson().toJson(markUploadResponse).toString()
+        )
+
+        val count = localRepository.markStatusUploaded(image)
+
+        captureEvent(
+            Events.IS_MARK_DONE_STATUS_UPDATED,
+            localRepository.getImage(image.itemId!!),
+            true,
+            null,
+            count,
+            retryCount = retryCount
+        )
+        retryCount = 0
+        return true
     }
 
-    private fun startNextUpload(itemId: Long, uploaded: Boolean, imageType: String) {
-        logUpload("Start next upload " + uploaded)
-        //remove uploaded item from database
-        if (uploaded)
-            localRepository.deleteImage(itemId)
+    private fun getErrorMessage(response: Resource.Failure): String {
+        return if (response.errorMessage == null) response.errorCode.toString() + ": Http exception from server" else response.errorCode.toString() + ": " + response.errorMessage
+    }
 
-        selectLastImageAndUpload(imageType, 0)
+
+    @Throws(IOException::class)
+    fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String?): Bitmap? {
+        val ei = ExifInterface(image_absolute_path!!)
+        val orientation =
+            ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        return when (orientation) {
+            ExifInterface.ORIENTATION_UNDEFINED,
+            ExifInterface.ORIENTATION_NORMAL,
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotate(bitmap, 180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotate(bitmap, 270f)
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flip(bitmap, true, false)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flip(bitmap, false, true)
+            else -> bitmap
+        }
+    }
+
+    fun rotate(bitmap: Bitmap, degrees: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(degrees)
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap? {
+        val matrix = Matrix()
+        matrix.preScale(
+            (if (horizontal) -1 else 1.toFloat()) as Float,
+            (if (vertical) -1 else 1.toFloat()) as Float
+        )
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     private fun captureEvent(
@@ -608,7 +584,8 @@ class ImageUploader(
         error: String?,
         dbUpdateStatus: Int = 0,
         response: String? = null,
-        retryCount: Int = 0
+        retryCount: Int = 0,
+        throwable: String? = null
     ) {
         val properties = HashMap<String, Any?>()
             .apply {
@@ -632,6 +609,7 @@ class ImageUploader(
                 put("data", Gson().toJson(image))
                 put("response", response)
                 put("retry_count", retryCount)
+                put("throwable", throwable)
             }
 
         if (isSuccess) {
@@ -663,15 +641,31 @@ class ImageUploader(
         return file.delete()
     }
 
+    private fun getUniqueIdentifier(): String {
+        val SALTCHARS = "abcdefghijklmnopqrstuvwxyz1234567890"
+        val salt = StringBuilder()
+        val rnd = Random()
+        while (salt.length < 7) { // length of the random string.
+            //val index = (rnd.nextFloat() * SALTCHARS.length) as Int
+            val index = rnd.nextInt(SALTCHARS.length)
+            salt.append(SALTCHARS[index])
+        }
+        return salt.toString()
+    }
+
+
     val outputDirectory = "/storage/emulated/0/DCIM/Spynetemp/"
-
-
 
     interface Listener {
         fun inProgress(task: Image)
-        fun onUploaded(task: Image)
+        fun onUploaded()
         fun onUploadFail(task: Image)
         fun onConnectionLost()
+    }
+
+    private fun getRandomNumberInRange(): Int {
+        val r = Random()
+        return r.nextInt(100 - 10 + 1) + 10
     }
 
 }

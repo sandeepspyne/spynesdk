@@ -23,9 +23,11 @@ import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.DialogConfirmTagsBinding
 import com.spyneai.databinding.ItemTagNotesBinding
 import com.spyneai.databinding.ItemTagsSpinnerBinding
+import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
@@ -71,7 +73,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         binding.btReshootImage.setOnClickListener {
             viewModel.isCameraButtonClickable = true
 
-            val properties = HashMap<String,Any?>()
+            val properties = HashMap<String, Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
@@ -84,7 +86,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             )
 
             //remove last item from shoot list
-            if (!viewModel.isReclick){
+            if (!viewModel.isReclick) {
                 viewModel.shootList.value?.let { list ->
                     val currentElement = list.firstOrNull {
                         it.overlayId == viewModel.overlayId
@@ -100,7 +102,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         }
 
         binding.btConfirmImage.setOnClickListener {
-            val properties = HashMap<String,Any?>()
+            val properties = HashMap<String, Any?>()
 
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
@@ -115,7 +117,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
             viewModel.isCameraButtonClickable = true
 
-            if (viewModel.isReshoot){
+            if (viewModel.isReshoot) {
                 if (tagsValid()) {
                     uploadImages()
 
@@ -124,11 +126,11 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
                     dismiss()
                 }
-            }else{
-                when(viewModel.categoryDetails.value?.imageType) {
+            } else {
+                when (viewModel.categoryDetails.value?.imageType) {
                     "Exterior" -> {
                         uploadImages()
-                        if (viewModel.allExteriorClicked){
+                        if (viewModel.allExteriorClicked) {
                             checkInteriorShootStatus()
                             viewModel.isCameraButtonClickable = false
                         }
@@ -140,7 +142,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         updateTotalImages()
                         uploadImages()
 
-                        if (viewModel.allInteriorClicked){
+                        if (viewModel.allInteriorClicked) {
                             viewModel.isCameraButtonClickable = false
                             viewModel.checkMiscShootStatus(getString(R.string.app_name))
                         }
@@ -164,7 +166,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         val uri = viewModel.shootData.value?.capturedImage
 
-        Log.d(TAG, "onViewCreated: "+uri)
+        Log.d(TAG, "onViewCreated: " + uri)
 
         Glide.with(requireContext())
             .load(uri)
@@ -187,7 +189,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
     }
 
     private fun setTagsData() {
-        if(viewModel.subCategoriesResponse.value is Resource.Success){
+        if (viewModel.subCategoriesResponse.value is Resource.Success) {
             val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
             when (viewModel.categoryDetails.value?.imageType) {
@@ -295,7 +297,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             viewModel.insertImage(viewModel.shootData.value!!)
         }
 
-        startService()
+        if (!requireContext().isMyServiceRunning(ImageUploadingService::class.java))
+            startService()
     }
 
     private fun getMetaValue(): String {
@@ -353,6 +356,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             return
 
         val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmTagsDialog::class.simpleName)
         serviceIntent.action = action.name
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -438,8 +442,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             }
         })
     }
-
-
 
 
     private fun tagsValid(): Boolean {

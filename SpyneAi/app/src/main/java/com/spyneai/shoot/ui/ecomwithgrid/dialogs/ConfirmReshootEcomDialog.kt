@@ -19,8 +19,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.ConfirmReshootEcomDialogBinding
 import com.spyneai.loadSmartly
+import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
@@ -133,6 +135,7 @@ class ConfirmReshootEcomDialog :
             return
 
         val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmReshootEcomDialog::class.simpleName)
         serviceIntent.action = action.name
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

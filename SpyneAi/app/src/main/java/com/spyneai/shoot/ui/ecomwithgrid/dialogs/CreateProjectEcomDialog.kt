@@ -98,6 +98,8 @@ class CreateProjectEcomDialog :
                     project.projectId = it.value.project_id
                     viewModel.insertProject(project)
 
+                    Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
+
                     //notify project created
                     viewModel.isProjectCreated.value = true
                     val sku = Sku()

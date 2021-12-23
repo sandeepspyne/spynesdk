@@ -4,6 +4,8 @@ package com.spyneai.needs
 
 object AppConstants {
 
+    val SERVICE_STARTED_BY = "SERVICE_STARTED_BY"
+    val SESSION_ID: String = "SESSION_ID"
     val ADLOID: String = "Adloid"
     val ENTERPRISE_ID: String = "ENTERPRISE_ID"
     val SPYNE_ENTERPRISE_ID: String = "TaD1VC1Ko"
@@ -208,6 +210,13 @@ object AppConstants {
 
     val MINIMUM_VIDEO_DURATION = 30
     val DEFAULT_PRESIGNED_URL = "DEFAULT_PRESIGNED_URL"
+
+    val UPLOAD_TRIGGERED = "UPLOAD_TRIGGERED"
+    val UPLOADING_RUNNING = "UPLOADING_RUNNING"
+    val IMAGE_ID_NULL = "IMAGE ID NULL"
+    val CONNECTION_BREAK = "CONNECTION BREAK"
+    val ALL_UPLOADED_BREAK = "ALL UPLOADED BREAK"
+
 
 
     val imageCatNameMap = HashMap<String,String>().apply {

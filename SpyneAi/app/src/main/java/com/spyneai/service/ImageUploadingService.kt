@@ -20,6 +20,9 @@ import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class ImageUploadingService : Service(), ImageUploader.Listener {
@@ -35,6 +38,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     val notificationChannelId = "PROCESSING SERVICE CHANNEL"
     var currentImage : Image? = null
     val TAG = "ImageUploader"
+    var serviceStartedBy : String? = null
 
     override fun onDestroy() {
         super.onDestroy()
@@ -44,7 +48,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
     override fun onCreate() {
         super.onCreate()
-        setServiceState(this, com.spyneai.service.ServiceState.STARTED)
+        setServiceState(this, ServiceState.STARTED)
 
         //register internet connection receiver
         this.receiver = InternetConnectionReceiver()
@@ -77,16 +81,19 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
         when (action) {
             Actions.START.name -> {
-                if (!uploadRunning)
+                this.serviceStartedBy = intent.getStringExtra(AppConstants.SERVICE_STARTED_BY)
+                if (!uploadRunning){
+                    val properties = java.util.HashMap<String, Any?>()
+                        .apply {
+                            put("service_state", "Started")
+                            put("medium", "Image Uploading Service")
+                        }
+
+                    captureEvent(Events.SERVICE_STARTED, properties)
+
                     resumeUpload("onStartCommand")
+                }
 
-                val properties = java.util.HashMap<String, Any?>()
-                    .apply {
-                        put("service_state", "Started")
-                        put("medium", "Image Uploading Service")
-                    }
-
-                captureEvent(Events.SERVICE_STARTED, properties)
             }
             Actions.STOP.name -> stopService()
             else -> error("No action in the received intent")
@@ -162,6 +169,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             stopForeground(false)
             stopSelf()
 
+            Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
+
         } catch (e: Exception) {
         }
 
@@ -180,7 +189,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
        uploadRunning = true
     }
 
-    override fun onUploaded(task: Image) {
+    override fun onUploaded() {
         uploadRunning = false
 
         var title = getString(R.string.image_uploaded)
@@ -212,11 +221,12 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     }
 
     override fun onConnectionLost() {
+        uploadRunning = false
+
         captureEvent(Events.INTERNET_DISCONNECTED,
             HashMap<String,Any?>().apply {
                 put("medium","Service")
             })
-        uploadRunning = false
 
         val title = if (currentImage == null) getString(R.string.uploading_paused)
         else {
@@ -233,6 +243,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             val isConnected = context?.isInternetActive()
+            Log.d(TAG, "onReceive: "+isConnected)
 
             if (isConnected == true){
                 //push event of internet connected
@@ -246,8 +257,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 if ((shootLocalRepository.getOldestImage("0").itemId != null
                             || shootLocalRepository.getOldestImage("-1").itemId != null)
                     && !uploadRunning){
-                    uploadRunning = true
-
                     // we have pending images, resume upload
                     resumeUpload("onReceive")
                 }
@@ -257,6 +266,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                     HashMap<String,Any?>().apply {
                         put("medium","Service")
                     })
+
+                imageUploader?.connectionLost = true
             }
         }
     }
@@ -272,7 +283,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 this
             )
 
-        imageUploader!!.start()
+        imageUploader?.connectionLost = false
+        imageUploader?.uploadParent(type,serviceStartedBy)
     }
 
 }

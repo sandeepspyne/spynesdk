@@ -27,8 +27,6 @@ class DBHelper(context: Context) :
         )
 
 
-
-
         try {
             db.execSQL(CREATE_PROJECTS_TABLE)
             db.execSQL(SQL_CREATE_ENTRIES)

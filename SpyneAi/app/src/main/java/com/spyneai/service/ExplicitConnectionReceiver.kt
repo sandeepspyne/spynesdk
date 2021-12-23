@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.content.ContextCompat
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -28,11 +29,15 @@ class ExplicitConnectionReceiver : BroadcastReceiver() {
                         }
 
                     if (!context?.isMyServiceRunning(ImageUploadingService::class.java)){
+                        Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+
                         var action = Actions.START
                         if (getServiceState(context) == ServiceState.STOPPED && action == Actions.STOP)
                             return
 
                         val serviceIntent = Intent(context, ImageUploadingService::class.java)
+                        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,
+                            ExplicitConnectionReceiver::class.simpleName)
                         serviceIntent.action = action.name
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

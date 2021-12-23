@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -67,14 +68,30 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         when (viewModel.categoryId) {
             AppConstants.CARS_CATEGORY_ID -> {
-                binding.cbWindowCorrection.visibility = View.GONE
-                binding.tvWindowReflection.visibility = View.GONE
+                when(getString(R.string.app_name)) {
+                    AppConstants.SPYNE_AI,
+                    AppConstants.ADLOID-> {
+                        binding.cbWindowCorrection.visibility = View.GONE
+                        binding.tvWindowReflection.visibility = View.GONE
 
-                binding.cbBlurNoPlate.visibility = View.VISIBLE
-                binding.tvBlurNoPlate.visibility = View.VISIBLE
+                        binding.cbBlurNoPlate.visibility = View.VISIBLE
+                        binding.tvBlurNoPlate.visibility = View.VISIBLE
 
-                binding.tvTintWindow.visibility = View.VISIBLE
-                binding.cbTintWindow.visibility = View.VISIBLE
+                        binding.tvTintWindow.visibility = View.VISIBLE
+                        binding.cbTintWindow.visibility = View.VISIBLE
+                    }
+
+                    else -> {
+                        binding.cbWindowCorrection.visibility = View.GONE
+                        binding.tvWindowReflection.visibility = View.GONE
+
+                        binding.cbBlurNoPlate.visibility = View.GONE
+                        binding.tvBlurNoPlate.visibility = View.GONE
+
+                        binding.tvTintWindow.visibility = View.VISIBLE
+                        binding.cbTintWindow.visibility = View.VISIBLE
+                    }
+                }
             }
             else -> {
                 binding.cbBlurNoPlate.visibility = View.GONE
@@ -459,6 +476,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                             .apply {
                                 this.put("sku_id", viewModel.sku.value?.skuId!!)
                                 this.put("background_id", backgroundSelect)
+                                this.put("response", Gson().toJson(it).toString())
                             }
 
 
@@ -474,6 +492,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         Events.PROCESS_FAILED,
                         HashMap<String, Any?>().apply {
                             this.put("sku_id", viewModel.sku.value?.skuId!!)
+                            this.put("throwable", it.throwable)
                         },
                         it.errorMessage!!
                     )

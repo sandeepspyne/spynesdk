@@ -15,6 +15,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.gson.Gson
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -95,6 +96,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                             .apply {
                                 this.put("sku_id", viewModel.sku.value?.skuId!!)
                                 this.put("background_id",viewModel.backgroundSelect!!)
+                                this.put("response", Gson().toJson(it).toString())
                             }
 
 
@@ -109,6 +111,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                         HashMap<String,Any?>()
                             .apply {
                                 this.put("sku_id",viewModel.sku.value?.skuId!!)
+                                this.put("throwable", it.throwable)
                             },
                         it.errorMessage!!)
 
