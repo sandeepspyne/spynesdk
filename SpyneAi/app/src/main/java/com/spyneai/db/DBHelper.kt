@@ -9,6 +9,7 @@ import android.util.Log
 import com.spyneai.BaseApplication
 import com.spyneai.captureEvent
 
+
 class DBHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 

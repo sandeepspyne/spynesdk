@@ -57,6 +57,12 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
         requireContext().setLocale()
 
+        viewModel.showOverlay.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.imgOverlay.visibility = View.VISIBLE
+            }else binding.imgOverlay.visibility = View.INVISIBLE
+        })
+
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
@@ -72,7 +78,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
         viewModel.showInteriorDialog.observe(viewLifecycleOwner, {
             if (it) {
-                binding.imgOverlay?.visibility = View.GONE
+//                binding.imgOverlay?.visibility = View.GONE
                 if (viewModel.startInteriorShots.value == null)
                     initInteriorShots()
             }
@@ -444,19 +450,32 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         binding.apply {
             binding.llAngles.visibility = View.VISIBLE
             tvSkuName?.visibility = View.VISIBLE
-            imgOverlay?.visibility = View.VISIBLE
+//            imgOverlay?.visibility = View.VISIBLE
+            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
             tvSkuName?.text = viewModel.sku.value?.skuName
-            binding.imgOverlay.visibility = View.VISIBLE
+//            binding.imgOverlay.visibility = View.VISIBLE
             if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
-                binding.imgOverlay.visibility = View.INVISIBLE
+//                binding.imgOverlay.visibility = View.INVISIBLE
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+
 
             if (viewModel.categoryDetails.value?.imageType == "Exterior")
-                viewModel.showLeveler.value = true
+//                viewModel.showLeveler.value = true
+            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
         }
 
         if (getString(R.string.app_name) == AppConstants.KARVI)
-            binding.imgOverlay.visibility = View.GONE
+//            binding.imgOverlay.visibility = View.GONE
+            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+        viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
         val intent = requireActivity().intent
 
@@ -465,18 +484,33 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
         when {
             intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR, false) -> {
-                viewModel.showLeveler.value = true
+//                viewModel.showLeveler.value = true
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
                 if (getString(R.string.app_name) != AppConstants.KARVI)
-                    binding.imgOverlay.visibility = View.VISIBLE
+//                    binding.imgOverlay.visibility = View.VISIBLE
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                 if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
-                    binding.imgOverlay.visibility = View.INVISIBLE
+//                    binding.imgOverlay.visibility = View.INVISIBLE
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
             }
             intent.getBooleanExtra(AppConstants.RESUME_INTERIOR, false) -> {
-                binding.imgOverlay.visibility = View.GONE
+//                binding.imgOverlay.visibility = View.GONE
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
             }
             intent.getBooleanExtra(AppConstants.RESUME_MISC, false) -> {
-                binding.imgOverlay.visibility = View.GONE
+//                binding.imgOverlay.visibility = View.GONE
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
             }
             else -> {
 
@@ -609,7 +643,10 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
     }
 
     private fun initInteriorShots() {
-        viewModel.hideLeveler.value = true
+//        viewModel.hideLeveler.value = true
+        viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+        viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
         InteriorHintDialog().show(requireActivity().supportFragmentManager, "InteriorHintDialog")
     }
@@ -622,10 +659,10 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             binding.llAngles.visibility = View.VISIBLE
             rvSubcategories?.visibility = View.VISIBLE
             tvShoot.isClickable = false
-            imgOverlay.visibility = View.INVISIBLE
+//            imgOverlay.visibility = View.INVISIBLE
         }
 
-        viewModel.hideLeveler.value = true
+//        viewModel.hideLeveler.value = true
 
         val subCatResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
@@ -701,14 +738,17 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
     private fun observerMiscShots() {
         viewModel.showMiscDialog.observe(viewLifecycleOwner, {
             if (it) {
-                binding.imgOverlay?.visibility = View.GONE
+//                binding.imgOverlay?.visibility = View.GONE
                 initMiscShots()
             }
         })
     }
 
     private fun initMiscShots() {
-        viewModel.hideLeveler.value = true
+//        viewModel.hideLeveler.value = true
+        viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+        viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
         if (viewModel.startMiscShots.value == null && !viewModel.miscDialogShowed) {
             MiscShotsDialog().show(requireActivity().supportFragmentManager, "MiscShotsDialog")
@@ -723,7 +763,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
            binding.apply {
                binding.llAngles.visibility = View.VISIBLE
                rvSubcategories?.visibility = View.VISIBLE
-               imgOverlay.visibility = View.INVISIBLE
+//               imgOverlay.visibility = View.INVISIBLE
            }
 
 
@@ -808,6 +848,11 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
            }
 
            //change image type
+//           viewModel.hideLeveler.value = true
+//           viewModel.showOverlay.value = false
+           viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+           viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+           viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
            viewModel.categoryDetails.value?.imageType = "Focus Shoot"
        }
     }

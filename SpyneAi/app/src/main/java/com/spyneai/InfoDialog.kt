@@ -27,6 +27,9 @@ class InfoDialog :  BaseDialogFragment<ShootViewModel, FragmentInfoDialogBinding
         }
 
         binding.llShootInfo.setOnClickListener {
+            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
             viewModel.categoryDetails.value?.imageType = "Info"
             viewModel.hideLeveler.value = true
             dismiss()

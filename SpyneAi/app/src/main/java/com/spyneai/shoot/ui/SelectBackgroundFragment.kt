@@ -46,7 +46,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         initSelectBackground()
 
-        if (viewModel.categoryId == null){
+        if (viewModel.categoryId == null) {
             arguments?.let {
                 viewModel.categoryId = it.getString(AppConstants.CATEGORY_ID)
             }
@@ -66,61 +66,49 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             viewModel.tintWindow = isChecked
         }
 
-        binding.cbTintWindow.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.tintWindow = isChecked
-        }
-
-
-      //   blur no plate & window correction
-            when (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)) {
-                "Automobiles" -> {
-                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
-                        binding.cbBlurNoPlate.visibility = View.VISIBLE
-                        binding.tvBlurNoPlate.visibility = View.VISIBLE
+        when (viewModel.categoryId) {
+            AppConstants.CARS_CATEGORY_ID -> {
+                when(getString(R.string.app_name)) {
+                    AppConstants.SPYNE_AI,
+                    AppConstants.ADLOID-> {
                         binding.cbWindowCorrection.visibility = View.GONE
                         binding.tvWindowReflection.visibility = View.GONE
+
+                        binding.cbBlurNoPlate.visibility = View.VISIBLE
+                        binding.tvBlurNoPlate.visibility = View.VISIBLE
+
                         binding.tvTintWindow.visibility = View.VISIBLE
                         binding.cbTintWindow.visibility = View.VISIBLE
-                        binding.cbTintWindow.visibility = View.VISIBLE
-                        binding.tvTintWindow.visibility = View.VISIBLE
-                    } else  {
+                    }
+
+                    else -> {
+                        binding.cbWindowCorrection.visibility = View.GONE
+                        binding.tvWindowReflection.visibility = View.GONE
+
                         binding.cbBlurNoPlate.visibility = View.GONE
                         binding.tvBlurNoPlate.visibility = View.GONE
-                        binding.cbWindowCorrection.visibility = View.GONE
-                        binding.tvWindowReflection.visibility = View.GONE
-                        binding.cbTintWindow.visibility = View.VISIBLE
+
                         binding.tvTintWindow.visibility = View.VISIBLE
+                        binding.cbTintWindow.visibility = View.VISIBLE
                     }
-
-                    if (getString(R.string.app_name) == AppConstants.ADLOID){
-                        binding.cbBlurNoPlate.visibility = View.VISIBLE
-                        binding.tvBlurNoPlate.visibility = View.VISIBLE
-                        binding.cbWindowCorrection.visibility = View.GONE
-                        binding.tvWindowReflection.visibility = View.GONE
-                        binding.cbTintWindow.visibility = View.GONE
-                        binding.tvTintWindow.visibility = View.GONE
-                    }
-
-                    if (getString(R.string.app_name) == AppConstants.CARS24 ||
-                        getString(R.string.app_name) == AppConstants.CARS24_INDIA ||
-                        getString(R.string.app_name) == AppConstants.OLA_CABS){
-                            binding.cbTintWindow.visibility = View.GONE
-                            binding.tvTintWindow.visibility = View.GONE
-                    }
-                } else ->{
-                    binding.cbBlurNoPlate.visibility = View.GONE
-                    binding.tvBlurNoPlate.visibility = View.GONE
-                    binding.cbWindowCorrection.visibility = View.GONE
-                    binding.tvWindowReflection.visibility = View.GONE
-                    binding.cbTintWindow.visibility = View.GONE
-                    binding.tvTintWindow.visibility = View.GONE
                 }
             }
+            else -> {
+                binding.cbBlurNoPlate.visibility = View.GONE
+                binding.tvBlurNoPlate.visibility = View.GONE
+
+                binding.cbWindowCorrection.visibility = View.GONE
+                binding.tvWindowReflection.visibility = View.GONE
+
+                binding.cbTintWindow.visibility = View.GONE
+                binding.tvTintWindow.visibility = View.GONE
+            }
+        }
 
         when (getString(R.string.app_name)) {
             AppConstants.KARVI,
             AppConstants.CARS24_INDIA,
-            AppConstants.CARS24-> {
+            AppConstants.CARS24 -> {
                 binding.cb360.visibility = View.GONE
                 binding.tv360.visibility = View.GONE
                 binding.tvGenerateGif.text = getString(R.string.generate_output)
@@ -140,7 +128,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.tvSample.text = getString(R.string.sample_output)
             }
             AppConstants.SPYNE_AI -> {
-                when(viewModel.categoryId){
+                when (viewModel.categoryId) {
                     AppConstants.FOOD_AND_BEV_CATEGORY_ID -> {
                         binding.cb360.visibility = View.GONE
                         binding.tv360.visibility = View.GONE
@@ -174,7 +162,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             }
         }
 
-        if (viewModel.fromVideo){
+        if (viewModel.fromVideo) {
             binding.cb360.visibility = View.GONE
             binding.tv360.visibility = View.GONE
             binding.tvGenerateGif.text = getString(R.string.generate_output)
@@ -186,7 +174,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             //update total frame if user clicked interior and misc
             if (viewModel.interiorMiscShootsCount > 0)
                 updateTotalFrames()
-            else{
+            else {
                 processRequest(true)
             }
         }
@@ -195,37 +183,41 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         observeProcessSku()
     }
 
-    private fun processRequest(showDialog : Boolean) {
-        when(getString(R.string.app_name)) {
+    private fun processRequest(showDialog: Boolean) {
+        when (getString(R.string.app_name)) {
             AppConstants.KARVI,
             AppConstants.SWEEP,
             AppConstants.CARS24,
-            AppConstants.CARS24_INDIA-> {
+            AppConstants.CARS24_INDIA -> {
                 //process image call
                 processSku(showDialog)
-            }AppConstants.SWIGGY -> {
+            }
+            AppConstants.SWIGGY -> {
 
-                    processFoodImage()
-            Utilities.showProgressDialog(requireContext())
-                }
-            AppConstants.SPYNE_AI -> {
-            if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
-                   processFoodImage()
+                processFoodImage()
                 Utilities.showProgressDialog(requireContext())
-            } else{
-                if (binding.cb360.isChecked){
-                    viewModel.backgroundSelect = backgroundSelect
-                    viewModel.addRegularShootSummaryFragment.value = true
-                }else{
-                    //process image call
-                    processSku(showDialog)
+            }
+            AppConstants.SPYNE_AI -> {
+                if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
+                        .equals("Food & Beverages")
+                ) {
+                    processFoodImage()
+                    Utilities.showProgressDialog(requireContext())
+                } else {
+                    if (binding.cb360.isChecked) {
+                        viewModel.backgroundSelect = backgroundSelect
+                        viewModel.addRegularShootSummaryFragment.value = true
+                    } else {
+                        //process image call
+                        processSku(showDialog)
+                    }
                 }
             }
-        }else -> {
-                if (binding.cb360.visibility == View.VISIBLE && binding.cb360.isChecked){
+            else -> {
+                if (binding.cb360.visibility == View.VISIBLE && binding.cb360.isChecked) {
                     viewModel.backgroundSelect = backgroundSelect
                     viewModel.addRegularShootSummaryFragment.value = true
-                }else{
+                } else {
                     //process image call
                     processSku(showDialog)
                 }
@@ -259,7 +251,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     Utilities.hideProgressDialog()
                     binding.shimmer.stopShimmer()
                     requireContext().captureFailureEvent(
-                        Events.GET_BACKGROUND_FAILED, HashMap<String,Any?>(),
+                        Events.GET_BACKGROUND_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
                     handleApiError(it) { processFoodImage() }
@@ -280,10 +272,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 viewModel.getBackgroundGifCars(category, authKey)
             }
             AppConstants.SPYNE_AI -> {
-                if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+                if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
+                        .equals("Food & Beverages")
+                ) {
                     val category = "Food".toRequestBody(MultipartBody.FORM)
                     val authKey = Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
-                            .toRequestBody(MultipartBody.FORM)
+                        .toRequestBody(MultipartBody.FORM)
 
                     viewModel.getBackgroundGifCars(category, authKey)
                 } else {
@@ -317,7 +311,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         viewModel.carGifRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    requireContext().captureEvent(Events.GET_BACKGROUND, HashMap<String,Any?>())
+                    requireContext().captureEvent(Events.GET_BACKGROUND, HashMap<String, Any?>())
                     binding.shimmer.stopShimmer()
                     binding.shimmer.visibility = View.GONE
                     binding.rvBackgroundsCars.visibility = View.VISIBLE
@@ -329,11 +323,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
 
+                    viewModel.backgroundSelect = response.data[0].imageId
                     backgroundSelect = response.data[0].imageId
                     viewModel.backgroundSelect = backgroundSelect
 
                     carBackgroundGifList.clear()
-                    for (element in response.data){
+                    for (element in response.data) {
                         carBackgroundGifList.add(element)
                     }
 
@@ -343,7 +338,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.GET_BACKGROUND_FAILED, HashMap<String,Any?>(),
+                        Events.GET_BACKGROUND_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
                     handleApiError(it) { getBackground() }
@@ -360,6 +355,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             object : NewCarBackgroundAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     //if (position<carBackgroundList.size)
+                    viewModel.backgroundSelect = backgroundSelect
                     backgroundSelect = carBackgroundGifList[position].imageId
                     viewModel.backgroundSelect = backgroundSelect
                     carbackgroundsAdapter.notifyDataSetChanged()
@@ -387,7 +383,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         Utilities.showProgressDialog(requireContext())
         val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
 
-        Log.d(TAG, "updateTotalFrames: "+viewModel.exteriorAngles.value)
+        Log.d(TAG, "updateTotalFrames: " + viewModel.exteriorAngles.value)
 
 
         viewModel.updateCarTotalFrames(
@@ -398,48 +394,51 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
     }
 
     private fun observeTotalFrameUpdate() {
-        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
-            when(it) {
+        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
+            when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
-                    val properties = HashMap<String,Any?>()
+                    val properties = HashMap<String, Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
-                        this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+                        this["total_frames"] =
+                            viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
                     }
 
-                    requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED,properties)
+                    requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED, properties)
                     processRequest(false)
                 }
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
 
-                    val properties = HashMap<String,Any?>()
+                    val properties = HashMap<String, Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
-                        this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+                        this["total_frames"] =
+                            viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
                     }
 
                     requireContext().captureFailureEvent(
-                        Events.TOTAL_FRAMES_UPDATE_FAILED,properties,
-                        it.errorMessage!!)
+                        Events.TOTAL_FRAMES_UPDATE_FAILED, properties,
+                        it.errorMessage!!
+                    )
 
-                    handleApiError(it) { updateTotalFrames()}
+                    handleApiError(it) { updateTotalFrames() }
                 }
             }
         })
     }
 
-    private fun processSku(showDialog : Boolean) {
-        if (!viewModel.backgroundSelect.isNullOrEmpty()){
+    private fun processSku(showDialog: Boolean) {
+        if (!viewModel.backgroundSelect.isNullOrEmpty()) {
             if (showDialog)
                 Utilities.showProgressDialog(requireContext())
 
             requireContext().captureEvent(
                 Events.PROCESS_INITIATED,
-                HashMap<String,Any?>()
+                HashMap<String, Any?>()
                     .apply {
                         this.put("sku_id", viewModel.sku.value?.skuId!!)
                         this.put("background_id", backgroundSelect)
@@ -453,12 +452,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 viewModel.sku.value?.skuId!!,
                 backgroundSelect,
                 false,
-                binding.cbBlurNoPlate.isChecked,
-                binding.cbWindowCorrection.isChecked,
-                binding.cbTintWindow.isChecked)
+                viewModel.numberPlateBlur,
+                viewModel.windowCorrection,
+                viewModel.tintWindow
+            )
         }
     }
-
 
 
     private fun observeProcessSku() {
@@ -475,7 +474,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                     requireContext().captureEvent(
                         Events.PROCESS,
-                        HashMap<String,Any?>()
+                        HashMap<String, Any?>()
                             .apply {
                                 this.put("sku_id", viewModel.sku.value?.skuId!!)
                                 this.put("background_id", backgroundSelect)
@@ -493,7 +492,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                     requireContext().captureFailureEvent(
                         Events.PROCESS_FAILED,
-                        HashMap<String,Any?>().apply {
+                        HashMap<String, Any?>().apply {
                             this.put("sku_id", viewModel.sku.value?.skuId!!)
                             this.put("throwable", it.throwable)
                         },

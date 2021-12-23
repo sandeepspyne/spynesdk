@@ -23,6 +23,8 @@ import android.util.Log
 import android.util.Size
 import android.view.*
 import android.view.Surface.ROTATION_90
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.*
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -108,19 +110,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     var gravity = FloatArray(3)
     val TAG = "Camera Fragment"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        shoot("onCreate called(camera fragment)")
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
-        shoot("onCreateView called(camera fragment)")
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -137,21 +126,41 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }, 300)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
-        // Determine the output directory
+        // Determine the output direcrotory
         pickIt = PickiT(requireContext(), this, requireActivity())
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner, {
-            if (it){
+            if (it) {
+                binding.switchShowOverlay?.isChecked = false
+                binding.switchShowGyro?.isChecked = false
+                binding.switchShowOverlay?.isClickable = false
+                binding.switchShowGyro?.isClickable = false
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                 binding.tvSkipShoot?.text = getString(R.string.miscshoots)
                 binding.llSkip?.visibility = View.VISIBLE
             }
         })
 
+        viewModel.imageTypeInfo.observe(viewLifecycleOwner, {
+            if (it) {
+                startCamera()
+            }
+        })
+
         viewModel.startMiscShots.observe(viewLifecycleOwner, {
             if (it) {
-                if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+                binding.switchShowOverlay?.isChecked = false
+                binding.switchShowGyro?.isChecked = false
+                binding.switchShowOverlay?.isClickable = false
+                binding.switchShowGyro?.isClickable = false
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
                     binding.tvSkipShoot?.text = getString(R.string.three_sixty_int)
-                }else{
+                } else {
                     binding.tvSkipShoot?.text = getString(R.string.end_shoot_karvi)
                 }
                 binding.llSkip?.visibility = View.VISIBLE
@@ -162,13 +171,18 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.showLeveler.observe(viewLifecycleOwner, {
             if (it && isSensorAvaliable) {
                 binding.flLevelIndicator.start(viewModel.categoryDetails.value?.categoryName!!)
-            }
+            } else binding.flLevelIndicator.visibility = View.GONE
         })
 
-        viewModel.hideLeveler.observe(viewLifecycleOwner, {
+//            viewModel.hideLeveler.observe(viewLifecycleOwner, {
+//                if (it) {
+//
+//                }
+//            })
+        viewModel.showGrid.observe(viewLifecycleOwner, {
             if (it) {
-                binding.flLevelIndicator.visibility = View.GONE
-            }
+                binding.groupGridLines?.visibility = View.VISIBLE
+            } else binding.groupGridLines?.visibility = View.INVISIBLE
         })
 
         if (getString(R.string.app_name) == AppConstants.KARVI) {
@@ -205,8 +219,103 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
         })
-    }
 
+        //camera setting
+        if (viewModel.categoryDetails.value?.categoryId == AppConstants.CARS_CATEGORY_ID ||
+                viewModel.categoryDetails.value?.categoryId == AppConstants.BIKES_CATEGORY_ID){
+            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+
+            binding.llSetting.setOnClickListener {
+                if (viewModel.categoryDetails.value?.imageType == "Info" ||
+                    viewModel.categoryDetails.value?.imageType == "Misc" ||
+                    viewModel.categoryDetails.value?.imageType == "Interior" ||
+                    viewModel.categoryDetails.value?.imageType == "Focus Shoot"
+                ) {
+                    binding.switchShowOverlay?.isChecked = false
+                    binding.switchShowGyro?.isChecked = false
+                    binding.switchShowOverlay?.isClickable = false
+                    binding.switchShowGyro?.isClickable = false
+                } else {
+                    binding.switchShowOverlay?.isClickable = true
+                    binding.switchShowGyro?.isClickable = true
+
+                }
+
+                if (viewModel.categoryDetails.value?.categoryId == AppConstants.FOOD_AND_BEV_CATEGORY_ID ||
+                    viewModel.categoryDetails.value?.categoryId == AppConstants.ECOM_CATEGORY_ID ||
+                    viewModel.categoryDetails.value?.categoryId == AppConstants.PHOTO_BOX_CATEGORY_ID ||
+                    getString(R.string.app_name) == AppConstants.SWIGGY
+                ) {
+                    binding.switchShowOverlay?.isChecked = false
+                    binding.switchShowOverlay?.isClickable = false
+                }
+                if (getString(R.string.app_name) == AppConstants.SPYNE_AI && viewModel.categoryDetails.value?.imageType == "Info") {
+                    binding.switchShowOverlay?.isChecked = false
+                    binding.switchShowOverlay?.isClickable = false
+                    binding.switchShowGyro?.isChecked = false
+                    binding.switchShowGyro?.isClickable = false
+                }
+                if (binding.ivCross?.visibility == GONE) {
+                    binding.ivCross?.visibility = VISIBLE
+                    binding.llShowOverlay?.visibility = VISIBLE
+                    binding.llShowGrid?.visibility = VISIBLE
+                    binding.llShowGyro?.visibility = VISIBLE
+                } else {
+                    binding.ivCross?.visibility = GONE
+                    binding.llShowOverlay?.visibility = GONE
+                    binding.llShowGrid?.visibility = GONE
+                    binding.llShowGyro?.visibility = GONE
+                }
+            }
+
+            binding.switchShowGyro?.isChecked = viewModel.getCameraSetting().isGryroActive
+
+            binding.switchShowGyro?.setOnCheckedChangeListener { _, isChecked ->
+                Utilities.saveBool(
+                    requireContext(),
+                    viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO,
+                    isChecked
+                )
+                if (isChecked)
+                    viewModel.showLeveler.value = isChecked
+                else viewModel.showLeveler.value = false
+            }
+
+            binding.switchShowOverlay?.isChecked = viewModel.getCameraSetting().isOverlayActive
+
+            binding.switchShowOverlay?.setOnCheckedChangeListener { _, isChecked ->
+                Utilities.saveBool(
+                    requireContext(),
+                    viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY,
+                    isChecked
+                )
+                if (isChecked)
+                    viewModel.showOverlay.value = isChecked
+                else
+                    viewModel.showOverlay.value = false
+            }
+
+            binding.switchShowGrid?.isChecked = viewModel.getCameraSetting().isGridActive
+
+            binding.switchShowGrid?.setOnCheckedChangeListener { _, isChecked ->
+                Utilities.saveBool(
+                    requireContext(),
+                    viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GRID,
+                    isChecked
+                )
+                if (isChecked)
+                    viewModel.showGrid.value = isChecked
+                else
+                    viewModel.showGrid.value = false
+            }
+        }else {
+            binding.llSetting.visibility = GONE
+        }
+
+
+    }
 
     override fun onResume() {
         super.onResume()
@@ -243,18 +352,18 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     private fun onCaptureClick() {
 //        captureImage()
-        if (binding.flLevelIndicator.visibility == View.VISIBLE){
-            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
+        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
+            if (binding.flLevelIndicator.isGyroOnCorrectAngle) {
                 captureImage()
-        }else{
-            showGryroToast()
-        }
-        }else{
+            } else {
+                showGryroToast()
+            }
+        } else {
             captureImage()
         }
     }
 
-    private fun showGryroToast(){
+    private fun showGryroToast() {
         val text = getString(R.string.level_gryometer)
         val centeredText: Spannable = SpannableString(text)
         centeredText.setSpan(
@@ -283,6 +392,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
     }
 
+
     @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -293,12 +403,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             try {
                 cameraProvider = cameraProviderFuture.get()
             } catch (e: InterruptedException) {
-                Log.d(TAG, "startCamera: "+e.message)
-                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "startCamera: " + e.message)
+                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT)
+                    .show()
                 return@addListener
             } catch (e: ExecutionException) {
-                Log.d(TAG, "startCamera: "+e.message)
-                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "startCamera: " + e.message)
+                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT)
+                    .show()
                 return@addListener
             }
 
@@ -354,11 +466,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 AppConstants.MENS_FASHION_CATEGORY_ID,
                 AppConstants.WOMENS_FASHION_CATEGORY_ID,
                 AppConstants.CAPS_CATEGORY_ID,
-                    AppConstants.FASHION_CATEGORY_ID,
+                AppConstants.FASHION_CATEGORY_ID,
                 AppConstants.ACCESSORIES_CATEGORY_ID,
                 AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID,
                 AppConstants.ECOM_CATEGORY_ID,
-                AppConstants.PHOTO_BOX_CATEGORY_ID->{
+                AppConstants.PHOTO_BOX_CATEGORY_ID -> {
                     Preview.Builder()
                         .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                         .build()
@@ -378,7 +490,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             imageCapture = when (viewModel.categoryDetails.value?.categoryId) {
                 AppConstants.CARS_CATEGORY_ID,
-                AppConstants.BIKES_CATEGORY_ID-> {
+                AppConstants.BIKES_CATEGORY_ID -> {
                     if (getString(R.string.app_name) == AppConstants.KARVI) {
                         ImageCapture.Builder()
                             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
@@ -397,19 +509,19 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 AppConstants.MENS_FASHION_CATEGORY_ID,
                 AppConstants.WOMENS_FASHION_CATEGORY_ID,
                 AppConstants.CAPS_CATEGORY_ID,
-                    AppConstants.FASHION_CATEGORY_ID,
+                AppConstants.FASHION_CATEGORY_ID,
                 AppConstants.FOOD_AND_BEV_CATEGORY_ID,
                 AppConstants.ACCESSORIES_CATEGORY_ID,
                 AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID,
                 AppConstants.PHOTO_BOX_CATEGORY_ID,
-                AppConstants.ECOM_CATEGORY_ID-> {
+                AppConstants.ECOM_CATEGORY_ID -> {
 
                     if (viewModel.categoryDetails.value?.imageType == "Info") {
                         ImageCapture.Builder()
                             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                             .setFlashMode(flashMode)
                             .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                            .setTargetRotation(ROTATION_90)
+                            //                            .setTargetRotation(ROTATION_90)
                             .build()
 
                     } else {
@@ -455,10 +567,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 cameraInfo = camera.cameraInfo
 
-                when(viewModel.categoryDetails.value?.categoryId){
+                when (viewModel.categoryDetails.value?.categoryId) {
                     AppConstants.CARS_CATEGORY_ID,
-                    AppConstants.BIKES_CATEGORY_ID ->{}
-                    else ->{
+                    AppConstants.BIKES_CATEGORY_ID -> {
+                    }
+                    else -> {
                         var currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
                         cameraControl?.setZoomRatio(currentZoomRatio * 1.3F)
                     }
@@ -470,7 +583,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
-                val properties = HashMap<String,Any?>()
+                val properties = HashMap<String, Any?>()
                 properties["error"] = exc?.localizedMessage
                 properties["category"] = viewModel.categoryDetails.value?.categoryName
 
@@ -483,6 +596,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }, ContextCompat.getMainExecutor(requireContext()))
 
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -535,7 +649,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         val s = ""
 
-        Log.d(TAG, "takePhoto: "+filename)
+        Log.d(TAG, "takePhoto: " + filename)
 
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -576,7 +690,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             "Photo capture failed: " + exc.message,
                             Toast.LENGTH_LONG
                         ).show()
-                    }catch (e : Exception){
+                    } catch (e: Exception) {
 
                     }
 
@@ -584,7 +698,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                     BaseApplication.getContext().captureFailureEvent(
                         Events.IMAGE_CAPRURE_FAILED,
-                        HashMap<String,Any?>(),
+                        HashMap<String, Any?>(),
                         exc.localizedMessage
                     )
                 }
@@ -615,7 +729,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         //Get Rotation Vector Sensor Values
 
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
-            System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
+            System.arraycopy(
+                event.values,
+                0,
+                accelerometerReading,
+                0,
+                accelerometerReading.size
+            )
         } else if (event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD) {
             System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.size)
         }
@@ -648,17 +768,18 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             roll.roundToInt()
         ) >= 1
 
-        val rotatedarrow = abs(Math.toDegrees(orientationAngles[1].toDouble()).roundToInt()) - abs(
-            pitch.roundToInt()
-        ) >= 1
+        val rotatedarrow =
+            abs(Math.toDegrees(orientationAngles[1].toDouble()).roundToInt()) - abs(
+                pitch.roundToInt()
+            ) >= 1
 
 
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
         azimuth = (orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()
 
-        binding.tvPitch?.text="Pitch : "+ pitch.roundToInt().toString()
-        binding.tvRoll?.text="Roll : "+roll.roundToInt().toString()
+        binding.tvPitch?.text = "Pitch : " + pitch.roundToInt().toString()
+        binding.tvRoll?.text = "Roll : " + roll.roundToInt().toString()
 
         binding.flLevelIndicator.updateGryoView(
             getString(R.string.app_name),
@@ -703,7 +824,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
     private fun addShootItem(capturedImage: String) {
-        Log.d(TAG, "addShootItem: "+filename)
+        Log.d(TAG, "addShootItem: " + filename)
         end = System.currentTimeMillis()
         val difference = (end - begin) / 1000.toFloat()
         log("addShootIteamCalled- " + difference)
@@ -721,10 +842,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
         )
 
-        Log.d(TAG, "addShootItem: "+sequenceNumber)
+        Log.d(TAG, "addShootItem: " + sequenceNumber)
         val debugData = JSONObject()
-        debugData.put("roll",roll.roundToInt().unaryPlus())
-        debugData.put("pitch",pitch.roundToInt().unaryPlus())
+        debugData.put("roll", roll.roundToInt().unaryPlus())
+        debugData.put("pitch", pitch.roundToInt().unaryPlus())
 
 
         val shootData = ShootData(
@@ -732,7 +853,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             viewModel.projectId.value!!,
             viewModel.sku.value?.skuId!!,
             viewModel.categoryDetails.value?.imageType!!,
-            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
+            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY)
+                .toString(),
             viewModel.overlayId,
             sequenceNumber,
             binding.flLevelIndicator.cameraAngle,
@@ -744,20 +866,19 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             it.overlayId == viewModel.overlayId
         }
 
-        if (item != null){
+        if (item != null) {
             item.capturedImage = capturedImage
             item.angle = binding.flLevelIndicator.cameraAngle
             item.name = filename
             viewModel.isReclick = true
-        }
-        else {
+        } else {
             viewModel.isReclick = false
             viewModel.shootList.value!!.add(shootData)
         }
 
         viewModel.shootList.value = viewModel.shootList.value
 
-        val properties = HashMap<String,Any?>()
+        val properties = HashMap<String, Any?>()
         properties.apply {
             this["project_id"] = viewModel.projectId.value!!
             this["sku_id"] = viewModel.sku.value?.skuId!!
@@ -817,6 +938,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         shoot("onSaveInstanceState called(camera fragment)")
     }
 }
+
 
 
 

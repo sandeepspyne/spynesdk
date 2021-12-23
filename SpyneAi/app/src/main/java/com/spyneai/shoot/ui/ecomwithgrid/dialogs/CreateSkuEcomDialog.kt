@@ -184,7 +184,9 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                             viewModel.getSubCategories.value = true
                         }
                         else -> {
-                            viewModel.showLeveler.value = true
+//                            viewModel.showLeveler.value = true
+                            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
                         }
                     }
 

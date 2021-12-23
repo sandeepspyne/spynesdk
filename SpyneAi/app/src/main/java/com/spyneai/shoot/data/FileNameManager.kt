@@ -43,7 +43,7 @@ class FileNameManager {
                 }
             }
 
-            "Footwear","Food & Beverages","Ecom","Food","Photo Box" -> {
+            "Footwear","Food & Beverages","Ecom","Food","Photo Box","Info" -> {
                 imageType + "_" + currentShoot.plus(1)
             }
 

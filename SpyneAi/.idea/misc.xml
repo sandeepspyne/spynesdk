@@ -26,6 +26,7 @@
         <entry key="app/src/main/res/drawable/bg_three_sixty_shimmer.xml" value="0.321025641025641" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.2064814814814815" />
         <entry key="app/src/main/res/drawable/ic_shoot_any_car_feature.xml" value="0.19444444444444445" />
+        <entry key="app/src/main/res/drawable/setting_bg.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.165" />
         <entry key="app/src/main/res/layout-land/fragment_overlays.xml" value="0.18125" />
         <entry key="app/src/main/res/layout-land/gyro_view.xml" value="0.2421875" />
@@ -92,6 +93,7 @@
         <entry key="app/src/main/res/layout/fragment_ecom_overlay_reshoot.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_grid_ecom.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/fragment_image_processing_started.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_invalid_location_dialog.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_projects.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_skus.xml" value="0.3098958333333333" />

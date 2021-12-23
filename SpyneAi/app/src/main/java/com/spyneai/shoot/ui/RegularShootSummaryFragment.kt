@@ -423,7 +423,6 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                 viewModel.numberPlateBlur,
                 viewModel.windowCorrection,
                 viewModel.tintWindow
-
             )
         }
     }

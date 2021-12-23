@@ -57,19 +57,6 @@ public class ShowReplacedImagesAdapter(
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
-
-        //Glide.with(context).load(imageList[position]).into(viewHolder.imgReplaced)
-
-//        Glide.with(context) // replace with 'this' if it's in activity
-//                .load(rawImageList[position])
-//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-//                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-//                .into(viewHolder.imgBeforeReplaced)
-
-
         Glide.with(context)
             .load(rawImageList[position])
             .apply(
@@ -77,36 +64,8 @@ public class ShowReplacedImagesAdapter(
                     .error(com.spyneai.R.mipmap.defaults)
 
             )
-            .listener(object : RequestListener<Drawable?> {
-                override fun onLoadFailed(
-                    @Nullable e: GlideException?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    //on load failed
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    //on load success
-                    return false
-                }
-            })
             .transition(withCrossFade())
             .into(viewHolder.imgBeforeReplaced)
-
-//        Glide.with(context) // replace with 'this' if it's in activity
-//                .load(processedImageList[position])
-//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-//                .error(com.spyneai.R.mipmap.defaults) // show error drawable if the image is not a gif
-//                .into(viewHolder.imgAfterReplaced)
 
         Glide.with(context)
             .load(processedImageList[position])
@@ -114,28 +73,6 @@ public class ShowReplacedImagesAdapter(
                 RequestOptions()
                     .error(com.spyneai.R.mipmap.defaults)
             )
-            .listener(object : RequestListener<Drawable?> {
-                override fun onLoadFailed(
-                    @Nullable e: GlideException?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    //on load failed
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    //on load success
-                    return false
-                }
-            })
             .transition(withCrossFade())
             .into(viewHolder.imgAfterReplaced)
 

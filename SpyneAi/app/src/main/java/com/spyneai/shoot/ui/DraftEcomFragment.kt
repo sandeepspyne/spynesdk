@@ -50,6 +50,14 @@ class DraftEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBindin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
+        viewModel.showOverlay.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.imgOverlay.visibility = View.VISIBLE
+            }else binding.imgOverlay.visibility = View.INVISIBLE
+        })
+
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
@@ -243,11 +251,14 @@ class DraftEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBindin
             tvSkuName?.visibility = View.VISIBLE
             tvAngleName?.visibility = View.VISIBLE
             llProgress?.visibility = View.VISIBLE
-            imgOverlay?.visibility = View.VISIBLE
+//            imgOverlay?.visibility = View.VISIBLE
             tvSkuName?.text = viewModel.sku.value?.skuName
         }
 
-        viewModel.showLeveler.value = true
+//        viewModel.showLeveler.value = true
+        viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+        viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
     }
 
     override fun getViewModel() = ShootViewModel::class.java
