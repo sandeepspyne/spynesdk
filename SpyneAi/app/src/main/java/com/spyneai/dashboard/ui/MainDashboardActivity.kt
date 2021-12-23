@@ -3,6 +3,7 @@ package com.spyneai.dashboard.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -71,6 +72,8 @@ class MainDashboardActivity : AppCompatActivity() {
         setLocale()
 
 
+        Log.d(TAG, "onCreate: "+getInternetSpeed())
+
         if (intent.getBooleanExtra("show_ongoing", false)) {
             val intent = Intent(this, MyOrdersActivity::class.java)
             intent.putExtra("TAB_ID", 1)
@@ -130,7 +133,7 @@ class MainDashboardActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
-                R.id.wallet -> setCurrentFragment(SecondFragment)
+               // R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
@@ -269,6 +272,7 @@ class MainDashboardActivity : AppCompatActivity() {
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
     ).apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             add(Manifest.permission.ACCESS_MEDIA_LOCATION)

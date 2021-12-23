@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
+import android.content.Context.BATTERY_SERVICE
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.ImageFormat
@@ -16,6 +17,7 @@ import android.media.MediaMetadataRetriever
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
+import android.os.BatteryManager
 import android.util.Log
 import android.util.Size
 import android.view.View
@@ -41,8 +43,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import android.os.PowerManager
+import android.net.NetworkCapabilities
 
-private var TAG = "Locale_Check"
+import android.content.Context.CONNECTIVITY_SERVICE
+import android.os.Build
+
+
+var TAG = "Locale_Check"
 
 fun Context.gotoHome(){
     val intent = Intent(this, MainDashboardActivity::class.java)
@@ -119,9 +127,53 @@ fun Context.isMyServiceRunning(serviceClass: Class<*>): Boolean {
 }
 
 fun Context.isInternetActive() : Boolean {
-    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
-    return activeNetwork?.isConnectedOrConnecting == true
+    val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val nw      = connectivityManager.activeNetwork ?: return false
+        val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+        return when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            //for other device how are able to connect with Ethernet
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            //for check internet over Bluetooth
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+            else -> false
+        }
+    } else {
+        return connectivityManager.activeNetworkInfo?.isConnected ?: false
+    }
+}
+
+fun Context.getInternetSpeed(): String{
+    val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    var downSpeed = "version below 23"
+    var upSpeed = "version below 23"
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val nc = cm.getNetworkCapabilities(cm.activeNetwork)
+        downSpeed = (nc?.linkDownstreamBandwidthKbps?.div(1024)).toString()+" Mbps"
+        upSpeed = (nc?.linkUpstreamBandwidthKbps?.div(1024)).toString()+" Mbps"
+    }
+
+    return  JSONObject()
+        .apply {
+            put("is_active",isInternetActive())
+            put("upload_speed",upSpeed)
+            put("download_speed",downSpeed)
+        }.toString()
+}
+
+fun Context.getBatteryLevel() : String {
+    val bm = applicationContext.getSystemService(BATTERY_SERVICE) as BatteryManager
+    val batLevel:Int = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+    return "$batLevel%"
+}
+
+fun Context.getPowerSaveMode() : Boolean {
+    val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+    val powerSaveMode = powerManager.isPowerSaveMode
+    return powerSaveMode
 }
 
 fun Context.getNetworkName() : String {
