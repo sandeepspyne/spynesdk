@@ -188,9 +188,7 @@ class ImageUploader(
                                     continue
 
                                 val imageMarkedDone = markDoneImage(image)
-                                Log.d(
-                                    TAG, "startUploading: imageMarkedDone " + imageMarkedDone
-                                )
+
                                 continue
                             }
                             else -> {
@@ -267,9 +265,6 @@ class ImageUploader(
                                     continue
 
                                 val imageMarkedDone = markDoneImage(image)
-                                Log.d(
-                                    TAG, "startUploading: imageMarkedDone " + imageMarkedDone
-                                )
                                 continue
                             }
                             else -> {
