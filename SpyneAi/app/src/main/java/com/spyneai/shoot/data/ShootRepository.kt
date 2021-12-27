@@ -1,11 +1,15 @@
 package com.spyneai.shoot.data
 
+import androidx.room.Room
+import com.spyneai.BaseApplication
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ClipperApiStagingClient
 import com.spyneai.base.network.GCPApiClient
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.interfaces.GcpClient
 import com.spyneai.shoot.data.model.Image
+import com.spyneai.shoot.data.model.Project
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONArray
@@ -15,7 +19,6 @@ import org.json.JSONObject
 class ShootRepository : BaseRepository() {
 
     private var clipperApi = ClipperApiClient().getClient()
-    private var clipperStagingApi = ClipperApiStagingClient().getClient()
 
     suspend fun getSubCategories(
         authKey : String,prodId : String

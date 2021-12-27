@@ -2,6 +2,7 @@ package com.spyneai.shoot.ui.dialogs
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,8 +22,13 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.shoot
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreateProjectAndSkuBinding>() {
+
+    val TAG = CreateProjectAndSkuDialog::class.java.simpleName
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -62,12 +68,44 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
     private fun createProject() {
 
-        Utilities.showProgressDialog(requireContext())
+        val project = com.spyneai.shoot.data.room.Project(
+            "123450",
+            categoryId = viewModel.categoryDetails.value?.categoryId!!,
+            categoryName = viewModel.categoryDetails.value?.categoryName!!,
+            projectName =  removeWhiteSpace(binding.etVinNumber.text.toString())
+        )
 
-        viewModel.createProject(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-            removeWhiteSpace(binding.etVinNumber.text.toString()),
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(), null,viewModel.location_data.value)
+        GlobalScope.launch(Dispatchers.IO) {
+            val itemId = viewModel.insertProject(
+                project
+            )
+
+            Log.d(TAG, "createProject: "+itemId)
+        }
+
+        //update shoot session
+        Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
+
+        if (viewModel.sku.value == null){
+            val sku =  Sku()
+            sku?.projectId = project.uuid
+            sku?.skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
+            viewModel.sku.value = sku
+        }
+
+        viewModel.projectId.value = project.uuid
+
+        //notify project created
+        viewModel.isProjectCreated.value = true
+        viewModel.getSubCategories.value = true
+        dismiss()
+
+//        Utilities.showProgressDialog(requireContext())
+//
+//        viewModel.createProject(
+//            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+//            removeWhiteSpace(binding.etVinNumber.text.toString()),
+//            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(), null,viewModel.location_data.value)
     }
 
 

@@ -311,7 +311,9 @@ class ShootViewModel : ViewModel() {
     }
 
     fun createProject(
-        authKey: String, projectName: String, prodCatId: String,
+        authKey: String,
+        projectName: String,
+        prodCatId: String,
         dynamicLayout: JSONObject? = null,
         location_data : JSONObject? = null
     ) = viewModelScope.launch {
@@ -381,6 +383,10 @@ class ShootViewModel : ViewModel() {
 
     fun insertProject(project: Project) {
         localRepository.insertProject(project)
+    }
+
+    suspend fun insertProject(project: com.spyneai.shoot.data.room.Project) : Long {
+        return localRepository.insertProject(project)
     }
 
     fun updateSubcategoryId(subcategoryId: String, subcategoryName: String) {

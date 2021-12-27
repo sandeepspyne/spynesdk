@@ -11,7 +11,7 @@ interface BaseDao<T> {
      * @param obj the object to be inserted.
      */
     @Insert
-    fun insert(obj: T)
+    fun insert(obj: T) : Long
 
     /**
      * Insert an array of objects in the database.

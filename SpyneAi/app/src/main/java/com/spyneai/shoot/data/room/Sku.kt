@@ -26,8 +26,8 @@ data class Sku(
     @ColumnInfo(name = "status") val status: String?,
     @ColumnInfo(name = "is_paid") val isPaid: Boolean?,
     @ColumnInfo(name = "rating") val rating: String?,
-    @ColumnInfo(name = "created_on") val createdOn: String?,
-    @ColumnInfo(name = "updated_on") val updatedOn: String?,
+     @ColumnInfo(name = "created_at") val createdAt: Long?,
+    @ColumnInfo(name = "updated_at") val updatedAt: Long?,
     val imagesCount: String?,
     val imagesList: List<String>?
 )

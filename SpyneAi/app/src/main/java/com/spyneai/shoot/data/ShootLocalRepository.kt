@@ -3,7 +3,9 @@ package com.spyneai.shoot.data
 import android.content.ContentValues
 import android.provider.BaseColumns
 import android.util.Log
+import androidx.room.Room
 import com.spyneai.BaseApplication
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.db.DBHelper
 import com.spyneai.db.Images
 import com.spyneai.db.Projects
@@ -17,6 +19,16 @@ class ShootLocalRepository {
     private val dbWritable = DBHelper(BaseApplication.getContext()).writableDatabase
     private val dbReadable = DBHelper(BaseApplication.getContext()).readableDatabase
     private val TAG = "ShootLocalRepository"
+
+
+
+    fun insertProject(project: com.spyneai.shoot.data.room.Project) : Long{
+        return Room.databaseBuilder(
+            BaseApplication.getContext(),
+            AppDatabase::class.java, "spyne-db"
+        ).build().projectDao().insert(project)
+    }
+
 
     fun insertProject(project : Project) {
         val values = ContentValues().apply {
