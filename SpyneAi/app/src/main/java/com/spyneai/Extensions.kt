@@ -370,5 +370,7 @@ fun View.loadSmartly(path : String,imageView : ImageView){
     }
 }
 
+fun getUuid() = UUID.randomUUID().toString().replace("-","")
+
 
 

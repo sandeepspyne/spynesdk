@@ -377,7 +377,7 @@ class ShootViewModel : ViewModel() {
         localRepository.insertSku(sku)
     }
 
-    fun insertSku(sku: com.spyneai.shoot.data.room.Sku) {
+    suspend fun insertSku(sku: com.spyneai.shoot.data.room.Sku) {
         localRepository.insertSku(sku)
     }
 

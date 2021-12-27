@@ -7,17 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import com.spyneai.R
+import com.spyneai.*
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogCreateProjectAndSkuBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.removeWhiteSpace
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
@@ -69,7 +66,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
     private fun createProject() {
 
         val project = com.spyneai.shoot.data.room.Project(
-            "123450",
+            uuid = getUuid(),
             categoryId = viewModel.categoryDetails.value?.categoryId!!,
             categoryName = viewModel.categoryDetails.value?.categoryName!!,
             projectName =  removeWhiteSpace(binding.etVinNumber.text.toString())

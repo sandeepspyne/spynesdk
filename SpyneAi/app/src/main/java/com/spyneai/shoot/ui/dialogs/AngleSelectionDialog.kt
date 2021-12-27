@@ -15,6 +15,9 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.room.Sku
 import com.spyneai.shoot.utils.shoot
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelectionBinding>() {
 
@@ -115,14 +118,14 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
             val s = ""
 
             //create sku
-            val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
+           // val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
 
             if (viewModel.fromVideo) {
                 updateSku()
                 observerUpdateSku()
             } else {
                 createSku(
-                    createProjectRes.project_id,
+                   " createProjectRes.project_id",
                     viewModel.subCategory.value?.prod_sub_cat_id!!
                 )
             }
@@ -206,13 +209,13 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 
     private fun createSku(projectId: String, prod_sub_cat_id: String) {
         val sku = Sku(
-            "12345",
+            uuid = getUuid(),
             skuName = viewModel.sku.value?.skuName!!,
             categoryName = viewModel.categoryDetails.value?.categoryName!!,
             categoryId = viewModel.categoryDetails.value?.categoryName!!,
             subcategoryName = viewModel.subCategory.value?.sub_cat_name,
             subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id,
-            projectUuid = "123450",
+            projectUuid = getUuid(),
             initialFrames = viewModel.exterirorAngles.value,
             totalFrames = viewModel.exterirorAngles.value
         )
@@ -225,7 +228,13 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
         viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
         //add sku to local database
-        viewModel.insertSku(sku!!)
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.insertSku(sku!!)
+        }
+
+        dismiss()
+
+
 
 //        viewModel.createSku(
 //            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
