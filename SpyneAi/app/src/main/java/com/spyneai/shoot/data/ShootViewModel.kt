@@ -377,6 +377,10 @@ class ShootViewModel : ViewModel() {
         localRepository.insertSku(sku)
     }
 
+    fun insertSku(sku: com.spyneai.shoot.data.room.Sku) {
+        localRepository.insertSku(sku)
+    }
+
     fun updateTotalImages(skuId: String) {
         localRepository.updateTotalImageCount(skuId)
     }

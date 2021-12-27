@@ -2,6 +2,7 @@ package com.spyneai.shoot.data.room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity
@@ -16,6 +17,13 @@ data class Project(
     @ColumnInfo(name = "location_data") val locationData: String? = null,
     @ColumnInfo(name = "status") val status: String = "draft",
     @ColumnInfo(name = "rating") val rating: String? = null,
-    @ColumnInfo(name = "created_at") val createdAt: Long? = null,
-    @ColumnInfo(name = "updated_at") val updatedAt: Long? = null
-)
+    @ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "updated_at") val updatedAt: Long = System.currentTimeMillis()
+){
+    @Ignore
+    val skuCount: Int = 0
+    @Ignore
+    val imagesCount: Int = 0
+    @Ignore
+    val imagesList: List<String>? = null
+}
