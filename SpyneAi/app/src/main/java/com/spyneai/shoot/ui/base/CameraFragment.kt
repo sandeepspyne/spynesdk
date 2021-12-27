@@ -850,8 +850,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         val shootData = ShootData(
             capturedImage,
-            viewModel.projectId.value!!,
-            viewModel.sku.value?.skuId!!,
+            getUuid(),
+            getUuid(),
             viewModel.categoryDetails.value?.imageType!!,
             Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY)
                 .toString(),
@@ -879,11 +879,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.shootList.value = viewModel.shootList.value
 
         val properties = HashMap<String, Any?>()
-        properties.apply {
-            this["project_id"] = viewModel.projectId.value!!
-            this["sku_id"] = viewModel.sku.value?.skuId!!
-            this["image_type"] = viewModel.categoryDetails.value?.imageType!!
-        }
+//        properties.apply {
+//            this["project_id"] = viewModel.projectId.value!!
+//            this["sku_id"] = viewModel.sku.value?.skuId!!
+//            this["image_type"] = viewModel.categoryDetails.value?.imageType!!
+//        }
 
         BaseApplication.getContext().captureEvent(Events.IMAGE_CAPTURED, properties)
     }

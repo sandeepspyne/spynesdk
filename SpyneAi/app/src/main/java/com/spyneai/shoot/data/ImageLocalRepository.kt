@@ -3,7 +3,9 @@ package com.spyneai.shoot.data
 import android.content.ContentValues
 import android.provider.BaseColumns
 import android.util.Log
+import androidx.room.Room
 import com.spyneai.BaseApplication
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.db.DBHelper
 import com.spyneai.db.Images
 import com.spyneai.db.Projects
@@ -78,6 +80,13 @@ class ImageLocalRepository {
         val newRowId = dbWritable?.insert(Images.TABLE_NAME, null, values)
 
         com.spyneai.shoot.utils.log("insertImage: "+newRowId)
+    }
+
+    suspend fun insertImage(image: com.spyneai.shoot.data.room.Image) : Long{
+        return Room.databaseBuilder(
+            BaseApplication.getContext(),
+            AppDatabase::class.java, "spyne-db"
+        ).build().imageDao().insert(image)
     }
 
     fun updateImage(image: Image){

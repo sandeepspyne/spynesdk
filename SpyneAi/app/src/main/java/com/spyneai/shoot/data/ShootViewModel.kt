@@ -11,6 +11,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.reshoot.data.ReshootOverlaysRes
@@ -282,7 +283,7 @@ class ShootViewModel : ViewModel() {
         }
     }
 
-    fun insertImage(shootData: ShootData) {
+    suspend fun insertImage(shootData: ShootData) {
         val image = Image()
         image.projectId = shootData.project_id
         image.skuId = shootData.sku_id
@@ -306,7 +307,20 @@ class ShootViewModel : ViewModel() {
         if (imageRepository.isImageExist(image.skuId!!, image.name!!)) {
             imageRepository.updateImage(image)
         } else {
-            imageRepository.insertImage(image)
+            imageRepository.insertImage(com.spyneai.shoot.data.room.Image(
+                uuid = getUuid(),
+                projectUuid = getUuid(),
+                skuName = "name",
+                name = image.name!!,
+                type = image.categoryName!!,
+                sequence = image.sequence!!,
+                angle = image.angle!!,
+                overlayId = image.overlayId!!,
+                isReclick = isReclick,
+                isReshoot = isReshoot,
+                path = image.imagePath!!,
+                skuUuid = getUuid()
+            ))
         }
     }
 

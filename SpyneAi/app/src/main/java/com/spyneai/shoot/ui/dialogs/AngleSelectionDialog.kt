@@ -24,8 +24,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         isCancelable = false
         refreshTexts()
 
@@ -61,7 +59,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 
         val lastSelectedAngles = viewModel.getSelectedAngles(getString(R.string.app_name))
         var newSelectedAngles = viewModel.getSelectedAngles(getString(R.string.app_name))
-
 
         when (getString(R.string.app_name)) {
             AppConstants.SELL_ANY_CAR -> {
@@ -115,7 +112,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
         }
         binding.tvProceed.setOnClickListener {
             viewModel.exterirorAngles.value = newSelectedAngles
-            val s = ""
 
             //create sku
            // val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
@@ -131,7 +127,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
             }
         }
     }
-
 
     private fun refreshTexts() {
         requireContext().setLocale()
