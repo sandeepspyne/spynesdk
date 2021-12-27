@@ -9,15 +9,20 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.Fragment360ShotSummaryBinding
 import com.spyneai.fragment.TopUpFragment
+import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
@@ -159,37 +164,39 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
     private fun processSku(showLoader : Boolean) {
 
-        when(getString(R.string.app_name)){
-            AppConstants.OLA_CABS -> {
-                uploadWithService()
-            }else -> {
-            if (showLoader)
-                Utilities.showProgressDialog(requireContext())
+        uploadWithService()
 
-                viewModel.process360(
-                    Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-
-                viewModel.process360Res.observe(viewLifecycleOwner,{
-                when(it) {
-                    is Resource.Success -> {
-                        //update project status
-                        viewModel.updateProjectStatus(viewModel.videoDetails.projectId!!)
-
-                        Utilities.hideProgressDialog()
-                        Navigation.findNavController(binding.btnProceed)
-                            .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
-
-                        viewModel.title.value = "Processing Started"
-                        viewModel.processingStarted.value = true
-                    }
-                    is Resource.Failure -> {
-                        Utilities.hideProgressDialog()
-                        handleApiError(it) {processSku(true)}
-                    }
-                }
-            })
-            }
-        }
+//        when(getString(R.string.app_name)){
+//            AppConstants.OLA_CABS -> {
+//
+//            }else -> {
+//            if (showLoader)
+//                Utilities.showProgressDialog(requireContext())
+//
+//                viewModel.process360(
+//                    Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+//
+//                viewModel.process360Res.observe(viewLifecycleOwner,{
+//                when(it) {
+//                    is Resource.Success -> {
+//                        //update project status
+//                        viewModel.updateProjectStatus(viewModel.videoDetails.projectId!!)
+//
+//                        Utilities.hideProgressDialog()
+//                        Navigation.findNavController(binding.btnProceed)
+//                            .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
+//
+//                        viewModel.title.value = "Processing Started"
+//                        viewModel.processingStarted.value = true
+//                    }
+//                    is Resource.Failure -> {
+//                        Utilities.hideProgressDialog()
+//                        handleApiError(it) {processSku(true)}
+//                    }
+//                }
+//            })
+//            }
+//        }
 
 
     }
@@ -198,32 +205,37 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         //update video background id
         viewModel.updateVideoBackgroundId()
 
-        startService()
+        if (!requireContext().isMyServiceRunning(VideoUploadService::class.java))
+            startService()
 
         Navigation.findNavController(binding.btnProceed)
             .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
 
         viewModel.title.value = "Processing Started"
         viewModel.processingStarted.value = true
-//        viewModel.updateVideoBackgroundId()
-//
-//        startService()
-//
-//        Navigation.findNavController(binding.btnProceed)
-//            .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
-//
-//        viewModel.title.value = "Processing Started"
-//        viewModel.processingStarted.value = true
-
-//        if (showLoader)
-//            Utilities.showProgressDialog(requireContext())
 
         viewModel.process360(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
 
+        requireContext().captureEvent(
+            Events.VIDEO_PROCESS_CALL_INITIATED,
+            HashMap<String,Any?>().apply {
+                put("sku_id",viewModel.videoDetails.skuId)
+                put("data",Gson().toJson(viewModel.videoDetails).toString())
+            }
+        )
+
         viewModel.process360Res.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
+                    requireContext().captureEvent(
+                        Events.VIDEO_PROCESSED,
+                        HashMap<String,Any?>().apply {
+                            put("sku_id",viewModel.videoDetails.skuId)
+                            put("response",Gson().toJson(it.value).toString())
+                        }
+                    )
+
                     //update project status
                     viewModel.updateProjectStatus(viewModel.videoDetails.projectId!!)
 
@@ -236,6 +248,15 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
                 }
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
+                    requireContext().captureFailureEvent(
+                        Events.VIDEO_PROCESS_FAILED,
+                        HashMap<String,Any?>().apply {
+                            put("sku_id",viewModel.videoDetails.skuId)
+                            put("response",Gson().toJson(it).toString())
+                            put("throwable",it.throwable)
+                        },
+                        it.errorMessage!!
+                    )
                     handleApiError(it) {processSku(true)}
                 }
             }
@@ -248,6 +269,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
             return
 
         val serviceIntent = Intent(requireContext(), VideoUploadService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,ThreeSixtyShootSummaryFragment::class.java.simpleName)
         serviceIntent.action = action.name
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

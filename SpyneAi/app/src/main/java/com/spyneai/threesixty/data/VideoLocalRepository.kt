@@ -160,6 +160,7 @@ class VideoLocalRepository {
         return video
     }
 
+
     fun getOldestSkippedVideo() : VideoDetails {
         val projection = arrayOf(
             BaseColumns._ID,
@@ -238,7 +239,7 @@ class VideoLocalRepository {
         return video
     }
 
-    fun skipVideo(itemId: Long,skip : Int) {
+    fun skipVideo(itemId: Long,skip : Int) : Int{
         val videoValues = ContentValues().apply {
             put(
                 Videos.COLUMN_NAME_IS_UPLOADED,
@@ -251,13 +252,11 @@ class VideoLocalRepository {
 
         val selectionArgs = arrayOf(itemId.toString())
 
-        val count = dbWritable.update(
+        return dbWritable.update(
             Videos.TABLE_NAME,
             videoValues,
             selection,
             selectionArgs)
-
-        Log.d(TAG, "skipVideo: "+count)
     }
 
     fun updateSkippedVideos() : Int {
@@ -514,5 +513,162 @@ class VideoLocalRepository {
         }
 
         return video
+    }
+
+    fun skipMarkDoneFailedVideo(itemId: Long) : Int {
+        val projectValues = ContentValues().apply {
+            put(
+                Videos.COLUMN_NAME_IS_STATUS_UPDATED,
+                -1
+            )
+        }
+
+        // Which row to update, based on the title
+        val selection = "${BaseColumns._ID} LIKE ?"
+
+        val selectionArgs = arrayOf(itemId.toString())
+
+        return dbWritable.update(
+            Images.TABLE_NAME,
+            projectValues,
+            selection,
+            selectionArgs)
+    }
+
+    fun updateMarkDoneSkipedVideos() : Int {
+        val values = ContentValues().apply {
+            put(
+                Videos.COLUMN_NAME_IS_STATUS_UPDATED,
+                0
+            )
+        }
+
+        // Which row to update, based on the title
+        val selection = "${Videos.COLUMN_NAME_IS_STATUS_UPDATED} LIKE ?"
+
+        val selectionArgs = arrayOf("-1")
+
+        val count = dbWritable.update(
+            Videos.TABLE_NAME,
+            values,
+            selection,
+            selectionArgs)
+
+
+        return count
+    }
+
+
+    fun totalRemainingUpload(): Int {
+        val projection = arrayOf(
+            BaseColumns._ID)
+
+        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} IN ('0','-1', '-2') AND ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = 0"
+
+        val cursor = dbReadable.query(
+            Videos.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null              // The sort order
+        )
+
+        return cursor.count
+    }
+
+    fun totalRemainingMarkDone(): Int{
+        val projection = arrayOf(
+            BaseColumns._ID)
+        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = 1 AND ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = 0"
+
+        val cursor = dbReadable.query(
+            Videos.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null              // The sort order
+        )
+
+        return cursor.count
+    }
+
+    fun getRemainingAbove(itemId: Long) : Int{
+        val projection = arrayOf(
+            BaseColumns._ID)
+
+        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = 0 AND ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${BaseColumns._ID} > $itemId"
+
+        val cursor = dbReadable.query(
+            Videos.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null              // The sort order
+        )
+
+        return cursor.count
+    }
+
+    fun getRemainingAboveSkipped(itemId: Long) : Int{
+        val projection = arrayOf(
+            BaseColumns._ID)
+
+        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} IN ('-1', '-2') AND ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${BaseColumns._ID} > $itemId"
+
+        val cursor = dbReadable.query(
+            Videos.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null              // The sort order
+        )
+
+        return cursor.count
+    }
+
+    fun getRemainingBelow(itemId: Long) : Int{
+        val projection = arrayOf(
+            BaseColumns._ID)
+
+        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = 0 AND ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${BaseColumns._ID} < $itemId"
+
+        val cursor = dbReadable.query(
+            Videos.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null              // The sort order
+        )
+
+        return cursor.count
+    }
+
+    fun getRemainingBelowSkipped(itemId: Long) : Int{
+        val projection = arrayOf(
+            BaseColumns._ID)
+
+        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} IN ('-1', '-2') AND ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${BaseColumns._ID} < $itemId"
+
+        val cursor = dbReadable.query(
+            Videos.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null              // The sort order
+        )
+
+        return cursor.count
     }
 }

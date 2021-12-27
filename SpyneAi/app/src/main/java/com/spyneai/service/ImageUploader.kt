@@ -134,6 +134,7 @@ class ImageUploader(
 
                 val imageProperties = HashMap<String, Any?>()
                     .apply {
+                        put("sku_id", image.skuId)
                         put("iteration_id", lastIdentifier)
                         put("retry_count", retryCount)
                         put("upload_type", imageType)
@@ -413,6 +414,7 @@ class ImageUploader(
 
         val imageProperties = HashMap<String, Any?>()
             .apply {
+                put("sku_id", image.skuId)
                 put("iteration_id", lastIdentifier)
                 put("upload_type", imageType)
                 put("retry_count", retryCount)
@@ -556,6 +558,7 @@ class ImageUploader(
     ) {
         val properties = HashMap<String, Any?>()
             .apply {
+                put("sku_id", image.skuId)
                 put("iteration_id", lastIdentifier)
                 put("db_update_status", dbUpdateStatus)
                 put("data", Gson().toJson(image))

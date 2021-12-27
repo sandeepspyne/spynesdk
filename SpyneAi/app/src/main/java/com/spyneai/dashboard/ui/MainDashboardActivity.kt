@@ -37,6 +37,7 @@ import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
+import com.spyneai.threesixty.ui.fragments.ThreeSixtyBackgroundFragment
 import java.util.*
 
 
@@ -93,16 +94,16 @@ class MainDashboardActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
 
-                R.id.shootActivity -> {
-                    if (isMagnatoMeterAvailable()) {
-                        continueShoot()
-                    } else {
-                        NoMagnaotoMeterDialog().show(
-                            supportFragmentManager,
-                            "NoMagnaotoMeterDialog"
-                        )
-                    }
-                }
+//                R.id.shootActivity -> {
+//                    if (isMagnatoMeterAvailable()) {
+//                        continueShoot()
+//                    } else {
+//                        NoMagnaotoMeterDialog().show(
+//                            supportFragmentManager,
+//                            "NoMagnaotoMeterDialog"
+//                        )
+//                    }
+//                }
 
                 R.id.completedOrdersFragment -> {
                     if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
@@ -114,7 +115,7 @@ class MainDashboardActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
-                //R.id.wallet -> setCurrentFragment(SecondFragment)
+                R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
@@ -314,11 +315,15 @@ class MainDashboardActivity : AppCompatActivity() {
             || shootLocalRepository.getOldestVideo("-1").itemId != null
         ) {
 
+            if (!isMyServiceRunning(VideoUploadService::class.java))
+                Utilities.saveBool(this, AppConstants.VIDEO_UPLOADING_RUNNING, false)
+
             var action = Actions.START
             if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
                 return
 
             val serviceIntent = Intent(this, VideoUploadService::class.java)
+            serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, MainDashboardActivity::class.java.simpleName)
             serviceIntent.action = action.name
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

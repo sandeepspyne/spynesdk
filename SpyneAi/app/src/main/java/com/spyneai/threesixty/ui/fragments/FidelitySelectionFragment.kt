@@ -28,10 +28,6 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
         setUpFramesSelection()
     }
 
-
-
-
-
     private fun setUpFramesSelection() {
         var frame = getString(R.string.frames)
         

@@ -7,13 +7,18 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.*
+import android.util.Log
 import com.spyneai.R
+import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isInternetActive
+import com.spyneai.needs.AppConstants
+import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ServiceState
 import com.spyneai.service.log
 import com.spyneai.service.setServiceState
+import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.utils.logUpload
 import com.spyneai.threesixty.data.model.VideoDetails
 
@@ -29,6 +34,7 @@ class VideoUploadService : Service(), VideoUploader.Listener {
     private var notificationId = 0
     val notificationChannelId = "PROCESSING SERVICE CHANNEL"
     var currentVideo : VideoDetails? = null
+    var serviceStartedBy : String? = null
 
     override fun onDestroy() {
         super.onDestroy()
@@ -71,8 +77,18 @@ class VideoUploadService : Service(), VideoUploader.Listener {
 
         when (action) {
             Actions.START.name -> {
-                if (!uploadRunning)
+                this.serviceStartedBy = intent.getStringExtra(AppConstants.SERVICE_STARTED_BY)
+                if (!uploadRunning){
+                    val properties = java.util.HashMap<String, Any?>()
+                        .apply {
+                            put("service_state", "Started")
+                            put("medium", "Image Uploading Service")
+                        }
+
+                    captureEvent(Events.VIDEO_SERVICE_STARTED, properties)
+
                     resumeUpload("onStartCommand")
+                }
             }
             Actions.STOP.name -> stopService()
             else -> error("No action in the received intent")
@@ -170,7 +186,7 @@ class VideoUploadService : Service(), VideoUploader.Listener {
         uploadRunning = true
     }
 
-    override fun onUploaded(task: VideoDetails) {
+    override fun onUploaded() {
         uploadRunning = false
 
         var title = "Video Uploaded"
@@ -224,18 +240,29 @@ class VideoUploadService : Service(), VideoUploader.Listener {
 
             val isConnected = context?.isInternetActive()
 
-            logUpload("Connection changed "+isConnected)
-
             if (isConnected == true){
+                //push event of internet connected
+                captureEvent(
+                    Events.INTERNET_CONNECTED,
+                    HashMap<String,Any?>().apply {
+                        put("medium","Service")
+                    })
                 //if any image pending in upload
-                val image = VideoLocalRepository().getOldestVideo("0")
-
-                if (image.itemId != null && !uploadRunning){
-                    uploadRunning = true
-                    logUpload(image.itemId.toString()+" "+uploadRunning)
+                val shootLocalRepository = VideoLocalRepository()
+                if ((shootLocalRepository.getOldestVideo("0").itemId != null
+                            || shootLocalRepository.getOldestVideo("-1").itemId != null)
+                    && !uploadRunning){
                     // we have pending images, resume upload
                     resumeUpload("onReceive")
                 }
+            }else {
+                //push event of internet not connected
+                captureEvent(Events.INTERNET_DISCONNECTED,
+                    HashMap<String,Any?>().apply {
+                        put("medium","Service")
+                    })
+
+                imageUploader?.connectionLost = true
             }
         }
     }
@@ -252,7 +279,10 @@ class VideoUploadService : Service(), VideoUploader.Listener {
                 this
             )
 
-        imageUploader!!.start()
+        imageUploader!!.uploadParent(
+            type,
+            startedBy = serviceStartedBy
+        )
     }
 
 }

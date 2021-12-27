@@ -38,12 +38,15 @@ import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.camera2.ShootDimensions
+import com.spyneai.captureEvent
 import com.spyneai.databinding.FragmentRecordVideoBinding
 import com.spyneai.getVideoDuration
 import com.spyneai.needs.AppConstants
+import com.spyneai.posthog.Events
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.ui.dialogs.VideoDurationDialog
 import com.spyneai.toggleButton
+import org.json.JSONObject
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
@@ -470,9 +473,29 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                         message: String,
                         cause: Throwable?
                     ) {
+                        val msg = "Video capture failed: $message"
                         // This function is called if there is an error during recording process
                         //animateRecord.cancel()
-                        val msg = "Video capture failed: $message"
+                        val throwableDeatils = JSONObject().apply {
+                            put("type",cause?.javaClass?.canonicalName)
+                            put("cause",cause?.cause)
+                            put("message",cause?.localizedMessage)
+                        }.toString()
+
+                        requireContext().captureEvent(
+                            Events.VIDEO_CAPTURE_FAILED,
+                            HashMap<String,Any?>()
+                                .apply {
+                                    put("data",JSONObject().apply {
+                                        put("sku_id",viewModel.videoDetails.skuId)
+                                        put("sku_name",viewModel.videoDetails.skuName)
+                                        put("frames",viewModel.videoDetails.frames)
+                                        put("error",message)
+                                        put("throwable",throwableDeatils)
+                                        put("subcategory",viewModel.videoDetails.subCategory)
+                                    })
+                                }
+                        )
                         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                         Log.e(TAG, msg)
                         cause?.printStackTrace()
@@ -556,8 +579,19 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
     private fun startNextActivity(videoPath: String) {
         val duration = requireContext().getVideoDuration(File(videoPath).toUri())
 
-        Log.d(TAG, "startNextActivity: "+duration)
-        Log.d(TAG, "startNextActivity: "+videoPath)
+        requireContext().captureEvent(
+            Events.VIDEO_CAPTURED,
+            HashMap<String,Any?>()
+                .apply {
+                    put("data",JSONObject().apply {
+                        put("sku_id",viewModel.videoDetails.skuId)
+                        put("sku_name",viewModel.videoDetails.skuName)
+                        put("frames",viewModel.videoDetails.frames)
+                        put("duration",duration)
+                        put("subcategory",viewModel.videoDetails.subCategory)
+                    })
+                }
+        )
 
         if (duration >= AppConstants.MINIMUM_VIDEO_DURATION){
             stopTimer = true

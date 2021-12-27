@@ -93,7 +93,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
                     resumeUpload("onStartCommand")
                 }
-
             }
             Actions.STOP.name -> stopService()
             else -> error("No action in the received intent")

@@ -2,6 +2,7 @@ package com.spyneai.threesixty.data
 
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
+import com.spyneai.base.network.GCPApiClient
 import com.spyneai.base.network.SpyneAiApiClient
 import com.spyneai.threesixty.data.model.PreSignedVideoBody
 import com.spyneai.threesixty.data.model.VideoDetails
@@ -107,5 +108,12 @@ class ThreeSixtyRepository : BaseRepository() {
          downloadHd: Boolean
     )= safeApiCall {
         clipperApi.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
+    }
+
+    suspend fun uploadVideoToGcp(
+        fileUrl : String,
+        file : RequestBody
+    ) = safeApiCall {
+        GCPApiClient().getClient().uploadFileToGcp(fileUrl,file)
     }
 }

@@ -31,9 +31,11 @@ import com.spyneai.captureEvent
 import com.spyneai.databinding.FragmentTrimVideoBinding
 import com.spyneai.getVideoDuration
 import com.spyneai.needs.AppConstants
+import com.spyneai.posthog.Events
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.videorecording.TrimmerUtils
 import com.spyneai.videorecording.listener.SeekListener
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.nio.ByteBuffer
@@ -100,6 +102,19 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
             setDataInView()
 
             binding.btnReshoot.setOnClickListener {
+                requireContext().captureEvent(
+                    Events.VIDEO_NOT_TRIMMED,
+                    HashMap<String,Any?>()
+                        .apply {
+                            put("data", JSONObject().apply {
+                                put("sku_id",viewModel.videoDetails.skuId)
+                                put("sku_name",viewModel.videoDetails.skuName)
+                                put("frames",viewModel.videoDetails.frames)
+                                put("path",viewModel.videoDetails.videoPath)
+                                put("subcategory",viewModel.videoDetails.subCategory)
+                            })
+                        }
+                )
                 requireActivity().finish()
             }
 
@@ -266,11 +281,27 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
                 startNextActivity(viewModel.videoDetails.videoPath!!)
             }
 
-        } else Toast.makeText(
-            requireContext(),
-            "Video should not be smaller than" + " " + TrimmerUtils.getLimitedTimeFormatted(maxToGap),
-            Toast.LENGTH_SHORT
-        ).show()
+        } else {
+            requireContext().captureEvent(
+                Events.VIDEO_INVALID_TRIMMED,
+                HashMap<String,Any?>()
+                    .apply {
+                        put("data", JSONObject().apply {
+                            put("sku_id",viewModel.videoDetails.skuId)
+                            put("sku_name",viewModel.videoDetails.skuName)
+                            put("frames",viewModel.videoDetails.frames)
+                            put("path",viewModel.videoDetails.videoPath)
+                            put("subcategory",viewModel.videoDetails.subCategory)
+                        })
+                    }
+            )
+
+            Toast.makeText(
+                requireContext(),
+                "Video should not be smaller than" + " " + TrimmerUtils.getLimitedTimeFormatted(maxToGap),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun getFileName(): String? {
@@ -296,6 +327,20 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
 
         //update video path
         viewModel.updateVideoPath()
+
+        requireContext().captureEvent(
+            Events.VIDEO_TRIMMED,
+            HashMap<String,Any?>()
+                .apply {
+                    put("data", JSONObject().apply {
+                        put("sku_id",viewModel.videoDetails.skuId)
+                        put("sku_name",viewModel.videoDetails.skuName)
+                        put("frames",viewModel.videoDetails.frames)
+                        put("path",viewModel.videoDetails.videoPath )
+                        put("subcategory",viewModel.videoDetails.subCategory)
+                    })
+                }
+        )
 
         Navigation.findNavController(binding.btnConfirm)
             .navigate(R.id.action_trimVideoFragment_to_threeSixtyBackgroundFragment)

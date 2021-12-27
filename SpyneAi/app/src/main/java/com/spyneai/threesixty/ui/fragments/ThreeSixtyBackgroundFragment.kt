@@ -20,6 +20,7 @@ import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.enable
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.Fragment360BackgroundBinding
+import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -57,7 +58,8 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                }
                binding.flShootNow.setOnClickListener{
 
-                   startService()
+                   if (!requireContext().isMyServiceRunning(VideoUploadService::class.java))
+                        startService()
 
                    val intent = Intent(requireContext(), ShootActivity::class.java)
 
@@ -184,6 +186,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
             return
 
         val serviceIntent = Intent(requireContext(), VideoUploadService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,ThreeSixtyBackgroundFragment::class.java.simpleName)
         serviceIntent.action = action.name
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
