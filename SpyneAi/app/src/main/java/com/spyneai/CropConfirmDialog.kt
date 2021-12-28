@@ -20,6 +20,13 @@ import com.spyneai.service.getServiceState
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.log
 import kotlinx.coroutines.launch
+import android.widget.Toast
+
+import com.spyneai.extras.MainActivity
+
+import com.thanosfisherman.wifiutils.WifiUtils
+import com.thanosfisherman.wifiutils.wifiState.WifiStateListener
+
 
 class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirmDialogBinding>() {
 
@@ -93,14 +100,10 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
             viewModel.isCameraButtonClickable = true
 
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.insertImage(viewModel.shootData.value!!)
-            }
 
-            startService()
-            dismiss()
         }
     }
+
 
 
     private fun startService() {

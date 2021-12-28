@@ -31,12 +31,33 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.theta360.sample.v2.ImageListActivity
 import kotlinx.coroutines.launch
+import android.app.Activity.RESULT_OK
+import android.net.wifi.ScanResult
+import android.util.Log
+import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
+import androidx.core.content.ContextCompat.getSystemService
+import com.spyneai.R
+import com.thanosfisherman.wifiutils.WifiUtils
+
+
+import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode
+
+import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener
+
+
+
+
+
+
+
 
 class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog360InteriorBinding>(),
     PickiTCallbacks {
+    private val SECOND_ACTIVITY_REQUEST_CODE = 0
 
     var pickIt: PickiT? = null
     var filePath = ""
+    var sequenceNumber: Int? = null
 
     val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -94,21 +115,48 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
 
         binding.tvShoot.setOnClickListener {
             if (binding.tvShoot.text.toString() == "Shoot 360") {
-            val wm = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-            val ip: String = Formatter.formatIpAddress(wm.connectionInfo.ipAddress)
-            val gatewayInfo: String = Formatter.formatIpAddress(wm.dhcpInfo.gateway)
+//                WifiUtils.withContext(requireContext()).enableWifi()
+//                WifiUtils.withContext(requireContext()).scanWifi(this::getScanResults).start()
+//                WifiUtils.withContext(requireContext())
+//                    .connectWith("THETAYP00110544.OSC")
+//                    .setTimeout(40000)
+//                    .onConnectionResult(object : ConnectionSuccessListener {
+//                        override fun success() {
+//                            Toast.makeText(requireContext(), "SUCCESSFULLY CONNECTED TO RICOH THETA CAMERA", Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                        override fun failed(errorCode: ConnectionErrorCode) {
+//                            Toast.makeText(
+//                                requireContext(),
+//                                "EPIC FAIL!$errorCode",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        }
+//                    })
+//                    .start()
+
+                val wm = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+                val ip: String = Formatter.formatIpAddress(wm.connectionInfo.ipAddress)
+                val gatewayInfo: String = Formatter.formatIpAddress(wm.dhcpInfo.gateway)
 
             if(ip=="192.168.1.5" && gatewayInfo=="192.168.1.1") {
+                val color:Int= ContextCompat.getColor(requireContext(), R.color.primary)
+                val hexColor = java.lang.String.format("#%06X", 0xFFFFFF and color)
                 Toast.makeText(requireContext(), "Connected With Camera", Toast.LENGTH_SHORT).show()
                 var intent = Intent(requireContext(), ImageListActivity::class.java)
-                startActivity(intent)
-            }else{
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "image/*"
-                startForResult.launch(intent)
+                intent.putExtra("file_name",viewModel.sku.value?.skuName!!+ "_"+
+                    viewModel.sku.value?.skuId!!+"_360int_1.JPG")
+                intent.putExtra("primary_color",hexColor)
+                startActivityForResult(intent,SECOND_ACTIVITY_REQUEST_CODE)
             }
+//            else{
+//                val intent = Intent(Intent.ACTION_GET_CONTENT)
+//                intent.type = "image/*"
+//                startForResult.launch(intent)
+//            }
             }
         }
+
 
         binding.tvUpload.setOnClickListener {
             if (binding.tvUpload.text == "Select") {
@@ -121,7 +169,7 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
 
                 //add image for upload
 
-                val sequenceNumber = if (viewModel.fromDrafts){
+                 sequenceNumber = if (viewModel.fromDrafts){
                     if (viewModel.shootList.value != null){
                         requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
                             .plus(requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
@@ -161,6 +209,16 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
         }
     }
 
+
+//    private fun getScanResults(results: List<ScanResult>) {
+//        if (results.isEmpty()) {
+////            Log.i(TAG, "SCAN RESULTS IT'S EMPTY")
+//            return
+//        }
+////        Log.i(TAG, "GOT SCAN RESULTS $results")
+//    }
+
+
     private fun startService() {
         var action = Actions.START
         if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
@@ -197,6 +255,53 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
 
     override fun PickiTonProgressUpdate(progress: Int) {
 
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // Check that it is the SecondActivity with an OK result
+        if (requestCode == SECOND_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                WifiUtils.withContext(requireContext()).disableWifi();
+                // Get String data from Intent
+                val is360Clicked: String? = data?.getStringExtra("button_confirm")
+                Toast.makeText(requireContext(),is360Clicked,Toast.LENGTH_LONG).show()
+                sequenceNumber = if (viewModel.fromDrafts){
+                    if (viewModel.shootList.value != null){
+                        requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                            .plus(requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
+                            .plus(requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0))
+                            .plus(viewModel.shootList.value!!.size.plus(1))
+
+                    }else{
+                        requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                            .plus(requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
+                            .plus(requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0))
+                            .plus(1)
+                    }
+
+                }else {
+                    viewModel.shootList.value?.size?.plus(1)
+                }
+                viewModel.threeSixtyInteriorSelected = true
+                viewModel.shootList.value?.size?.plus(1)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.insertImage(ShootData(
+                        "/storage/emulated/0/DCIM/Spyne/"+viewModel.sku.value?.skuName!!+ "_"+
+                                viewModel.sku.value?.skuId!!+"_360int_1.JPG",
+                        viewModel.sku.value?.projectId!!,
+                        viewModel.sku.value?.skuId!!,
+                        "360int",
+                        Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+                        0,
+                        sequenceNumber!!
+                    ))
+                }
+                startService()
+                dismiss()
+                viewModel.selectBackground.value = true
+            }
+        }
     }
 
     override fun PickiTonCompleteListener(
