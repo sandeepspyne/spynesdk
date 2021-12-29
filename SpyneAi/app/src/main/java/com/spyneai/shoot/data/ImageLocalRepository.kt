@@ -12,11 +12,9 @@ import com.spyneai.db.Projects
 import com.spyneai.db.ShootContract
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.Image
-import com.spyneai.shoot.utils.logUpload
 
 
 class ImageLocalRepository {
-
 
     val TAG = "ImageLocalRepository"
     private val dbWritable = DBHelper(BaseApplication.getContext()).writableDatabase
@@ -82,11 +80,11 @@ class ImageLocalRepository {
         com.spyneai.shoot.utils.log("insertImage: "+newRowId)
     }
 
-    suspend fun insertImage(image: com.spyneai.shoot.data.room.Image) : Long{
+    suspend fun insertImage(image: com.spyneai.shoot.repository.model.image.Image) : Long{
         return Room.databaseBuilder(
             BaseApplication.getContext(),
             AppDatabase::class.java, "spyne-db"
-        ).build().imageDao().insert(image)
+        ).build().shootDao().insertImage(image)
     }
 
     fun updateImage(image: Image){

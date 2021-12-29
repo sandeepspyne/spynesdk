@@ -13,7 +13,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.data.room.Sku
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

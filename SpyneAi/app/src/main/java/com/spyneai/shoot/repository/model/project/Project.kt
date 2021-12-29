@@ -1,4 +1,4 @@
-package com.spyneai.shoot.data.room
+package com.spyneai.shoot.repository.model.project
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

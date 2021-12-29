@@ -65,11 +65,11 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
     private fun createProject() {
 
-        val project = com.spyneai.shoot.data.room.Project(
+        val project = com.spyneai.shoot.repository.model.project.Project(
             uuid = getUuid(),
             categoryId = viewModel.categoryDetails.value?.categoryId!!,
             categoryName = viewModel.categoryDetails.value?.categoryName!!,
-            projectName =  removeWhiteSpace(binding.etVinNumber.text.toString())
+            projectName = removeWhiteSpace(binding.etVinNumber.text.toString())
         )
 
         GlobalScope.launch(Dispatchers.IO) {

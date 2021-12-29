@@ -102,7 +102,6 @@ class ImageUploader(
                 image = localRepository.getOldestImage("-1")
                 skipFlag = -2
             }
-            
 
             if (image.itemId == null && imageType == AppConstants.SKIPPED) {
                 //make second time skipped images elligible for upload

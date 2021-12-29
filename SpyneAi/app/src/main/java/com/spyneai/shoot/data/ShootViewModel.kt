@@ -307,20 +307,22 @@ class ShootViewModel : ViewModel() {
         if (imageRepository.isImageExist(image.skuId!!, image.name!!)) {
             imageRepository.updateImage(image)
         } else {
-            imageRepository.insertImage(com.spyneai.shoot.data.room.Image(
-                uuid = getUuid(),
-                projectUuid = getUuid(),
-                skuName = "name",
-                name = image.name!!,
-                type = image.categoryName!!,
-                sequence = image.sequence!!,
-                angle = image.angle!!,
-                overlayId = image.overlayId!!,
-                isReclick = isReclick,
-                isReshoot = isReshoot,
-                path = image.imagePath!!,
-                skuUuid = getUuid()
-            ))
+            imageRepository.insertImage(
+                com.spyneai.shoot.repository.model.image.Image(
+                    uuid = getUuid(),
+                    projectUuid = getUuid(),
+                    skuName = "name",
+                    name = image.name!!,
+                    type = image.categoryName!!,
+                    sequence = image.sequence!!,
+                    angle = image.angle!!,
+                    overlayId = image.overlayId!!,
+                    isReclick = isReclick,
+                    isReshoot = isReshoot,
+                    path = image.imagePath!!,
+                    skuUuid = getUuid()
+                )
+            )
         }
     }
 
@@ -391,7 +393,7 @@ class ShootViewModel : ViewModel() {
         localRepository.insertSku(sku)
     }
 
-    suspend fun insertSku(sku: com.spyneai.shoot.data.room.Sku) {
+    suspend fun insertSku(sku: com.spyneai.shoot.repository.model.sku.Sku) {
         localRepository.insertSku(sku)
     }
 
@@ -403,7 +405,7 @@ class ShootViewModel : ViewModel() {
         localRepository.insertProject(project)
     }
 
-    suspend fun insertProject(project: com.spyneai.shoot.data.room.Project) : Long {
+    suspend fun insertProject(project: com.spyneai.shoot.repository.model.project.Project) : Long {
         return localRepository.insertProject(project)
     }
 

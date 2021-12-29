@@ -22,18 +22,18 @@ class ShootLocalRepository {
 
 
 
-    fun insertProject(project: com.spyneai.shoot.data.room.Project) : Long{
+    fun insertProject(project: com.spyneai.shoot.repository.model.project.Project) : Long{
         return Room.databaseBuilder(
             BaseApplication.getContext(),
             AppDatabase::class.java, "spyne-db"
-        ).build().projectDao().insert(project)
+        ).build().shootDao().insertProject(project)
     }
 
-    suspend fun insertSku(sku: com.spyneai.shoot.data.room.Sku) : Long{
+    suspend fun insertSku(sku: com.spyneai.shoot.repository.model.sku.Sku) : Long{
         return Room.databaseBuilder(
             BaseApplication.getContext(),
             AppDatabase::class.java, "spyne-db"
-        ).build().skuDao().insert(sku)
+        ).build().shootDao().insertSku(sku)
     }
 
 
