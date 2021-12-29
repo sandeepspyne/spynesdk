@@ -31,6 +31,7 @@ import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ItemProjectChipedittextBinding
 import com.spyneai.databinding.ItemProjectEdittextBinding
 import com.spyneai.databinding.ProjectTagDialogBinding
+import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -128,7 +129,6 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
         if (!viewModel.fromDrafts) {
             observeCreateProject()
-            observeCreateSku()
         }
     }
 
@@ -336,157 +336,111 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
     private fun createProject() {
         Utilities.showProgressDialog(requireContext())
 
-        viewModel.createProject(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            removeWhiteSpace(binding.etProjectName.text.toString()),
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-            data, viewModel.location_data.value
+        val project = com.spyneai.shoot.repository.model.project.Project(
+            uuid = getUuid(),
+            categoryId = viewModel.categoryDetails.value?.categoryId!!,
+            categoryName = viewModel.categoryDetails.value?.categoryName!!,
+            projectName = removeWhiteSpace(binding.etProjectName.text.toString()),
+            dynamicLayout = data.toString(),
+            locationData = viewModel.location_data.value.toString()
         )
+
+        viewModel.project = project
+
+        Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
+        //notify project created
+        viewModel.isProjectCreated.value = true
+
+
+        val sku = Sku(
+            uuid = getUuid(),
+            projectUuid = project.uuid,
+            categoryId = project.categoryId,
+            categoryName = project.categoryName,
+            skuName = removeWhiteSpace(binding.etSkuName.text.toString()),
+            subcategoryName = viewModel.subCategory.value?.sub_cat_name,
+            subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id,
+            initialFrames = viewModel.exterirorAngles.value
+        )
+
+        viewModel.sku = sku
+
+        viewModel.isSubCategoryConfirmed.value = true
+        viewModel.isSkuCreated.value = true
+        when(viewModel.categoryDetails.value?.categoryId){
+            AppConstants.ECOM_CATEGORY_ID,
+            AppConstants.FOOD_AND_BEV_CATEGORY_ID,
+            AppConstants.PHOTO_BOX_CATEGORY_ID-> {
+//                            viewModel.showLeveler.value = true
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+            }
+        }
+        viewModel.getSubCategories.value = true
+
+        //add sku to local database
+        GlobalScope.launch {
+            viewModel.insertSku(sku!!)
+        }
+
+        dismiss()
     }
 
     private fun observeCreateProject() {
-        viewModel.createProjectRes.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    requireContext().captureEvent(
-                        Events.CREATE_PROJECT,
-                        HashMap<String, Any?>()
-                            .apply {
-                                this.put(
-                                    "project_name",
-                                    removeWhiteSpace(binding.etProjectName.text.toString())
-                                )
-                            }
-                    )
-
-                    //save project to local db
-                    val project = Project()
-                    project.projectName = removeWhiteSpace(binding.etProjectName.text.toString())
-                    project.createdOn = System.currentTimeMillis()
-                    project.categoryId = viewModel.categoryDetails.value?.categoryId
-                    project.categoryName = viewModel.categoryDetails.value?.categoryName
-                    project.projectId = it.value.project_id
-                    viewModel.insertProject(project)
-
-                    Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
-
-                    val sku = Sku(
-                        uuid = it.value.project_id,
-                        skuName = removeWhiteSpace(binding.etSkuName.text.toString())
-                    )
-
-                    viewModel.sku = sku
-
-                    //notify project created
-                    viewModel.isProjectCreated.value = true
-
-                    createSku(
-                        it.value.project_id,
-                        removeWhiteSpace(binding.etSkuName.text.toString()),
-                        false
-                    )
-                }
-
-                is Resource.Failure -> {
-                    log("create project id failed")
-                    requireContext().captureFailureEvent(
-                        Events.CREATE_PROJECT_FAILED, HashMap<String, Any?>(),
-                        it.errorMessage!!
-                    )
-
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { createProject() }
-                }
-            }
-        })
-    }
-
-    private fun createSku(projectId: String, skuName: String, showDialog: Boolean) {
-        if (showDialog)
-            Utilities.showProgressDialog(requireContext())
-
-        viewModel.createSku(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            projectId,
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-            "",
-            skuName,
-            0
-        )
-    }
-
-    private fun observeCreateSku() {
-        viewModel.createSkuRes.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-                    requireContext().captureEvent(
-                        Events.CREATE_SKU,
-                        HashMap<String, Any?>()
-                            .apply {
-                                this.put("sku_name", viewModel.sku?.skuName.toString())
-                                this.put("project_id", viewModel.sku?.projectId)
-                                this.put("prod_sub_cat_id", "")
-                            }
-
-                    )
-
-                    //notify project created
-                    val sku = viewModel.sku
-                    sku?.skuId = it.value.sku_id
-                    sku?.projectId = viewModel.sku?.projectId
-//                    sku?.createdOn = System.currentTimeMillis()
-//                    sku?.totalImages = viewModel.exterirorAngles.value
-                    sku?.categoryName = viewModel.categoryDetails.value?.categoryName
-                    sku?.categoryId = viewModel.categoryDetails.value?.categoryId
-                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
-                    sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
-                  //  sku?.exteriorAngles = viewModel.exterirorAngles.value
-
-
-                    sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
-                    viewModel.sku = sku
-
-                    viewModel.isSubCategoryConfirmed.value = true
-                    viewModel.isSkuCreated.value = true
-                    when(viewModel.categoryDetails.value?.categoryId){
-                        AppConstants.ECOM_CATEGORY_ID,
-                        AppConstants.FOOD_AND_BEV_CATEGORY_ID,
-                        AppConstants.PHOTO_BOX_CATEGORY_ID-> {
-//                            viewModel.showLeveler.value = true
-                            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-                            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-                        }
-                    }
-                    viewModel.getSubCategories.value = true
-
-                    //add sku to local database
-                    GlobalScope.launch {
-                        viewModel.insertSku(sku!!)
-                    }
-
-                    dismiss()
-                }
-
-
-                is Resource.Failure -> {
-                    log("create sku id failed")
-                    Utilities.hideProgressDialog()
-                    requireContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, HashMap<String, Any?>(),
-                        it.errorMessage!!
-                    )
-
-                    handleApiError(it) {
-                        createSku(
-                            viewModel.sku?.projectId!!,
-                            removeWhiteSpace(binding.etSkuName.text.toString()),
-                            true
-                        )
-                    }
-                }
-            }
-        })
+//        viewModel.createProjectRes.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Resource.Success -> {
+//                    requireContext().captureEvent(
+//                        Events.CREATE_PROJECT,
+//                        HashMap<String, Any?>()
+//                            .apply {
+//                                this.put(
+//                                    "project_name",
+//                                    removeWhiteSpace(binding.etProjectName.text.toString())
+//                                )
+//                            }
+//                    )
+//
+//                    //save project to local db
+//                    val project = Project()
+//                    project.projectName = removeWhiteSpace(binding.etProjectName.text.toString())
+//                    project.createdOn = System.currentTimeMillis()
+//                    project.categoryId = viewModel.categoryDetails.value?.categoryId
+//                    project.categoryName = viewModel.categoryDetails.value?.categoryName
+//                    project.projectId = it.value.project_id
+//                    viewModel.insertProject(project)
+//
+//                    Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
+//
+//                    val sku = Sku(
+//                        uuid = it.value.project_id,
+//                        skuName = removeWhiteSpace(binding.etSkuName.text.toString())
+//                    )
+//
+//                    viewModel.sku = sku
+//
+//                    //notify project created
+//
+//
+//                    createSku(
+//                        it.value.project_id,
+//                        removeWhiteSpace(binding.etSkuName.text.toString()),
+//                        false
+//                    )
+//                }
+//
+//                is Resource.Failure -> {
+//                    log("create project id failed")
+//                    requireContext().captureFailureEvent(
+//                        Events.CREATE_PROJECT_FAILED, HashMap<String, Any?>(),
+//                        it.errorMessage!!
+//                    )
+//
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it) { createProject() }
+//                }
+//            }
+//        })
     }
 
 

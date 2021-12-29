@@ -73,14 +73,12 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         )
 
         viewModel.project = project
+
         GlobalScope.launch(Dispatchers.IO) {
             val itemId = viewModel.insertProject(
                 project
             )
-
-            Log.d(TAG, "createProject: "+itemId)
         }
-
         //update shoot session
         Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
 
@@ -96,7 +94,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         }
 
         viewModel.projectId.value = project.uuid
-
         //notify project created
         viewModel.isProjectCreated.value = true
         viewModel.getSubCategories.value = true
@@ -112,57 +109,57 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
 
     private fun observeProjectResponse() {
-        viewModel.createProjectRes.observe(viewLifecycleOwner,{
-            when(it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-
-                    requireContext().captureEvent(
-                        Events.CREATE_PROJECT,
-                        HashMap<String,Any?>()
-                            .apply {
-                                this.put("project_name",  removeWhiteSpace(binding.etVinNumber.text.toString()))
-                            }
-                    )
-
-                    //save project to local db
-                    val project = Project()
-                    project.projectName = removeWhiteSpace(binding.etVinNumber.text.toString())
-                    project.createdOn = System.currentTimeMillis()
-                    project.categoryId = viewModel.categoryDetails.value?.categoryId
-                    project.categoryName = viewModel.categoryDetails.value?.categoryName
-                    project.projectId = it.value.project_id
-                    viewModel.insertProject(project)
-
-                    //update shoot session
-                    Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
-
-                    if (viewModel.sku == null){
-                        val sku = Sku(
-                            uuid = it.value.project_id,
-                            skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
-                        )
-
-                        viewModel.sku = sku
-                    }
-
-                    viewModel.projectId.value = it.value.project_id
-
-                    //notify project created
-                    viewModel.isProjectCreated.value = true
-                    viewModel.getSubCategories.value = true
-                    dismiss()
-                }
-
-                is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
-                        it.errorMessage!!
-                    )
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { createProject()}
-                }
-            }
-        })
+//        viewModel.createProjectRes.observe(viewLifecycleOwner,{
+//            when(it) {
+//                is Resource.Success -> {
+//                    Utilities.hideProgressDialog()
+//
+//                    requireContext().captureEvent(
+//                        Events.CREATE_PROJECT,
+//                        HashMap<String,Any?>()
+//                            .apply {
+//                                this.put("project_name",  removeWhiteSpace(binding.etVinNumber.text.toString()))
+//                            }
+//                    )
+//
+//                    //save project to local db
+//                    val project = Project()
+//                    project.projectName = removeWhiteSpace(binding.etVinNumber.text.toString())
+//                    project.createdOn = System.currentTimeMillis()
+//                    project.categoryId = viewModel.categoryDetails.value?.categoryId
+//                    project.categoryName = viewModel.categoryDetails.value?.categoryName
+//                    project.projectId = it.value.project_id
+//                    viewModel.insertProject(project)
+//
+//                    //update shoot session
+//                    Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
+//
+//                    if (viewModel.sku == null){
+//                        val sku = Sku(
+//                            uuid = it.value.project_id,
+//                            skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
+//                        )
+//
+//                        viewModel.sku = sku
+//                    }
+//
+//                    viewModel.projectId.value = it.value.project_id
+//
+//                    //notify project created
+//                    viewModel.isProjectCreated.value = true
+//                    viewModel.getSubCategories.value = true
+//                    dismiss()
+//                }
+//
+//                is Resource.Failure -> {
+//                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
+//                        it.errorMessage!!
+//                    )
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it) { createProject()}
+//                }
+//            }
+//        })
     }
 
 

@@ -23,11 +23,13 @@ import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
+import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
+import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.*
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
@@ -226,12 +228,9 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel._createProjectRes.value = Resource.Success(
-            CreateProjectRes(
-                "",
-                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                200
-            )
+        shootViewModel.project = Project(
+            getUuid(),
+            projectId =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
         )
 
         //set sku data
@@ -251,12 +250,9 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel._createProjectRes.value = Resource.Success(
-            CreateProjectRes(
-                "",
-                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                200
-            )
+        shootViewModel.project = Project(
+            getUuid(),
+            projectId =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
         )
 
         //set sku data

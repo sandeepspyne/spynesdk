@@ -9,9 +9,9 @@ import androidx.room.PrimaryKey
 data class Project(
     @PrimaryKey(autoGenerate = false)
     val uuid: String,
-    @ColumnInfo(name = "category_id") val categoryId: String,
-    @ColumnInfo(name = "category_name") val categoryName: String,
-    @ColumnInfo(name = "project_name") val projectName: String,
+    @ColumnInfo(name = "category_id") val categoryId: String? = null,
+    @ColumnInfo(name = "category_name") val categoryName: String? = null,
+    @ColumnInfo(name = "project_name") val projectName: String? = null,
     @ColumnInfo(name = "project_id") val projectId: String? = null,
     @ColumnInfo(name = "dynamic_layout") val dynamicLayout: String? = null,
     @ColumnInfo(name = "location_data") val locationData: String? = null,

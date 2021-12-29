@@ -99,14 +99,6 @@ class ShootViewModel : ViewModel() {
     val overlaysResponse: LiveData<Resource<OverlaysResponse>>
         get() = _overlaysResponse
 
-    var _createProjectRes: MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
-    val createProjectRes: LiveData<Resource<CreateProjectRes>>
-        get() = _createProjectRes
-
-    private val _createSkuRes: MutableLiveData<Resource<CreateSkuRes>> = MutableLiveData()
-    val createSkuRes: LiveData<Resource<CreateSkuRes>>
-        get() = _createSkuRes
-
     private val _updateVideoSkuRes: MutableLiveData<Resource<UpdateVideoSkuRes>> = MutableLiveData()
     val updateVideoSkuRes: LiveData<Resource<UpdateVideoSkuRes>>
         get() = _updateVideoSkuRes
@@ -329,18 +321,6 @@ class ShootViewModel : ViewModel() {
         }
     }
 
-    fun createProject(
-        authKey: String,
-        projectName: String,
-        prodCatId: String,
-        dynamicLayout: JSONObject? = null,
-        location_data : JSONObject? = null
-    ) = viewModelScope.launch {
-        _createProjectRes.value = Resource.Loading
-        _createProjectRes.value =
-            repository.createProject(authKey, projectName, prodCatId, dynamicLayout,location_data)
-    }
-
     fun skuProcessState(
         auth_key: String, project_id: String
     ) = viewModelScope.launch {
@@ -362,25 +342,6 @@ class ShootViewModel : ViewModel() {
         _skuProcessStateWithShadowResponse.value = Resource.Loading
         _skuProcessStateWithShadowResponse.value =
             repository.skuProcessStateWithShadowOption(auth_key, project_id, background_id, shadow)
-    }
-
-
-    fun createSku(
-        authKey: String, projectId: String, prodCatId: String, prodSubCatId: String,
-        skuName: String, totalFrames: Int
-    ) = viewModelScope.launch {
-        _createSkuRes.value = Resource.Loading
-        _createSkuRes.value =
-            repository.createSku(
-                authKey,
-                projectId,
-                prodCatId,
-                prodSubCatId,
-                skuName,
-                totalFrames,
-                1,
-                0
-            )
     }
 
     fun updateVideoSku(

@@ -11,12 +11,14 @@ import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.getImageCategory
+import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
+import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
@@ -74,12 +76,9 @@ class ReshootActivity : AppCompatActivity() {
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel._createProjectRes.value = Resource.Success(
-            CreateProjectRes(
-                "",
-                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                200
-            )
+        shootViewModel.project = Project(
+            getUuid(),
+            projectId =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
         )
 
         val sku = Sku(
