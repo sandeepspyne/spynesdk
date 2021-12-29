@@ -15,7 +15,7 @@ import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
-import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
 class ReshootPortraitActivity : AppCompatActivity() {
@@ -88,11 +88,10 @@ class ReshootPortraitActivity : AppCompatActivity() {
         )
 
         val sku = Sku(
-
+            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            skuName = intent.getStringExtra(AppConstants.SKU_NAME),
+            skuId = intent.getStringExtra(AppConstants.SKU_ID)
         )
-        sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
-        sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-        sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
 
         shootViewModel.sku = sku
     }

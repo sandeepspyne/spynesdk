@@ -131,84 +131,6 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     transaction.commit()
                 }
             }
-            "E-Commerce" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, gridEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                    shootViewModel.sku = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            "Photo Box" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, gridEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                    shootViewModel.sku = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            "Food & Beverages" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, gridEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "Food"
-                    shootViewModel.sku = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            "Footwear" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlayEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "Footwear"
-                    shootViewModel.sku = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
         }
 
 
@@ -313,11 +235,12 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         )
 
         //set sku data
-        val sku = Sku()
-        sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
-        sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-        sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-        sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+        val sku = Sku(
+            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            skuName = intent.getStringExtra(AppConstants.SKU_NAME),
+            skuId = intent.getStringExtra(AppConstants.SKU_ID),
+            categoryName = shootViewModel.categoryDetails.value?.categoryName
+        )
 
         shootViewModel.sku = sku
     }
@@ -337,10 +260,12 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         )
 
         //set sku data
-        val sku = Sku()
-        sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
-        sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-        sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+        val sku = Sku(
+            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            skuName = intent.getStringExtra(AppConstants.SKU_NAME),
+            skuId = intent.getStringExtra(AppConstants.SKU_ID),
+            categoryName = shootViewModel.categoryDetails.value?.categoryName
+        )
 
         shootViewModel.sku = sku
 

@@ -72,6 +72,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
             projectName = removeWhiteSpace(binding.etVinNumber.text.toString())
         )
 
+        viewModel.project = project
         GlobalScope.launch(Dispatchers.IO) {
             val itemId = viewModel.insertProject(
                 project
@@ -84,9 +85,13 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
 
         if (viewModel.sku == null){
-            val sku =  Sku()
-            sku?.projectId = project.uuid
-            sku?.skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
+            val sku = Sku(
+                uuid = getUuid(),
+                projectUuid = project.uuid,
+                categoryId = project.categoryId,
+                categoryName = project.categoryName,
+                skuName = project.projectName
+            )
             viewModel.sku = sku
         }
 
@@ -133,9 +138,11 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
 
                     if (viewModel.sku == null){
-                        val sku =  Sku()
-                        sku?.projectId = it.value.project_id
-                        sku?.skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
+                        val sku = Sku(
+                            uuid = it.value.project_id,
+                            skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
+                        )
+
                         viewModel.sku = sku
                     }
 

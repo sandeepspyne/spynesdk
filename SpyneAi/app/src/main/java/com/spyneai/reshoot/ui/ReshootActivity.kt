@@ -82,10 +82,11 @@ class ReshootActivity : AppCompatActivity() {
             )
         )
 
-        val sku = Sku()
-        sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
-        sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-        sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+        val sku = Sku(
+            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            skuName = intent.getStringExtra(AppConstants.SKU_NAME),
+            skuId = intent.getStringExtra(AppConstants.SKU_ID)
+        )
 
         shootViewModel.sku = sku
     }

@@ -32,8 +32,10 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
 
         dialog?.setCancelable(false)
 
-        val sku = Sku()
-        sku.projectId = viewModel.projectId.value
+        val sku = Sku(
+            uuid = viewModel.projectId.value!!
+        )
+
         viewModel.sku = sku
 
         viewModel._createProjectRes.value = Resource.Success(

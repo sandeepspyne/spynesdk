@@ -203,19 +203,13 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
     }
 
     private fun createSku(projectId: String, prod_sub_cat_id: String) {
-        val sku = Sku(
-            uuid = getUuid(),
-            skuName = viewModel.sku?.skuName!!,
-            categoryName = viewModel.categoryDetails.value?.categoryName!!,
-            categoryId = viewModel.categoryDetails.value?.categoryName!!,
-            subcategoryName = viewModel.subCategory.value?.sub_cat_name,
-            subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id,
-            projectUuid = getUuid(),
-            initialFrames = viewModel.exterirorAngles.value,
+        val sku = viewModel.sku?.apply {
+            subcategoryName = viewModel.subCategory.value?.sub_cat_name
+            subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
+            initialFrames = viewModel.exterirorAngles.value
             totalFrames = viewModel.exterirorAngles.value
-        )
+        }
 
-        //viewModel.sku = sku
         viewModel.isSubCategoryConfirmed.value = true
         viewModel.isSkuCreated.value = true
         viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive

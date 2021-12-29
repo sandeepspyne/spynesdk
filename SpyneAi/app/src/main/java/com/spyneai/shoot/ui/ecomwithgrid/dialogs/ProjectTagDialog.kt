@@ -370,10 +370,11 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
                     Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
 
-                    val sku = Sku()
-                    sku.projectId = it.value.project_id
-                    viewModel.projectId.value = it.value.project_id
-                    sku.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
+                    val sku = Sku(
+                        uuid = it.value.project_id,
+                        skuName = removeWhiteSpace(binding.etSkuName.text.toString())
+                    )
+
                     viewModel.sku = sku
 
                     //notify project created

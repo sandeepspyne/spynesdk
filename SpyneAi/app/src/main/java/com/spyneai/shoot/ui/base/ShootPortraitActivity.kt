@@ -268,11 +268,12 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         )
 
         //set sku data
-        val sku = Sku()
-        sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
-        sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-        sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-        sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+        val sku = Sku(
+            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            skuName = intent.getStringExtra(AppConstants.SKU_NAME),
+            skuId = intent.getStringExtra(AppConstants.SKU_ID),
+            categoryName = shootViewModel.categoryDetails.value?.categoryName
+        )
 
         shootViewModel.sku = sku
         shootViewModel.isSkuCreated.value = true

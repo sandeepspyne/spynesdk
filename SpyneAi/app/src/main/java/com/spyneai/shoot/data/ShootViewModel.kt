@@ -120,6 +120,7 @@ class ShootViewModel : ViewModel() {
     val shootDimensions: MutableLiveData<ShootDimensions> = MutableLiveData()
    // val sku: MutableLiveData<Sku> = MutableLiveData()
     var sku: com.spyneai.shoot.repository.model.sku.Sku? = null
+    var project: com.spyneai.shoot.repository.model.project.Project? = null
 
     var subCategory: MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
     var categoryDetails: MutableLiveData<CategoryDetails> = MutableLiveData()
@@ -451,9 +452,8 @@ class ShootViewModel : ViewModel() {
                 miscSize
             )
 
-            sku?.skuName?.uppercase() + "_" + sku?.skuId + "_" + filePrefix
+            sku?.skuName?.uppercase() + "_" + sku?.uuid + "_" + filePrefix
         }
-
     }
 
     fun getSequenceNumber(exteriorSize: Int, interiorSize: Int, miscSize: Int): Int {

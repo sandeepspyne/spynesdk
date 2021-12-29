@@ -847,14 +847,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         debugData.put("roll", roll.roundToInt().unaryPlus())
         debugData.put("pitch", pitch.roundToInt().unaryPlus())
 
-
         val shootData = ShootData(
             capturedImage,
             getUuid(),
-            viewModel.sku?.skuId!!,
+            viewModel.sku?.uuid!!,
             viewModel.categoryDetails.value?.imageType!!,
-            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY)
-                .toString(),
+            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.overlayId,
             sequenceNumber,
             binding.flLevelIndicator.cameraAngle,
