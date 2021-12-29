@@ -35,6 +35,8 @@ import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -306,8 +308,9 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         viewModel.onImageConfirmed.value = viewModel.getOnImageConfirmed()
         viewModel.shootData.value?.meta = getMetaValue()
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.insertImage(viewModel.shootData.value!!)
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.
+            insertImage(viewModel.shootData.value!!)
         }
 
         if (!requireContext().isMyServiceRunning(ImageUploadingService::class.java))

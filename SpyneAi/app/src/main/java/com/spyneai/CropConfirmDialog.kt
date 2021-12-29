@@ -19,6 +19,8 @@ import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -76,8 +78,9 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
             viewModel.isCameraButtonClickable = true
 
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.insertImage(viewModel.shootData.value!!)
+            GlobalScope.launch(Dispatchers.IO) {
+                viewModel.
+                insertImage(viewModel.shootData.value!!)
             }
 
             startService()
@@ -120,8 +123,9 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
             viewModel.isCameraButtonClickable = true
 
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.insertImage(viewModel.shootData.value!!)
+            GlobalScope.launch(Dispatchers.IO) {
+                viewModel.
+                insertImage(viewModel.shootData.value!!)
             }
 
             startService()

@@ -353,10 +353,6 @@ class ShootViewModel : ViewModel() {
         _updateVideoSkuRes.value = repository.updateVideoSku(skuId, prodSubCatId, initialImageCount)
     }
 
-    fun insertSku(sku: Sku) {
-        localRepository.insertSku(sku)
-    }
-
     suspend fun insertSku(sku: com.spyneai.shoot.repository.model.sku.Sku) {
         localRepository.insertSku(sku)
     }
@@ -365,9 +361,6 @@ class ShootViewModel : ViewModel() {
         localRepository.updateTotalImageCount(skuId)
     }
 
-    fun insertProject(project: Project) {
-        localRepository.insertProject(project)
-    }
 
     suspend fun insertProject(project: com.spyneai.shoot.repository.model.project.Project) : Long {
         return localRepository.insertProject(project)

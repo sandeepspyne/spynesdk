@@ -26,6 +26,8 @@ import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog360InteriorBinding>(),
@@ -119,7 +121,7 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                     viewModel.shootList.value?.size?.plus(1)
                 }
 
-                viewLifecycleOwner.lifecycleScope.launch {
+                GlobalScope.launch(Dispatchers.IO) {
                     viewModel.
                     insertImage(ShootData(
                         filePath,
@@ -131,6 +133,7 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                         sequenceNumber!!
                     ))
                 }
+
 
                 startService()
 

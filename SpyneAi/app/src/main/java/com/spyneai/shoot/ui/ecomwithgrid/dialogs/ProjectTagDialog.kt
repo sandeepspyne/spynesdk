@@ -334,8 +334,6 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
     }
 
     private fun createProject() {
-        Utilities.showProgressDialog(requireContext())
-
         val project = com.spyneai.shoot.repository.model.project.Project(
             uuid = getUuid(),
             categoryId = viewModel.categoryDetails.value?.categoryId!!,
