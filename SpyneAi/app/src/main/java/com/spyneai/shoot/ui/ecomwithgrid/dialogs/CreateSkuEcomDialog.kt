@@ -22,6 +22,8 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDialogBinding>() {
 
@@ -191,7 +193,9 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     }
 
                     //add sku to local database
-                    viewModel.insertSku(sku!!)
+                    GlobalScope.launch {
+                        viewModel.insertSku(sku!!)
+                    }
                     dismiss()
                 }
 

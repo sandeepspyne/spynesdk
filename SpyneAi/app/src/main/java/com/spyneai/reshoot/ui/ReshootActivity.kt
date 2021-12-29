@@ -17,6 +17,7 @@ import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
 class ReshootActivity : AppCompatActivity() {

@@ -174,7 +174,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                     viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
                     //update sku locally
-                    viewModel.updateVideoSkuLocally(sku!!)
+                    //viewModel.updateVideoSkuLocally(sku!!)
                     dismiss()
                 }
 

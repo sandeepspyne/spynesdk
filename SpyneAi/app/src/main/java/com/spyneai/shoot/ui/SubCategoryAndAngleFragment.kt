@@ -23,6 +23,8 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.SubcatAndAngleAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class SubCategoryAndAngleFragment :
     BaseFragment<ShootViewModel, FragmentSelectSubcategoryAndAngleBinding>(),
@@ -349,7 +351,9 @@ class SubCategoryAndAngleFragment :
                     viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
                     //add sku to local database
-                    viewModel.insertSku(sku!!)
+                   GlobalScope.launch {
+                       viewModel.insertSku(sku!!)
+                   }
 
                 }
 

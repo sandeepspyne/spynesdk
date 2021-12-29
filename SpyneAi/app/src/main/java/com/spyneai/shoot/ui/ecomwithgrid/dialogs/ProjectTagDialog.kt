@@ -38,6 +38,8 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -458,7 +460,9 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     viewModel.getSubCategories.value = true
 
                     //add sku to local database
-                    viewModel.insertSku(sku!!)
+                    GlobalScope.launch {
+                        viewModel.insertSku(sku!!)
+                    }
 
                     dismiss()
                 }

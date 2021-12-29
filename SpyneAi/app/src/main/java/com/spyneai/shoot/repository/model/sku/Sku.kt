@@ -6,9 +6,9 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity
-data class Sku(
+class Sku(
     @PrimaryKey(autoGenerate = false)
-    var uuid: String?,
+    var uuid: String,
     @ColumnInfo(name = "sku_name") var skuName: String?,
     @ColumnInfo(name = "category_name") var categoryName: String?,
     @ColumnInfo(name = "category_id") var categoryId: String?,
@@ -30,6 +30,8 @@ data class Sku(
      @ColumnInfo(name = "created_at") var createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "updated_at") var updatedAt: Long = System.currentTimeMillis()
 ){
+    @Ignore constructor() : this()
+
     @Ignore
     var imagesCount: Int? = null
     @Ignore
