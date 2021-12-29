@@ -200,4 +200,11 @@ class ShootRepository : BaseRepository() {
         GCPApiClient().getClient().uploadFileToGcp(fileUrl,file)
     }
 
+    suspend fun sendFilesData(
+        authKey: String,
+        data : String
+    ) = safeApiCall {
+        clipperApi.sendFilesData(authKey,data)
+    }
+
 }

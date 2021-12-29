@@ -1,6 +1,7 @@
 package com.spyneai.base.network
 
 import com.spyneai.BaseApplication
+import com.spyneai.FilesDataRes
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
@@ -401,6 +402,13 @@ interface ClipperApi {
         @Query("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : LocationsRes
 
+
+    @FormUrlEncoded
+    @POST("v2/image/user-data")
+    suspend fun sendFilesData(
+        @Field("auth_key") authKey: String,
+        @Field("data") skuId: String
+    ) : FilesDataRes
 
 
 }

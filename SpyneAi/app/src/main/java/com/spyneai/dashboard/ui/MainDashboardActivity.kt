@@ -38,6 +38,9 @@ import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
 import com.spyneai.threesixty.ui.fragments.ThreeSixtyBackgroundFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -136,6 +139,12 @@ class MainDashboardActivity : AppCompatActivity() {
                 continueShoot()
             }
         })
+
+        if (!Utilities.getBool(this,AppConstants.IS_SKU_DATA_SENT)){
+            GlobalScope.launch(Dispatchers.Default) {
+                SendSkusData().startWork()
+            }
+        }
     }
 
 
@@ -298,11 +307,18 @@ class MainDashboardActivity : AppCompatActivity() {
 
 
     open fun onPermissionGranted() {
-        Log.d(
-            TAG,
-            "onPermissionGranted: " + Utilities.getPreference
-                (this, AppConstants.CANCEL_ALL_WROKERS)
-        )
+        val properties = HashMap<String,Any?>()
+            .apply {
+                put("service_state", "Started")
+                put(
+                    "email",
+                    Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
+                        .toString()
+                )
+            }
+
+        captureEvent("ALL PERMISSIONS GRANTED", properties)
+
         cancelAllWorkers()
         startUploadService()
         startVideoUploadService()
@@ -356,26 +372,6 @@ class MainDashboardActivity : AppCompatActivity() {
             || shootLocalRepository.getOldestImage("-1").itemId != null
         ) {
 
-            if (!isMyServiceRunning(ImageUploadingService::class.java))
-                Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
-
-            var action = Actions.START
-            if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-                return
-
-            val serviceIntent = Intent(this, ImageUploadingService::class.java)
-            serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,MainDashboardActivity::class.simpleName)
-            serviceIntent.action = action.name
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                log("Starting the service in >=26 Mode")
-                ContextCompat.startForegroundService(this, serviceIntent)
-                return
-            } else {
-                log("Starting the service in < 26 Mode")
-                startService(serviceIntent)
-            }
-
             val properties = HashMap<String,Any?>()
                 .apply {
                     put("service_state", "Started")
@@ -387,7 +383,31 @@ class MainDashboardActivity : AppCompatActivity() {
                     put("medium", "Main Activity")
                 }
 
-            captureEvent(Events.SERVICE_STARTED, properties)
+            if (!isMyServiceRunning(ImageUploadingService::class.java)){
+                Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
+
+                var action = Actions.START
+                if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+                    return
+
+                val serviceIntent = Intent(this, ImageUploadingService::class.java)
+                serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,MainDashboardActivity::class.simpleName)
+                serviceIntent.action = action.name
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    log("Starting the service in >=26 Mode")
+                    ContextCompat.startForegroundService(this, serviceIntent)
+                    return
+                } else {
+                    log("Starting the service in < 26 Mode")
+                    startService(serviceIntent)
+                }
+                captureEvent(Events.SERVICE_STARTED, properties)
+            }else {
+                captureEvent(Events.SERVICE_ALREADY_RUNNING, properties)
+            }
+
+
         }
     }
 

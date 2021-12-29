@@ -168,9 +168,23 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             stopForeground(false)
             stopSelf()
 
+            val properties = java.util.HashMap<String, Any?>()
+                .apply {
+                    put("service_state", "Stopped")
+                    put("medium", "Image Uploading Service")
+                }
+
+            captureEvent("SERVICE_STOPPED",properties)
             Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
 
         } catch (e: Exception) {
+            val properties = java.util.HashMap<String, Any?>()
+                .apply {
+                    put("type", e::class.java.simpleName)
+                    put("error", e.message)
+                }
+
+            captureEvent("SERVICE_STOPPED_EXCEPTION",properties)
         }
 
         setServiceState(this, ServiceState.STOPPED)
