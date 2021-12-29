@@ -36,7 +36,13 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
+import com.spyneai.ScanWifiDialog
+import com.spyneai.adapter.WifiAdapter
+import com.spyneai.logout.LogoutDialog
 import com.thanosfisherman.wifiutils.WifiUtils
 
 
@@ -54,10 +60,12 @@ import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener
 class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog360InteriorBinding>(),
     PickiTCallbacks {
     private val SECOND_ACTIVITY_REQUEST_CODE = 0
+    private var TAG = "ThreeSixtyInteriorHintDialog"
 
     var pickIt: PickiT? = null
     var filePath = ""
     var sequenceNumber: Int? = null
+    var imageName =""
 
     val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -115,8 +123,9 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
 
         binding.tvShoot.setOnClickListener {
             if (binding.tvShoot.text.toString() == "Shoot 360") {
+                imageName= viewModel.sku.value?.skuName!!+ "_"+ viewModel.sku.value?.skuId!!+"_360int_1.JPG"
 //                WifiUtils.withContext(requireContext()).enableWifi()
-//                WifiUtils.withContext(requireContext()).scanWifi(this::getScanResults).start()
+                WifiUtils.withContext(requireContext()).scanWifi(this::getScanResults).start()
 //                WifiUtils.withContext(requireContext())
 //                    .connectWith("THETAYP00110544.OSC")
 //                    .setTimeout(40000)
@@ -144,16 +153,13 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                 val hexColor = java.lang.String.format("#%06X", 0xFFFFFF and color)
                 Toast.makeText(requireContext(), "Connected With Camera", Toast.LENGTH_SHORT).show()
                 var intent = Intent(requireContext(), ImageListActivity::class.java)
-                intent.putExtra("file_name",viewModel.sku.value?.skuName!!+ "_"+
-                    viewModel.sku.value?.skuId!!+"_360int_1.JPG")
+                intent.putExtra("file_name",imageName)
                 intent.putExtra("primary_color",hexColor)
                 startActivityForResult(intent,SECOND_ACTIVITY_REQUEST_CODE)
             }
-//            else{
-//                val intent = Intent(Intent.ACTION_GET_CONTENT)
-//                intent.type = "image/*"
-//                startForResult.launch(intent)
-//            }
+            else{
+                ScanWifiDialog().show(requireActivity().supportFragmentManager, "ScanWifiDialog")
+            }
             }
         }
 
@@ -210,13 +216,13 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
     }
 
 
-//    private fun getScanResults(results: List<ScanResult>) {
-//        if (results.isEmpty()) {
-////            Log.i(TAG, "SCAN RESULTS IT'S EMPTY")
-//            return
-//        }
-////        Log.i(TAG, "GOT SCAN RESULTS $results")
-//    }
+    private fun getScanResults(results: List<ScanResult>) {
+        if (results.isEmpty()) {
+//            adapter = WifiAdapter(results)
+            return
+        }
+//        adapter = WifiAdapter(results)
+    }
 
 
     private fun startService() {
