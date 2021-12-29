@@ -36,7 +36,7 @@ class VideoLocalRepository {
         Log.d(TAG, "insertVideo: "+newRowId)
     }
 
-    fun addVideoPath(skuId : String,videoPath : String) {
+    fun addVideoPath(skuId : String,videoPath : String) : Int{
         val videoValues = ContentValues().apply {
             put(
                 Videos.COLUMN_NAME_VIDEO_PATH,
@@ -45,18 +45,14 @@ class VideoLocalRepository {
         }
 
         val videoSelection = "${Videos.COLUMN_NAME_SKU_ID} LIKE ?"
-        // Which row to update, based on the title
-
 
         val videoSelectionArgs = arrayOf(skuId)
 
-        val videoCount = dbWritable.update(
+        return dbWritable.update(
             Videos.TABLE_NAME,
             videoValues,
             videoSelection,
             videoSelectionArgs)
-
-        Log.d(TAG, "addVideoPath: "+videoCount)
     }
 
     fun addBackgroundId(skuId: String,backgroundId : String){

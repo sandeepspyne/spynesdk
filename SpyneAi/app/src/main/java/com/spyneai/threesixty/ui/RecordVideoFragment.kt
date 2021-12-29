@@ -397,10 +397,12 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
     private fun recordVideo() {
         val localVideoCapture = videoCapture ?: throw IllegalStateException("Camera initialization failed.")
 
+        val filename = "$outputDirectory/${viewModel.videoDetails.skuName+"_"+viewModel.videoDetails.skuId+"_"+System.currentTimeMillis()}"
+
         // Options fot the output video file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val contentValues = ContentValues().apply {
-                put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis())
+                put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
                 put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
                 put(MediaStore.MediaColumns.RELATIVE_PATH, outputDirectory)
             }
@@ -412,7 +414,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
             }
         } else {
             File(outputDirectory).mkdirs()
-            val file = File("$outputDirectory/${viewModel.videoDetails.skuName+"_"+viewModel.videoDetails.skuId+"_"+System.currentTimeMillis()}.mp4")
+            val file = File(outputDirectory, "${filename}..mp4")
 
             VideoCapture.OutputFileOptions.Builder(file)
         }.build()
@@ -486,6 +488,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                             Events.VIDEO_CAPTURE_FAILED,
                             HashMap<String,Any?>()
                                 .apply {
+                                    put("sku_id",viewModel.videoDetails.skuId)
                                     put("data",JSONObject().apply {
                                         put("sku_id",viewModel.videoDetails.skuId)
                                         put("sku_name",viewModel.videoDetails.skuName)
@@ -583,6 +586,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
             Events.VIDEO_CAPTURED,
             HashMap<String,Any?>()
                 .apply {
+                    put("sku_id",viewModel.videoDetails.skuId)
                     put("data",JSONObject().apply {
                         put("sku_id",viewModel.videoDetails.skuId)
                         put("sku_name",viewModel.videoDetails.skuName)

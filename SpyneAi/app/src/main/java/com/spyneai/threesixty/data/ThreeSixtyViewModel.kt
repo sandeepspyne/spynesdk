@@ -147,9 +147,7 @@ class ThreeSixtyViewModel : ViewModel() {
             videoRepository.insertVideo(video)
     }
 
-    fun updateVideoPath() {
-        videoRepository.addVideoPath(videoDetails.skuId!!,videoDetails.videoPath!!)
-    }
+    fun updateVideoPath() = videoRepository.addVideoPath(videoDetails.skuId!!,videoDetails.videoPath!!)
 
     fun updateVideoBackgroundId() {
         videoRepository.addBackgroundId(videoDetails.skuId!!,videoDetails.backgroundId!!)

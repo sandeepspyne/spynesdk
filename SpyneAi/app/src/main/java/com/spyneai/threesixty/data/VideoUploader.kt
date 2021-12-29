@@ -65,7 +65,7 @@ class VideoUploader(val context: Context,
                     GlobalScope.launch(Dispatchers.Default) {
                         Log.d(TAG, "uploadParent: start")
                         Utilities.saveBool(context, AppConstants.VIDEO_UPLOADING_RUNNING, true)
-                        context.captureEvent("START UPLOADING CALLED",HashMap())
+                        context.captureEvent("START VIDEO UPLOADING CALLED",HashMap())
                         startUploading()
                     }
                 else {

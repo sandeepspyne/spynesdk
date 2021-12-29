@@ -106,6 +106,7 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
                     Events.VIDEO_NOT_TRIMMED,
                     HashMap<String,Any?>()
                         .apply {
+                            put("sku_id",viewModel.videoDetails.skuId)
                             put("data", JSONObject().apply {
                                 put("sku_id",viewModel.videoDetails.skuId)
                                 put("sku_name",viewModel.videoDetails.skuName)
@@ -286,6 +287,7 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
                 Events.VIDEO_INVALID_TRIMMED,
                 HashMap<String,Any?>()
                     .apply {
+                        put("sku_id",viewModel.videoDetails.skuId)
                         put("data", JSONObject().apply {
                             put("sku_id",viewModel.videoDetails.skuId)
                             put("sku_name",viewModel.videoDetails.skuName)
@@ -326,18 +328,19 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
         viewModel.videoDetails.videoPath = path
 
         //update video path
-        viewModel.updateVideoPath()
+        val dbCount = viewModel.updateVideoPath()
 
         requireContext().captureEvent(
             Events.VIDEO_TRIMMED,
             HashMap<String,Any?>()
                 .apply {
+                    put("sku_id",viewModel.videoDetails.skuId)
                     put("data", JSONObject().apply {
-                        put("sku_id",viewModel.videoDetails.skuId)
                         put("sku_name",viewModel.videoDetails.skuName)
                         put("frames",viewModel.videoDetails.frames)
                         put("path",viewModel.videoDetails.videoPath )
                         put("subcategory",viewModel.videoDetails.subCategory)
+                        put("update_db_status",dbCount)
                     })
                 }
         )

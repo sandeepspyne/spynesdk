@@ -647,10 +647,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
         )
 
-        val s = ""
-
-        Log.d(TAG, "takePhoto: " + filename)
-
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val contentValues = ContentValues().apply {
