@@ -17,7 +17,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
-import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -83,11 +83,11 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         //update shoot session
         Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
 
-        if (viewModel.sku.value == null){
+        if (viewModel.sku == null){
             val sku =  Sku()
             sku?.projectId = project.uuid
             sku?.skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
-            viewModel.sku.value = sku
+            viewModel.sku = sku
         }
 
         viewModel.projectId.value = project.uuid
@@ -132,11 +132,11 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     //update shoot session
                     Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
 
-                    if (viewModel.sku.value == null){
+                    if (viewModel.sku == null){
                         val sku =  Sku()
                         sku?.projectId = it.value.project_id
                         sku?.skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
-                        viewModel.sku.value = sku
+                        viewModel.sku = sku
                     }
 
                     viewModel.projectId.value = it.value.project_id

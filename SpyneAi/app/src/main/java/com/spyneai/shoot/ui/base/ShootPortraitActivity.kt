@@ -31,7 +31,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.CreateProjectFragment
 import com.spyneai.shoot.ui.DraftGridFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
@@ -187,7 +187,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.showFoodBackground.observe(this, {
             if (it) {
                 val bundle = Bundle()
-                bundle.putString(AppConstants.PROJECT_ID,shootViewModel.sku.value?.projectId)
+                bundle.putString(AppConstants.PROJECT_ID,shootViewModel.sku?.projectId)
                 bundle.putString(AppConstants.CATEGORY_ID, shootViewModel.categoryDetails?.value!!.categoryId)
                 selectBackgroundFragment.arguments = bundle
 
@@ -214,8 +214,8 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                 processIntent.apply {
                     this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra(AppConstants.CATEGORY_ID, categoryDetails.categoryId)
-                    this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
-                    this.putExtra("project_id", shootViewModel.sku.value?.projectId)
+                    this.putExtra("sku_id", shootViewModel.sku?.skuId)
+                    this.putExtra("project_id", shootViewModel.sku?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku", shootViewModel.processSku)
                     this.putExtra(AppConstants.FROM_VIDEO, intent.getBooleanExtra(AppConstants.FROM_VIDEO, false))
@@ -274,7 +274,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
         sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
-        shootViewModel.sku.value = sku
+        shootViewModel.sku = sku
         shootViewModel.isSkuCreated.value = true
 
         when (intent.getStringExtra(AppConstants.CATEGORY_ID)) {
@@ -286,7 +286,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             AppConstants.ACCESSORIES_CATEGORY_ID,
             AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID -> {
 
-                val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+                val list = shootViewModel.getImagesbySkuId(shootViewModel.sku?.skuId!!)
 
                 shootViewModel.shootList.value = ArrayList()
 
@@ -350,7 +350,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                 shootViewModel.shootList.value = ArrayList()
 
                 //set total clicked images
-                val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+                val list = shootViewModel.getImagesbySkuId(shootViewModel.sku?.skuId!!)
 
                 if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB, false)) {
 

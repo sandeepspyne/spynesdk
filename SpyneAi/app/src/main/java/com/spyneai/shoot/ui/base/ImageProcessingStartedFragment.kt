@@ -58,7 +58,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
 
             viewModel.updateProjectState(
                 Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-                viewModel.sku.value?.projectId!!
+                viewModel.sku?.projectId!!
             )
         }
     }
@@ -69,7 +69,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
                 is Resource.Success -> {
                     val properties = HashMap<String,Any?>()
                     properties.apply {
-                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["sku_id"] = viewModel.sku?.skuId!!
                         this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
                     }
 
@@ -83,7 +83,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
 
                     val properties = HashMap<String,Any?>()
                     properties.apply {
-                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["sku_id"] = viewModel.sku?.skuId!!
                         this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
                     }
 
@@ -105,7 +105,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
 
         viewModel.updateCarTotalFrames(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-            viewModel.sku.value?.skuId!!,
+            viewModel.sku?.skuId!!,
             totalFrames.toString()
         )
     }

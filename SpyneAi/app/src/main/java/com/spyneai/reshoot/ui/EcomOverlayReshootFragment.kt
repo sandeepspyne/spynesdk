@@ -66,7 +66,7 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
         binding.apply {
             tvSkuName.visibility = View.VISIBLE
             ivBackCompleted.visibility = View.VISIBLE
-            tvSkuName.text = viewModel.sku.value?.skuName
+            tvSkuName.text = viewModel.sku?.skuName
         }
 
         binding.ivBackCompleted.setOnClickListener {

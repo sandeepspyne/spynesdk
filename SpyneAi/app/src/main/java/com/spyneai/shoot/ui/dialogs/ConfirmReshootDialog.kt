@@ -247,7 +247,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
     }
 
     fun updateTotalImages() {
-        viewModel.updateTotalImages(viewModel.sku.value?.skuId!!)
+        viewModel.updateTotalImages(viewModel.sku?.skuId!!)
     }
 
     private fun setOverlay(view: View, overlay : String) {

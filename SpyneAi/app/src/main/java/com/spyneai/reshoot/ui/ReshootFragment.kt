@@ -64,7 +64,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         })
 
         binding.apply {
-            tvSkuName.text = viewModel.sku.value?.skuName
+            tvSkuName.text = viewModel.sku?.skuName
 
         }
         //observe new image clicked

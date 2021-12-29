@@ -20,7 +20,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CreateProjectRes
-import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.log
 
 class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDialogBinding>() {
@@ -32,7 +32,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
 
         val sku = Sku()
         sku.projectId = viewModel.projectId.value
-        viewModel.sku.value = sku
+        viewModel.sku = sku
 
         viewModel._createProjectRes.value = Resource.Success(
             CreateProjectRes(
@@ -145,28 +145,28 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                             .apply {
                                 this.put(
                                     "sku_name",
-                                    viewModel.sku.value?.skuName.toString()
+                                    viewModel.sku?.skuName.toString()
                                 )
-                                this.put("project_id", viewModel.sku.value?.projectId)
+                                this.put("project_id", viewModel.sku?.projectId)
                                 this.put("prod_sub_cat_id", "")
                             }
                     )
 
                     //notify sku created
                     //notify project created
-                    val sku = viewModel.sku.value
+                    val sku = viewModel.sku
                     sku?.skuId = it.value.sku_id
                     sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
-                    sku?.projectId = viewModel.sku.value?.projectId
-                    sku?.createdOn = System.currentTimeMillis()
-                    sku?.totalImages = viewModel.exterirorAngles.value
+                    sku?.projectId = viewModel.sku?.projectId
+//                    sku?.createdOn = System.currentTimeMillis()
+//                    sku?.totalImages = viewModel.exterirorAngles.value
                     sku?.categoryName = viewModel.categoryDetails.value?.categoryName
                     sku?.categoryId = viewModel.categoryDetails.value?.categoryId
                     sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
                     sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
-                    sku?.exteriorAngles = viewModel.exterirorAngles.value
+                   // sku?.exteriorAngles = viewModel.exterirorAngles.value
 
-                    viewModel.sku.value = sku
+                    viewModel.sku = sku
 
                     //notify project created
                     viewModel.isProjectCreated.value = true

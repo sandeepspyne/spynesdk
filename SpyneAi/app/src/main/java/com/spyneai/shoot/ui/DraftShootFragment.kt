@@ -454,7 +454,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
             viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
             viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-            tvSkuName?.text = viewModel.sku.value?.skuName
+            tvSkuName?.text = viewModel.sku?.skuName
 //            binding.imgOverlay.visibility = View.VISIBLE
             if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
 //                binding.imgOverlay.visibility = View.INVISIBLE

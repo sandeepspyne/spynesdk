@@ -196,7 +196,7 @@ class SubCategoryAndAngleFragment :
                         Events.CREATE_SKU,
                         HashMap<String, Any?>()
                             .apply {
-                                this.put("sku_name", viewModel.sku.value?.skuName.toString())
+                                this.put("sku_name", viewModel.sku?.skuName.toString())
                                 this.put("project_id", createProjectRes.project_id)
                                 this.put(
                                     "prod_sub_cat_id",
@@ -206,18 +206,18 @@ class SubCategoryAndAngleFragment :
                             }
                     )
 
-                    val sku = viewModel.sku.value
-                    sku?.skuId = viewModel.sku.value?.skuId!!
+                    val sku = viewModel.sku
+                    sku?.skuId = viewModel.sku?.skuId!!
                     sku?.projectId = createProjectRes.project_id
-                    sku?.createdOn = System.currentTimeMillis()
-                    sku?.totalImages = viewModel.exterirorAngles.value
+                    //sku?.createdOn = System.currentTimeMillis()
+                    //sku?.totalImages = viewModel.exterirorAngles.value
                     sku?.categoryName = viewModel.categoryDetails.value?.categoryName
                     sku?.categoryId = viewModel.categoryDetails.value?.categoryId
                     sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
                     sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id!!
-                    sku?.exteriorAngles = viewModel.exterirorAngles.value
+                    //sku?.exteriorAngles = viewModel.exterirorAngles.value
 
-                    viewModel.sku.value = sku
+                    viewModel.sku = sku
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
 
@@ -238,7 +238,7 @@ class SubCategoryAndAngleFragment :
                     }
 
                     //update sku locally
-                    viewModel.updateVideoSkuLocally(sku!!)
+                    //viewModel.updateVideoSkuLocally(sku!!)
 
                 }
 
@@ -260,7 +260,7 @@ class SubCategoryAndAngleFragment :
         Utilities.showProgressDialog(requireContext())
 
         viewModel.updateVideoSku(
-            viewModel.sku.value?.skuId!!,
+            viewModel.sku?.skuId!!,
             viewModel.subCategory.value?.prod_sub_cat_id!!,
             viewModel.exterirorAngles.value!!
         )
@@ -303,7 +303,7 @@ class SubCategoryAndAngleFragment :
             createProjectRes.project_id,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             viewModel.subCategory.value?.prod_sub_cat_id!!,
-            viewModel.sku.value?.skuName.toString(),
+            viewModel.sku?.skuName.toString(),
             viewModel.exterirorAngles.value!!
         )
     }
@@ -322,25 +322,25 @@ class SubCategoryAndAngleFragment :
                         Events.CREATE_SKU,
                         HashMap<String, Any?>()
                             .apply {
-                                this.put("sku_name", viewModel.sku.value?.skuName.toString())
+                                this.put("sku_name", viewModel.sku?.skuName.toString())
                                 this.put("project_id", projectId)
                                 this.put("prod_sub_cat_id", prod_sub_cat_id)
                                 this.put("angles", viewModel.exterirorAngles.value!!)
                             }
                     )
 
-                    val sku = viewModel.sku.value
+                    val sku = viewModel.sku
                     sku?.skuId = it.value.sku_id
                     sku?.projectId = projectId
-                    sku?.createdOn = System.currentTimeMillis()
-                    sku?.totalImages = viewModel.exterirorAngles.value
+                   // sku?.createdOn = System.currentTimeMillis()
+                    //sku?.totalImages = viewModel.exterirorAngles.value
                     sku?.categoryName = viewModel.categoryDetails.value?.categoryName
                     sku?.categoryId = viewModel.categoryDetails.value?.categoryId
                     sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
                     sku?.subcategoryId = prod_sub_cat_id
-                    sku?.exteriorAngles = viewModel.exterirorAngles.value
+                   // sku?.exteriorAngles = viewModel.exterirorAngles.value
 
-                    viewModel.sku.value = sku
+                    viewModel.sku = sku
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
 //                    viewModel.showLeveler.value = true

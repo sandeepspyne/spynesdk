@@ -123,8 +123,8 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                     viewModel.
                     insertImage(ShootData(
                         filePath,
-                        viewModel.sku.value?.projectId!!,
-                        viewModel.sku.value?.skuId!!,
+                        viewModel.sku?.projectId!!,
+                        viewModel.sku?.skuId!!,
                         "360int",
                         Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
                         0,

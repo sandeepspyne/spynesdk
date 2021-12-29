@@ -144,7 +144,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                     Utilities.hideProgressDialog()
 
                     val items = HashMap<String, Any?>()
-                    items.put("sku_name", viewModel.sku.value?.skuName.toString())
+                    items.put("sku_name", viewModel.sku?.skuName.toString())
                     items.put("project_id", createProjectRes.project_id)
                     items.put("prod_sub_cat_id", viewModel.subCategory.value?.prod_sub_cat_id!!)
                     items.put("angles", viewModel.exterirorAngles.value!!)
@@ -154,18 +154,18 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                         items
                     )
 
-                    val sku = viewModel.sku.value
-                    sku?.skuId = viewModel.sku.value?.skuId!!
+                    val sku = viewModel.sku
+                    sku?.skuId = viewModel.sku?.skuId!!
                     sku?.projectId = createProjectRes.project_id
-                    sku?.createdOn = System.currentTimeMillis()
-                    sku?.totalImages = viewModel.exterirorAngles.value
+//                    sku?.createdOn = System.currentTimeMillis()
+//                    sku?.totalImages = viewModel.exterirorAngles.value
                     sku?.categoryName = viewModel.categoryDetails.value?.categoryName
                     sku?.categoryId = viewModel.categoryDetails.value?.categoryId
                     sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
                     sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id!!
-                    sku?.exteriorAngles = viewModel.exterirorAngles.value
+                   // sku?.exteriorAngles = viewModel.exterirorAngles.value
 
-                    viewModel.sku.value = sku
+                    viewModel.sku = sku
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
 //                    viewModel.showLeveler.value = true
@@ -196,7 +196,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
         Utilities.showProgressDialog(requireContext())
 
         viewModel.updateVideoSku(
-            viewModel.sku.value?.skuId!!,
+            viewModel.sku?.skuId!!,
             viewModel.subCategory.value?.prod_sub_cat_id!!,
             viewModel.exterirorAngles.value!!
         )
@@ -205,7 +205,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
     private fun createSku(projectId: String, prod_sub_cat_id: String) {
         val sku = Sku(
             uuid = getUuid(),
-            skuName = viewModel.sku.value?.skuName!!,
+            skuName = viewModel.sku?.skuName!!,
             categoryName = viewModel.categoryDetails.value?.categoryName!!,
             categoryId = viewModel.categoryDetails.value?.categoryName!!,
             subcategoryName = viewModel.subCategory.value?.sub_cat_name,
@@ -215,7 +215,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
             totalFrames = viewModel.exterirorAngles.value
         )
 
-        //viewModel.sku.value = sku
+        //viewModel.sku = sku
         viewModel.isSubCategoryConfirmed.value = true
         viewModel.isSkuCreated.value = true
         viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
@@ -236,7 +236,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 //            projectId,
 //            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
 //            prod_sub_cat_id!!,
-//            viewModel.sku.value?.skuName.toString(),
+//            viewModel.sku?.skuName.toString(),
 //            viewModel.exterirorAngles.value!!
 //        )
 //
@@ -246,7 +246,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 //                    Utilities.hideProgressDialog()
 //
 //                    val items = HashMap<String, Any?>()
-//                    items["sku_name"] = viewModel.sku.value?.skuName.toString()
+//                    items["sku_name"] = viewModel.sku?.skuName.toString()
 //                    items.put("project_id", projectId)
 //                    items.put("prod_sub_cat_id", prod_sub_cat_id)
 //                    items.put("angles", viewModel.exterirorAngles.value!!)
@@ -256,7 +256,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 //                        items
 //                    )
 //
-//                    val sku = viewModel.sku.value
+//                    val sku = viewModel.sku
 //                    sku?.skuId = it.value.sku_id
 //                    sku?.projectId = projectId
 //                    sku?.createdOn = System.currentTimeMillis()
@@ -267,7 +267,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 //                    sku?.subcategoryId = prod_sub_cat_id
 //                    sku?.exteriorAngles = viewModel.exterirorAngles.value
 //
-//                    viewModel.sku.value = sku
+//                    viewModel.sku = sku
 //                    viewModel.isSubCategoryConfirmed.value = true
 //                    viewModel.isSkuCreated.value = true
 //                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive

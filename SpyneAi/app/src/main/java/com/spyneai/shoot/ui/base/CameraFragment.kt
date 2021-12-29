@@ -214,7 +214,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
 
                 "E-Commerce", "Photo Box" -> {
-                    if (viewModel.sku.value?.skuId != null)
+                    if (viewModel.sku?.skuId != null)
                         onCaptureClick()
                 }
             }
@@ -851,7 +851,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         val shootData = ShootData(
             capturedImage,
             getUuid(),
-            getUuid(),
+            viewModel.sku?.skuId!!,
             viewModel.categoryDetails.value?.imageType!!,
             Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY)
                 .toString(),
@@ -881,7 +881,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         val properties = HashMap<String, Any?>()
 //        properties.apply {
 //            this["project_id"] = viewModel.projectId.value!!
-//            this["sku_id"] = viewModel.sku.value?.skuId!!
+//            this["sku_id"] = viewModel.sku?.skuId!!
 //            this["image_type"] = viewModel.categoryDetails.value?.imageType!!
 //        }
 

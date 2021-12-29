@@ -27,7 +27,7 @@ class ProcessViewModel : ViewModel() {
     var fromVideo = false
     val exteriorAngles: MutableLiveData<Int> = MutableLiveData()
 
-    val sku: MutableLiveData<Sku> = MutableLiveData()
+    var sku: Sku? = null
     val startTimer: MutableLiveData<Boolean> = MutableLiveData()
     val processSku: MutableLiveData<Boolean> = MutableLiveData()
     val skuQueued: MutableLiveData<Boolean> = MutableLiveData()
@@ -96,21 +96,21 @@ class ProcessViewModel : ViewModel() {
         viewModelScope.launch {
 
             //queue process request
-            localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundId, is360)
+            localRepository.queueProcessRequest(sku?.skuId!!, backgroundId, is360)
 
             _processSkuRes.value = Resource.Loading
             _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId,
                 is360,numberPlateBlur,windowCorrection,tintWindow)
         }
 
-    fun checkImagesUploadStatus(backgroundSelect: String) {
-        if (localRepository.isImagesUploaded(sku.value?.skuId!!)) {
-            processSku.value = true
-        } else {
-            // localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundSelect)
-            skuQueued.value = true
-        }
-    }
+//    fun checkImagesUploadStatus(backgroundSelect: String) {
+//        if (localRepository.isImagesUploaded(sku?.skuId!!)) {
+//            processsku = true
+//        } else {
+//            // localRepository.queueProcessRequest(sku?.skuId!!, backgroundSelect)
+//            skuQueued.value = true
+//        }
+//    }
 
     fun updateCarTotalFrames(authKey: String, skuId: String, totalFrames: String) =
         viewModelScope.launch {

@@ -32,7 +32,7 @@ class ProcessActivity : AppCompatActivity() {
         val sku = Sku()
         sku.skuId = intent.getStringExtra("sku_id")
         sku.projectId = intent.getStringExtra("project_id")
-        processViewModel.sku.value = sku
+        processViewModel.sku = sku
 
         processViewModel.exteriorAngles.value =  intent.getIntExtra("exterior_angles",0)
         processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)

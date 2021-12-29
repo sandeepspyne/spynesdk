@@ -61,7 +61,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         }
 
         binding.tvNoOfImages.text = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount).toString()
-        binding.tvSkuId.text = viewModel.sku.value?.skuId
+        binding.tvSkuId.text = viewModel.sku?.skuId
         binding.tvTotalImagesClicked.text = viewModel.exteriorAngles.value.toString()
         binding.tvTotalCost.text = viewModel.exteriorAngles.value.toString()
 
@@ -94,7 +94,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                         Events.PROCESS,
                         HashMap<String,Any?>()
                             .apply {
-                                this.put("sku_id", viewModel.sku.value?.skuId!!)
+                                this.put("sku_id", viewModel.sku?.skuId!!)
                                 this.put("background_id",viewModel.backgroundSelect!!)
                                 this.put("response", Gson().toJson(it).toString())
                             }
@@ -110,7 +110,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                         Events.PROCESS_FAILED,
                         HashMap<String,Any?>()
                             .apply {
-                                this.put("sku_id",viewModel.sku.value?.skuId!!)
+                                this.put("sku_id",viewModel.sku?.skuId!!)
                                 this.put("throwable", it.throwable)
                             },
                         it.errorMessage!!)
@@ -344,7 +344,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         viewModel.reduceCredit(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.exteriorAngles.value.toString(),
-            viewModel.sku.value?.skuId.toString()
+            viewModel.sku?.skuId.toString()
         )
     }
 
@@ -369,7 +369,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
         viewModel.updateDownloadStatus(
             Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
-            viewModel.sku.value?.skuId!!,
+            viewModel.sku?.skuId!!,
             WhiteLabelConstants.ENTERPRISE_ID,
             true
         )
@@ -417,7 +417,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
             viewModel.processSku(
                 Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-                viewModel.sku.value?.skuId!!,
+                viewModel.sku?.skuId!!,
                 viewModel.backgroundSelect!!,
                 true,
                 viewModel.numberPlateBlur,

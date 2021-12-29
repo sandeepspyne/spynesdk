@@ -51,8 +51,8 @@ class ShootViewModel : ViewModel() {
 
     val categoryPosition: MutableLiveData<Int> = MutableLiveData()
 
-    val dafault_project: MutableLiveData<String> = MutableLiveData()
-    val dafault_sku: MutableLiveData<String> = MutableLiveData()
+    var dafault_project: MutableLiveData<String> = MutableLiveData()
+    var dafault_sku: MutableLiveData<String> = MutableLiveData()
 
     val isSubCatAngleConfirmed: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -118,7 +118,9 @@ class ShootViewModel : ViewModel() {
 
 
     val shootDimensions: MutableLiveData<ShootDimensions> = MutableLiveData()
-    val sku: MutableLiveData<Sku> = MutableLiveData()
+   // val sku: MutableLiveData<Sku> = MutableLiveData()
+    var sku: com.spyneai.shoot.repository.model.sku.Sku? = null
+
     var subCategory: MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
     var categoryDetails: MutableLiveData<CategoryDetails> = MutableLiveData()
     val isSubCategoryConfirmed: MutableLiveData<Boolean> = MutableLiveData()
@@ -291,7 +293,7 @@ class ShootViewModel : ViewModel() {
         image.imagePath = shootData.capturedImage
         image.sequence = shootData.sequence
         image.overlayId = overlayId.toString()
-        image.skuName = sku.value?.skuName?.uppercase()
+        image.skuName = sku?.skuName?.uppercase()
         image.angle = shootData.angle
         image.meta = shootData.meta
         image.debugData = shootData.debugData
@@ -410,7 +412,7 @@ class ShootViewModel : ViewModel() {
     }
 
     fun updateSubcategoryId(subcategoryId: String, subcategoryName: String) {
-        localRepository.updateSubcategoryId(sku.value?.skuId!!, subcategoryId, subcategoryName)
+        localRepository.updateSubcategoryId(sku?.skuId!!, subcategoryId, subcategoryName)
     }
 
     fun getImagesbySkuId(skuId: String) = imageRepository.getImagesBySkuId(skuId)
@@ -423,7 +425,7 @@ class ShootViewModel : ViewModel() {
         _updateFootwearSubcatRes.value = Resource.Loading
         _updateFootwearSubcatRes.value = repository.updateFootwearSubcategory(
             Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
-            sku.value?.skuId!!,
+            sku?.skuId!!,
             exterirorAngles.value!!,
             subCategory.value?.prod_sub_cat_id!!
         )
@@ -449,7 +451,7 @@ class ShootViewModel : ViewModel() {
                 miscSize
             )
 
-            sku.value?.skuName?.uppercase() + "_" + sku.value?.skuId + "_" + filePrefix
+            sku?.skuName?.uppercase() + "_" + sku?.skuId + "_" + filePrefix
         }
 
     }

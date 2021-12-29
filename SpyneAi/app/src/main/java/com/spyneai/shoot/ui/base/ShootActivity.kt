@@ -28,7 +28,7 @@ import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
-import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.*
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
@@ -145,7 +145,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
                     shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                    shootViewModel.sku.value = sku
+                    shootViewModel.sku = sku
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -164,7 +164,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
                     shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                    shootViewModel.sku.value = sku
+                    shootViewModel.sku = sku
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -183,7 +183,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
                     shootViewModel.categoryDetails.value?.imageType = "Food"
-                    shootViewModel.sku.value = sku
+                    shootViewModel.sku = sku
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -203,7 +203,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
                     shootViewModel.categoryDetails.value?.imageType = "Footwear"
-                    shootViewModel.sku.value = sku
+                    shootViewModel.sku = sku
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -258,8 +258,8 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 processIntent.apply {
                     this.putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
                     this.putExtra(AppConstants.CATEGORY_ID, intent.getStringExtra(AppConstants.CATEGORY_ID))
-                    this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
-                    this.putExtra("project_id", shootViewModel.sku.value?.projectId)
+                    this.putExtra("sku_id", shootViewModel.sku?.skuId)
+                    this.putExtra("project_id", shootViewModel.sku?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku", shootViewModel.processSku)
                     this.putExtra("interior_misc_count", getInteriorMiscCount())
@@ -319,7 +319,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
         sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
-        shootViewModel.sku.value = sku
+        shootViewModel.sku = sku
     }
 
     private fun setUpDraftsData() {
@@ -342,13 +342,13 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
         sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
-        shootViewModel.sku.value = sku
+        shootViewModel.sku = sku
 
         if (intent.getBooleanExtra(AppConstants.SKU_CREATED, false)) {
             shootViewModel.exterirorAngles.value =
                 intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
 
-            shootViewModel.sku.value!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+            shootViewModel.sku!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
 
             shootViewModel.subCategory.value = getSubcategoryResponse()
 

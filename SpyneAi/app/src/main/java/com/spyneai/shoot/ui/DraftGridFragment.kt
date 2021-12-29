@@ -88,7 +88,7 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
         // set sku name
         viewModel.isSkuCreated.observe(viewLifecycleOwner, {
             if (it) {
-                binding.tvSkuName?.text = viewModel.sku.value?.skuName
+                binding.tvSkuName?.text = viewModel.sku?.skuName
                 binding.tvSkuName.visibility = View.VISIBLE
                 viewModel.isSkuCreated.value = false
             }else {

@@ -139,7 +139,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                     //update exterior angles in local DB
                     viewModel.updateSkuExteriorAngles(
-                        viewModel.sku.value?.skuId!!,
+                        viewModel.sku?.skuId!!,
                         viewModel.exterirorAngles.value!!,
                         viewModel.subCategory.value?.prod_sub_cat_id!!
                     )
@@ -293,7 +293,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             tvAngleName?.visibility = View.VISIBLE
             llProgress?.visibility = View.VISIBLE
 //            imgOverlay?.visibility = View.VISIBLE
-            tvSkuName?.text = viewModel.sku.value?.skuName
+            tvSkuName?.text = viewModel.sku?.skuName
         }
         viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
         viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive

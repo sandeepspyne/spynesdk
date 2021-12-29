@@ -55,7 +55,7 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
         }
 
         binding.btYes.setOnClickListener {
-            viewModel.updateProjectStatus(viewModel.sku.value?.projectId!!)
+            viewModel.updateProjectStatus(viewModel.sku?.projectId!!)
             viewModel.showProjectDetail.value = true
             dismiss()
             log("end project dialog dismiss- Yes")

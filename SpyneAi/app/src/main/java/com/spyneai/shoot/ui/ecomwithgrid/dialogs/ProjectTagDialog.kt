@@ -36,7 +36,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
-import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.log
 import org.json.JSONArray
 import org.json.JSONObject
@@ -372,7 +372,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     sku.projectId = it.value.project_id
                     viewModel.projectId.value = it.value.project_id
                     sku.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
-                    viewModel.sku.value = sku
+                    viewModel.sku = sku
 
                     //notify project created
                     viewModel.isProjectCreated.value = true
@@ -421,28 +421,28 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                         Events.CREATE_SKU,
                         HashMap<String, Any?>()
                             .apply {
-                                this.put("sku_name", viewModel.sku.value?.skuName.toString())
-                                this.put("project_id", viewModel.sku.value?.projectId)
+                                this.put("sku_name", viewModel.sku?.skuName.toString())
+                                this.put("project_id", viewModel.sku?.projectId)
                                 this.put("prod_sub_cat_id", "")
                             }
 
                     )
 
                     //notify project created
-                    val sku = viewModel.sku.value
+                    val sku = viewModel.sku
                     sku?.skuId = it.value.sku_id
-                    sku?.projectId = viewModel.sku.value?.projectId
-                    sku?.createdOn = System.currentTimeMillis()
-                    sku?.totalImages = viewModel.exterirorAngles.value
+                    sku?.projectId = viewModel.sku?.projectId
+//                    sku?.createdOn = System.currentTimeMillis()
+//                    sku?.totalImages = viewModel.exterirorAngles.value
                     sku?.categoryName = viewModel.categoryDetails.value?.categoryName
                     sku?.categoryId = viewModel.categoryDetails.value?.categoryId
                     sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
                     sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
-                    sku?.exteriorAngles = viewModel.exterirorAngles.value
+                  //  sku?.exteriorAngles = viewModel.exterirorAngles.value
 
 
                     sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
-                    viewModel.sku.value = sku
+                    viewModel.sku = sku
 
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
@@ -474,7 +474,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
                     handleApiError(it) {
                         createSku(
-                            viewModel.sku.value?.projectId!!,
+                            viewModel.sku?.projectId!!,
                             removeWhiteSpace(binding.etSkuName.text.toString()),
                             true
                         )

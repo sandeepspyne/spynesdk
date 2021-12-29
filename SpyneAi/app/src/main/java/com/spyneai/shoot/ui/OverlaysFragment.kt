@@ -349,7 +349,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         binding.apply {
             binding.llAngles.visibility = View.VISIBLE
             tvSkuName?.visibility = View.VISIBLE
-            tvSkuName?.text = viewModel.sku.value?.skuName
+            tvSkuName?.text = viewModel.sku?.skuName
 
             if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true){
                 viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
@@ -358,7 +358,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             }
 
 
-//            if (viewModel.sku.value?.skuId != null && viewModel.categoryDetails.value?.imageType == "Exterior")
+//            if (viewModel.sku?.skuId != null && viewModel.categoryDetails.value?.imageType == "Exterior")
 //                viewModel.showLeveler.value = true
 
             if (viewModel.categoryDetails.value?.imageType == "Exterior")

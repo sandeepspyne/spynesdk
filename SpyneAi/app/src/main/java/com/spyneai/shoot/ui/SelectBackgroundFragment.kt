@@ -388,7 +388,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         viewModel.updateCarTotalFrames(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.sku.value?.skuId!!,
+            viewModel.sku?.skuId!!,
             totalFrames.toString()
         )
     }
@@ -401,7 +401,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                     val properties = HashMap<String, Any?>()
                     properties.apply {
-                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["sku_id"] = viewModel.sku?.skuId!!
                         this["total_frames"] =
                             viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
                     }
@@ -415,7 +415,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                     val properties = HashMap<String, Any?>()
                     properties.apply {
-                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["sku_id"] = viewModel.sku?.skuId!!
                         this["total_frames"] =
                             viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
                     }
@@ -440,7 +440,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 Events.PROCESS_INITIATED,
                 HashMap<String, Any?>()
                     .apply {
-                        this.put("sku_id", viewModel.sku.value?.skuId!!)
+                        this.put("sku_id", viewModel.sku?.skuId!!)
                         this.put("background_id", backgroundSelect)
                     }
 
@@ -449,7 +449,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
             viewModel.processSku(
                 Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-                viewModel.sku.value?.skuId!!,
+                viewModel.sku?.skuId!!,
                 backgroundSelect,
                 false,
                 viewModel.numberPlateBlur,
@@ -466,8 +466,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 is Resource.Success -> {
                     //update processed state
                     viewModel.updateIsProcessed(
-                        viewModel.sku.value!!.projectId!!,
-                        viewModel.sku.value!!.skuId!!
+                        viewModel.sku!!.projectId!!,
+                        viewModel.sku!!.skuId!!
                     )
 
                     Utilities.hideProgressDialog()
@@ -476,7 +476,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         Events.PROCESS,
                         HashMap<String, Any?>()
                             .apply {
-                                this.put("sku_id", viewModel.sku.value?.skuId!!)
+                                this.put("sku_id", viewModel.sku?.skuId!!)
                                 this.put("background_id", backgroundSelect)
                                 this.put("response", Gson().toJson(it).toString())
                             }
@@ -493,7 +493,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     requireContext().captureFailureEvent(
                         Events.PROCESS_FAILED,
                         HashMap<String, Any?>().apply {
-                            this.put("sku_id", viewModel.sku.value?.skuId!!)
+                            this.put("sku_id", viewModel.sku?.skuId!!)
                             this.put("throwable", it.throwable)
                         },
                         it.errorMessage!!

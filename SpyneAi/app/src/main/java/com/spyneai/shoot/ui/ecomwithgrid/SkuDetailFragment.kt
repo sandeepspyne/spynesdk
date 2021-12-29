@@ -75,7 +75,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-                    log("update total images for sku(" + viewModel.sku.value?.skuId.toString() + "): " + totalSkuImages.toString())
+                    log("update total images for sku(" + viewModel.sku?.skuId.toString() + "): " + totalSkuImages.toString())
 
                 }
                 is Resource.Loading -> {
@@ -83,7 +83,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
                 }
                 is Resource.Failure -> {
-                    log("update total images for sku(" + viewModel.sku.value?.skuId.toString() + ") failed")
+                    log("update total images for sku(" + viewModel.sku?.skuId.toString() + ") failed")
                     Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
@@ -173,7 +173,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
     private fun updateTotalFrames() {
         viewModel.updateTotalFrames(
-            viewModel.sku.value?.skuId.toString(),
+            viewModel.sku?.skuId.toString(),
             totalSkuImages.toString(),
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
         )
@@ -185,7 +185,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                 is Resource.Success -> {
                     val properties = HashMap<String,Any?>()
                     properties.apply {
-                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["sku_id"] = viewModel.sku?.skuId!!
                         this["total_frames"] = totalSkuImages.toString()
                     }
 
@@ -200,7 +200,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
                     val properties = HashMap<String,Any?>()
                     properties.apply {
-                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["sku_id"] = viewModel.sku?.skuId!!
                         this["total_frames"] = totalSkuImages.toString()
                     }
 

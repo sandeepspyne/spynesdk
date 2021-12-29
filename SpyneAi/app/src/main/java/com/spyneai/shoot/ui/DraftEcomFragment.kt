@@ -252,7 +252,7 @@ class DraftEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBindin
             tvAngleName?.visibility = View.VISIBLE
             llProgress?.visibility = View.VISIBLE
 //            imgOverlay?.visibility = View.VISIBLE
-            tvSkuName?.text = viewModel.sku.value?.skuName
+            tvSkuName?.text = viewModel.sku?.skuName
         }
 
 //        viewModel.showLeveler.value = true
