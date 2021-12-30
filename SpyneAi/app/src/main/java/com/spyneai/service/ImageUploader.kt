@@ -36,7 +36,8 @@ class ImageUploader(
     var lastIdentifier: String = "0",
     var imageType: String = AppConstants.REGULAR,
     var retryCount: Int = 0,
-    var connectionLost: Boolean = false
+    var connectionLost: Boolean = false,
+    var serviceStopped: Boolean = false
 ) {
     val TAG = "ImageUploader"
 
@@ -77,16 +78,27 @@ class ImageUploader(
         do {
             lastIdentifier = getUniqueIdentifier()
 
+            val remaingData = HashMap<String,Any?>()
+                .apply {
+                    put("remaining_images",JSONObject().apply {
+                        put("upload_remaining",localRepository.totalRemainingUpload())
+                        put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                    }.toString())
+                }
+
+            if (serviceStopped){
+                context.captureEvent(
+                    Events.VIDEO_SERVICE_STOPPED_BREAK,
+                    remaingData
+                )
+                Utilities.saveBool(context,AppConstants.VIDEO_UPLOADING_RUNNING,false)
+                break
+            }
+
             if (connectionLost){
                 context.captureEvent(
                     AppConstants.CONNECTION_BREAK,
-                    HashMap<String,Any?>()
-                        .apply {
-                            put("remaining_images",JSONObject().apply {
-                                put("upload_remaining",localRepository.totalRemainingUpload())
-                                put("mark_done_remaining",localRepository.totalRemainingMarkDone())
-                            }.toString())
-                        }
+                    remaingData
                 )
                 Utilities.saveBool(context,AppConstants.UPLOADING_RUNNING,false)
                 listener.onConnectionLost()
@@ -341,7 +353,7 @@ class ImageUploader(
         } while (image != null)
 
         //upload images clicked while service uploading skipped images
-        if (!connectionLost){
+        if (!connectionLost && !serviceStopped){
             deleteTempFiles(File(outputDirectory))
             listener.onUploaded()
             Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)

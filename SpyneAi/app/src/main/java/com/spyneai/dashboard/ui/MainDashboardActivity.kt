@@ -3,7 +3,6 @@ package com.spyneai.dashboard.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -37,11 +36,13 @@ import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
-import com.spyneai.threesixty.ui.fragments.ThreeSixtyBackgroundFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+
+import android.app.NotificationManager
+import android.content.Context
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -91,9 +92,7 @@ class MainDashboardActivity : AppCompatActivity() {
         }
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
-
-            Log.d(TAG, "onCreate: " + getString(R.string.app_name))
-
+            
             when (it.itemId) {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
 
@@ -145,8 +144,26 @@ class MainDashboardActivity : AppCompatActivity() {
                 SendSkusData().startWork()
             }
         }
+
     }
 
+    private fun getNotificationText(id: Int) : String? {
+        var content:String? = ""
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val barNotifications = notificationManager.activeNotifications
+            for (notification in barNotifications) {
+                if (notification.id == id) {
+                    notification.notification.extras?.let {
+                        content = it.getString("android.text")
+                    }
+
+                }
+            }
+        }
+
+        return content
+    }
 
     private fun continueShoot() {
         when (getString(R.string.app_name)) {
@@ -320,37 +337,16 @@ class MainDashboardActivity : AppCompatActivity() {
         captureEvent("ALL PERMISSIONS GRANTED", properties)
 
         cancelAllWorkers()
-        startUploadService()
-        startVideoUploadService()
+        checkPendingImages()
+        checkPendingVideos()
        // checkFolderUpload()
     }
 
-    private fun startVideoUploadService() {
+    private fun checkPendingVideos() {
         val shootLocalRepository = VideoLocalRepository()
         if (shootLocalRepository.getOldestVideo("0").itemId != null
             || shootLocalRepository.getOldestVideo("-1").itemId != null
         ) {
-
-            if (!isMyServiceRunning(VideoUploadService::class.java))
-                Utilities.saveBool(this, AppConstants.VIDEO_UPLOADING_RUNNING, false)
-
-            var action = Actions.START
-            if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-                return
-
-            val serviceIntent = Intent(this, VideoUploadService::class.java)
-            serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, MainDashboardActivity::class.java.simpleName)
-            serviceIntent.action = action.name
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                log("Starting the service in >=26 Mode")
-                ContextCompat.startForegroundService(this, serviceIntent)
-                return
-            } else {
-                log("Starting the service in < 26 Mode")
-                startService(serviceIntent)
-            }
-
             val properties = HashMap<String,Any?>()
                 .apply {
                     put("service_state", "Started")
@@ -362,11 +358,54 @@ class MainDashboardActivity : AppCompatActivity() {
                     put("medium", "Main Actity")
                 }
 
-            captureEvent(Events.VIDEO_SERVICE_STARTED, properties)
+            if (!isMyServiceRunning(VideoUploadService::class.java)){
+                startVideoService(properties)
+            }else {
+                captureEvent("VIDEO UPLOADING SERVICE ALREADY RUNNING", properties)
+                val content = getNotificationText(102)
+                content?.let {
+                    if (it == "Video uploading in progress..."){
+                        var action = Actions.STOP
+                        val serviceIntent = Intent(this, VideoUploadService::class.java)
+                        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, MainDashboardActivity::class.java.simpleName)
+                        serviceIntent.action = action.name
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            ContextCompat.startForegroundService(this, serviceIntent)
+                            return
+                        } else {
+                            startService(serviceIntent)
+                        }
+
+                        startVideoService(properties)
+                    }
+                }
+            }
         }
     }
 
-    private fun startUploadService() {
+    private fun startVideoService(properties: HashMap<String,Any?>) {
+        Utilities.saveBool(this, AppConstants.VIDEO_UPLOADING_RUNNING, false)
+
+        var action = Actions.START
+        if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+            return
+
+        val serviceIntent = Intent(this, VideoUploadService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, MainDashboardActivity::class.java.simpleName)
+        serviceIntent.action = action.name
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ContextCompat.startForegroundService(this, serviceIntent)
+            return
+        } else {
+            startService(serviceIntent)
+        }
+
+        captureEvent(Events.VIDEO_SERVICE_STARTED, properties)
+    }
+
+    private fun checkPendingImages() {
         val shootLocalRepository = ImageLocalRepository()
         if (shootLocalRepository.getOldestImage("0").itemId != null
             || shootLocalRepository.getOldestImage("-1").itemId != null
@@ -384,31 +423,53 @@ class MainDashboardActivity : AppCompatActivity() {
                 }
 
             if (!isMyServiceRunning(ImageUploadingService::class.java)){
-                Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
-
-                var action = Actions.START
-                if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-                    return
-
-                val serviceIntent = Intent(this, ImageUploadingService::class.java)
-                serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,MainDashboardActivity::class.simpleName)
-                serviceIntent.action = action.name
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    log("Starting the service in >=26 Mode")
-                    ContextCompat.startForegroundService(this, serviceIntent)
-                    return
-                } else {
-                    log("Starting the service in < 26 Mode")
-                    startService(serviceIntent)
-                }
-                captureEvent(Events.SERVICE_STARTED, properties)
+                startImageService(properties)
             }else {
                 captureEvent(Events.SERVICE_ALREADY_RUNNING, properties)
+
+                val content = getNotificationText(100)
+                content?.let {
+                    if (it == getString(R.string.image_uploading_in_progess)){
+                        var action = Actions.STOP
+                        val serviceIntent = Intent(this, ImageUploadingService::class.java)
+                        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, MainDashboardActivity::class.java.simpleName)
+                        serviceIntent.action = action.name
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            ContextCompat.startForegroundService(this, serviceIntent)
+                            return
+                        } else {
+                            startService(serviceIntent)
+                        }
+                        startImageService(properties)
+                    }
+                }
             }
 
 
         }
+    }
+
+    private fun startImageService(properties: HashMap<String, Any?>) {
+        Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
+
+        var action = Actions.START
+        if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+            return
+
+        val serviceIntent = Intent(this, ImageUploadingService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,MainDashboardActivity::class.simpleName)
+        serviceIntent.action = action.name
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            log("Starting the service in >=26 Mode")
+            ContextCompat.startForegroundService(this, serviceIntent)
+            return
+        } else {
+            log("Starting the service in < 26 Mode")
+            startService(serviceIntent)
+        }
+        captureEvent(Events.SERVICE_STARTED, properties)
     }
 
 

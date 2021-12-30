@@ -21,6 +21,7 @@ import com.spyneai.service.setServiceState
 import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.utils.logUpload
 import com.spyneai.threesixty.data.model.VideoDetails
+import io.sentry.protocol.App
 
 class VideoUploadService : Service(), VideoUploader.Listener {
     private var wakeLock: PowerManager.WakeLock? = null
@@ -30,7 +31,7 @@ class VideoUploadService : Service(), VideoUploader.Listener {
     private var receiver: VideoConnectionReceiver? = null
     var uploadRunning = false
     var isConnected = false
-    private var imageUploader : VideoUploader? = null
+    private var videoUploader : VideoUploader? = null
     private var notificationId = 0
     val notificationChannelId = "PROCESSING SERVICE CHANNEL"
     var currentVideo : VideoDetails? = null
@@ -165,6 +166,15 @@ class VideoUploadService : Service(), VideoUploader.Listener {
 
             stopForeground(false)
             stopSelf()
+
+            val properties = java.util.HashMap<String, Any?>()
+                .apply {
+                    put("service_state", "Stopped")
+                    put("medium", "Image Uploading Service")
+                }
+
+            captureEvent(Events.VIDEO_SERVICE_STOPPED, properties)
+            videoUploader?.serviceStopped = true
         } catch (e: Exception) {
             log("Service stopped without being started: ${e.message}")
         }
@@ -262,7 +272,7 @@ class VideoUploadService : Service(), VideoUploader.Listener {
                         put("medium","Service")
                     })
 
-                imageUploader?.connectionLost = true
+                videoUploader?.connectionLost = true
             }
         }
     }
@@ -272,14 +282,16 @@ class VideoUploadService : Service(), VideoUploader.Listener {
 
         uploadRunning = true
 
-        if (imageUploader == null)
-            imageUploader = VideoUploader(this,
+        if (videoUploader == null)
+            videoUploader = VideoUploader(this,
                 VideoLocalRepository(),
                 ThreeSixtyRepository(),
                 this
             )
 
-        imageUploader!!.uploadParent(
+        videoUploader?.connectionLost = false
+        videoUploader?.serviceStopped = false
+        videoUploader!!.uploadParent(
             type,
             startedBy = serviceStartedBy
         )

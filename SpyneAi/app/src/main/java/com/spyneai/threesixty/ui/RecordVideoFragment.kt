@@ -397,7 +397,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
     private fun recordVideo() {
         val localVideoCapture = videoCapture ?: throw IllegalStateException("Camera initialization failed.")
 
-        val filename = "$outputDirectory/${viewModel.videoDetails.skuName+"_"+viewModel.videoDetails.skuId+"_"+System.currentTimeMillis()}"
+        val filename = "${viewModel.videoDetails.skuName+"_"+viewModel.videoDetails.skuId+"_"+System.currentTimeMillis()}"
 
         // Options fot the output video file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -414,7 +414,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
             }
         } else {
             File(outputDirectory).mkdirs()
-            val file = File(outputDirectory, "${filename}..mp4")
+            val file = File(outputDirectory, "${filename}.mp4")
 
             VideoCapture.OutputFileOptions.Builder(file)
         }.build()

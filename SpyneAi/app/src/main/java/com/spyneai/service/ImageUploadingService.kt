@@ -297,6 +297,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             )
 
         imageUploader?.connectionLost = false
+        imageUploader?.serviceStopped = false
         imageUploader?.uploadParent(type,serviceStartedBy)
     }
 

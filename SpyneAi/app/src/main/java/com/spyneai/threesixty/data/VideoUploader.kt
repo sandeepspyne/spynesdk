@@ -41,7 +41,8 @@ class VideoUploader(val context: Context,
                     var lastIdentifier : String = "0",
                     var videoType: String = AppConstants.REGULAR,
                     var retryCount: Int = 0,
-                    var connectionLost: Boolean = false
+                    var connectionLost: Boolean = false,
+                    var serviceStopped : Boolean = false
 ) {
 
     fun uploadParent(type : String,startedBy : String?) {
@@ -81,16 +82,27 @@ class VideoUploader(val context: Context,
         do {
             lastIdentifier = getUniqueIdentifier()
 
+            val remaingData = HashMap<String,Any?>()
+                .apply {
+                    put("remaining_videos", JSONObject().apply {
+                        put("upload_remaining",localRepository.totalRemainingUpload())
+                        put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                    }.toString())
+                }
+
+            if (serviceStopped){
+                context.captureEvent(
+                    Events.IMAGE_SERVICE_STOPPED_BREAK,
+                    remaingData
+                )
+                Utilities.saveBool(context,AppConstants.VIDEO_UPLOADING_RUNNING,false)
+                break
+            }
+
             if (connectionLost){
                 context.captureEvent(
                     Events.VIDEO_CONNECTION_BREAK,
-                    HashMap<String,Any?>()
-                        .apply {
-                            put("remaining_videos", JSONObject().apply {
-                                put("upload_remaining",localRepository.totalRemainingUpload())
-                                put("mark_done_remaining",localRepository.totalRemainingMarkDone())
-                            }.toString())
-                        }
+                    remaingData
                 )
                 Utilities.saveBool(context,AppConstants.VIDEO_UPLOADING_RUNNING,false)
                 listener.onConnectionLost()
@@ -225,7 +237,7 @@ class VideoUploader(val context: Context,
             }
         }while (video != null)
 
-        if (!connectionLost){
+        if (!connectionLost && !serviceStopped){
             listener.onUploaded()
             Utilities.saveBool(context, AppConstants.VIDEO_UPLOADING_RUNNING, false)
         }

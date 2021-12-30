@@ -95,10 +95,7 @@ class VideoLocalRepository {
             Videos.COLUMN_NAME_PRE_SIGNED_URL,
             Videos.COLUMN_NAME_VIDEO_ID)
 
-        // Filter results WHERE "title" = 'My Title'
-        //val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ? OR ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = ?"
-        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} IN (${status}, '1') AND ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = 0"
-        //val projectSelectionArgs = arrayOf("0","0")
+        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} IN (${status}, '1') AND ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${Videos.COLUMN_NAME_VIDEO_PATH} != ''"
 
         // How you want the results sorted in the resulting Cursor
         val sortOrder = "${BaseColumns._ID} ASC"
@@ -147,9 +144,6 @@ class VideoLocalRepository {
                 video.isStatusUpdate = isStatusUpdated
                 video.preSignedUrl = preSignedUrl
                 video.videoId = videoId
-
-                if (videoPath == "")
-                    video.itemId = null
             }
         }
 
@@ -157,83 +151,6 @@ class VideoLocalRepository {
     }
 
 
-    fun getOldestSkippedVideo() : VideoDetails {
-        val projection = arrayOf(
-            BaseColumns._ID,
-            Videos.COLUMN_NAME_PROJECT_ID,
-            Videos.COLUMN_NAME_SKU_NAME,
-            Videos.COLUMN_NAME_SKU_ID,
-            Videos.COLUMN_NAME_TYPE,
-            Videos.COLUMN_NAME_CATEGORY_NAME,
-            Videos.COLUMN_NAME_CATEGORY_SUBCATEGORY_NAME,
-            Videos.COLUMN_NAME_VIDEO_PATH,
-            Videos.COLUMN_NAME_FRAMES,
-            Videos.COLUMN_NAME_BACKGROUND_ID,
-            Videos.COLUMN_NAME_IS_UPLOADED,
-            Videos.COLUMN_NAME_IS_STATUS_UPDATED,
-            Videos.COLUMN_NAME_PRE_SIGNED_URL,
-            Videos.COLUMN_NAME_VIDEO_ID)
-
-        // Filter results WHERE "title" = 'My Title'
-        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ?"
-        val projectSelectionArgs = arrayOf("-1")
-
-        // How you want the results sorted in the resulting Cursor
-        val sortOrder = "${BaseColumns._ID} ASC"
-
-        val cursor = dbReadable.query(
-            Videos.TABLE_NAME,   // The table to query
-            projection,             // The array of columns to return (pass null to get all)
-            selection,              // The columns for the WHERE clause
-            projectSelectionArgs,          // The values for the WHERE clause
-            null,                   // don't group the rows
-            null,                   // don't filter by row groups
-            sortOrder,               // The sort order
-            "1"
-        )
-
-        val video = VideoDetails()
-
-
-        with(cursor) {
-            while (moveToNext()) {
-                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
-                val projectId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_PROJECT_ID))
-                val skuName = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_SKU_NAME))
-                val skuId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_SKU_ID))
-                val type = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_TYPE))
-                val category = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_CATEGORY_NAME))
-                val subcategory = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_CATEGORY_SUBCATEGORY_NAME))
-                val videoPath = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_PATH))
-                val frames = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_FRAMES))
-                val backgroundId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_BACKGROUND_ID))
-                val isStatusUpdated = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_IS_STATUS_UPDATED))
-                val isUploaded = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_IS_UPLOADED))
-                val preSignedUrl = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_PRE_SIGNED_URL))
-                val videoId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_ID))
-
-                video.itemId = itemId
-                video.projectId = projectId
-                video.skuName = skuName
-                video.skuId = skuId
-                video.type = type
-                video.categoryName = category
-                video.subCategory = subcategory
-                video.videoPath = videoPath
-                video.frames = frames
-                video.backgroundId = backgroundId
-                video.isUploaded
-                video.isStatusUpdate = isStatusUpdated
-                video.preSignedUrl = preSignedUrl
-                video.videoId = videoId
-
-                if (videoPath == "")
-                    video.itemId = null
-            }
-        }
-
-        return video
-    }
 
     fun skipVideo(itemId: Long,skip : Int) : Int{
         val videoValues = ContentValues().apply {
