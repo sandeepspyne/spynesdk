@@ -28,6 +28,7 @@ class ScanWifiDialog : BaseDialogFragment<ShootViewModel, FragmentScanWifiDialog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        dialog?.setCancelable(false)
         imageName= viewModel.sku.value?.skuName!!+ "_"+ viewModel.sku.value?.skuId!!+"_360int_1.JPG"
         WifiUtils.withContext(requireContext()).enableWifi()
         WifiUtils.withContext(requireContext()).scanWifi(this::getScanResults).start()
