@@ -41,7 +41,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.ScanWifiDialog
-import com.spyneai.adapter.WifiAdapter
 import com.spyneai.logout.LogoutDialog
 import com.thanosfisherman.wifiutils.WifiUtils
 
@@ -110,39 +109,11 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
             viewModel.selectBackground.value = true
         }
 
-//        binding.tvSkipShoot.setOnClickListener {
-//            if (binding.tvShoot.text.toString() == "Shoot 360") {
-//               // viewModel.interior360Dialog.value = true
-//                dismiss()
-//                viewModel.selectBackground.value = true
-//            }else {
-//
-//            }
-//        }
 
 
         binding.tvShoot.setOnClickListener {
             if (binding.tvShoot.text.toString() == "Shoot 360") {
                 imageName= viewModel.sku.value?.skuName!!+ "_"+ viewModel.sku.value?.skuId!!+"_360int_1.JPG"
-//                WifiUtils.withContext(requireContext()).enableWifi()
-                WifiUtils.withContext(requireContext()).scanWifi(this::getScanResults).start()
-//                WifiUtils.withContext(requireContext())
-//                    .connectWith("THETAYP00110544.OSC")
-//                    .setTimeout(40000)
-//                    .onConnectionResult(object : ConnectionSuccessListener {
-//                        override fun success() {
-//                            Toast.makeText(requireContext(), "SUCCESSFULLY CONNECTED TO RICOH THETA CAMERA", Toast.LENGTH_SHORT).show()
-//                        }
-//
-//                        override fun failed(errorCode: ConnectionErrorCode) {
-//                            Toast.makeText(
-//                                requireContext(),
-//                                "EPIC FAIL!$errorCode",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                    })
-//                    .start()
 
                 val wm = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
                 val ip: String = Formatter.formatIpAddress(wm.connectionInfo.ipAddress)
@@ -216,14 +187,6 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
     }
 
 
-    private fun getScanResults(results: List<ScanResult>) {
-        if (results.isEmpty()) {
-//            adapter = WifiAdapter(results)
-            return
-        }
-//        adapter = WifiAdapter(results)
-    }
-
 
     private fun startService() {
         var action = Actions.START
@@ -290,7 +253,6 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                     viewModel.shootList.value?.size?.plus(1)
                 }
                 viewModel.threeSixtyInteriorSelected = true
-                viewModel.shootList.value?.size?.plus(1)
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.insertImage(ShootData(
                         "/storage/emulated/0/DCIM/Spyne/"+viewModel.sku.value?.skuName!!+ "_"+

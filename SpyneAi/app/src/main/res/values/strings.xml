@@ -358,6 +358,7 @@
     <string name="tint_window">Tint Window</string>
     <string name="bikes_subcategory">Select your Bikes\'s sub-category</string>
     <string name="near_location">It seems you are not near the location. Please check the location you have selected.</string>
+    <string name="steps">Step 1: Switch on the Ricoh Camera \nStep 2: Go to the Wi-Fi network \nStep 3: Connect with Ricoh network \nStep 4: Come back to  APP and continue shoot.</string>
 
 
 </resources>
