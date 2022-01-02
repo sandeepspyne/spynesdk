@@ -33,10 +33,9 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
-import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
-import com.spyneai.dashboard.adapters.TutorialVideosAdapter
-import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.ui.adapters.CompletedDashboardAdapter
+import com.spyneai.dashboard.ui.adapters.OngoingDashboardAdapter
+import com.spyneai.dashboard.ui.adapters.TutorialVideosAdapter
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.needs.AppConstants
@@ -62,8 +61,8 @@ class HomeDashboardFragment :
     lateinit var completedDashboardAdapter: CompletedDashboardAdapter
     lateinit var completedProjectList: ArrayList<GetProjectsResponse.Project_data>
     lateinit var ongoingProjectList: ArrayList<GetProjectsResponse.Project_data>
-    var categoriesList : ArrayList<NewCategoriesResponse.Data>? = null
-    var filteredList = ArrayList<NewCategoriesResponse.Data>()
+    var categoriesList : ArrayList<NewCategoriesResponse.Category>? = null
+    var filteredList = ArrayList<NewCategoriesResponse.Category>()
 
 
 
@@ -103,26 +102,21 @@ class HomeDashboardFragment :
         PACKAGE_NAME = requireContext().getPackageName().toString()
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
-
-
-
-            binding.tvCatViewall.setOnClickListener {
+        binding.tvCatViewall.setOnClickListener {
                 if(binding.tvCatViewall.text=="View All"){
                     if (categoriesAdapter != null && categoriesList != null){
-                        categoriesAdapter?.categoriesResponseList = categoriesList as ArrayList<NewCategoriesResponse.Data>
+                        categoriesAdapter?.categoriesResponseList = categoriesList as ArrayList<NewCategoriesResponse.Category>
                         categoriesAdapter?.notifyDataSetChanged()
 
                         binding.tvCatViewall.setText("View Less")
                     }
                 }else{
-                    categoriesAdapter?.categoriesResponseList = filteredList as ArrayList<NewCategoriesResponse.Data>
+                    categoriesAdapter?.categoriesResponseList = filteredList as ArrayList<NewCategoriesResponse.Category>
                     categoriesAdapter?.notifyDataSetChanged()
 
                     binding.tvCatViewall.setText("View All")
                 }
             }
-
-
 
         if (PACKAGE_NAME.equals("com.spyneai.debug")) {
             newUserCreditDialog()
@@ -312,7 +306,7 @@ class HomeDashboardFragment :
                     binding.shimmerCategories.visibility = View.GONE
                     binding.rvDashboardCategories.visibility = View.VISIBLE
 
-                    categoriesList = it.value.data as ArrayList<NewCategoriesResponse.Data>
+                    categoriesList = it.value.data as ArrayList<NewCategoriesResponse.Category>
 
 
                     filteredList.clear()
@@ -324,7 +318,7 @@ class HomeDashboardFragment :
 
                         }
                         else {
-                            filteredList = categoriesList as ArrayList<NewCategoriesResponse.Data>
+                            filteredList = categoriesList as ArrayList<NewCategoriesResponse.Category>
                             binding.tvCatViewall.visibility = View.GONE
                     }
 

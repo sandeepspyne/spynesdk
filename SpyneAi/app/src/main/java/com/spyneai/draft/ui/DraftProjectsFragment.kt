@@ -17,15 +17,16 @@ import com.spyneai.draft.ui.adapter.LocalDraftProjectsAdapter
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
-import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.model.Project
+
+import kotlinx.coroutines.*
+
 
 class DraftProjectsFragment : BaseFragment<DraftViewModel, FragmentDraftProjectsBinding>() {
 
     lateinit var draftProjectsAdapter: DraftProjectsAdapter
-    lateinit var localDraftProjectsAdapter : LocalDraftProjectsAdapter
+    lateinit var localDraftProjectsAdapter: LocalDraftProjectsAdapter
     lateinit var completedProjectList: ArrayList<GetProjectsResponse.Project_data>
-    lateinit var draftProjectList: ArrayList<Project>
+    lateinit var draftProjectList: ArrayList<com.spyneai.shoot.repository.model.project.Project>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,54 +44,79 @@ class DraftProjectsFragment : BaseFragment<DraftViewModel, FragmentDraftProjects
             draftProjectList
         )
 
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        val layoutManager: RecyclerView.LayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.rvDraftProjects.layoutManager = layoutManager
 
-        viewModel.getDrafts(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
 
-        viewModel.draftResponse.observe(
-            viewLifecycleOwner,  {
-                when (it) {
-                    is Resource.Success -> {
-                        binding.shimmerCompletedSKU.stopShimmer()
-                        binding.shimmerCompletedSKU.visibility = View.GONE
-                        binding.rvDraftProjects.visibility = View.VISIBLE
+        binding.shimmerCompletedSKU.stopShimmer()
+        binding.shimmerCompletedSKU.visibility = View.GONE
+        binding.rvDraftProjects.visibility = View.VISIBLE
+        showLocalDraftProjects()
 
-                        if (it.value.data != null){
-                            val localDraftList = viewModel.getDraftsFromLocal()
+//        viewModel.getDrafts(
+//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
+//        )
+//
+//        viewModel.draftResponse.observe(
+//            viewLifecycleOwner, {
+//                when (it) {
+//                    is Resource.Success -> {
+//                        binding.shimmerCompletedSKU.stopShimmer()
+//                        binding.shimmerCompletedSKU.visibility = View.GONE
+//                        binding.rvDraftProjects.visibility = View.VISIBLE
+//
+//                        if (it.value.data != null) {
+//                            val localDraftList = viewModel.getDraftsFromLocal()
+//
+//                            if (it.value.data.project_data.size == localDraftList.size) {
+//                                draftProjectList.clear()
+//                                draftProjectList.addAll(viewModel.getDraftsFromLocal())
+//                                binding.rvDraftProjects.adapter = localDraftProjectsAdapter
+//                                localDraftProjectsAdapter.notifyDataSetChanged()
+//                            } else {
+//                                completedProjectList.clear()
+//                                completedProjectList.addAll(it.value.data.project_data)
+//                                binding.rvDraftProjects.adapter = draftProjectsAdapter
+//                                draftProjectsAdapter.notifyDataSetChanged()
+//                            }
+//                        }
+//                    }
+//
+//                    is Resource.Failure -> {
+//                        binding.shimmerCompletedSKU.stopShimmer()
+//                        binding.shimmerCompletedSKU.visibility = View.GONE
+//                        binding.rvDraftProjects.visibility = View.VISIBLE
+//
+//                        if (it.errorCode == 404) {
+//                            binding.rvDraftProjects.visibility = View.GONE
+//                        } else {
+//                            requireContext().captureFailureEvent(
+//                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String, Any?>(),
+//                                it.errorMessage!!
+//                            )
+//                            handleApiError(it)
+//                        }
+//                    }
+//                }
+//            }
+//        )
+    }
 
-                            if (it.value.data.project_data.size == localDraftList.size) {
-                                draftProjectList.clear()
-                                draftProjectList.addAll(viewModel.getDraftsFromLocal())
-                                binding.rvDraftProjects.adapter = localDraftProjectsAdapter
-                                localDraftProjectsAdapter.notifyDataSetChanged()
-                            }else {
-                                completedProjectList.clear()
-                                completedProjectList.addAll(it.value.data.project_data)
-                                binding.rvDraftProjects.adapter = draftProjectsAdapter
-                                draftProjectsAdapter.notifyDataSetChanged()
-                            }
-                        }
-                    }
+    private fun showLocalDraftProjects() {
+        GlobalScope.launch(Dispatchers.IO) {
+            val localDraftList = viewModel.getDraftsFromLocal()
 
-                    is Resource.Failure -> {
-                        binding.shimmerCompletedSKU.stopShimmer()
-                        binding.shimmerCompletedSKU.visibility = View.GONE
-                        binding.rvDraftProjects.visibility = View.VISIBLE
-
-                        if (it.errorCode == 404){
-                            binding.rvDraftProjects.visibility = View.GONE
-                        }else{
-                            requireContext().captureFailureEvent(
-                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
-                                it.errorMessage!!
-                            )
-                            handleApiError(it)
-                        }
-                    }
-                }
+            GlobalScope.launch(Dispatchers.Main){
+                draftProjectList.clear()
+                draftProjectList.addAll(localDraftList)
+                binding.rvDraftProjects.adapter = localDraftProjectsAdapter
+                localDraftProjectsAdapter.notifyDataSetChanged()
             }
-        )
+
+        }
+
+
     }
 
     override fun getViewModel() = DraftViewModel::class.java

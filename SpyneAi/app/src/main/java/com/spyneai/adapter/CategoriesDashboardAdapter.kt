@@ -19,7 +19,7 @@ import com.spyneai.needs.Utilities
 
 public class CategoriesDashboardAdapter(
     val context: Context,
-    var categoriesResponseList: ArrayList<NewCategoriesResponse.Data>,
+    var categoriesResponseList: ArrayList<NewCategoriesResponse.Category>,
     val btnlistener: BtnClickListener
 )
     : RecyclerView.Adapter<CategoriesDashboardAdapter.ViewHolder>() {

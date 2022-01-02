@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.adapters
+package com.spyneai.dashboard.ui.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.developer__.BeforeAfterSlider
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesDashboardAdapter
-import com.spyneai.dashboard.data.model.SliderModel
+import com.spyneai.dashboard.repository.model.SliderModel
 
 class SliderAdapter(
     val context: Context,

@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.data.model
+package com.spyneai.dashboard.repository.model
 
 
 import com.google.gson.annotations.SerializedName

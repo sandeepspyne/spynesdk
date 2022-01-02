@@ -63,7 +63,6 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
     private var googleApiClient: GoogleApiClient? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -79,11 +78,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
         googleApiClient = GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build()
 
-
-
         setLocale()
-
-
 
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 

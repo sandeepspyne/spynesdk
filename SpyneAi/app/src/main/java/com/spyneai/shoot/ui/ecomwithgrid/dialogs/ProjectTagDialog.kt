@@ -23,22 +23,16 @@ import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.data.model.LayoutHolder
-import com.spyneai.dashboard.ui.handleApiError
+import com.spyneai.dashboard.repository.model.LayoutHolder
 import com.spyneai.databinding.ItemProjectChipedittextBinding
 import com.spyneai.databinding.ItemProjectEdittextBinding
 import com.spyneai.databinding.ProjectTagDialogBinding
 import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.repository.model.sku.Sku
-import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONArray
@@ -135,16 +129,16 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
     private fun setTagsData() {
         val data = LayoutHolder.data
         try {
-            if (data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty()) {
+            if (data!![LayoutHolder.categoryPosition].dynamic_layout?.project_dialog.isNullOrEmpty()) {
                 return
             }
         } catch (e: Exception) {
             return
         }
 
-        val layout = data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog
+        val layout = data!![LayoutHolder.categoryPosition].dynamic_layout?.project_dialog
 
-        layout.forEach {
+        layout?.forEach {
             when (it.field_name) {
                 "Restaurant ID", "Restaurant Name" -> {
                     val layout = inflator.inflate(R.layout.item_project_edittext, null)
@@ -253,81 +247,83 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         var isValid = true
 
         try {
-            if (LayoutHolder.data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty())
+            if (LayoutHolder.data!![LayoutHolder.categoryPosition].dynamic_layout?.project_dialog.isNullOrEmpty())
                 return isValid
         } catch (e: Exception) {
             return isValid
         }
 
 
-        val layout = LayoutHolder.data!![0].dynamic_layout.project_dialog
+        val layout = LayoutHolder.data!![0].dynamic_layout?.project_dialog
 
         bindingList.forEachIndexed { index, it ->
-            when (it) {
-                is ItemProjectEdittextBinding -> {
-                    if (layout[index].is_required) {
-                        if (it.et.text.toString().isEmpty()) {
-                            requiredError(it.et, layout[index].field_name)
-                            return !isValid
-                        } else {
-                            if (!layout[index].all_caps) {
-                                var text = it.et.text.toString()
-                                text = text.lowercase()
-                                data.put(layout[index].field_id, text)
-                            } else {
-                                data.put(layout[index].field_id, it.et.text.toString())
-                            }
+           layout?.let { layout ->
+               when (it) {
+                   is ItemProjectEdittextBinding -> {
+                       if (layout[index].is_required) {
+                           if (it.et.text.toString().isEmpty()) {
+                               requiredError(it.et, layout[index].field_name)
+                               return !isValid
+                           } else {
+                               if (!layout[index].all_caps) {
+                                   var text = it.et.text.toString()
+                                   text = text.lowercase()
+                                   data.put(layout[index].field_id, text)
+                               } else {
+                                   data.put(layout[index].field_id, it.et.text.toString())
+                               }
 
-                        }
-                    } else {
-                        data.put(layout[index].field_id, it.et.text.toString())
-                    }
-                }
-                is ItemProjectChipedittextBinding -> {
-                    if (layout[index].is_required) {
-                        if (it.et.text.toString().isEmpty()) {
-                            requiredError(it.et, layout[index].field_name)
-                            return !isValid
-                        } else if (it.chipGroup.childCount == 0) {
-                            if (!layout[index].all_caps) {
-                                var text = it.et.text.toString()
-                                text = text.lowercase()
-                                data.put(layout[index].field_id, text)
-                            } else {
-                                data.put(layout[index].field_id, it.et.text.toString())
-                            }
-                        } else {
+                           }
+                       } else {
+                           data.put(layout[index].field_id, it.et.text.toString())
+                       }
+                   }
+                   is ItemProjectChipedittextBinding -> {
+                       if (layout[index].is_required) {
+                           if (it.et.text.toString().isEmpty()) {
+                               requiredError(it.et, layout[index].field_name)
+                               return !isValid
+                           } else if (it.chipGroup.childCount == 0) {
+                               if (!layout[index].all_caps) {
+                                   var text = it.et.text.toString()
+                                   text = text.lowercase()
+                                   data.put(layout[index].field_id, text)
+                               } else {
+                                   data.put(layout[index].field_id, it.et.text.toString())
+                               }
+                           } else {
 
-                            var array = JSONArray()
+                               var array = JSONArray()
 
-                            it.chipGroup.forEachIndexed { index, view ->
-                                val chip = it.chipGroup.getChildAt(index) as Chip
-                                array.put(chip.text)
-                            }
-                            data.put(layout[index].field_id, array)
-                        }
-                    } else if (it.chipGroup.childCount == 0) {
-                        if (!layout[index].all_caps) {
-                            var text = it.et.text.toString()
-                            text = text.lowercase()
-                            data.put(layout[index].field_id, text)
-                        } else {
-                            data.put(layout[index].field_id, it.et.text.toString())
-                        }
-                    } else {
-                        var array = JSONArray()
+                               it.chipGroup.forEachIndexed { index, view ->
+                                   val chip = it.chipGroup.getChildAt(index) as Chip
+                                   array.put(chip.text)
+                               }
+                               data.put(layout[index].field_id, array)
+                           }
+                       } else if (it.chipGroup.childCount == 0) {
+                           if (!layout[index].all_caps) {
+                               var text = it.et.text.toString()
+                               text = text.lowercase()
+                               data.put(layout[index].field_id, text)
+                           } else {
+                               data.put(layout[index].field_id, it.et.text.toString())
+                           }
+                       } else {
+                           var array = JSONArray()
 
-                        it.chipGroup.forEachIndexed { index, view ->
-                            val chip = it.chipGroup.getChildAt(index) as Chip
-                            array.put(chip.text)
-                        }
-                        data.put(layout[index].field_id, array)
-                    }
-                }
-                else -> {
+                           it.chipGroup.forEachIndexed { index, view ->
+                               val chip = it.chipGroup.getChildAt(index) as Chip
+                               array.put(chip.text)
+                           }
+                           data.put(layout[index].field_id, array)
+                       }
+                   }
+                   else -> {
 
-                }
-            }
+                   }
+               }
+           }
         }
 
         return isValid
@@ -344,6 +340,12 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         )
 
         viewModel.project = project
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val itemId = viewModel.insertProject(
+                project
+            )
+        }
 
         Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
         //notify project created

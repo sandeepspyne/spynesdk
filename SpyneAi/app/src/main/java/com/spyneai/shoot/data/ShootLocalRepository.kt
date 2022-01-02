@@ -21,15 +21,14 @@ class ShootLocalRepository {
     private val TAG = "ShootLocalRepository"
 
 
-
-    fun insertProject(project: com.spyneai.shoot.repository.model.project.Project) : Long{
+    fun insertProject(project: com.spyneai.shoot.repository.model.project.Project): Long {
         return Room.databaseBuilder(
             BaseApplication.getContext(),
             AppDatabase::class.java, "spyne-db"
         ).build().shootDao().insertProject(project)
     }
 
-    suspend fun insertSku(sku: com.spyneai.shoot.repository.model.sku.Sku) : Long{
+    suspend fun insertSku(sku: com.spyneai.shoot.repository.model.sku.Sku): Long {
         return Room.databaseBuilder(
             BaseApplication.getContext(),
             AppDatabase::class.java, "spyne-db"
@@ -37,7 +36,7 @@ class ShootLocalRepository {
     }
 
 
-    fun insertProject(project : Project) {
+    fun insertProject(project: Project) {
         val values = ContentValues().apply {
             put(Projects.COLUMN_NAME_PROJECT_NAME, project.projectName)
             put(Projects.COLUMN_NAME_CREATED_ON, project.createdOn)
@@ -51,82 +50,87 @@ class ShootLocalRepository {
         }
 
         val newRowId = dbWritable?.insert(Projects.TABLE_NAME, null, values)
-        com.spyneai.shoot.utils.log("insertImage: "+newRowId)
+        com.spyneai.shoot.utils.log("insertImage: " + newRowId)
     }
 
-    fun getDraftProjects() : ArrayList<Project>{
-        val projection = arrayOf(
-            BaseColumns._ID,
-            Projects.COLUMN_NAME_PROJECT_NAME,
-            Projects.COLUMN_NAME_CREATED_ON,
-            Projects.COLUMN_NAME_CATEGORY_NAME,
-            Projects.COLUMN_NAME_CATEGORY_ID,
-            Projects.COLUMN_NAME_SUB_CATEGORY_NAME,
-            Projects.COLUMN_NAME_SUB_CATEGORY_ID,
-            Projects.COLUMN_NAME_EXTERIOR_ANGLES,
-            Projects.COLUMN_NAME_PROJECT_ID,
-            Projects.COLUMN_NAME_STATUS)
+//    fun getDraftProjects() : ArrayList<Project>{
+//        val projection = arrayOf(
+//            BaseColumns._ID,
+//            Projects.COLUMN_NAME_PROJECT_NAME,
+//            Projects.COLUMN_NAME_CREATED_ON,
+//            Projects.COLUMN_NAME_CATEGORY_NAME,
+//            Projects.COLUMN_NAME_CATEGORY_ID,
+//            Projects.COLUMN_NAME_SUB_CATEGORY_NAME,
+//            Projects.COLUMN_NAME_SUB_CATEGORY_ID,
+//            Projects.COLUMN_NAME_EXTERIOR_ANGLES,
+//            Projects.COLUMN_NAME_PROJECT_ID,
+//            Projects.COLUMN_NAME_STATUS)
+//
+//        // Filter results WHERE "title" = 'My Title'
+//         val selection = "${Projects.COLUMN_NAME_STATUS} = ?"
+//        val selectionArgs = arrayOf("draft")
+//
+//        // How you want the results sorted in the resulting Cursor
+//        val sortOrder = "${BaseColumns._ID} DESC"
+//
+//        val cursor = dbReadable.query(
+//            Projects.TABLE_NAME,   // The table to query
+//            projection,             // The array of columns to return (pass null to get all)
+//            selection,              // The columns for the WHERE clause
+//            selectionArgs,          // The values for the WHERE clause
+//            null,                   // don't group the rows
+//            null,                   // don't filter by row groups
+//            sortOrder
+//        )
+//
+//        val projectList = ArrayList<Project>()
+//
+//
+//        with(cursor) {
+//            while (moveToNext()) {
+//                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+//                val projectName = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_PROJECT_NAME))
+//                val createOn = getLong(getColumnIndexOrThrow(Projects.COLUMN_NAME_CREATED_ON))
+//                val categoryName = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_CATEGORY_NAME))
+//                val categoryId = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_CATEGORY_ID))
+//                val subCategoryName = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_SUB_CATEGORY_NAME))
+//                val subCategoryId = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_SUB_CATEGORY_ID))
+//                val exteriorAngles = getInt(getColumnIndexOrThrow(Projects.COLUMN_NAME_EXTERIOR_ANGLES))
+//                val projectId = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_PROJECT_ID))
+//                val status = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_STATUS))
+//
+//                val project = Project()
+//
+//                project.itemId = itemId
+//                project.projectName = projectName
+//                project.createdOn = createOn
+//                project.categoryName = categoryName
+//                project.categoryId = categoryId
+//                project.subCategoryName = subCategoryName
+//                project.subCategoryId = subCategoryId
+//                project.exteriorAngles = exteriorAngles
+//                project.projectId = projectId
+//                project.status = status
+//
+//                //get sku's count
+//                project.skus = getSkusByProjectId(projectId).size
+//
+//                if (project.skus != null && project.skus!! > 0)
+//                    project.thumbnail = getProjectThumbnail(projectId)
+//
+//                project.images = getImagesByProjectId(projectId)
+//
+//                projectList.add(project)
+//            }
+//        }
+//
+//        return projectList
+//    }
 
-        // Filter results WHERE "title" = 'My Title'
-         val selection = "${Projects.COLUMN_NAME_STATUS} = ?"
-        val selectionArgs = arrayOf("draft")
-
-        // How you want the results sorted in the resulting Cursor
-        val sortOrder = "${BaseColumns._ID} DESC"
-
-        val cursor = dbReadable.query(
-            Projects.TABLE_NAME,   // The table to query
-            projection,             // The array of columns to return (pass null to get all)
-            selection,              // The columns for the WHERE clause
-            selectionArgs,          // The values for the WHERE clause
-            null,                   // don't group the rows
-            null,                   // don't filter by row groups
-            sortOrder
-        )
-
-        val projectList = ArrayList<Project>()
-
-
-        with(cursor) {
-            while (moveToNext()) {
-                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
-                val projectName = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_PROJECT_NAME))
-                val createOn = getLong(getColumnIndexOrThrow(Projects.COLUMN_NAME_CREATED_ON))
-                val categoryName = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_CATEGORY_NAME))
-                val categoryId = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_CATEGORY_ID))
-                val subCategoryName = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_SUB_CATEGORY_NAME))
-                val subCategoryId = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_SUB_CATEGORY_ID))
-                val exteriorAngles = getInt(getColumnIndexOrThrow(Projects.COLUMN_NAME_EXTERIOR_ANGLES))
-                val projectId = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_PROJECT_ID))
-                val status = getString(getColumnIndexOrThrow(Projects.COLUMN_NAME_STATUS))
-
-                val project = Project()
-
-                project.itemId = itemId
-                project.projectName = projectName
-                project.createdOn = createOn
-                project.categoryName = categoryName
-                project.categoryId = categoryId
-                project.subCategoryName = subCategoryName
-                project.subCategoryId = subCategoryId
-                project.exteriorAngles = exteriorAngles
-                project.projectId = projectId
-                project.status = status
-
-                //get sku's count
-                project.skus = getSkusByProjectId(projectId).size
-
-                if (project.skus != null && project.skus!! > 0)
-                    project.thumbnail = getProjectThumbnail(projectId)
-
-                project.images = getImagesByProjectId(projectId)
-
-                projectList.add(project)
-            }
-        }
-
-        return projectList
-    }
+    fun getDraftProjects() = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getDraftProjects()
 
     private fun getProjectThumbnail(projectId: String): String? {
         val projection = arrayOf(
@@ -135,12 +139,12 @@ class ShootLocalRepository {
             Images.COLUMN_NAME_SKU_ID,
             Images.COLUMN_NAME_CATEGORY_NAME,
             Images.COLUMN_NAME_IMAGE_PATH,
-            Images.COLUMN_NAME_IMAGE_SEQUENCE)
+            Images.COLUMN_NAME_IMAGE_SEQUENCE
+        )
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_PROJECT_ID} = ?"
         val selectionArgs = arrayOf(projectId)
-
 
 
         // How you want the results sorted in the resulting Cursor
@@ -164,7 +168,8 @@ class ShootLocalRepository {
                 val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
                 val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
                 val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
-                val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
+                val categoryName =
+                    getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
                 val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
                 val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
 
@@ -187,12 +192,12 @@ class ShootLocalRepository {
             Images.COLUMN_NAME_SKU_ID,
             Images.COLUMN_NAME_CATEGORY_NAME,
             Images.COLUMN_NAME_IMAGE_PATH,
-            Images.COLUMN_NAME_IMAGE_SEQUENCE)
+            Images.COLUMN_NAME_IMAGE_SEQUENCE
+        )
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} = ?"
         val selectionArgs = arrayOf(skuId)
-
 
 
         // How you want the results sorted in the resulting Cursor
@@ -216,7 +221,8 @@ class ShootLocalRepository {
                 val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
                 val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
                 val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
-                val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
+                val categoryName =
+                    getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
                 val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
                 val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
 
@@ -248,7 +254,8 @@ class ShootLocalRepository {
             ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID,
             ShootContract.ShootEntry.COLUMN_NAME_IS_360,
             ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED,
-            ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES)
+            ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES
+        )
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_PROJECT_ID} = ?"
@@ -272,20 +279,34 @@ class ShootLocalRepository {
         with(cursor) {
             while (moveToNext()) {
                 val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
-                val projectName = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_PROJECT_NAME))
-                val skuName = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_NAME))
-                val createdOn = getLong(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_CREATED_ON))
-                val categoryName = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_NAME))
-                val categoryId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_ID))
-                val subCategoryName = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_NAME))
-                val subCategoryId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_ID))
-                val projectId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_PROJECT_ID))
-                val skuId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
-                val exteriroAngles = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_EXTERIOR_ANGLES))
-                val backgroundId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID))
-                val is360 = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_IS_360))
-                val isProcessed = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED))
-                val threeSixtyFrames = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES))
+                val projectName =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_PROJECT_NAME))
+                val skuName =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_NAME))
+                val createdOn =
+                    getLong(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_CREATED_ON))
+                val categoryName =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_NAME))
+                val categoryId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_ID))
+                val subCategoryName =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_NAME))
+                val subCategoryId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_ID))
+                val projectId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_PROJECT_ID))
+                val skuId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
+                val exteriroAngles =
+                    getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_EXTERIOR_ANGLES))
+                val backgroundId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID))
+                val is360 =
+                    getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_IS_360))
+                val isProcessed =
+                    getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED))
+                val threeSixtyFrames =
+                    getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES))
 
                 val sku = Sku()
                 sku.itemId = itemId
@@ -324,7 +345,8 @@ class ShootLocalRepository {
             Images.COLUMN_NAME_SKU_ID,
             Images.COLUMN_NAME_CATEGORY_NAME,
             Images.COLUMN_NAME_IMAGE_PATH,
-            Images.COLUMN_NAME_IMAGE_SEQUENCE)
+            Images.COLUMN_NAME_IMAGE_SEQUENCE
+        )
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${Images.COLUMN_NAME_PROJECT_ID} = ?"
@@ -348,14 +370,15 @@ class ShootLocalRepository {
     }
 
 
-    fun getSku(skuId : String) : Sku {
+    fun getSku(skuId: String): Sku {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         val projection = arrayOf(
             BaseColumns._ID,
             ShootContract.ShootEntry.COLUMN_NAME_SKU_ID,
             ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES,
-            ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES)
+            ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES
+        )
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} = ?"
@@ -379,10 +402,13 @@ class ShootLocalRepository {
         with(cursor) {
             while (moveToNext()) {
 //                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
-                val skuId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
+                val skuId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
                 // val categoryName = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_NAME))
-                val totalImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES))
-                val uploadedImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES))
+                val totalImages =
+                    getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES))
+                val uploadedImages =
+                    getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES))
 
                 sku.skuId = skuId
                 //  sku.categoryName = categoryName
@@ -394,7 +420,7 @@ class ShootLocalRepository {
         return sku
     }
 
-    fun insertSku(sku : Sku) {
+    fun insertSku(sku: Sku) {
         //update project subcategory name and subcategory id
         updateProjectSubcategory(sku)
 
@@ -419,7 +445,7 @@ class ShootLocalRepository {
 
         val newRowId = dbWritable?.insert(ShootContract.ShootEntry.TABLE_NAME, null, values)
 
-        com.spyneai.shoot.utils.log("insertSku: "+newRowId)
+        com.spyneai.shoot.utils.log("insertSku: " + newRowId)
     }
 
     private fun updateProjectSubcategory(sku: Sku) {
@@ -449,10 +475,11 @@ class ShootLocalRepository {
             Projects.TABLE_NAME,
             projectValues,
             projectSelection,
-            projectSelectionArgs)
+            projectSelectionArgs
+        )
     }
 
-    fun updateSkuExteriorAngles(skuId: String,angles : Int) {
+    fun updateSkuExteriorAngles(skuId: String, angles: Int) {
         val projectValues = ContentValues().apply {
             put(
                 Projects.COLUMN_NAME_EXTERIOR_ANGLES,
@@ -469,13 +496,12 @@ class ShootLocalRepository {
             ShootContract.ShootEntry.TABLE_NAME,
             projectValues,
             projectSelection,
-            projectSelectionArgs)
+            projectSelectionArgs
+        )
     }
 
 
-
-
-    fun getLastSku() : Sku {
+    fun getLastSku(): Sku {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         val projection = arrayOf(
@@ -483,7 +509,8 @@ class ShootLocalRepository {
             ShootContract.ShootEntry.COLUMN_NAME_SKU_ID,
             ShootContract.ShootEntry.COLUMN_NAME_PROJECT_ID,
             ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID,
-            ShootContract.ShootEntry.COLUMN_NAME_IS_360)
+            ShootContract.ShootEntry.COLUMN_NAME_IS_360
+        )
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED} = ?"
@@ -507,10 +534,14 @@ class ShootLocalRepository {
         with(cursor) {
             while (moveToNext()) {
                 val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
-                val skuId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
-                val projectId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_PROJECT_ID))
-                val backgroundId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID))
-                val is360 = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_IS_360))
+                val skuId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
+                val projectId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_PROJECT_ID))
+                val backgroundId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID))
+                val is360 =
+                    getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_IS_360))
 
                 sku.itemId = itemId
                 sku.projectId = skuId
@@ -524,13 +555,14 @@ class ShootLocalRepository {
     }
 
 
-    fun getUploadedAndTotalImagesCount(skuId : String) : Sku{
+    fun getUploadedAndTotalImagesCount(skuId: String): Sku {
         val projection = arrayOf(
             BaseColumns._ID,
             ShootContract.ShootEntry.COLUMN_NAME_SKU_ID,
             ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES,
             ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES,
-            ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU)
+            ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU
+        )
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} = ?"
@@ -553,10 +585,14 @@ class ShootLocalRepository {
 
         with(cursor) {
             while (moveToNext()) {
-                val skuId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
-                val totalImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES))
-                val uploadedImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES))
-                val processSku = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU))
+                val skuId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
+                val totalImages =
+                    getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES))
+                val uploadedImages =
+                    getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES))
+                val processSku =
+                    getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU))
 
                 sku.skuId = skuId
                 sku.totalImages = totalImages
@@ -568,7 +604,7 @@ class ShootLocalRepository {
         return sku
     }
 
-    fun updateSubcategoryId(skuId : String,subCategoryId : String,subCategoryName: String) {
+    fun updateSubcategoryId(skuId: String, subCategoryId: String, subCategoryName: String) {
         val values = ContentValues().apply {
             put(
                 ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_ID,
@@ -589,13 +625,13 @@ class ShootLocalRepository {
             ShootContract.ShootEntry.TABLE_NAME,
             values,
             selection,
-            selectionArgs)
-
+            selectionArgs
+        )
 
 
     }
 
-    fun updateVideoSkuLocally(sku : Sku) {
+    fun updateVideoSkuLocally(sku: Sku) {
         val values = ContentValues().apply {
             put(
                 ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_ID,
@@ -620,24 +656,25 @@ class ShootLocalRepository {
             ShootContract.ShootEntry.TABLE_NAME,
             values,
             selection,
-            selectionArgs)
+            selectionArgs
+        )
 
         val s = ""
 
-        Log.d(TAG, "updateVideoSkuLocally: "+count)
+        Log.d(TAG, "updateVideoSkuLocally: " + count)
     }
 
-    fun processSku(skuId: String) : Boolean {
+    fun processSku(skuId: String): Boolean {
         val sku = getUploadedAndTotalImagesCount(skuId)
         return sku.uploadedImages == sku.totalImages && sku.processSku == 1
     }
 
-    fun isImagesUploaded(skuId : String) : Boolean {
+    fun isImagesUploaded(skuId: String): Boolean {
         val sku = getUploadedAndTotalImagesCount(skuId)
         return sku.uploadedImages == sku.totalImages
     }
 
-    fun updateIsProcessed(projectId : String,skuId : String) {
+    fun updateIsProcessed(projectId: String, skuId: String) {
         updateProjectStatus(projectId)
 
         val values = ContentValues().apply {
@@ -657,15 +694,16 @@ class ShootLocalRepository {
             ShootContract.ShootEntry.TABLE_NAME,
             values,
             selection,
-            selectionArgs)
+            selectionArgs
+        )
 
 
-        com.spyneai.shoot.utils.log("Upload count(update): "+count)
-        com.spyneai.shoot.utils.log("Upload count(update): "+projectId+" "+skuId)
+        com.spyneai.shoot.utils.log("Upload count(update): " + count)
+        com.spyneai.shoot.utils.log("Upload count(update): " + projectId + " " + skuId)
     }
 
 
-    fun updateProjectStatus(projectId : String) {
+    fun updateProjectStatus(projectId: String) {
         val projectValues = ContentValues().apply {
             put(
                 Projects.COLUMN_NAME_STATUS,
@@ -681,13 +719,14 @@ class ShootLocalRepository {
             Projects.TABLE_NAME,
             projectValues,
             projectSelection,
-            projectSelectionArgs)
+            projectSelectionArgs
+        )
 
-        com.spyneai.shoot.utils.log("Upload prject(update): "+projectCount)
+        com.spyneai.shoot.utils.log("Upload prject(update): " + projectCount)
 
     }
 
-    fun updateUploadCount(skuId : String) {
+    fun updateUploadCount(skuId: String) {
         var uploadCount = getUploadedAndTotalImagesCount(skuId).uploadedImages
 
         val values = ContentValues().apply {
@@ -706,17 +745,19 @@ class ShootLocalRepository {
             ShootContract.ShootEntry.TABLE_NAME,
             values,
             selection,
-            selectionArgs)
+            selectionArgs
+        )
 
     }
 
-    fun updateTotalImageCount(skuId : String) {
+    fun updateTotalImageCount(skuId: String) {
         var totalImagesCount = getUploadedAndTotalImagesCount(skuId).totalImages
 
         val values = ContentValues().apply {
             put(
                 ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES,
-                totalImagesCount?.plus(1))
+                totalImagesCount?.plus(1)
+            )
         }
 
         // Which row to update, based on the title
@@ -728,20 +769,21 @@ class ShootLocalRepository {
             ShootContract.ShootEntry.TABLE_NAME,
             values,
             selection,
-            selectionArgs)
-        com.spyneai.shoot.utils.log("total images count(update): "+ totalImagesCount)
+            selectionArgs
+        )
+        com.spyneai.shoot.utils.log("total images count(update): " + totalImagesCount)
     }
 
-    fun queueProcessRequest(skuId: String,backgroundId : String,is360 : Boolean) {
+    fun queueProcessRequest(skuId: String, backgroundId: String, is360: Boolean) {
         val values = ContentValues().apply {
             put(ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU, 1)
-            put(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID,backgroundId)
+            put(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID, backgroundId)
         }
 
         if (is360)
-            values.put(ShootContract.ShootEntry.COLUMN_NAME_IS_360,1)
+            values.put(ShootContract.ShootEntry.COLUMN_NAME_IS_360, 1)
         else
-            values.put(ShootContract.ShootEntry.COLUMN_NAME_IS_360,-1)
+            values.put(ShootContract.ShootEntry.COLUMN_NAME_IS_360, -1)
 
         // Which row to update, based on the title
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} LIKE ?"
@@ -752,16 +794,18 @@ class ShootLocalRepository {
             ShootContract.ShootEntry.TABLE_NAME,
             values,
             selection,
-            selectionArgs)
+            selectionArgs
+        )
 
-        com.spyneai.shoot.utils.log("Queue Process Request: "+count)
+        com.spyneai.shoot.utils.log("Queue Process Request: " + count)
     }
 
     fun getBackgroundId(skuId: String): String {
         val projection = arrayOf(
             BaseColumns._ID,
             ShootContract.ShootEntry.COLUMN_NAME_SKU_ID,
-            ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID)
+            ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID
+        )
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} = ?"
@@ -784,15 +828,16 @@ class ShootLocalRepository {
 
         with(cursor) {
             while (moveToNext()) {
-                val skuId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
-                backgroundId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID))
+                val skuId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
+                backgroundId =
+                    getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID))
             }
         }
 
         return backgroundId
-        com.spyneai.shoot.utils.log("Background id: "+backgroundId)
+        com.spyneai.shoot.utils.log("Background id: " + backgroundId)
     }
-
 
 
 }

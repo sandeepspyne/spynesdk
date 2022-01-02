@@ -1,14 +1,19 @@
 package com.spyneai.dashboard.response
 
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class NewCategoriesResponse(
     @SerializedName("status") val status : Int,
     @SerializedName("message") val message : String,
-    @SerializedName("data") val data : List<Data>
+    @SerializedName("data") val data : List<Category>
 ){
-    data class Data (
-        @SerializedName("id") val id : Int,
+    @Entity
+    data class Category (
+        @PrimaryKey
+        @SerializedName("id") val categoryId : Int,
         @SerializedName("prod_cat_id") val prod_cat_id : String,
         @SerializedName("enterprise_id") val enterprise_id : String,
         @SerializedName("prod_cat_name") val prod_cat_name : String,
@@ -19,14 +24,17 @@ data class NewCategoriesResponse(
         @SerializedName("priority") val priority : Int,
         @SerializedName("created_at") val created_at : String,
         @SerializedName("updated_at") val updated_at : String,
-        @SerializedName("dynamic_layout") val dynamic_layout : Dynamic_layout
-    )
+    ){
+        @Ignore
+        @SerializedName("dynamic_layout") val dynamic_layout : Dynamic_layout? = null
+    }
 
     data class Dynamic_layout (
         @SerializedName("project_dialog") val project_dialog : List<Project_dialog>
     )
 
     data class Project_dialog (
+        @PrimaryKey(autoGenerate = true) val id : Int,
         @SerializedName("field_id") val field_id : String,
         @SerializedName("field_name") val field_name : String,
         @SerializedName("hint") val hint : String,

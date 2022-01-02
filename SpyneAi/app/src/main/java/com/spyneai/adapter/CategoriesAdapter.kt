@@ -19,7 +19,7 @@ import com.spyneai.needs.AppConstants
 
 public class CategoriesAdapter(
     val context: Context,
-    val categoriesResponseList: ArrayList<NewCategoriesResponse.Data>,
+    val categoriesResponseList: ArrayList<NewCategoriesResponse.Category>,
     val btnlistener: BtnClickListener,
     val before: String,
     val after: String

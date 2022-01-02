@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesAdapter
-import com.spyneai.dashboard.data.model.LayoutHolder
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
@@ -26,7 +25,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CategoriesActivity : AppCompatActivity(){
-    lateinit var categoriesResponseList : ArrayList<NewCategoriesResponse.Data>
+    lateinit var categoriesResponseList : ArrayList<NewCategoriesResponse.Category>
     lateinit var categoriesAdapter : CategoriesAdapter
     lateinit var rv_categories : RecyclerView
     var before = ""

@@ -30,8 +30,7 @@ import com.spyneai.*
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.data.DashboardViewModel
-import com.spyneai.dashboard.data.model.LocationsRes
+import com.spyneai.dashboard.repository.model.LocationsRes
 import com.spyneai.databinding.FragmentPreferenceBinding
 import com.spyneai.interfaces.GcpClient
 import com.spyneai.logout.LogoutDialog

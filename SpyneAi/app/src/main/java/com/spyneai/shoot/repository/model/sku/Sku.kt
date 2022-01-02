@@ -4,12 +4,15 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 @Entity
 class Sku(
     @PrimaryKey(autoGenerate = false)
     var uuid: String,
-    @ColumnInfo(name = "sku_name") var skuName: String? = null,
+    @SerializedName("sku_name")
+    @ColumnInfo(name = "sku_name")
+    var skuName: String? = null,
     @ColumnInfo(name = "category_name") var categoryName: String? = null,
     @ColumnInfo(name = "category_id") var categoryId: String? = null,
     @ColumnInfo(name = "subcategory_name") var subcategoryName: String? = null,
@@ -27,7 +30,7 @@ class Sku(
     @ColumnInfo(name = "status") var status: String = "draft",
     @ColumnInfo(name = "is_paid") var isPaid: Boolean = false,
     @ColumnInfo(name = "rating") var rating: String? = null,
-     @ColumnInfo(name = "created_at") var createdAt: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "created_at") var createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "updated_at") var updatedAt: Long = System.currentTimeMillis()
 ){
     @Ignore

@@ -17,7 +17,6 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.CreditUtils
-import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.WalletDashboardFragmentBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients

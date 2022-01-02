@@ -1,9 +1,9 @@
-package com.spyneai.dashboard.data.model
+package com.spyneai.dashboard.repository.model
 
 
 import com.google.gson.annotations.SerializedName
 
-data class GetGCPUrlRes(
+data class CheckInOutRes(
     @SerializedName("data")
     val `data`: Data,
     @SerializedName("message")
@@ -12,9 +12,7 @@ data class GetGCPUrlRes(
     val status: Int
 ) {
     data class Data(
-        @SerializedName("file_url")
-        val fileUrl: String,
-        @SerializedName("presigned_url")
-        val presignedUrl: String
+        @SerializedName("checkin_time")
+        val checkinTime: String
     )
 }

@@ -1,14 +1,13 @@
 package com.spyneai.orders.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.tabs.TabLayoutMediator
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
-import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.ui.DashboardViewModel
 import com.spyneai.databinding.FragmentMyOrdersBinding
 import com.spyneai.orders.ui.adapter.OrdersSlideAdapter
 import com.spyneai.setLocale

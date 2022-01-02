@@ -15,7 +15,7 @@ import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkusActivity
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
-import com.spyneai.shoot.data.model.Project
+import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.toDate
 
@@ -47,84 +47,68 @@ val draftsList: List<Project>
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val s = ""
-        if (draftsList[position].subCategoryName == "360_exterior"
-            || draftsList[position].subCategoryName.equals("360_interior")
-        ){
-            holder.llThreeSixty.visibility = View.VISIBLE
-            holder.tvCategory.text = "Automobiles"
-
-            Glide.with(context)
-                .load(R.drawable.three_sixty_thumbnail)
-                .into(holder.ivThumbnail)
-        }else{
-            holder.tvCategory.text = draftsList[position].categoryName
-            holder.llThreeSixty.visibility = View.GONE
-
-            if (draftsList[position].thumbnail != null){
-                context.loadSmartly(draftsList[position].thumbnail,holder.ivThumbnail)
-            }
-        }
-
+        holder.tvCategory.text = draftsList[position].categoryName
         holder.tvProjectName.text = draftsList[position].projectName
-        holder.tvSkus.text = draftsList[position].skus.toString()
-        holder.tvDate.text = draftsList[position].createdOn?.toDate()
-        holder.tvImages.text = draftsList[position].images.toString()
+        holder.tvDate.text = draftsList[position].createdAt?.toDate()
+//        holder.tvSkus.text = draftsList[position].skus.toString()
+//        holder.tvImages.text = draftsList[position].images.toString()
 
-        holder.cvMain.setOnClickListener {
-            if (draftsList[position].subCategoryName.equals("360_interior") || draftsList[position].subCategoryName.equals("360_exterior")){
-                Intent(context, DraftSkusActivity::class.java)
-                    .apply {
-                        putExtra("position", position)
-                        putExtra(AppConstants.FROM_LOCAL_DB, true)
-                        putExtra(AppConstants.PROJECT_NAME, draftsList[position].projectName)
-                        putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
-                        context.startActivity(this)
-                    }
-            }else{
+//        if (draftsList[position].subCategoryName == "360_exterior"
+//            || draftsList[position].subCategoryName.equals("360_interior")
+//        ){
+//            holder.llThreeSixty.visibility = View.VISIBLE
+//
+//            Glide.with(context)
+//                .load(R.drawable.three_sixty_thumbnail)
+//                .into(holder.ivThumbnail)
+//        }else{
+//            holder.llThreeSixty.visibility = View.GONE
+//
+//            if (draftsList[position].thumbnail != null){
+//                context.loadSmartly(draftsList[position].thumbnail,holder.ivThumbnail)
+//            }
+//        }
 
-                when {
-                    draftsList[position].skus == 0 -> {
-                        Intent(context, ShootActivity::class.java)
-                            .apply {
-                                putExtra(AppConstants.FROM_DRAFTS, true)
-                                putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
-                                putExtra(AppConstants.CATEGORY_NAME, draftsList[position].categoryName)
-                                putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
-                                putExtra(AppConstants.SKU_NAME, draftsList[position].projectName)
-                                putExtra(AppConstants.SKU_CREATED, false)
-                                context.startActivity(this)
-                            }
-                    }
-
-//                    draftsList[position].categoryName == "Footwear" &&
-//                            draftsList[position].subCategoryName == null-> {
-//                        Intent(context, ShootPortraitActivity::class.java)
-//                            .apply {
-//                                putExtra(AppConstants.FROM_DRAFTS, true)
-//                                putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
-//                                putExtra(AppConstants.CATEGORY_NAME, draftsList[position].categoryName)
-//                                putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
-//                                putExtra(AppConstants.SKU_NAME, draftsList[position].projectName)
-//                                putExtra(AppConstants.SKU_CREATED, true)
-//                                context.startActivity(this)
-//                            }
+//        holder.cvMain.setOnClickListener {
+//            if (draftsList[position].subCategoryName.equals("360_interior") || draftsList[position].subCategoryName.equals("360_exterior")){
+//                Intent(context, DraftSkusActivity::class.java)
+//                    .apply {
+//                        putExtra("position", position)
+//                        putExtra(AppConstants.FROM_LOCAL_DB, true)
+//                        putExtra(AppConstants.PROJECT_NAME, draftsList[position].projectName)
+//                        putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
+//                        context.startActivity(this)
 //                    }
-
-                    else -> {
-                    Intent(context, DraftSkusActivity::class.java)
-                        .apply {
-                            putExtra("position", position)
-                            putExtra(AppConstants.FROM_LOCAL_DB, true)
-                            putExtra(AppConstants.PROJECT_NAME, draftsList[position].projectName)
-                            putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
-                            context.startActivity(this)
-                        }
-                    }
-                }
-
-            }
-        }
+//            }else{
+//
+////                when {
+////                    draftsList[position].skus == 0 -> {
+////                        Intent(context, ShootActivity::class.java)
+////                            .apply {
+////                                putExtra(AppConstants.FROM_DRAFTS, true)
+////                                putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
+////                                putExtra(AppConstants.CATEGORY_NAME, draftsList[position].categoryName)
+////                                putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
+////                                putExtra(AppConstants.SKU_NAME, draftsList[position].projectName)
+////                                putExtra(AppConstants.SKU_CREATED, false)
+////                                context.startActivity(this)
+////                            }
+////                    }
+////
+////                    else -> {
+////                    Intent(context, DraftSkusActivity::class.java)
+////                        .apply {
+////                            putExtra("position", position)
+////                            putExtra(AppConstants.FROM_LOCAL_DB, true)
+////                            putExtra(AppConstants.PROJECT_NAME, draftsList[position].projectName)
+////                            putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
+////                            context.startActivity(this)
+////                        }
+////                    }
+////                }
+//
+//            }
+//        }
     }
 
     override fun getItemCount(): Int {

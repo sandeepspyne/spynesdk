@@ -2,7 +2,7 @@ package com.spyneai.dashboard.ui.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.ui.DashboardViewModel
 import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.processedimages.ui.data.ProcessedViewModel

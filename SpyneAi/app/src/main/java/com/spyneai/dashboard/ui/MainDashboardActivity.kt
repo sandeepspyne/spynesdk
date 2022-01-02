@@ -3,7 +3,6 @@ package com.spyneai.dashboard.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +17,6 @@ import com.spyneai.*
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
@@ -33,7 +31,6 @@ import com.spyneai.service.log
 import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService

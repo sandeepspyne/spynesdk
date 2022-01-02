@@ -88,7 +88,6 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
         viewModel.getProjectNameResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-
                     Utilities.hideProgressDialog()
 
                     viewModel.dafault_project.value = viewModel.projectId.value

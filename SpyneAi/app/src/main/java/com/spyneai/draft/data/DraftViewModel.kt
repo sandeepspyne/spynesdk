@@ -37,7 +37,8 @@ class DraftViewModel : ViewModel() {
         _draftResponse.value = repository.getDrafts(tokenId, "Draft")
     }
 
-    fun getDraftsFromLocal() = localRepository.getDraftProjects()
+    suspend fun getDraftsFromLocal() = localRepository.getDraftProjects()
+
     fun getSkusByProjectId(projectId : String) = localRepository.getSkusByProjectId(projectId)
     fun getImagesbySkuId(skuId: String) = imagesLocalRepository.getImagesBySkuId(skuId)
 

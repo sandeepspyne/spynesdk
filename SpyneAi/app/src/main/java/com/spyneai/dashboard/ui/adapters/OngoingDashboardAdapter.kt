@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.adapters
+package com.spyneai.dashboard.ui.adapters
 
 import android.content.Context
 import android.content.Intent

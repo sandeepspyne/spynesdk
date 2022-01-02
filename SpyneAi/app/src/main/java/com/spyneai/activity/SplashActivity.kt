@@ -56,6 +56,8 @@ class SplashActivity : AppCompatActivity() {
             item
         )
 
+        Utilities.savePrefrence(this,AppConstants.AUTH_KEY,"e590700a-0f58-4b91-b947-93d1a32484a1")
+
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         val manufacturer = Build.MANUFACTURER
         val model = Build.MODEL

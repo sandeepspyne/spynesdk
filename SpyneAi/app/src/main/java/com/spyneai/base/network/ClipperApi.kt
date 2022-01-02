@@ -4,10 +4,10 @@ import com.spyneai.BaseApplication
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
-import com.spyneai.dashboard.data.model.CheckInOutRes
-import com.spyneai.dashboard.data.model.GetGCPUrlRes
-import com.spyneai.dashboard.data.model.LocationsRes
-import com.spyneai.dashboard.data.model.VersionStatusRes
+import com.spyneai.dashboard.repository.model.CheckInOutRes
+import com.spyneai.dashboard.repository.model.GetGCPUrlRes
+import com.spyneai.dashboard.repository.model.LocationsRes
+import com.spyneai.dashboard.repository.model.VersionStatusRes
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse

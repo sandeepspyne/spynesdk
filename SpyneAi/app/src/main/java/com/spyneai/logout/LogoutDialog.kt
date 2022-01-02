@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.captureEvent
-import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.ui.DashboardViewModel
 import com.spyneai.databinding.DialogLogoutBinding
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants

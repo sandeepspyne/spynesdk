@@ -1,27 +1,31 @@
-package com.spyneai.dashboard.data
+package com.spyneai.dashboard.ui
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.data.model.CheckInOutRes
-import com.spyneai.dashboard.data.model.GetGCPUrlRes
-import com.spyneai.dashboard.data.model.LocationsRes
-import com.spyneai.dashboard.data.model.VersionStatusRes
-import com.spyneai.dashboard.data.repository.DashboardRepository
+import com.spyneai.dashboard.repository.model.CheckInOutRes
+import com.spyneai.dashboard.repository.model.GetGCPUrlRes
+import com.spyneai.dashboard.repository.model.LocationsRes
+import com.spyneai.dashboard.repository.model.VersionStatusRes
+import com.spyneai.dashboard.repository.DashboardRepository
+import com.spyneai.dashboard.repository.model.category.DynamicLayout
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 
 class DashboardViewModel() : ViewModel() {
 
+    private val TAG = DashboardViewModel::class.java.simpleName
     private val repository = DashboardRepository()
-
 
     private val _categoriesResponse: MutableLiveData<Resource<NewCategoriesResponse>> = MutableLiveData()
     val categoriesResponse: LiveData<Resource<NewCategoriesResponse>>
@@ -59,14 +63,60 @@ class DashboardViewModel() : ViewModel() {
     var siteImagePath = ""
     var resultCode: Int? = null
     val continueAnyway: MutableLiveData<Boolean> = MutableLiveData()
-   // var selectedLocation: LocationsRes.Data? = null
-
 
     fun getCategories(
         tokenId: String
     ) = viewModelScope.launch {
         _categoriesResponse.value = Resource.Loading
-        _categoriesResponse.value = repository.getCategories(tokenId)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val catList = repository.getCategories()
+
+            if (!catList.isNullOrEmpty()){
+                GlobalScope.launch(Dispatchers.Main) {
+                    _categoriesResponse.value = Resource.Success(
+                        NewCategoriesResponse(
+                            200,
+                            "",
+                            catList
+                        )
+                    )
+                }
+
+            }else {
+                val response = repository.getCategories(tokenId)
+
+                if (response is Resource.Success){
+                    //save response to local DB
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val catList = response.value.data
+                        val dynamicList = ArrayList<DynamicLayout>()
+
+                        catList.forEach {
+                            dynamicList.add(
+                                DynamicLayout(it.categoryId,it.dynamic_layout?.project_dialog)
+                            )
+                        }
+                        val list = repository.insertCategories(
+                            catList,
+                            dynamicList
+                        )
+
+                        GlobalScope.launch(Dispatchers.Main) {
+                            _categoriesResponse.value = Resource.Success(
+                                NewCategoriesResponse(
+                                    200,
+                                    "",
+                                    catList
+                                )
+                            )
+                        }
+                    }
+                }else {
+                    _categoriesResponse.value = response
+                }
+            }
+        }
     }
 
     fun getOngoingSKUs(
