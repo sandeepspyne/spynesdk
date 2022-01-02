@@ -16,6 +16,8 @@ import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.data.model.UpdateTotalFramesRes
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.ProjectStateUpdateWorker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 
@@ -82,11 +84,46 @@ class ProcessViewModel : ViewModel() {
         get() = _updateTotalFramesRes
 
     fun getBackgroundGifCars(
-        category: RequestBody,
-        auth_key: RequestBody
+        category: String
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-                _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val backgroundList = localRepository.getBackgrounds(category)
+
+            if (!backgroundList.isNullOrEmpty()){
+                GlobalScope.launch(Dispatchers.Main) {
+                    _carGifRes.value = Resource.Success(
+                        CarsBackgroundRes(
+                            backgroundList,
+                            "Fetched backgrounds successfully",
+                            200
+                        )
+                    )
+                }
+            }else {
+                val response =repository.getBackgroundGifCars(category)
+
+                if (response is Resource.Success){
+                    //insert overlays
+                    val backgroundsList = response.value.data
+
+                    backgroundsList.forEach {
+                        it.category = category
+                    }
+                    localRepository.insertBackgrounds(backgroundList)
+
+                    GlobalScope.launch(Dispatchers.Main) {
+                        _carGifRes.value = response
+                    }
+                }else {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        _carGifRes.value = response
+                    }
+                }
+            }
+        }
+
     }
 
     fun processSku(authKey: String, skuId: String, backgroundId: String, is360: Boolean,

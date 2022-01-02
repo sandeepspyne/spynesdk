@@ -91,12 +91,10 @@ class ThreeSixtyViewModel : ViewModel() {
     }
 
     fun getBackgroundGifCars(
-        category: RequestBody,
-        auth_key: RequestBody,
-        appName : String
+        category: String
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-        _carGifRes.value = threeSixtyRepository.getBackgroundGifCars(category, auth_key)
+        _carGifRes.value = threeSixtyRepository.getBackgroundGifCars(category)
     }
 
 

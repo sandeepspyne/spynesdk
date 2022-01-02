@@ -7,6 +7,7 @@ import androidx.room.Transaction
 import com.spyneai.base.room.User
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.shoot.data.model.CarsBackgroundRes
 
 import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.Project
@@ -45,10 +46,17 @@ interface ShootDao {
     fun getMisc(prodCatId: String) : List<NewSubCatResponse.Miscellaneous>
 
     @Insert
-    fun saveOverlays(overlays: List<OverlaysResponse.Overlays>)
+    fun insertOverlays(overlays: List<OverlaysResponse.Overlays>)
 
     @Query("SELECT * FROM overlays where prod_sub_cat_id = :prodSubcategoryId and fetchAngle = :fetchAngle")
     fun getOverlays(prodSubcategoryId: String, fetchAngle: Int) : List<OverlaysResponse.Overlays>
+
+    @Insert
+    fun insertBackgrounds(backgrounds: List<CarsBackgroundRes.Background>)
+
+    @Query("SELECT * FROM background where category = :category")
+    fun getBackgrounds(category: String) : List<CarsBackgroundRes.Background>
+
 
     @Insert
     fun insertProject(obj: Project) : Long

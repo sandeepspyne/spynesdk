@@ -13,7 +13,7 @@ import com.spyneai.R
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 
 class NewCarBackgroundAdapter(val context: Context,
-                              val channelList: ArrayList<CarsBackgroundRes.Data>,
+                              val channelList: ArrayList<CarsBackgroundRes.Background>,
                               var pos: Int,
                               val btnlistener: BtnClickListener?)
     : RecyclerView.Adapter<NewCarBackgroundAdapter.ViewHolder>() {

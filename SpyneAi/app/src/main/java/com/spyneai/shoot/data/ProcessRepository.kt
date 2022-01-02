@@ -12,10 +12,9 @@ class ProcessRepository : BaseRepository() {
 
 
     suspend fun getBackgroundGifCars(
-        category: RequestBody,
-        auth_key: RequestBody
-    ) =         safeApiCall {
-        clipperApi.getBackgroundGifCars(category, auth_key)
+        category: String
+    ) =  safeApiCall {
+        clipperApi.getBackgroundGifCars(category)
     }
 
 

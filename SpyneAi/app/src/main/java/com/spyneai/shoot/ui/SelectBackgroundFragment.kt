@@ -24,8 +24,6 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.CarsBackgroundRes
-import com.spyneai.shoot.utils.log
-import kotlinx.android.synthetic.main.fragment_select_background.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -34,7 +32,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
     val TAG = "Background Fragment"
 
-    lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Data>
+    lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Background>
     var backgroundSelect: String = ""
     lateinit var carbackgroundsAdapter: NewCarBackgroundAdapter
 
@@ -264,42 +262,19 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         when (getString(R.string.app_name)) {
             AppConstants.SWIGGY -> {
-                val category = "Food".toRequestBody(MultipartBody.FORM)
-                val authKey =
-                    Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
-                        .toRequestBody(MultipartBody.FORM)
-
-                viewModel.getBackgroundGifCars(category, authKey)
+                viewModel.getBackgroundGifCars("Food")
             }
             AppConstants.SPYNE_AI -> {
                 if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
                         .equals("Food & Beverages")
                 ) {
-                    val category = "Food".toRequestBody(MultipartBody.FORM)
-                    val authKey = Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
-                        .toRequestBody(MultipartBody.FORM)
-
-                    viewModel.getBackgroundGifCars(category, authKey)
+                    viewModel.getBackgroundGifCars("Food")
                 } else {
-                    val category =
-                        Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!
-                            .toRequestBody(MultipartBody.FORM)
-                    val authKey =
-                        Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
-                            .toRequestBody(MultipartBody.FORM)
-
-                    viewModel.getBackgroundGifCars(category, authKey)
+                    viewModel.getBackgroundGifCars(Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!)
                 }
             }
             else -> {
-                val category =
-                    Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!
-                        .toRequestBody(MultipartBody.FORM)
-                val authKey =
-                    Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
-                        .toRequestBody(MultipartBody.FORM)
-
-                viewModel.getBackgroundGifCars(category, authKey)
+                viewModel.getBackgroundGifCars(Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!)
             }
         }
     }

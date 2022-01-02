@@ -7,13 +7,12 @@ import androidx.room.Room
 import com.spyneai.BaseApplication
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.camera2.OverlaysResponse
-import com.spyneai.dashboard.repository.model.category.DynamicLayout
-import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.db.DBHelper
 import com.spyneai.db.Images
 import com.spyneai.db.Projects
 import com.spyneai.db.ShootContract
+import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
@@ -874,10 +873,20 @@ class ShootLocalRepository {
     fun insertOverlays(overlays: List<OverlaysResponse.Overlays>) = Room.databaseBuilder(
         BaseApplication.getContext(),
         AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().saveOverlays(overlays)
+    ).build().shootDao().insertOverlays(overlays)
 
     fun getOverlays(prodSubcategoryId: String, frames: String) = Room.databaseBuilder(
         BaseApplication.getContext(),
         AppDatabase::class.java, "spyne-db"
     ).build().shootDao().getOverlays(prodSubcategoryId, frames.toInt())
+
+    fun insertBackgrounds(backgrounds: List<CarsBackgroundRes.Background>) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().insertBackgrounds(backgrounds)
+
+    fun getBackgrounds(category: String) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getBackgrounds(category)
 }

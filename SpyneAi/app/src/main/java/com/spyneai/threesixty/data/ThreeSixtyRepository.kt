@@ -80,10 +80,9 @@ class ThreeSixtyRepository : BaseRepository() {
     }
 
     suspend fun getBackgroundGifCars(
-        category: RequestBody,
-        auth_key: RequestBody
+        category: String
     ) = safeApiCall {
-        clipperApi.getBackgroundGifCars(category, auth_key)
+        clipperApi.getBackgroundGifCars(category)
     }
 
     suspend fun getUserCredits(

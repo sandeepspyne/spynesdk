@@ -37,7 +37,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment360BackgroundBinding>() {
 
 
-    lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Data>
+    lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Background>
     var backgroundSelect: String = ""
     lateinit var carbackgroundsAdapter: NewCarBackgroundAdapter
 
@@ -92,15 +92,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
 
     fun getBackgorund() {
-        val category =
-            viewModel.videoDetails.categoryName.toRequestBody(
-                MultipartBody.FORM)
-
-        val auth_key =
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!.toRequestBody(
-                MultipartBody.FORM)
-
-        viewModel.getBackgroundGifCars(category, auth_key,getString(R.string.app_name))
+        viewModel.getBackgroundGifCars(viewModel.videoDetails.categoryName)
     }
 
     private fun initSelectBackground() {
@@ -149,7 +141,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
     private fun setBackgroundsCar() {
         carbackgroundsAdapter = NewCarBackgroundAdapter(requireContext(),
-            carBackgroundGifList as ArrayList<CarsBackgroundRes.Data>, 0,
+            carBackgroundGifList as ArrayList<CarsBackgroundRes.Background>, 0,
             object : NewCarBackgroundAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position preview", position.toString())
