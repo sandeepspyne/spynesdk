@@ -1,11 +1,19 @@
 package com.spyneai.camera2
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 data class OverlaysResponse(
-    val `data`: List<Data>,
+    val `data`: List<Overlays>,
     val message: String,
     val status: Int
 ) {
-    data class Data(
+    @Entity
+    data class Overlays(
+        @PrimaryKey(autoGenerate = true)
+        val uuid : Int,
+        val overlay_id: String,
+        var fetchAngle : Int = 0,
         val active: Int,
         val angle_name: String,
         val angles: Int,
@@ -15,7 +23,6 @@ data class OverlaysResponse(
         val enterprise_id: String,
         val frame_angle: String,
         val id: Int,
-        val overlay_id: String,
         val priority: Int,
         val prod_cat_id: String,
         val prod_sub_cat_id: String,
@@ -23,7 +30,7 @@ data class OverlaysResponse(
         val updated_at: String,
         var isSelected : Boolean = false,
         var imageClicked : Boolean = false,
-        var imagePath : String,
-        var sequenceNumber : Int
+        var imagePath : String?,
+        var sequenceNumber : Int = 0
     )
 }

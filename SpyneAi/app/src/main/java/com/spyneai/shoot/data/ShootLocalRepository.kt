@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.room.Room
 import com.spyneai.BaseApplication
 import com.spyneai.base.room.AppDatabase
+import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.repository.model.category.DynamicLayout
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -849,22 +850,34 @@ class ShootLocalRepository {
         ).build().shootDao().getSubcategories()
     }
 
-    fun insertSubCategories(data: List<NewSubCatResponse.Subcategory>,
-                            interior: List<NewSubCatResponse.Interior>,
-    misc: List<NewSubCatResponse.Miscellaneous>)  {
-         Room.databaseBuilder(
+    fun insertSubCategories(
+        data: List<NewSubCatResponse.Subcategory>,
+        interior: List<NewSubCatResponse.Interior>,
+        misc: List<NewSubCatResponse.Miscellaneous>
+    ) {
+        Room.databaseBuilder(
             BaseApplication.getContext(),
             AppDatabase::class.java, "spyne-db"
-        ).build().shootDao().saveSubcategoriesData(data,interior,misc)
+        ).build().shootDao().saveSubcategoriesData(data, interior, misc)
     }
 
-    fun getInteriorList(subcatId : String) = Room.databaseBuilder(
+    fun getInteriorList(subcatId: String) = Room.databaseBuilder(
         BaseApplication.getContext(),
         AppDatabase::class.java, "spyne-db"
     ).build().shootDao().getInterior(subcatId)
 
-    fun getMiscList(subcatId : String) = Room.databaseBuilder(
+    fun getMiscList(subcatId: String) = Room.databaseBuilder(
         BaseApplication.getContext(),
         AppDatabase::class.java, "spyne-db"
     ).build().shootDao().getMisc(subcatId)
+
+    fun insertOverlays(overlays: List<OverlaysResponse.Overlays>) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().saveOverlays(overlays)
+
+    fun getOverlays(prodSubcategoryId: String, frames: String) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getOverlays(prodSubcategoryId, frames.toInt())
 }

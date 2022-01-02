@@ -148,7 +148,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
             when (viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
-                    val list = overlaysAdapter.listItems as List<OverlaysResponse.Data>
+                    val list = overlaysAdapter.listItems as List<OverlaysResponse.Overlays>
                     viewModel.allExteriorClicked = list.all {
                         it.imageClicked
                     }
@@ -174,7 +174,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             if (it){
                 when(viewModel.categoryDetails.value?.imageType){
                     "Exterior" -> {
-                        val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+                        val list = overlaysAdapter?.listItems as List<OverlaysResponse.Overlays>
 
                         val element = list.firstOrNull {
                             it.isSelected
@@ -903,7 +903,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
         when(data){
-            is OverlaysResponse.Data->{
+            is OverlaysResponse.Overlays->{
                 if (data.imageClicked){
                     showReclickDialog(
                         data.id,
@@ -912,7 +912,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 }else {
                     viewModel.overlayId = data.id
 
-                    val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+                    val list = overlaysAdapter?.listItems as List<OverlaysResponse.Overlays>
 
                     val element = list.firstOrNull {
                         it.isSelected
@@ -986,7 +986,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         viewModel.currentShoot = position
 
         when (data) {
-            is OverlaysResponse.Data -> {
+            is OverlaysResponse.Overlays -> {
                 viewModel.displayName = data.display_name
                 viewModel.displayThumbanil = data.display_thumbnail
 

@@ -41,7 +41,6 @@ import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.dialogs.ConfirmTagsDialog
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
-import io.sentry.protocol.App
 import org.json.JSONArray
 
 class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), OnItemClickListener,
@@ -193,7 +192,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
             if (it){
                 when(viewModel.categoryDetails.value?.imageType){
                     "Exterior" -> {
-                        val list = reshootAdapter?.listItems as List<OverlaysResponse.Data>
+                        val list = reshootAdapter?.listItems as List<OverlaysResponse.Overlays>
 
                         val element = list.firstOrNull {
                             it.isSelected
@@ -386,7 +385,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
         when(data){
-            is OverlaysResponse.Data->{
+            is OverlaysResponse.Overlays->{
                 if (data.imageClicked){
                     showReclickDialog(
                         data.id,
@@ -395,7 +394,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 }else {
                     viewModel.overlayId = data.id
 
-                    val list = reshootAdapter?.listItems as List<OverlaysResponse.Data>
+                    val list = reshootAdapter?.listItems as List<OverlaysResponse.Overlays>
 
                     val element = list.firstOrNull {
                         it.isSelected

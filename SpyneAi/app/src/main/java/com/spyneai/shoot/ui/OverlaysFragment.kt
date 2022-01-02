@@ -33,7 +33,6 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.setLocale
-import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.adapters.OverlaysAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
@@ -146,7 +145,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             try {
                 when(viewModel.categoryDetails.value?.imageType){
                     "Exterior" -> {
-                        val list = overlaysAdapter?.listItems  as List<OverlaysResponse.Data>
+                        val list = overlaysAdapter?.listItems  as List<OverlaysResponse.Overlays>
                         viewModel.allExteriorClicked = list.all {
                             it.imageClicked
                         }
@@ -175,7 +174,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             if (it){
                 when(viewModel.categoryDetails.value?.imageType){
                     "Exterior" -> {
-                        val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+                        val list = overlaysAdapter?.listItems as List<OverlaysResponse.Overlays>
 
                         val element = list.firstOrNull {
                             it.isSelected
@@ -699,7 +698,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
         when(data){
-            is OverlaysResponse.Data->{
+            is OverlaysResponse.Overlays->{
                 if (data.imageClicked){
                     showReclickDialog(
                         data.id,
@@ -708,7 +707,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 }else {
                     viewModel.overlayId = data.id
 
-                    val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+                    val list = overlaysAdapter?.listItems as List<OverlaysResponse.Overlays>
 
                     val element = list.firstOrNull {
                         it.isSelected
@@ -794,7 +793,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         viewModel.currentShoot = position
 
         when(data){
-            is OverlaysResponse.Data->{
+            is OverlaysResponse.Overlays->{
                 viewModel.displayName = data.display_name
                 viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.id

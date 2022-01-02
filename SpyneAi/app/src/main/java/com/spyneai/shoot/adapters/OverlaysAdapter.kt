@@ -19,7 +19,7 @@ class OverlaysAdapter (
     override fun getLayoutId(position: Int, obj: Any?): Int {
         return when (obj) {
 
-            is OverlaysResponse.Data -> R.layout.item_overlays
+            is OverlaysResponse.Overlays -> R.layout.item_overlays
             is NewSubCatResponse.Interior -> {
                 val s = ""
                 R.layout.item_interior

@@ -86,7 +86,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             }
 
             try {
-                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Overlays>
                 viewModel.allEcomOverlyasClicked = list.all {
                     it.imageClicked
                 }
@@ -98,7 +98,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
         viewModel.updateSelectItem.observe(viewLifecycleOwner,{
             if (it){
-                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Overlays>
 
                 val element = list.firstOrNull {
                     it.isSelected
@@ -319,7 +319,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         viewModel.currentShoot = position
 
         when (data) {
-            is OverlaysResponse.Data -> {
+            is OverlaysResponse.Overlays -> {
                 viewModel.displayName = data.display_name
                 viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.id
@@ -340,7 +340,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         viewModel.currentShoot = position
 
         when (data) {
-            is OverlaysResponse.Data -> {
+            is OverlaysResponse.Overlays -> {
                 if (data.imageClicked){
                     val bundle = Bundle()
                     bundle.putInt("overlay_id",data.id)
@@ -353,7 +353,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                 }else{
                     viewModel.overlayId = data.id
 
-                    val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+                    val list = overlaysAdapter?.listItems as List<OverlaysResponse.Overlays>
 
                     val element = list.firstOrNull {
                         it.isSelected

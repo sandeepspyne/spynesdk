@@ -82,7 +82,7 @@ class DraftEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBindin
             }
 
             try {
-                val list = overlaysAdapter?.listItems  as List<OverlaysResponse.Data>
+                val list = overlaysAdapter?.listItems  as List<OverlaysResponse.Overlays>
                 viewModel.allEcomOverlyasClicked = list.all {
                     it.imageClicked
                 }
@@ -272,7 +272,7 @@ class DraftEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBindin
         viewModel.currentShoot = position
 
         when(data){
-            is OverlaysResponse.Data->{
+            is OverlaysResponse.Overlays->{
                 if(getString(R.string.app_name) != AppConstants.KARVI)
                     loadOverlay(data.angle_name,data.display_thumbnail)
 
@@ -288,14 +288,14 @@ class DraftEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBindin
         viewModel.currentShoot = position
 
         when(data){
-            is OverlaysResponse.Data->{
+            is OverlaysResponse.Overlays->{
                 if (data.imageClicked){
                     ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
                 }
 
                 viewModel.overlayId = data.id
 
-                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Overlays>
 
                 val element = list.firstOrNull {
                     it.isSelected

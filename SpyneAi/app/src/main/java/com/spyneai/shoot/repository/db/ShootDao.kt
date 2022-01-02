@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import com.spyneai.base.room.User
+import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 
 import com.spyneai.shoot.repository.model.image.Image
@@ -30,8 +31,7 @@ interface ShootDao {
         misc: List<NewSubCatResponse.Miscellaneous>){
 
         subcategories(subCategories)
-        val s = insertInterior(interior)
-
+        insertInterior(interior)
         insertMisc(misc)
     }
 
@@ -45,6 +45,12 @@ interface ShootDao {
     fun getMisc(prodCatId: String) : List<NewSubCatResponse.Miscellaneous>
 
     @Insert
+    fun saveOverlays(overlays: List<OverlaysResponse.Overlays>)
+
+    @Query("SELECT * FROM overlays where prod_sub_cat_id = :prodSubcategoryId and fetchAngle = :fetchAngle")
+    fun getOverlays(prodSubcategoryId: String, fetchAngle: Int) : List<OverlaysResponse.Overlays>
+
+    @Insert
     fun insertProject(obj: Project) : Long
 
     @Query("SELECT * FROM project where status = 'draft'")
@@ -55,4 +61,8 @@ interface ShootDao {
 
     @Insert
     fun insertImage(obj: Image) : Long
+
+
+
+
 }

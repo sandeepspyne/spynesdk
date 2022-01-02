@@ -7,12 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
-import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
-import com.spyneai.dashboard.repository.model.category.DynamicLayout
-import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
@@ -24,7 +21,6 @@ import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -245,6 +241,48 @@ class ShootViewModel : ViewModel() {
         }
     }
 
+    fun getOverlays(
+        authKey: String, prodId: String,
+        prodSubcategoryId: String, frames: String
+    ) = viewModelScope.launch {
+        _overlaysResponse.value = Resource.Loading
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val overlaysList = localRepository.getOverlays(prodSubcategoryId,frames)
+
+            if (!overlaysList.isNullOrEmpty()){
+                GlobalScope.launch(Dispatchers.Main) {
+                    _overlaysResponse.value = Resource.Success(
+                        OverlaysResponse(overlaysList,
+                        "Overlyas fetched successfully",
+                        200)
+                    )
+                }
+            }else {
+                val response = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
+
+                if (response is Resource.Success){
+                    //insert overlays
+                    val overlaysList = response.value.data
+
+                    overlaysList.forEach {
+                        it.fetchAngle = frames.toInt()
+                    }
+
+                    localRepository.insertOverlays(overlaysList)
+
+                    GlobalScope.launch(Dispatchers.Main) {
+                        _overlaysResponse.value = response
+                    }
+                }else {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        _overlaysResponse.value = response
+                    }
+                }
+            }
+        }
+    }
+
     fun getInteriorList() = localRepository.getInteriorList(subCategory.value?.prod_cat_id!!)
 
     fun getMiscList() = localRepository.getMiscList(subCategory.value?.prod_cat_id!!)
@@ -256,13 +294,7 @@ class ShootViewModel : ViewModel() {
         _getProjectNameResponse.value = repository.getProjectName(authKey)
     }
 
-    fun getOverlays(
-        authKey: String, prodId: String,
-        prodSubcategoryId: String, frames: String
-    ) = viewModelScope.launch {
-        _overlaysResponse.value = Resource.Loading
-        _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
-    }
+
 
     suspend fun preloadOverlays(overlays: List<String>) {
         //check if preload worker is alive
@@ -561,7 +593,7 @@ class ShootViewModel : ViewModel() {
         }else{
             when (categoryDetails.value?.imageType) {
                 "Exterior","Footwear","Ecom" -> {
-                    val list = thumbnails as List<OverlaysResponse.Data>
+                    val list = thumbnails as List<OverlaysResponse.Overlays>
 
                     val position = currentShoot
 
