@@ -10,6 +10,7 @@ import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
+import com.spyneai.dashboard.repository.model.category.DynamicLayout
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.getUuid
@@ -194,26 +195,54 @@ class ShootViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _subCategoriesResponse.value = Resource.Loading
 
-        val subcatList = localRepository.getSubcategories()
+        GlobalScope.launch(Dispatchers.IO) {
+            val subcatList = localRepository.getSubcategories()
 
-        if (!subcatList.isNullOrEmpty()){
-            GlobalScope.launch(Dispatchers.Main) {
-                _subCategoriesResponse.value = Resource.Success(
-                    NewSubCatResponse(
-                        subcatList,
-                        null,
-                        "",
-                        null,
-                        200,
-                        null
+            if (!subcatList.isNullOrEmpty()){
+                GlobalScope.launch(Dispatchers.Main) {
+                    _subCategoriesResponse.value = Resource.Success(
+                        NewSubCatResponse(
+                            subcatList,
+                            ArrayList(),
+                            "",
+                            ArrayList(),
+                            200,
+                            NewSubCatResponse.Tags(ArrayList(),ArrayList(),ArrayList())
+                        )
                     )
-                )
-            }
-        }else {
+                }
+            }else {
+                val response = repository.getSubCategories(authKey, prodId)
 
+                if (response is Resource.Success){
+                    //save response to local DB
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val subcatList = response.value.data
+                        val interiorList = if (response.value.interior.isNullOrEmpty()) ArrayList() else response.value.interior
+                        val miscList =  if (response.value.miscellaneous.isNullOrEmpty()) ArrayList() else response.value.miscellaneous
+
+                        localRepository.insertSubCategories(subcatList!!,interiorList, miscList!!)
+
+                        GlobalScope.launch(Dispatchers.Main) {
+                            _subCategoriesResponse.value = Resource.Success(
+                                NewSubCatResponse(
+                                    subcatList,
+                                    interiorList,
+                                    "",
+                                    miscList,
+                                    200,
+                                    response.value.tags
+                                )
+                            )
+                        }
+                    }
+                }else {
+                    _subCategoriesResponse.value = response
+                }
+            }
         }
 
-        _subCategoriesResponse.value = repository.getSubCategories(authKey, prodId)
+
     }
 
     fun getProjectName(

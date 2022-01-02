@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.room.Room
 import com.spyneai.BaseApplication
 import com.spyneai.base.room.AppDatabase
+import com.spyneai.dashboard.repository.model.category.DynamicLayout
+import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.db.DBHelper
 import com.spyneai.db.Images
@@ -845,5 +847,14 @@ class ShootLocalRepository {
             BaseApplication.getContext(),
             AppDatabase::class.java, "spyne-db"
         ).build().shootDao().getSubcategories()
+    }
+
+    fun insertSubCategories(data: List<NewSubCatResponse.Subcategory>,
+                            interior: List<NewSubCatResponse.Interior>,
+    misc: List<NewSubCatResponse.Miscellaneous>)  {
+         Room.databaseBuilder(
+            BaseApplication.getContext(),
+            AppDatabase::class.java, "spyne-db"
+        ).build().shootDao().saveSubcategoriesData(data,interior,misc)
     }
 }

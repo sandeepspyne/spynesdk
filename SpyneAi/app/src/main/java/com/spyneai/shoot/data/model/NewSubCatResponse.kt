@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName
 
 
 data class NewSubCatResponse(
-    val `data`: List<Subcategory>?,
-    val interior: List<Interior>?,
+    val `data`: List<Subcategory>,
+    val interior: List<Interior>,
     val message: String,
-    var miscellaneous: List<Miscellaneous>?,
+    var miscellaneous: List<Miscellaneous>,
     val status: Int,
     @SerializedName("tags")
-    val tags: Tags?
+    val tags: Tags
 ) {
     @Entity
     data class Subcategory(
