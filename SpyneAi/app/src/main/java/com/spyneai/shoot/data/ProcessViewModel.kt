@@ -106,12 +106,12 @@ class ProcessViewModel : ViewModel() {
 
                 if (response is Resource.Success){
                     //insert overlays
-                    val backgroundsList = response.value.data
+                    val bgList = response.value.data
 
-                    backgroundsList.forEach {
+                    bgList.forEach {
                         it.category = category
                     }
-                    localRepository.insertBackgrounds(backgroundList)
+                    localRepository.insertBackgrounds(bgList)
 
                     GlobalScope.launch(Dispatchers.Main) {
                         _carGifRes.value = response

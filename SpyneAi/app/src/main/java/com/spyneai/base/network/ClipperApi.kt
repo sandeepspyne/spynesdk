@@ -168,8 +168,8 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v2/backgrounds/fetchEnterpriseBgs")
     suspend fun getBackgroundGifCars(
-        @Part("category") category: String,
-        @Part("auth_key") auth_key: String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+        @Field("category") category: String,
+        @Field("auth_key") auth_key: String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : CarsBackgroundRes
 
     @FormUrlEncoded
