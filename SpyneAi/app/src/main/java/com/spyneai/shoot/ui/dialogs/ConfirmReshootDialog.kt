@@ -247,7 +247,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
     }
 
     fun updateTotalImages() {
-        viewModel.updateTotalImages(viewModel.sku?.skuId!!)
+        //viewModel.updateTotalImages(viewModel.sku?.skuId!!)
     }
 
     private fun setOverlay(view: View, overlay : String) {
@@ -259,24 +259,33 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
     }
 
     private fun checkInteriorShootStatus() {
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    when {
-                        it.value.interior.isNotEmpty() -> {
-                            viewModel.showInteriorDialog.value = true
-                        }
-                        it.value.miscellaneous.isNotEmpty() -> {
-                            viewModel.showMiscDialog.value = true
-                        }
-                        else -> {
-                            viewModel.selectBackground(getString(R.string.app_name))
-                        }
-                    }
+        val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val interiorList = viewModel.getInteriorList()
+
+            if (!interiorList.isNullOrEmpty()){
+                response.interior = interiorList
+                GlobalScope.launch(Dispatchers.Main) {
+                    viewModel.showInteriorDialog.value = true
                 }
-                else -> { }
+                return@launch
             }
-        })
+
+            val MiscList = viewModel.getMiscList()
+            if (!MiscList.isNullOrEmpty()){
+                response.miscellaneous = MiscList
+                GlobalScope.launch(Dispatchers.Main) {
+                    viewModel.showMiscDialog.value = true
+                }
+                return@launch
+            }
+
+            GlobalScope.launch(Dispatchers.Main) {
+                viewModel.selectBackground(getString(R.string.app_name))
+            }
+
+        }
 
 
     }

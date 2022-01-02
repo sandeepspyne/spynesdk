@@ -13,6 +13,9 @@ import com.spyneai.databinding.DialogInteriorHintBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHintBinding>() {
 
@@ -80,15 +83,22 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
     }
 
     private fun checkMiscShootStatus() {
-        val subCategoriesResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
+        val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
-        when {
-            subCategoriesResponse.miscellaneous.isNotEmpty() -> {
-                viewModel.showMiscDialog.value = true
+        GlobalScope.launch(Dispatchers.IO) {
+            val MiscList = viewModel.getMiscList()
+            if (!MiscList.isNullOrEmpty()){
+                response.miscellaneous = MiscList
+                GlobalScope.launch(Dispatchers.Main) {
+                    viewModel.showMiscDialog.value = true
+                }
+                return@launch
             }
-            else -> {
+
+            GlobalScope.launch(Dispatchers.Main) {
                 viewModel.selectBackground(getString(R.string.app_name))
             }
+
         }
     }
 

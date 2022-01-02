@@ -18,7 +18,7 @@ interface ShootDao {
     fun subcategories(list: List<NewSubCatResponse.Subcategory>)
 
     @Insert
-    fun insertInterior(list: List<NewSubCatResponse.Interior>)
+    fun insertInterior(list: List<NewSubCatResponse.Interior>) : List<Long>
 
     @Insert
     fun insertMisc(list: List<NewSubCatResponse.Miscellaneous>)
@@ -30,18 +30,19 @@ interface ShootDao {
         misc: List<NewSubCatResponse.Miscellaneous>){
 
         subcategories(subCategories)
-        insertInterior(interior)
+        val s = insertInterior(interior)
+
         insertMisc(misc)
     }
 
     @Query("SELECT * FROM subcategory")
     fun getSubcategories(): List<NewSubCatResponse.Subcategory>
 
-    @Query("SELECT * FROM interior where prodSubCatId = :prodSubCatId")
-    fun getInterior(prodSubCatId: String) : List<NewSubCatResponse.Interior>
+    @Query("SELECT * FROM interior where prodCatId = :prodCatId")
+    fun getInterior(prodCatId: String) : List<NewSubCatResponse.Interior>
 
-    @Query("SELECT * FROM miscellaneous where prod_sub_cat_id = :prodSubCatId")
-    fun getMisc(prodSubCatId: String) : List<NewSubCatResponse.Miscellaneous>
+    @Query("SELECT * FROM miscellaneous where prod_cat_id = :prodCatId")
+    fun getMisc(prodCatId: String) : List<NewSubCatResponse.Miscellaneous>
 
     @Insert
     fun insertProject(obj: Project) : Long

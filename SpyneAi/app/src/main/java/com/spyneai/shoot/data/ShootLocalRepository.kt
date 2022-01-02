@@ -857,4 +857,14 @@ class ShootLocalRepository {
             AppDatabase::class.java, "spyne-db"
         ).build().shootDao().saveSubcategoriesData(data,interior,misc)
     }
+
+    fun getInteriorList(subcatId : String) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getInterior(subcatId)
+
+    fun getMiscList(subcatId : String) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getMisc(subcatId)
 }

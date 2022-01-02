@@ -1,14 +1,14 @@
 package com.spyneai.dashboard.response
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 
-
 data class NewSubCatResponse(
     val `data`: List<Subcategory>,
-    val interior: List<Interior>,
+    var interior: List<Interior>,
     val message: String,
     var miscellaneous: List<Miscellaneous>,
     val status: Int,
@@ -32,34 +32,34 @@ data class NewSubCatResponse(
 
     @Entity
     data class Interior(
+        @PrimaryKey
         @SerializedName("id")
-        val overlayId : Int,
+        val overlayId: Int,
         val display_name: String,
         val display_thumbnail: String,
         @SerializedName("prod_cat_id")
         val prodCatId: String,
-        @PrimaryKey
         @SerializedName("prod_sub_cat_id")
         val prodSubCatId: String,
-        var isSelected : Boolean = false,
-        var imageClicked : Boolean = false,
-        var imagePath : String,
-        var sequenceNumber : Int
+        var isSelected: Boolean = false,
+        var imageClicked: Boolean = false,
+        var imagePath: String? = null,
+        var sequenceNumber: Int = 0
     )
 
     @Entity
     data class Miscellaneous(
+        @PrimaryKey
         @SerializedName("id")
-        val overlayId : Int,
+        val overlayId: Int,
         val display_name: String,
         val display_thumbnail: String,
         val prod_cat_id: String,
-        @PrimaryKey
         val prod_sub_cat_id: String,
-        var isSelected : Boolean = false,
-        var imageClicked : Boolean = false,
-        var imagePath : String,
-        var sequenceNumber : Int
+        var isSelected: Boolean = false,
+        var imageClicked: Boolean = false,
+        var imagePath: String? = null,
+        var sequenceNumber: Int = 0
     )
 
     data class Tags(

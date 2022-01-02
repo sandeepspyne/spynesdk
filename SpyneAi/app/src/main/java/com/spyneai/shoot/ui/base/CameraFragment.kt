@@ -356,7 +356,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             if (binding.flLevelIndicator.isGyroOnCorrectAngle) {
                 captureImage()
             } else {
-                showGryroToast()
+                captureImage()
             }
         } else {
             captureImage()

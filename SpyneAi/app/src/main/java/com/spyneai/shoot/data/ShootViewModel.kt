@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
+import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
@@ -23,6 +24,7 @@ import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -241,9 +243,11 @@ class ShootViewModel : ViewModel() {
                 }
             }
         }
-
-
     }
+
+    fun getInteriorList() = localRepository.getInteriorList(subCategory.value?.prod_cat_id!!)
+
+    fun getMiscList() = localRepository.getMiscList(subCategory.value?.prod_cat_id!!)
 
     fun getProjectName(
         authKey: String
@@ -511,13 +515,19 @@ class ShootViewModel : ViewModel() {
     }
 
     fun checkMiscShootStatus(appName: String) {
-        val subCatResponse = (subCategoriesResponse.value as Resource.Success).value
+        val response = (subCategoriesResponse.value as Resource.Success).value
 
-        when {
-            subCatResponse.miscellaneous?.isNotEmpty()!! -> {
-                showMiscDialog.value = true
+        GlobalScope.launch(Dispatchers.IO) {
+            val MiscList = getMiscList()
+            if (!MiscList.isNullOrEmpty()){
+                response.miscellaneous = MiscList
+                GlobalScope.launch(Dispatchers.Main) {
+                    showMiscDialog.value = true
+                }
+                return@launch
             }
-            else -> {
+
+            GlobalScope.launch(Dispatchers.Main) {
                 selectBackground(appName)
             }
         }
