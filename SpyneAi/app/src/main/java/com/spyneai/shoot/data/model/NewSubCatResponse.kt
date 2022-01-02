@@ -63,15 +63,15 @@ data class NewSubCatResponse(
 
     data class Tags(
         @SerializedName("Exterior")
-        val exterior: List<Exterior>,
+        val exteriorTags: List<ExteriorTags>,
         @SerializedName("Focus Shoot")
         val focusShoot: List<FocusShoot>,
         @SerializedName("Interior")
         val interiorTags: List<InteriorTags>
     ) {
         @Entity
-        data class Exterior(
-            @PrimaryKey
+        data class ExteriorTags(
+            @PrimaryKey(autoGenerate = true)
             val id : Int,
             @SerializedName("default_value")
             val defaultValue: String,
@@ -88,7 +88,7 @@ data class NewSubCatResponse(
         )
         @Entity
         data class FocusShoot(
-            @PrimaryKey
+            @PrimaryKey(autoGenerate = true)
             val id : Int,
             @SerializedName("default_value")
             val defaultValue: String,
@@ -105,7 +105,7 @@ data class NewSubCatResponse(
         )
         @Entity
         data class InteriorTags(
-            @PrimaryKey
+            @PrimaryKey(autoGenerate = true)
             val id : Int,
             @SerializedName("default_value")
             val defaultValue: String,

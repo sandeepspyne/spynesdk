@@ -25,7 +25,7 @@ interface ShootDao {
     fun insertMisc(list: List<NewSubCatResponse.Miscellaneous>)
 
     @Insert
-    fun insertExteriorTags(list: List<NewSubCatResponse.Tags.Exterior>)
+    fun insertExteriorTags(list: List<NewSubCatResponse.Tags.ExteriorTags>) : List<Long>
 
     @Insert
     fun insertInteriorTags(list: List<NewSubCatResponse.Tags.InteriorTags>)
@@ -38,7 +38,7 @@ interface ShootDao {
         subCategories: List<NewSubCatResponse.Subcategory>,
         interior: List<NewSubCatResponse.Interior>,
         misc: List<NewSubCatResponse.Miscellaneous>,
-        exteriorTags: List<NewSubCatResponse.Tags.Exterior>,
+        exteriorTagsTags: List<NewSubCatResponse.Tags.ExteriorTags>,
         interiorTags: List<NewSubCatResponse.Tags.InteriorTags>,
         focusTags: List<NewSubCatResponse.Tags.FocusShoot>){
 
@@ -46,7 +46,7 @@ interface ShootDao {
         insertInterior(interior)
         insertMisc(misc)
 
-        insertExteriorTags(exteriorTags)
+        val s = insertExteriorTags(exteriorTagsTags)
         insertInteriorTags(interiorTags)
         insertFocusTags(focusTags)
     }
@@ -84,12 +84,12 @@ interface ShootDao {
     @Insert
     fun insertImage(obj: Image) : Long
 
-    @Query("Select * from exterior")
-    fun getExteriorTags(): List<NewSubCatResponse.Tags.Exterior>
+    @Query("Select * from exteriortags")
+    fun getExteriorTags(): List<NewSubCatResponse.Tags.ExteriorTags>
 
-    @Query("Select * from interior")
+    @Query("Select * from interiortags")
     fun getInteriorTags(): List<NewSubCatResponse.Tags.InteriorTags>
 
-    @Query("Select * from interior")
+    @Query("Select * from focusshoot")
     fun getFocusTags(): List<NewSubCatResponse.Tags.FocusShoot>
 }

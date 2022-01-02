@@ -853,7 +853,7 @@ class ShootLocalRepository {
         data: List<NewSubCatResponse.Subcategory>,
         interior: List<NewSubCatResponse.Interior>,
         misc: List<NewSubCatResponse.Miscellaneous>,
-        exteriorTags: List<NewSubCatResponse.Tags.Exterior>,
+        exteriorTagsTags: List<NewSubCatResponse.Tags.ExteriorTags>,
         interiorTags: List<NewSubCatResponse.Tags.InteriorTags>,
         focusTags: List<NewSubCatResponse.Tags.FocusShoot>
     ) {
@@ -863,7 +863,7 @@ class ShootLocalRepository {
         ).build().shootDao().saveSubcategoriesData(data,
             interior,
             misc,
-        exteriorTags,
+        exteriorTagsTags,
         interiorTags,
         focusTags)
     }

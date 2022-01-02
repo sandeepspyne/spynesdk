@@ -224,7 +224,7 @@ class ShootViewModel : ViewModel() {
                             if (response.value.miscellaneous.isNullOrEmpty()) ArrayList() else response.value.miscellaneous
 
                         val exteriorTags =
-                            if (response.value.tags.exterior.isNullOrEmpty()) ArrayList() else response.value.tags.exterior
+                            if (response.value.tags.exteriorTags.isNullOrEmpty()) ArrayList() else response.value.tags.exteriorTags
                         val interiorTags =
                             if (response.value.tags.interiorTags.isNullOrEmpty()) ArrayList() else response.value.tags.interiorTags
                         val focusTags =
@@ -309,17 +309,13 @@ class ShootViewModel : ViewModel() {
 
     val tags = HashMap<String, Any>()
 
-    fun getTags(type: String): Any? {
+    suspend fun getTags(type: String): Any? {
         when (type) {
             "Exterior" -> {
                 val extags = tags[type]
                 if (extags == null) {
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val exTags = localRepository.getExteriorTags()
-                        tags[type] = exTags
-                        return@launch
-                    }
-
+                    val exTags = localRepository.getExteriorTags()
+                    tags[type] = exTags
                     return tags[type]
                 } else {
                     return extags
@@ -328,32 +324,22 @@ class ShootViewModel : ViewModel() {
 
             "Interior" -> {
                 val extags = tags[type]
-
                 if (extags == null) {
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val exTags = localRepository.getInteriorTags()
-                        tags[type] = exTags
-                        return@launch
-                    }
-
+                    val exTags = localRepository.getInteriorTags()
+                    tags[type] = exTags
                     return tags[type]
                 } else {
-                    return extags as NewSubCatResponse.Tags.InteriorTags
+                    return extags
                 }
             }
             else -> {
                 val extags = tags[type]
-
                 if (extags == null) {
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val exTags = localRepository.getFocusTags()
-                        tags[type] = exTags
-                        return@launch
-                    }
-
+                    val exTags = localRepository.getFocusTags()
+                    tags[type] = exTags
                     return tags[type]
                 } else {
-                    return extags as NewSubCatResponse.Tags.FocusShoot
+                    return extags
                 }
             }
         }

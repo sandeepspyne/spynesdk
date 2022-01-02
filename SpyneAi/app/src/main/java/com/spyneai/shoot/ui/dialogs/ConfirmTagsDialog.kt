@@ -204,43 +204,54 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
     private fun setTagsData() {
         if (viewModel.subCategoriesResponse.value is Resource.Success) {
-            val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
-
             when (viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
-                    val tags = viewModel.getTags("Exterior") as List<NewSubCatResponse.Tags.Exterior>
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val tags = viewModel.getTags("Exterior") as List<NewSubCatResponse.Tags.ExteriorTags>
 
-                    tags?.forEach {
-                        addBinding(
-                            viewModel.categoryDetails.value!!.imageType!!,
-                            it.fieldType,
-                            getItemBinding(it.fieldType, it.fieldName, it.enumValues)
-                        )
+                        GlobalScope.launch(Dispatchers.Main) {
+                            tags?.forEach {
+                                addBinding(
+                                    viewModel.categoryDetails.value!!.imageType!!,
+                                    it.fieldType,
+                                    getItemBinding(it.fieldType, it.fieldName, it.enumValues)
+                                )
+                            }
+                        }
                     }
+
                 }
 
                 "Interior" -> {
-                    val tags = viewModel.getTags("Interior") as List<NewSubCatResponse.Tags.InteriorTags>
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val tags = viewModel.getTags("Interior") as List<NewSubCatResponse.Tags.InteriorTags>
 
-                    tags?.forEach {
-                        addBinding(
-                            viewModel.categoryDetails.value!!.imageType!!,
-                            it.fieldType,
-                            getItemBinding(it.fieldType, it.fieldName, it.enumValues)
-                        )
+                        GlobalScope.launch(Dispatchers.Main) {
+                            tags?.forEach {
+                                addBinding(
+                                    viewModel.categoryDetails.value!!.imageType!!,
+                                    it.fieldType,
+                                    getItemBinding(it.fieldType, it.fieldName, it.enumValues)
+                                )
+                            }
+                        }
                     }
+
                 }
 
-
                 "Focus Shoot" -> {
-                    val tags = viewModel.getTags("Focus Shoot") as List<NewSubCatResponse.Tags.FocusShoot>
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val tags = viewModel.getTags("Focus Shoot") as List<NewSubCatResponse.Tags.FocusShoot>
 
-                    tags?.forEach {
-                        addBinding(
-                            viewModel.categoryDetails.value!!.imageType!!,
-                            it.fieldType,
-                            getItemBinding(it.fieldType, it.fieldName, it.enumValues)
-                        )
+                        GlobalScope.launch(Dispatchers.Main) {
+                            tags?.forEach {
+                                addBinding(
+                                    viewModel.categoryDetails.value!!.imageType!!,
+                                    it.fieldType,
+                                    getItemBinding(it.fieldType, it.fieldName, it.enumValues)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -350,7 +361,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         when (viewModel.categoryDetails.value?.imageType) {
             "Exterior" -> {
-                return response.tags.exterior[index].fieldId
+                return response.tags.exteriorTags[index].fieldId
             }
             "Interior" -> {
                 return response.tags.interiorTags[index].fieldId
@@ -469,9 +480,9 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 bindingList?.forEachIndexed { index, viewBinding ->
                     when (viewBinding) {
                         is ItemTagsSpinnerBinding -> {
-                            if (response.tags.exterior[index].isRequired) {
+                            if (response.tags.exteriorTags[index].isRequired) {
                                 if (viewBinding.spinner.selectedItemPosition == 0) {
-                                    showErrorToast(response.tags.exterior.get(index).fieldName)
+                                    showErrorToast(response.tags.exteriorTags.get(index).fieldName)
                                     isValidTag = false
                                     return isValidTag
                                 }
@@ -479,7 +490,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         }
 
                         is ItemTagNotesBinding -> {
-                            if (response.tags.exterior[index].isRequired) {
+                            if (response.tags.exteriorTags[index].isRequired) {
                                 if (viewBinding.etNotes.text.toString().isEmpty()) {
                                     notesError(viewBinding.etNotes)
                                     isValidTag = false
@@ -499,7 +510,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         is ItemTagsSpinnerBinding -> {
                             if (response.tags.interiorTags[index].isRequired) {
                                 if (viewBinding.spinner.selectedItemPosition == 0) {
-                                    showErrorToast(response.tags.exterior.get(index).fieldName)
+                                    showErrorToast(response.tags.exteriorTags.get(index).fieldName)
                                     isValidTag = false
                                     return isValidTag
                                 }
