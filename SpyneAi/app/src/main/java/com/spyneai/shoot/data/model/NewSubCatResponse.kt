@@ -1,7 +1,6 @@
 package com.spyneai.dashboard.response
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
@@ -68,9 +67,12 @@ data class NewSubCatResponse(
         @SerializedName("Focus Shoot")
         val focusShoot: List<FocusShoot>,
         @SerializedName("Interior")
-        val interior: List<Interior>
+        val interiorTags: List<InteriorTags>
     ) {
+        @Entity
         data class Exterior(
+            @PrimaryKey
+            val id : Int,
             @SerializedName("default_value")
             val defaultValue: String,
             @SerializedName("enum_values")
@@ -84,8 +86,10 @@ data class NewSubCatResponse(
             @SerializedName("is_required")
             val isRequired: Boolean
         )
-
+        @Entity
         data class FocusShoot(
+            @PrimaryKey
+            val id : Int,
             @SerializedName("default_value")
             val defaultValue: String,
             @SerializedName("enum_values")
@@ -99,8 +103,10 @@ data class NewSubCatResponse(
             @SerializedName("is_required")
             val isRequired: Boolean
         )
-
-        data class Interior(
+        @Entity
+        data class InteriorTags(
+            @PrimaryKey
+            val id : Int,
             @SerializedName("default_value")
             val defaultValue: String,
             @SerializedName("enum_values")

@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import com.spyneai.base.room.User
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.shoot.data.model.CarsBackgroundRes
@@ -25,15 +24,31 @@ interface ShootDao {
     @Insert
     fun insertMisc(list: List<NewSubCatResponse.Miscellaneous>)
 
+    @Insert
+    fun insertExteriorTags(list: List<NewSubCatResponse.Tags.Exterior>)
+
+    @Insert
+    fun insertInteriorTags(list: List<NewSubCatResponse.Tags.InteriorTags>)
+
+    @Insert
+    fun insertFocusTags(list: List<NewSubCatResponse.Tags.FocusShoot>)
+
     @Transaction
     fun saveSubcategoriesData(
         subCategories: List<NewSubCatResponse.Subcategory>,
         interior: List<NewSubCatResponse.Interior>,
-        misc: List<NewSubCatResponse.Miscellaneous>){
+        misc: List<NewSubCatResponse.Miscellaneous>,
+        exteriorTags: List<NewSubCatResponse.Tags.Exterior>,
+        interiorTags: List<NewSubCatResponse.Tags.InteriorTags>,
+        focusTags: List<NewSubCatResponse.Tags.FocusShoot>){
 
         subcategories(subCategories)
         insertInterior(interior)
         insertMisc(misc)
+
+        insertExteriorTags(exteriorTags)
+        insertInteriorTags(interiorTags)
+        insertFocusTags(focusTags)
     }
 
     @Query("SELECT * FROM subcategory")
@@ -57,7 +72,6 @@ interface ShootDao {
     @Query("SELECT * FROM background where category = :category")
     fun getBackgrounds(category: String) : List<CarsBackgroundRes.Background>
 
-
     @Insert
     fun insertProject(obj: Project) : Long
 
@@ -70,7 +84,12 @@ interface ShootDao {
     @Insert
     fun insertImage(obj: Image) : Long
 
+    @Query("Select * from exterior")
+    fun getExteriorTags(): List<NewSubCatResponse.Tags.Exterior>
 
+    @Query("Select * from interior")
+    fun getInteriorTags(): List<NewSubCatResponse.Tags.InteriorTags>
 
-
+    @Query("Select * from interior")
+    fun getFocusTags(): List<NewSubCatResponse.Tags.FocusShoot>
 }

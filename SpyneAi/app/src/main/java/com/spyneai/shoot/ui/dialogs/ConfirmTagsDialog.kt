@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -23,7 +22,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
-import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogConfirmTagsBinding
 import com.spyneai.databinding.ItemTagNotesBinding
 import com.spyneai.databinding.ItemTagsSpinnerBinding
@@ -209,7 +208,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
             when (viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
-                    val tags = response.tags.exterior
+                    val tags = viewModel.getTags("Exterior") as List<NewSubCatResponse.Tags.Exterior>
 
                     tags?.forEach {
                         addBinding(
@@ -221,7 +220,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 }
 
                 "Interior" -> {
-                    val tags = response.tags.exterior
+                    val tags = viewModel.getTags("Interior") as List<NewSubCatResponse.Tags.InteriorTags>
 
                     tags?.forEach {
                         addBinding(
@@ -234,7 +233,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
 
                 "Focus Shoot" -> {
-                    val tags = response.tags.focusShoot
+                    val tags = viewModel.getTags("Focus Shoot") as List<NewSubCatResponse.Tags.FocusShoot>
 
                     tags?.forEach {
                         addBinding(
@@ -354,7 +353,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 return response.tags.exterior[index].fieldId
             }
             "Interior" -> {
-                return response.tags.interior[index].fieldId
+                return response.tags.interiorTags[index].fieldId
             }
             "Focus Shoot" -> {
                 return response.tags.focusShoot[index].fieldId
@@ -498,7 +497,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 bindingList?.forEachIndexed { index, viewBinding ->
                     when (viewBinding) {
                         is ItemTagsSpinnerBinding -> {
-                            if (response.tags.interior[index].isRequired) {
+                            if (response.tags.interiorTags[index].isRequired) {
                                 if (viewBinding.spinner.selectedItemPosition == 0) {
                                     showErrorToast(response.tags.exterior.get(index).fieldName)
                                     isValidTag = false
@@ -508,7 +507,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         }
 
                         is ItemTagNotesBinding -> {
-                            if (response.tags.interior[index].isRequired) {
+                            if (response.tags.interiorTags[index].isRequired) {
                                 if (viewBinding.etNotes.text.toString().isEmpty()) {
                                     notesError(viewBinding.etNotes)
                                     isValidTag = false

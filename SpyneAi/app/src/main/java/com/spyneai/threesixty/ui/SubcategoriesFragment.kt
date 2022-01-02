@@ -8,15 +8,11 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.captureEvent
 import com.spyneai.databinding.FragmentSubcategoriesBinding
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.ui.dialogs.ThreeSixtyExteriorGifDialog
 import com.spyneai.threesixty.ui.dialogs.ThreeSixtyProjectAndSkuDialog
 
 class SubcategoriesFragment : BaseFragment<ThreeSixtyViewModel,FragmentSubcategoriesBinding>(){
-
-    lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
-    var pos = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

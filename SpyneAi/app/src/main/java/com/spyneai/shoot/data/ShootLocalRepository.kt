@@ -852,12 +852,20 @@ class ShootLocalRepository {
     fun insertSubCategories(
         data: List<NewSubCatResponse.Subcategory>,
         interior: List<NewSubCatResponse.Interior>,
-        misc: List<NewSubCatResponse.Miscellaneous>
+        misc: List<NewSubCatResponse.Miscellaneous>,
+        exteriorTags: List<NewSubCatResponse.Tags.Exterior>,
+        interiorTags: List<NewSubCatResponse.Tags.InteriorTags>,
+        focusTags: List<NewSubCatResponse.Tags.FocusShoot>
     ) {
         Room.databaseBuilder(
             BaseApplication.getContext(),
             AppDatabase::class.java, "spyne-db"
-        ).build().shootDao().saveSubcategoriesData(data, interior, misc)
+        ).build().shootDao().saveSubcategoriesData(data,
+            interior,
+            misc,
+        exteriorTags,
+        interiorTags,
+        focusTags)
     }
 
     fun getInteriorList(subcatId: String) = Room.databaseBuilder(
@@ -889,4 +897,19 @@ class ShootLocalRepository {
         BaseApplication.getContext(),
         AppDatabase::class.java, "spyne-db"
     ).build().shootDao().getBackgrounds(category)
+
+    fun getExteriorTags() = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getExteriorTags()
+
+    fun getInteriorTags() = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getInteriorTags()
+
+    fun getFocusTags() = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getFocusTags()
 }

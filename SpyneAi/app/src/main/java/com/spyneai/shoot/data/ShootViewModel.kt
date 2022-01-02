@@ -112,7 +112,8 @@ class ShootViewModel : ViewModel() {
 
 
     val shootDimensions: MutableLiveData<ShootDimensions> = MutableLiveData()
-   // val sku: MutableLiveData<Sku> = MutableLiveData()
+
+    // val sku: MutableLiveData<Sku> = MutableLiveData()
     var sku: com.spyneai.shoot.repository.model.sku.Sku? = null
     var project: com.spyneai.shoot.repository.model.project.Project? = null
 
@@ -154,13 +155,14 @@ class ShootViewModel : ViewModel() {
     val stopShoot: MutableLiveData<Boolean> = MutableLiveData()
     val showProjectDetail: MutableLiveData<Boolean> = MutableLiveData()
 
-    val imageTypeInfo:MutableLiveData<Boolean> = MutableLiveData()
+    val imageTypeInfo: MutableLiveData<Boolean> = MutableLiveData()
 
     val interiorAngles: MutableLiveData<Int> = MutableLiveData()
     val miscAngles: MutableLiveData<Int> = MutableLiveData()
 
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
-   // val confirmCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
+
+    // val confirmCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
     val projectId: MutableLiveData<String> = MutableLiveData()
     val showFoodBackground: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -169,7 +171,7 @@ class ShootViewModel : ViewModel() {
     var isReclick = false
     var reshotImageName = ""
     var reshootSequence = 0
-    var updateSelectItem : MutableLiveData<Boolean> = MutableLiveData()
+    var updateSelectItem: MutableLiveData<Boolean> = MutableLiveData()
 
 
     private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
@@ -196,7 +198,7 @@ class ShootViewModel : ViewModel() {
         GlobalScope.launch(Dispatchers.IO) {
             val subcatList = localRepository.getSubcategories()
 
-            if (!subcatList.isNullOrEmpty()){
+            if (!subcatList.isNullOrEmpty()) {
                 GlobalScope.launch(Dispatchers.Main) {
                     _subCategoriesResponse.value = Resource.Success(
                         NewSubCatResponse(
@@ -205,21 +207,37 @@ class ShootViewModel : ViewModel() {
                             "",
                             ArrayList(),
                             200,
-                            NewSubCatResponse.Tags(ArrayList(),ArrayList(),ArrayList())
+                            NewSubCatResponse.Tags(ArrayList(), ArrayList(), ArrayList())
                         )
                     )
                 }
-            }else {
+            } else {
                 val response = repository.getSubCategories(authKey, prodId)
 
-                if (response is Resource.Success){
+                if (response is Resource.Success) {
                     //save response to local DB
                     GlobalScope.launch(Dispatchers.IO) {
                         val subcatList = response.value.data
-                        val interiorList = if (response.value.interior.isNullOrEmpty()) ArrayList() else response.value.interior
-                        val miscList =  if (response.value.miscellaneous.isNullOrEmpty()) ArrayList() else response.value.miscellaneous
+                        val interiorList =
+                            if (response.value.interior.isNullOrEmpty()) ArrayList() else response.value.interior
+                        val miscList =
+                            if (response.value.miscellaneous.isNullOrEmpty()) ArrayList() else response.value.miscellaneous
 
-                        localRepository.insertSubCategories(subcatList!!,interiorList, miscList!!)
+                        val exteriorTags =
+                            if (response.value.tags.exterior.isNullOrEmpty()) ArrayList() else response.value.tags.exterior
+                        val interiorTags =
+                            if (response.value.tags.interiorTags.isNullOrEmpty()) ArrayList() else response.value.tags.interiorTags
+                        val focusTags =
+                            if (response.value.tags.focusShoot.isNullOrEmpty()) ArrayList() else response.value.tags.focusShoot
+
+                        localRepository.insertSubCategories(
+                            subcatList,
+                            interiorList,
+                            miscList,
+                            exteriorTags,
+                            interiorTags,
+                            focusTags
+                        )
 
                         GlobalScope.launch(Dispatchers.Main) {
                             _subCategoriesResponse.value = Resource.Success(
@@ -234,7 +252,7 @@ class ShootViewModel : ViewModel() {
                             )
                         }
                     }
-                }else {
+                } else {
                     _subCategoriesResponse.value = response
                 }
             }
@@ -248,20 +266,22 @@ class ShootViewModel : ViewModel() {
         _overlaysResponse.value = Resource.Loading
 
         GlobalScope.launch(Dispatchers.IO) {
-            val overlaysList = localRepository.getOverlays(prodSubcategoryId,frames)
+            val overlaysList = localRepository.getOverlays(prodSubcategoryId, frames)
 
-            if (!overlaysList.isNullOrEmpty()){
+            if (!overlaysList.isNullOrEmpty()) {
                 GlobalScope.launch(Dispatchers.Main) {
                     _overlaysResponse.value = Resource.Success(
-                        OverlaysResponse(overlaysList,
-                        "Overlyas fetched successfully",
-                        200)
+                        OverlaysResponse(
+                            overlaysList,
+                            "Overlyas fetched successfully",
+                            200
+                        )
                     )
                 }
-            }else {
+            } else {
                 val response = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
 
-                if (response is Resource.Success){
+                if (response is Resource.Success) {
                     //insert overlays
                     val overlaysList = response.value.data
 
@@ -274,7 +294,7 @@ class ShootViewModel : ViewModel() {
                     GlobalScope.launch(Dispatchers.Main) {
                         _overlaysResponse.value = response
                     }
-                }else {
+                } else {
                     GlobalScope.launch(Dispatchers.Main) {
                         _overlaysResponse.value = response
                     }
@@ -287,13 +307,65 @@ class ShootViewModel : ViewModel() {
 
     fun getMiscList() = localRepository.getMiscList(subCategory.value?.prod_cat_id!!)
 
+    val tags = HashMap<String, Any>()
+
+    fun getTags(type: String): Any? {
+        when (type) {
+            "Exterior" -> {
+                val extags = tags[type]
+                if (extags == null) {
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val exTags = localRepository.getExteriorTags()
+                        tags[type] = exTags
+                        return@launch
+                    }
+
+                    return tags[type]
+                } else {
+                    return extags
+                }
+            }
+
+            "Interior" -> {
+                val extags = tags[type]
+
+                if (extags == null) {
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val exTags = localRepository.getInteriorTags()
+                        tags[type] = exTags
+                        return@launch
+                    }
+
+                    return tags[type]
+                } else {
+                    return extags as NewSubCatResponse.Tags.InteriorTags
+                }
+            }
+            else -> {
+                val extags = tags[type]
+
+                if (extags == null) {
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val exTags = localRepository.getFocusTags()
+                        tags[type] = exTags
+                        return@launch
+                    }
+
+                    return tags[type]
+                } else {
+                    return extags as NewSubCatResponse.Tags.FocusShoot
+                }
+            }
+        }
+
+    }
+
     fun getProjectName(
         authKey: String
     ) = viewModelScope.launch {
         _getProjectNameResponse.value = Resource.Loading
         _getProjectNameResponse.value = repository.getProjectName(authKey)
     }
-
 
 
     suspend fun preloadOverlays(overlays: List<String>) {
@@ -384,7 +456,10 @@ class ShootViewModel : ViewModel() {
         if (image.categoryName == "360int")
             image.name = image.skuName + "_" + image.skuId + "_360int_1.JPG"
         else
-            image.name = if (shootData.name.contains(".")) shootData.name else shootData.name + "." + shootData.capturedImage.substringAfter(".")
+            image.name =
+                if (shootData.name.contains(".")) shootData.name else shootData.name + "." + shootData.capturedImage.substringAfter(
+                    "."
+                )
 
 
         if (imageRepository.isImageExist(image.skuId!!, image.name!!)) {
@@ -450,7 +525,7 @@ class ShootViewModel : ViewModel() {
     }
 
 
-    suspend fun insertProject(project: com.spyneai.shoot.repository.model.project.Project) : Long {
+    suspend fun insertProject(project: com.spyneai.shoot.repository.model.project.Project): Long {
         return localRepository.insertProject(project)
     }
 
@@ -483,9 +558,9 @@ class ShootViewModel : ViewModel() {
         interiorSize: Int?,
         miscSize: Int?,
     ): String {
-        return if (isReshoot){
+        return if (isReshoot) {
             reshotImageName
-        }else{
+        } else {
             val filePrefix = FileNameManager().getFileName(
                 if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
                 currentShoot,
@@ -500,7 +575,7 @@ class ShootViewModel : ViewModel() {
 
     fun getSequenceNumber(exteriorSize: Int, interiorSize: Int, miscSize: Int): Int {
         return if (isReshoot)
-                    reshootSequence
+            reshootSequence
         else SequeneNumberManager().getSequenceNumber(
             fromDrafts,
             if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
@@ -532,6 +607,7 @@ class ShootViewModel : ViewModel() {
 
     var displayName = ""
     var displayThumbanil = ""
+
     //var sequence = 0
     var overlayId = 0
 
@@ -551,7 +627,7 @@ class ShootViewModel : ViewModel() {
 
         GlobalScope.launch(Dispatchers.IO) {
             val MiscList = getMiscList()
-            if (!MiscList.isNullOrEmpty()){
+            if (!MiscList.isNullOrEmpty()) {
                 response.miscellaneous = MiscList
                 GlobalScope.launch(Dispatchers.Main) {
                     showMiscDialog.value = true
@@ -588,11 +664,11 @@ class ShootViewModel : ViewModel() {
     val scrollView = MutableLiveData<Int>()
 
     fun setSelectedItem(thumbnails: List<Any>) {
-        if (getCurrentShoot() == null){
-            Log.d(TAG, "setSelectedItem: "+overlayId)
-        }else{
+        if (getCurrentShoot() == null) {
+            Log.d(TAG, "setSelectedItem: " + overlayId)
+        } else {
             when (categoryDetails.value?.imageType) {
-                "Exterior","Footwear","Ecom" -> {
+                "Exterior", "Footwear", "Ecom" -> {
                     val list = thumbnails as List<OverlaysResponse.Overlays>
 
                     val position = currentShoot
@@ -751,41 +827,45 @@ class ShootViewModel : ViewModel() {
         _reshootOverlaysRes.value = repository.getOverlayIds(ids)
     }
 
-    fun updateSkuExteriorAngles(skuId: String,angles: Int,subcatId : String) {
-        UpdateExteriorAngles(skuId,angles,subcatId).update()
-        localRepository.updateSkuExteriorAngles(skuId,angles)
+    fun updateSkuExteriorAngles(skuId: String, angles: Int, subcatId: String) {
+        UpdateExteriorAngles(skuId, angles, subcatId).update()
+        localRepository.updateSkuExteriorAngles(skuId, angles)
     }
 
-    fun getCameraSetting() : CameraSettings {
-        return if (Utilities.getPreference(BaseApplication.getContext(),AppConstants.ENTERPRISE_ID) == AppConstants.KARVI_ENTERPRISE_ID){
+    fun getCameraSetting(): CameraSettings {
+        return if (Utilities.getPreference(
+                BaseApplication.getContext(),
+                AppConstants.ENTERPRISE_ID
+            ) == AppConstants.KARVI_ENTERPRISE_ID
+        ) {
             CameraSettings().apply {
                 isGryroActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GYRO
-                    ,true)
+                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO, true
+                )
                 isOverlayActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_OVERLAY
-                    ,false)
+                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY, false
+                )
                 isGridActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GRID
-                    ,true)
+                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GRID, true
+                )
             }
-        }else {
+        } else {
             CameraSettings().apply {
                 isGryroActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GYRO
-                    ,true)
+                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO, true
+                )
                 isOverlayActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_OVERLAY
-                    ,true)
+                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY, true
+                )
                 isGridActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GRID
-                    ,false)
+                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GRID, false
+                )
             }
         }
     }
