@@ -15,7 +15,7 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.needs.AppConstants
 
 class NewSubCategoriesAdapter (val context: Context,
-                               var subCategoriesList: ArrayList<NewSubCatResponse.Data>?,
+                               var subCategoriesList: ArrayList<NewSubCatResponse.Subcategory>?,
                                var pos : Int,
                                val btnlistener: BtnClickListener?,
                                var selectionEnabled : Boolean = false)
@@ -89,7 +89,7 @@ class NewSubCategoriesAdapter (val context: Context,
     override fun getItemCount() = if (subCategoriesList == null) 0 else subCategoriesList!!.size
 
     open interface BtnClickListener {
-        fun onBtnClick(position : Int,data : NewSubCatResponse.Data)
+        fun onBtnClick(position : Int, subcategory : NewSubCatResponse.Subcategory)
     }
 
 }

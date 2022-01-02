@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
@@ -141,7 +140,7 @@ class SubCategoryAndAngleFragment :
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
         when (data) {
-            is NewSubCatResponse.Data -> {
+            is NewSubCatResponse.Subcategory -> {
 
                 hideViews()
 

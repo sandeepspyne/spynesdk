@@ -11,7 +11,6 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
-import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -20,7 +19,6 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
 import com.spyneai.R
-import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.getUuid
@@ -28,7 +26,6 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
-import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.*
@@ -279,8 +276,8 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
     }
 
-    private fun getSubcategoryResponse(): NewSubCatResponse.Data? {
-        return NewSubCatResponse.Data(
+    private fun getSubcategoryResponse(): NewSubCatResponse.Subcategory? {
+        return NewSubCatResponse.Subcategory(
             1,
             "",
             "",

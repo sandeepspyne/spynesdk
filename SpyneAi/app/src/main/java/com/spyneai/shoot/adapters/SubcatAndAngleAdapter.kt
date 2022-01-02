@@ -16,7 +16,7 @@ class SubcatAndAngleAdapter(
     override fun getLayoutId(position: Int, obj: Any?): Int {
         return when (obj) {
 
-            is NewSubCatResponse.Data -> R.layout.item_subcategories
+            is NewSubCatResponse.Subcategory -> R.layout.item_subcategories
             else -> error("Unknown type: for position: $position")
         }
     }

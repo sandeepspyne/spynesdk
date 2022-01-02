@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.room.Room
 import com.spyneai.BaseApplication
 import com.spyneai.base.room.AppDatabase
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.db.DBHelper
 import com.spyneai.db.Images
 import com.spyneai.db.Projects
@@ -839,5 +840,10 @@ class ShootLocalRepository {
         com.spyneai.shoot.utils.log("Background id: " + backgroundId)
     }
 
-
+    fun getSubcategories(): List<NewSubCatResponse.Subcategory> {
+        return Room.databaseBuilder(
+            BaseApplication.getContext(),
+            AppDatabase::class.java, "spyne-db"
+        ).build().shootDao().getSubcategories()
+    }
 }

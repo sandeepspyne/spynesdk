@@ -10,6 +10,7 @@ import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
+import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
@@ -19,6 +20,8 @@ import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -114,7 +117,7 @@ class ShootViewModel : ViewModel() {
     var sku: com.spyneai.shoot.repository.model.sku.Sku? = null
     var project: com.spyneai.shoot.repository.model.project.Project? = null
 
-    var subCategory: MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
+    var subCategory: MutableLiveData<NewSubCatResponse.Subcategory> = MutableLiveData()
     var categoryDetails: MutableLiveData<CategoryDetails> = MutableLiveData()
     val isSubCategoryConfirmed: MutableLiveData<Boolean> = MutableLiveData()
     val showVin: MutableLiveData<Boolean> = MutableLiveData()
@@ -190,6 +193,26 @@ class ShootViewModel : ViewModel() {
         authKey: String, prodId: String
     ) = viewModelScope.launch {
         _subCategoriesResponse.value = Resource.Loading
+
+        val subcatList = localRepository.getSubcategories()
+
+        if (!subcatList.isNullOrEmpty()){
+            GlobalScope.launch(Dispatchers.Main) {
+                _subCategoriesResponse.value = Resource.Success(
+                    NewSubCatResponse(
+                        subcatList,
+                        null,
+                        "",
+                        null,
+                        200,
+                        null
+                    )
+                )
+            }
+        }else {
+
+        }
+
         _subCategoriesResponse.value = repository.getSubCategories(authKey, prodId)
     }
 
@@ -462,7 +485,7 @@ class ShootViewModel : ViewModel() {
         val subCatResponse = (subCategoriesResponse.value as Resource.Success).value
 
         when {
-            subCatResponse.miscellaneous.isNotEmpty() -> {
+            subCatResponse.miscellaneous?.isNotEmpty()!! -> {
                 showMiscDialog.value = true
             }
             else -> {

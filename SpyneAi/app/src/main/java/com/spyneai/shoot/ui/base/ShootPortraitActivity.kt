@@ -3,7 +3,6 @@ package com.spyneai.shoot.ui.base
 
 import CameraFragment
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
@@ -19,14 +18,12 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
 import com.spyneai.*
-import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
-import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
@@ -312,7 +309,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                     shootViewModel.subCatName.value =
                         intent.getStringExtra(AppConstants.SUB_CAT_NAME)
 
-                    shootViewModel.subCategory.value = NewSubCatResponse.Data(
+                    shootViewModel.subCategory.value = NewSubCatResponse.Subcategory(
                         1,
                         "",
                         "",

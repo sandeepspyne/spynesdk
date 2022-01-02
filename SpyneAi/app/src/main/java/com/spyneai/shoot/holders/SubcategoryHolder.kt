@@ -12,7 +12,7 @@ import com.spyneai.needs.AppConstants
 class SubcategoryHolder(
     itemView: View,
     listener: OnItemClickListener?
-) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<NewSubCatResponse.Data> {
+) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<NewSubCatResponse.Subcategory> {
 
     var listener: OnItemClickListener? = null
     var binding : ItemSubcategoriesBinding? = null
@@ -22,21 +22,21 @@ class SubcategoryHolder(
         this.listener = listener
     }
 
-    override fun bind(data: NewSubCatResponse.Data) {
+    override fun bind(subcategory: NewSubCatResponse.Subcategory) {
 
         binding.apply {
-            this?.tvSubcategories?.text = data.sub_cat_name
+            this?.tvSubcategories?.text = subcategory.sub_cat_name
         }
 
         Glide.with(itemView)
-            .load(AppConstants.BASE_IMAGE_URL + data.display_thumbnail)
+            .load(AppConstants.BASE_IMAGE_URL + subcategory.display_thumbnail)
             .into(binding?.ivSubCategories!!)
 
         binding?.llSubCategories?.setOnClickListener {
             listener?.onItemClick(
                 it,
                 adapterPosition,
-                data
+                subcategory
             )
         }
     }
