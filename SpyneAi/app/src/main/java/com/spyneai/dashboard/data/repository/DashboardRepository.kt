@@ -3,7 +3,9 @@ package com.spyneai.dashboard.data.repository
 
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
+import com.spyneai.base.network.GCPApiClient
 import com.spyneai.base.network.SpyneAiApiClient
+import okhttp3.RequestBody
 import org.json.JSONObject
 
 class DashboardRepository() : BaseRepository() {
@@ -58,6 +60,13 @@ class DashboardRepository() : BaseRepository() {
         imageUrl : String = ""
     ) = safeApiCall {
         clipperApi.captureCheckInOut(type,location,location_id,imageUrl)
+    }
+    suspend fun uploadImageToGcp(
+        path : String,
+        preSignedUrl : String,
+        fileUrl : String
+    ) = safeApiCall {
+        GCPApiClient().getClient().uploadImageToGcp(path,preSignedUrl,fileUrl)
     }
 
     suspend fun getLocations(

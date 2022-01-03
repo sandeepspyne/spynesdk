@@ -66,6 +66,8 @@ import android.provider.Settings
 import android.widget.Toast as Toast
 import com.google.android.gms.location.*
 import com.spyneai.R
+import com.spyneai.dashboard.data.repository.DashboardRepository
+import com.spyneai.shoot.data.ShootRepository
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -76,6 +78,7 @@ import kotlinx.coroutines.withContext
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>() {
 
     val REQUEST_IMAGE_CAPTURE = 1
+    val dasboardRepository: DashboardRepository
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
@@ -190,10 +193,23 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
 
                 if(location_data.has("latitude")){
+                    requireContext().captureEvent(
+                    Events.GET_LOCATION_SUCCESS_CHECKIN,
+                    HashMap<String,Any?>().apply {
+                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                        put("location_data",location_data)
+                    })
                     getDistanceFromLatLon(currentLat!!, currentLong!!, "checkin")
 
                 }else{
+
                     showLocationSnackBar()
+                    requireContext().captureEvent(
+                        Events.GET_LOCATION_FAIL_CHECKIN,
+                        HashMap<String,Any?>().apply {
+                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                            put("location_data",location_data)
+                        })
                 }
 
 
@@ -205,10 +221,21 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 viewModel.type = "checkout"
                 if(location_data.has("latitude")){
                     getDistanceFromLatLon(currentLat!!, currentLong!!, "checkout")
+                    requireContext().captureEvent(
+                        Events.GET_LOCATION_SUCCESS_CHECKOUT,
+                        HashMap<String,Any?>().apply {
+                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                            put("location_data",location_data)
+                        })
 
                 }else{
-
                     showLocationSnackBar()
+                    requireContext().captureEvent(
+                        Events.GET_LOCATION_FAIL_CHECKOUT,
+                        HashMap<String,Any?>().apply {
+                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                            put("location_data",location_data)
+                        })
                 }
             }
             if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
@@ -650,17 +677,11 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     //upload to gcp
                     viewModel.fileUrl = it.value.data.fileUrl
                     uploadImageToGcpUrl(
-                        viewModel.siteImagePath,
+                        "xyz",
                         it.value.data.presignedUrl,
                         it.value.data.fileUrl
                     )
                     viewModel._gcpUrlResponse.value = null
-                    requireContext().captureEvent(
-                            Events.SITEIMAGE_UPLOADED,
-                            HashMap<String,Any?>().apply {
-                                put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                                put("fileUrl",it.value.data.fileUrl)
-                            })
                 }
 
                 is Resource.Failure -> {
@@ -672,8 +693,10 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun uploadImageToGcpUrl(path: String, preSignedUrl: String, fileUrl: String) {
-        val requestFile =
-            File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+        val requestFile = File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+        val uploadResponse = dasboardRepository.captureCheckInOut(
+            image.preSignedUrl!!,
+            requestFile)
 
         //upload video with presigned url
         val request = GcpClient.buildService(ClipperApi::class.java)
@@ -691,14 +714,29 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 if (response.isSuccessful) {
                     //set clock in
                     checkInOut()
+                    requireContext().captureEvent(
+                        Events.SITEIMAGE_UPLOADED,
+                        HashMap<String,Any?>().apply {
+                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                            put("fileUrl",viewModel.fileUrl)
+                            put("response",response)
+                        })
                 } else {
+
                     //retry gcp upload
                     showErrorSnackBar(path, preSignedUrl, fileUrl)
+
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Utilities.hideProgressDialog()
+                requireContext().captureEvent(
+                    Events.SITEIMAGE_UPLOADED_FAIL,
+                    HashMap<String,Any?>().apply {
+                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                        put("response",t.localizedMessage)
+                    })
                 //retry gcp upload
                 showErrorSnackBar(path, preSignedUrl, fileUrl)
             }
@@ -849,6 +887,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         )
             .setAction("Retry") {
                getLocationData()
+                requireContext().captureEvent(
+                Events.GET_LOCATION_RETRY,
+                HashMap<String,Any?>().apply {
+                    put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                    put("location_data",location_data)
+                })
             }
             .setActionTextColor(
                 ContextCompat.getColor(

@@ -16,4 +16,7 @@ interface GCPApi {
         @Body file: RequestBody,
         @Header("content-type") contentType: String = "application/octet-stream"
     ): ResponseBody
+
+    @PUT
+    suspend fun uploadImageToGcp(path: String, preSignedUrl: String, fileUrl: String)
 }

@@ -416,13 +416,11 @@ class ImageUploader(
     }
 
     private suspend fun uploadImage(image: Image): Boolean {
-        val requestFile =
-            File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+        val requestFile = File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
 
         val uploadResponse = shootRepository.uploadImageToGcp(
             image.preSignedUrl!!,
-            requestFile
-        )
+            requestFile)
 
         val imageProperties = HashMap<String, Any?>()
             .apply {
