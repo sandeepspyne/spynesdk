@@ -20,8 +20,8 @@ import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.toDate
 
 class LocalDraftProjectsAdapter(
-val context: Context,
-val draftsList: List<Project>
+    val context: Context,
+    val draftsList: List<Project>
 ) : RecyclerView.Adapter<LocalDraftProjectsAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -47,9 +47,34 @@ val draftsList: List<Project>
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.tvCategory.text = draftsList[position].categoryName
-        holder.tvProjectName.text = draftsList[position].projectName
-        holder.tvDate.text = draftsList[position].createdAt?.toDate()
+        draftsList[position].let {
+            holder.apply {
+                tvCategory.text = it.categoryName
+                tvProjectName.text = it.projectName
+                tvDate.text = it.createdAt?.toDate()
+
+                tvImages.text = it.imagesCount.toString()
+                tvSkus.text = it.skuCount.toString()
+            }
+
+            when (it.thumbnail) {
+                null -> {
+                    val thumbnail = if (it.subCategoryName == "360_exterior" || it.subCategoryName == "360_interior")
+                        R.drawable.three_sixty_thumbnail
+                    else
+                        R.drawable.app_logo
+
+                    Glide.with(context)
+                        .load(thumbnail)
+                        .into(holder.ivThumbnail)
+                }
+                else -> {
+                    context.loadSmartly(it.thumbnail,holder.ivThumbnail)
+                }
+            }
+        }
+
+
 //        holder.tvSkus.text = draftsList[position].skus.toString()
 //        holder.tvImages.text = draftsList[position].images.toString()
 

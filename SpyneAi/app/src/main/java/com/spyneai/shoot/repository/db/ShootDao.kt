@@ -95,14 +95,13 @@ interface ShootDao {
     @Query("SELECT * FROM project where status = 'draft'")
     fun getDraftProjects(): List<Project>
 
-    @Query("UPDATE project SET skuCount = skuCount + 1 WHERE uuid =:projectUuid ")
-    fun updateProjectSkuCount(projectUuid: String) : Int
 
     @Transaction
-    fun saveSku(sku : Sku){
+    fun saveSku(sku : Sku,project: Project){
         val skuid = insertSku(sku)
         Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: $skuid")
-        val projectudpate = updateProjectSkuCount(sku.projectUuid!!)
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: "+sku.projectUuid)
+        val projectudpate = updateProject(project)
         Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: $projectudpate")
     }
 
@@ -112,21 +111,31 @@ interface ShootDao {
     @Query("UPDATE project SET imagesCount = imagesCount + 1 WHERE uuid =:uuid ")
     fun updateProjectImageCount(uuid: String) : Int
 
-    @Query("UPDATE project SET imagesCount = imagesCount + 1 and thumbnail= :thumbnail WHERE uuid =:uuid ")
-    fun updateProjectThumbnail(uuid: String,thumbnail: String)
+    @Query("Select * from project where uuid = :uuid")
+    fun getProject(uuid: String) : Project
+
+    @Query("UPDATE project SET imagesCount = imagesCount + 1, thumbnail= :thumbnail WHERE uuid =:uuid ")
+    fun updateProjectThumbnail(uuid: String,thumbnail: String) : Int
 
     @Query("UPDATE sku SET imagesCount = imagesCount + 1 WHERE uuid =:uuid ")
     fun updateSkuImageCount(uuid: String) : Int
 
     @Transaction
     fun saveImage(image: Image){
-        Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: "+insertImage(image))
-        if (image.sequence == 1)
-            Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: "+updateProjectThumbnail(image.projectUuid!!,image.path))
-        else
-            Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: "+updateProjectImageCount(image.projectUuid!!))
+        val imageId = insertImage(image)
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $imageId")
+        if (image.sequence == 1){
+            val thumbUpdate = updateProjectThumbnail(image.projectUuid!!,image.path)
+            Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $thumbUpdate")
+        }
+        else{
+            val updateProjectImagesCount = updateProjectImageCount(image.projectUuid!!)
+            Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $updateProjectImagesCount")
+        }
 
-        Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: "+updateSkuImageCount(image.skuUuid!!))
+
+        val skuImagesUpdate = updateSkuImageCount(image.skuUuid!!)
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $skuImagesUpdate")
     }
 
     @Query("Select * from exteriortags")

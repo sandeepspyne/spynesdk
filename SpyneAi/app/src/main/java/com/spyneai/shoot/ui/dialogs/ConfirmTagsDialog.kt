@@ -22,6 +22,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogConfirmTagsBinding
 import com.spyneai.databinding.ItemTagNotesBinding
@@ -357,17 +358,18 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
     private fun getTagKey(index: Int): String {
 
-        val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
-
         when (viewModel.categoryDetails.value?.imageType) {
             "Exterior" -> {
-                return response.tags.exteriorTags[index].fieldId
+                val tags = viewModel.tags["Exterior"] as List<NewSubCatResponse.Tags.ExteriorTags>
+                return tags[index].fieldId
             }
             "Interior" -> {
-                return response.tags.interiorTags[index].fieldId
+                val tags = viewModel.tags["Interior"] as List<NewSubCatResponse.Tags.ExteriorTags>
+                return tags[index].fieldId
             }
             "Focus Shoot" -> {
-                return response.tags.focusShoot[index].fieldId
+                val tags = viewModel.tags["Focus Shoot"] as List<NewSubCatResponse.Tags.ExteriorTags>
+                return tags[index].fieldId
             }
             else -> {
             }

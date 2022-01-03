@@ -48,7 +48,6 @@ class DraftProjectsFragment : BaseFragment<DraftViewModel, FragmentDraftProjects
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.rvDraftProjects.layoutManager = layoutManager
 
-
         binding.shimmerCompletedSKU.stopShimmer()
         binding.shimmerCompletedSKU.visibility = View.GONE
         binding.rvDraftProjects.visibility = View.VISIBLE

@@ -87,6 +87,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
             viewModel.sku = sku
 
             GlobalScope.launch(Dispatchers.IO) {
+                Log.d(TAG, "createProject: "+project.uuid)
                 val id = viewModel.insertProject()
                 Log.d(TAG, "createProject: $id")
                 viewModel.insertSku()

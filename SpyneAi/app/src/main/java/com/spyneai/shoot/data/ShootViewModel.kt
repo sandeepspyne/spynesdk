@@ -307,7 +307,7 @@ class ShootViewModel : ViewModel() {
 
     fun getMiscList() = localRepository.getMiscList(subCategory.value?.prod_cat_id!!)
 
-    val tags = HashMap<String, Any>()
+    public val tags = HashMap<String, Any>()
 
     suspend fun getTags(type: String): Any? {
         when (type) {
@@ -454,8 +454,8 @@ class ShootViewModel : ViewModel() {
             imageRepository.insertImage(
                 com.spyneai.shoot.repository.model.image.Image(
                     uuid = getUuid(),
-                    projectUuid = getUuid(),
-                    skuName = "name",
+                    projectUuid = project?.uuid,
+                    skuName = sku?.skuName,
                     name = image.name!!,
                     type = image.categoryName!!,
                     sequence = image.sequence!!,
@@ -464,7 +464,7 @@ class ShootViewModel : ViewModel() {
                     isReclick = isReclick,
                     isReshoot = isReshoot,
                     path = image.imagePath!!,
-                    skuUuid = getUuid()
+                    skuUuid = sku?.uuid
                 )
             )
         }
@@ -502,7 +502,13 @@ class ShootViewModel : ViewModel() {
         _updateVideoSkuRes.value = repository.updateVideoSku(skuId, prodSubCatId, initialImageCount)
     }
 
-    suspend fun insertSku() = localRepository.insertSku(sku!!)
+    suspend fun insertSku() {
+        project?.apply {
+            imagesCount = 0
+            skuCount = skuCount.plus(1)
+        }
+        localRepository.insertSku(sku!!,project!!)
+    }
 
     fun updateTotalImages(skuId: String) {
         localRepository.updateTotalImageCount(skuId)
