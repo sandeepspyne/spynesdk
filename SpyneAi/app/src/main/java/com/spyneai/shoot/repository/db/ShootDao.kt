@@ -10,29 +10,12 @@ import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
-import io.sentry.protocol.App
+
 
 @Dao
 interface ShootDao {
 
-    @Insert
-    fun subcategories(list: List<NewSubCatResponse.Subcategory>)
-
-    @Insert
-    fun insertInterior(list: List<NewSubCatResponse.Interior>) : List<Long>
-
-    @Insert
-    fun insertMisc(list: List<NewSubCatResponse.Miscellaneous>)
-
-    @Insert
-    fun insertExteriorTags(list: List<NewSubCatResponse.Tags.ExteriorTags>) : List<Long>
-
-    @Insert
-    fun insertInteriorTags(list: List<NewSubCatResponse.Tags.InteriorTags>)
-
-    @Insert
-    fun insertFocusTags(list: List<NewSubCatResponse.Tags.FocusShoot>)
-
+    //subcategories  queries
     @Transaction
     fun saveSubcategoriesData(
         subCategories: List<NewSubCatResponse.Subcategory>,
@@ -46,10 +29,19 @@ interface ShootDao {
         insertInterior(interior)
         insertMisc(misc)
 
-        val s = insertExteriorTags(exteriorTagsTags)
+        insertExteriorTags(exteriorTagsTags)
         insertInteriorTags(interiorTags)
         insertFocusTags(focusTags)
     }
+
+    @Insert
+    fun subcategories(list: List<NewSubCatResponse.Subcategory>)
+
+    @Insert
+    fun insertInterior(list: List<NewSubCatResponse.Interior>) : List<Long>
+
+    @Insert
+    fun insertMisc(list: List<NewSubCatResponse.Miscellaneous>)
 
     @Query("SELECT * FROM subcategory")
     fun getSubcategories(): List<NewSubCatResponse.Subcategory>
@@ -59,6 +51,15 @@ interface ShootDao {
 
     @Query("SELECT * FROM miscellaneous where prod_cat_id = :prodCatId")
     fun getMisc(prodCatId: String) : List<NewSubCatResponse.Miscellaneous>
+
+    @Insert
+    fun insertExteriorTags(list: List<NewSubCatResponse.Tags.ExteriorTags>) : List<Long>
+
+    @Insert
+    fun insertInteriorTags(list: List<NewSubCatResponse.Tags.InteriorTags>)
+
+    @Insert
+    fun insertFocusTags(list: List<NewSubCatResponse.Tags.FocusShoot>)
 
     @Insert
     fun insertOverlays(overlays: List<OverlaysResponse.Overlays>)
