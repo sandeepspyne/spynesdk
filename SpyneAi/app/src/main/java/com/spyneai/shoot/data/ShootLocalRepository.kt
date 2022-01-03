@@ -31,11 +31,11 @@ class ShootLocalRepository {
         ).build().shootDao().insertProject(project)
     }
 
-    suspend fun insertSku(sku: com.spyneai.shoot.repository.model.sku.Sku): Long {
+    suspend fun insertSku(sku: com.spyneai.shoot.repository.model.sku.Sku) {
         return Room.databaseBuilder(
             BaseApplication.getContext(),
             AppDatabase::class.java, "spyne-db"
-        ).build().shootDao().insertSku(sku)
+        ).build().shootDao().saveSku(sku)
     }
 
 

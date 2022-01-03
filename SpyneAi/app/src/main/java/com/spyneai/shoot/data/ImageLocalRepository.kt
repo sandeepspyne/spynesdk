@@ -80,11 +80,11 @@ class ImageLocalRepository {
         com.spyneai.shoot.utils.log("insertImage: "+newRowId)
     }
 
-    suspend fun insertImage(image: com.spyneai.shoot.repository.model.image.Image) : Long{
+    suspend fun insertImage(image: com.spyneai.shoot.repository.model.image.Image){
         return Room.databaseBuilder(
             BaseApplication.getContext(),
             AppDatabase::class.java, "spyne-db"
-        ).build().shootDao().insertImage(image)
+        ).build().shootDao().saveImage(image)
     }
 
     fun updateImage(image: Image){

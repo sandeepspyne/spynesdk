@@ -1,16 +1,16 @@
 package com.spyneai.shoot.repository.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import android.util.Log
+import androidx.room.*
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 
 import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
+import io.sentry.protocol.App
 
 @Dao
 interface ShootDao {
@@ -81,8 +81,30 @@ interface ShootDao {
     @Insert
     fun insertSku(obj: Sku) : Long
 
+    @Query("UPDATE project SET skuCount = skuCount + 1 WHERE uuid =:projectUuid ")
+    fun updateProjectSkuCount(projectUuid: String) : Int
+
+    @Transaction
+    fun saveSku(sku : Sku){
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: "+insertSku(sku))
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: "+updateProjectSkuCount(sku.projectUuid!!))
+    }
+
     @Insert
     fun insertImage(obj: Image) : Long
+
+    @Query("UPDATE project SET imagesCount = imagesCount + 1 WHERE uuid =:uuid ")
+    fun updateProjectImageCount(uuid: String) : Int
+
+    @Query("UPDATE sku SET imagesCount = imagesCount + 1 WHERE uuid =:uuid ")
+    fun updateSkuImageCount(uuid: String) : Int
+
+    @Transaction
+    fun saveImage(image: Image){
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: "+insertImage(image))
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: "+updateProjectImageCount(image.projectUuid!!))
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: "+updateSkuImageCount(image.skuUuid!!))
+    }
 
     @Query("Select * from exteriortags")
     fun getExteriorTags(): List<NewSubCatResponse.Tags.ExteriorTags>
@@ -93,3 +115,23 @@ interface ShootDao {
     @Query("Select * from focusshoot")
     fun getFocusTags(): List<NewSubCatResponse.Tags.FocusShoot>
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

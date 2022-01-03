@@ -31,10 +31,11 @@ class Sku(
     @ColumnInfo(name = "is_paid") var isPaid: Boolean = false,
     @ColumnInfo(name = "rating") var rating: String? = null,
     @ColumnInfo(name = "created_at") var createdAt: Long = System.currentTimeMillis(),
-    @ColumnInfo(name = "updated_at") var updatedAt: Long = System.currentTimeMillis()
+    @ColumnInfo(name = "updated_at") var updatedAt: Long = System.currentTimeMillis(),
+    var imagesCount: Int = 0
 ){
-    @Ignore
-    var imagesCount: Int? = null
+
+
     @Ignore
     var imagesList: List<String>? = null
 }
