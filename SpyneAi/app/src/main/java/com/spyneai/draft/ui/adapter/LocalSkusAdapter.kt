@@ -167,17 +167,6 @@ class LocalSkusAdapter(
                     skuList[position].initialFrames
                 )
 
-                val s = ""
-
-//                when (skuList[position].subcategoryId) {
-//                    "prod_4CW50lj2sNMCS" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
-//                    "prod_4CW50lj2sNMF" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)
-//                    else -> {
-//
-//                    }
-//
-//                }
-
                 if (skuList[position].threeSixtyFrames != null && skuList[position].threeSixtyFrames != 0) {
                     draftIntent.apply {
                         putExtra(AppConstants.FROM_VIDEO, true)

@@ -10,6 +10,7 @@ import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
+import io.sentry.protocol.App
 
 
 @Dao
@@ -159,6 +160,40 @@ interface ShootDao {
 
     @Query("Select * from focusshoot")
     fun getFocusTags(): List<NewSubCatResponse.Tags.FocusShoot>
+
+    @Transaction
+    fun saveProjectData(projectList:ArrayList<Project>,
+                        skuList: ArrayList<Sku>,
+                        imageList: ArrayList<Image>){
+
+        projects()
+        skus()
+        images()
+        val a = insertProjects(projectList)
+        val b = insertSkus(skuList)
+        val c = insertImages(imageList)
+        val s = ""
+
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveProjectData: $a$b$c")
+    }
+
+    @Insert
+    fun insertProjects(projects: ArrayList<Project>) : List<Long>
+
+    @Insert
+    fun insertSkus(skus: ArrayList<Sku>) : List<Long>
+
+    @Insert
+    fun insertImages(images: ArrayList<Image>) : List<Long>
+
+    @Query("DELETE FROM project")
+    fun projects()
+
+    @Query("DELETE FROM sku")
+    fun skus()
+
+    @Query("DELETE FROM image")
+    fun images()
 }
 
 

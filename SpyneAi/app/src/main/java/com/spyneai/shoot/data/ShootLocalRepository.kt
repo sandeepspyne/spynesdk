@@ -941,6 +941,12 @@ class ShootLocalRepository {
     ).build().shootDao().getSku(uuid)
 
 
+    fun saveProjectData(projectList:ArrayList<com.spyneai.shoot.repository.model.project.Project>,
+                        skuList: ArrayList<com.spyneai.shoot.repository.model.sku.Sku>,
+                        imageList: ArrayList<com.spyneai.shoot.repository.model.image.Image>) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().saveProjectData(projectList,skuList,imageList)
 
 
 
