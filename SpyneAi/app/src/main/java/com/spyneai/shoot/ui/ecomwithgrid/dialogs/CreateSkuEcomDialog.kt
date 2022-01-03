@@ -155,7 +155,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
 
         //add sku to local database
         GlobalScope.launch {
-            viewModel.insertSku(sku!!)
+            viewModel.insertSku()
         }
         dismiss()
     }

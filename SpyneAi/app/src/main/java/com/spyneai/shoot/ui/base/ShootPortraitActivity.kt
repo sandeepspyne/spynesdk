@@ -118,7 +118,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                     AppConstants.MENS_FASHION_CATEGORY_ID,
                     AppConstants.WOMENS_FASHION_CATEGORY_ID,
                     AppConstants.CAPS_CATEGORY_ID,
-                        AppConstants.FASHION_CATEGORY_ID,
+                    AppConstants.FASHION_CATEGORY_ID,
                     AppConstants.ACCESSORIES_CATEGORY_ID,
                     AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID-> {
                         transaction

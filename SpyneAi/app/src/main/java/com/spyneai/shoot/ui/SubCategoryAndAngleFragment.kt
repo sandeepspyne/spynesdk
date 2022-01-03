@@ -287,7 +287,6 @@ class SubCategoryAndAngleFragment :
     }
 
     private fun selectAngles() {
-
         AngleSelectionDialog().show(
             requireActivity().supportFragmentManager,
             "AngleSelectionDialog"
@@ -296,7 +295,12 @@ class SubCategoryAndAngleFragment :
     }
 
     private fun createSku() {
-        val sku = viewModel.sku?.apply {
+        viewModel.project?.apply {
+            subCategoryName = viewModel.subCategory.value?.sub_cat_name
+            subCategoryId = viewModel.subCategory.value?.prod_sub_cat_id
+        }
+
+        viewModel.sku?.apply {
             subcategoryName = viewModel.subCategory.value?.sub_cat_name
             subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
             initialFrames = viewModel.exterirorAngles.value
@@ -311,7 +315,7 @@ class SubCategoryAndAngleFragment :
 
         //add sku to local database
         GlobalScope.launch(Dispatchers.IO) {
-            viewModel.insertSku(sku!!)
+            viewModel.updateSubcategory()
         }
     }
 

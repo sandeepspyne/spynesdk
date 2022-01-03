@@ -482,7 +482,7 @@ class ShootLocalRepository {
         )
     }
 
-    fun updateSkuExteriorAngles(skuId: String, angles: Int) {
+    fun updateSkuExteriorAngles(skuId: Sku, angles: Int) {
         val projectValues = ContentValues().apply {
             put(
                 Projects.COLUMN_NAME_EXTERIOR_ANGLES,
@@ -495,12 +495,12 @@ class ShootLocalRepository {
 
         val projectSelectionArgs = arrayOf(skuId)
 
-        val projectCount = dbWritable.update(
-            ShootContract.ShootEntry.TABLE_NAME,
-            projectValues,
-            projectSelection,
-            projectSelectionArgs
-        )
+//        val projectCount = dbWritable.update(
+//            ShootContract.ShootEntry.TABLE_NAME,
+//            projectValues,
+//            projectSelection,
+//            projectSelectionArgs
+//        )
     }
 
 
@@ -912,4 +912,35 @@ class ShootLocalRepository {
         BaseApplication.getContext(),
         AppDatabase::class.java, "spyne-db"
     ).build().shootDao().getFocusTags()
+
+    fun updateSubcategory(project: com.spyneai.shoot.repository.model.project.Project,
+                          sku: com.spyneai.shoot.repository.model.sku.Sku) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().updateSubcategory(project,sku)
+
+    fun updateSkuExteriorAngles(sku : com.spyneai.shoot.repository.model.sku.Sku) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().updateSku(sku)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

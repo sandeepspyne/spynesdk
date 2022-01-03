@@ -35,6 +35,9 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import kotlinx.android.synthetic.main.fragment_overlays.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBinding>(),
@@ -135,14 +138,15 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                     //set exterior angle value
                     viewModel.exterirorAngles.value = it.value.data.size
-
+                    viewModel.sku?.apply {
+                        initialFrames = it.value.data.size
+                        totalFrames = it.value.data.size
+                    }
 
                     //update exterior angles in local DB
-                    viewModel.updateSkuExteriorAngles(
-                        viewModel.sku?.skuId!!,
-                        viewModel.exterirorAngles.value!!,
-                        viewModel.subCategory.value?.prod_sub_cat_id!!
-                    )
+                   GlobalScope.launch(Dispatchers.IO) {
+                       viewModel.updateSkuExteriorAngles()
+                   }
 
                     viewModel.displayName = it.value.data[0].display_name
                     viewModel.displayThumbanil = it.value.data[0].display_thumbnail

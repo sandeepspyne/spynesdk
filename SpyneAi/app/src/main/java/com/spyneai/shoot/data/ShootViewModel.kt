@@ -502,17 +502,20 @@ class ShootViewModel : ViewModel() {
         _updateVideoSkuRes.value = repository.updateVideoSku(skuId, prodSubCatId, initialImageCount)
     }
 
-    suspend fun insertSku(sku: com.spyneai.shoot.repository.model.sku.Sku) {
-        localRepository.insertSku(sku)
+    suspend fun insertSku() {
+        localRepository.insertSku(sku!!)
     }
 
     fun updateTotalImages(skuId: String) {
         localRepository.updateTotalImageCount(skuId)
     }
 
+    suspend fun insertProject(): Long {
+        return localRepository.insertProject(project!!)
+    }
 
-    suspend fun insertProject(project: com.spyneai.shoot.repository.model.project.Project): Long {
-        return localRepository.insertProject(project)
+    suspend fun updateSubcategory() {
+        localRepository.updateSubcategory(project!!,sku!!)
     }
 
     fun updateSubcategoryId(subcategoryId: String, subcategoryName: String) {
@@ -813,9 +816,13 @@ class ShootViewModel : ViewModel() {
         _reshootOverlaysRes.value = repository.getOverlayIds(ids)
     }
 
+    suspend fun updateSkuExteriorAngles() {
+        localRepository.updateSkuExteriorAngles(sku!!)
+    }
+
     fun updateSkuExteriorAngles(skuId: String, angles: Int, subcatId: String) {
         UpdateExteriorAngles(skuId, angles, subcatId).update()
-        localRepository.updateSkuExteriorAngles(skuId, angles)
+       // localRepository.updateSkuExteriorAngles(skuId, angles)
     }
 
     fun getCameraSetting(): CameraSettings {

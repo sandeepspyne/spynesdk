@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
     private lateinit var inflator: LayoutInflater
     private val data = JSONObject()
     private var shortAnimationDuration: Int = 0
+    private val TAG = ProjectTagDialog::class.java.simpleName
 
     override fun onStart() {
         super.onStart()
@@ -342,25 +344,20 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         viewModel.project = project
 
         GlobalScope.launch(Dispatchers.IO) {
-            val itemId = viewModel.insertProject(
-                project
-            )
+            val id = viewModel.insertProject()
+            Log.d(TAG, "createProject: "+id)
         }
 
         Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
         //notify project created
         viewModel.isProjectCreated.value = true
 
-
         val sku = Sku(
             uuid = getUuid(),
             projectUuid = project.uuid,
             categoryId = project.categoryId,
             categoryName = project.categoryName,
-            skuName = removeWhiteSpace(binding.etSkuName.text.toString()),
-            subcategoryName = viewModel.subCategory.value?.sub_cat_name,
-            subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id,
-            initialFrames = viewModel.exterirorAngles.value
+            skuName = removeWhiteSpace(binding.etSkuName.text.toString())
         )
 
         viewModel.sku = sku
@@ -371,7 +368,6 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             AppConstants.ECOM_CATEGORY_ID,
             AppConstants.FOOD_AND_BEV_CATEGORY_ID,
             AppConstants.PHOTO_BOX_CATEGORY_ID-> {
-//                            viewModel.showLeveler.value = true
                 viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
                 viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
             }
@@ -380,7 +376,8 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
         //add sku to local database
         GlobalScope.launch {
-            viewModel.insertSku(sku!!)
+            val id = viewModel.insertSku()
+            Log.d(TAG, "createProject: "+id)
         }
 
         dismiss()

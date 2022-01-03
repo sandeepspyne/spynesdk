@@ -11,7 +11,7 @@ data class Project(
     val uuid: String,
     @SerializedName("category_id") val categoryId: String? = null,
     @SerializedName("category_name") val categoryName: String? = null,
-    @SerializedName("subcategory_name")val subCategoryName : String? = null,
+    @SerializedName("subcategory_name") var subCategoryName : String? = null,
     @SerializedName("subcategory_id")var subCategoryId : String? = null,
     @SerializedName("project_name") val projectName: String? = null,
     @SerializedName("project_id") val projectId: String? = null,

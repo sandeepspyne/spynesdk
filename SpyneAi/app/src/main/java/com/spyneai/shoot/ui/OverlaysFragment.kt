@@ -268,8 +268,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
     }
 
     private fun initAngles() {
-        if (viewModel.subCategory.value?.prod_cat_id != null
-            && viewModel.categoryDetails.value?.imageType == "Exterior")
+        if (viewModel.subCategory.value?.prod_cat_id != null && viewModel.categoryDetails.value?.imageType == "Exterior")
             getOverlays()
     }
 

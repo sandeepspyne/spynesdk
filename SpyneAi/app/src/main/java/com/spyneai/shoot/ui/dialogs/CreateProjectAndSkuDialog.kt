@@ -75,9 +75,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         viewModel.project = project
 
         GlobalScope.launch(Dispatchers.IO) {
-            val itemId = viewModel.insertProject(
-                project
-            )
+            viewModel.insertProject()
         }
         //update shoot session
         Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)

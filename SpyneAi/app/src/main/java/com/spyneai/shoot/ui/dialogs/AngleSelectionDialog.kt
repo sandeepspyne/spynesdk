@@ -203,12 +203,18 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
     }
 
     private fun createSku(projectId: String, prod_sub_cat_id: String) {
-        val sku = viewModel.sku?.apply {
+        viewModel.project?.apply {
+            subCategoryName = viewModel.subCategory.value?.sub_cat_name
+            subCategoryId = viewModel.subCategory.value?.prod_sub_cat_id
+        }
+
+        viewModel.sku?.apply {
             subcategoryName = viewModel.subCategory.value?.sub_cat_name
             subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
             initialFrames = viewModel.exterirorAngles.value
             totalFrames = viewModel.exterirorAngles.value
         }
+
 
         viewModel.isSubCategoryConfirmed.value = true
         viewModel.isSkuCreated.value = true
@@ -218,7 +224,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 
         //add sku to local database
         GlobalScope.launch(Dispatchers.IO) {
-            viewModel.insertSku(sku!!)
+            viewModel.updateSubcategory()
         }
 
         dismiss()
