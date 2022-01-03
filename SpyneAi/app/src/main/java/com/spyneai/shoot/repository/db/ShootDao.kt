@@ -144,11 +144,10 @@ interface ShootDao {
         else{
             val updateProjectImagesCount = updateProjectImageCount(image.projectUuid!!)
             Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $updateProjectImagesCount")
+
+            val skuImagesUpdate = updateSkuImageCount(image.skuUuid!!)
+            Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $skuImagesUpdate")
         }
-
-
-        val skuImagesUpdate = updateSkuImageCount(image.skuUuid!!)
-        Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $skuImagesUpdate")
     }
 
     @Query("Select * from exteriortags")

@@ -269,7 +269,6 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         }else{
             shootViewModel.getSubCategories.value = true
         }
-
     }
 
     private fun getSubcategoryResponse(): NewSubCatResponse.Subcategory? {

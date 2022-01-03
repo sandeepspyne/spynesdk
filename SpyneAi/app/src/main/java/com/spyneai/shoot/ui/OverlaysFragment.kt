@@ -55,8 +55,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
         requireContext().setLocale()
 
-
-
         viewModel.showOverlay.observe(viewLifecycleOwner, {
             if (it) {
                 binding.imgOverlay.visibility = View.VISIBLE
@@ -465,7 +463,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                             }
                     )
 
-
                     showViews()
                 }
 
@@ -484,9 +481,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
     }
 
     private fun initInteriorShots() {
-//        viewModel.hideLeveler.value = true
-
-
         InteriorHintDialog().show(requireActivity().supportFragmentManager, "InteriorHintDialog")
     }
 
