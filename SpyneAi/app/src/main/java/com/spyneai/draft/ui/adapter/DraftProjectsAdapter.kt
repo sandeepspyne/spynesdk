@@ -35,9 +35,6 @@ class DraftProjectsAdapter(
         val tvPaid: TextView = view.findViewById(R.id.tvPaid)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
         val cvMain: CardView = view.findViewById(R.id.cvMain)
-
-
-
     }
 
     override fun onCreateViewHolder(

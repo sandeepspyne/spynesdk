@@ -425,47 +425,36 @@ class ShootViewModel : ViewModel() {
     }
 
     suspend fun insertImage(shootData: ShootData) {
-        val image = Image()
-        image.projectId = shootData.project_id
-        image.skuId = shootData.sku_id
-        image.categoryName = shootData.image_category
-        image.imagePath = shootData.capturedImage
-        image.sequence = shootData.sequence
-        image.overlayId = overlayId.toString()
-        image.skuName = sku?.skuName?.uppercase()
-        image.angle = shootData.angle
-        image.meta = shootData.meta
-        image.debugData = shootData.debugData
-        image.isReshoot = if (isReshoot) 1 else 0
-        image.isReclick = if (isReclick) 1 else 0
+        val name = if (shootData.image_category == "360int")
+            sku?.skuName?.uppercase() + "_" + sku?.uuid + "_360int_1.JPG"
+        else{
+            if (shootData.name.contains(".")) shootData.name else shootData.name + "." + shootData.capturedImage.substringAfter(
+                "."
+            )
+        }
 
-        if (image.categoryName == "360int")
-            image.name = image.skuName + "_" + image.skuId + "_360int_1.JPG"
-        else
-            image.name =
-                if (shootData.name.contains(".")) shootData.name else shootData.name + "." + shootData.capturedImage.substringAfter(
-                    "."
-                )
+        val newImage = com.spyneai.shoot.repository.model.image.Image(
+            uuid = getUuid(),
+            projectUuid = project?.uuid,
+            skuUuid = sku?.uuid,
+            type = shootData.image_category,
+            skuName = sku?.skuName,
+            name = name,
+            sequence = shootData.sequence,
+            overlayId = overlayId.toString(),
+            isReclick = isReclick,
+            isReshoot = isReshoot,
+            path = shootData.capturedImage,
+            angle = shootData.angle,
+            tags = shootData.meta,
+            debugData = shootData.debugData
+        )
 
-
-        if (imageRepository.isImageExist(image.skuId!!, image.name!!)) {
-            imageRepository.updateImage(image)
+        if (imageRepository.isImageExist(newImage.skuUuid!!, newImage.name!!)) {
+            //imageRepository.updateImage(image)
         } else {
             imageRepository.insertImage(
-                com.spyneai.shoot.repository.model.image.Image(
-                    uuid = getUuid(),
-                    projectUuid = project?.uuid,
-                    skuName = sku?.skuName,
-                    name = image.name!!,
-                    type = image.categoryName!!,
-                    sequence = image.sequence!!,
-                    angle = image.angle!!,
-                    overlayId = image.overlayId!!,
-                    isReclick = isReclick,
-                    isReshoot = isReshoot,
-                    path = image.imagePath!!,
-                    skuUuid = sku?.uuid
-                )
+                newImage
             )
         }
     }

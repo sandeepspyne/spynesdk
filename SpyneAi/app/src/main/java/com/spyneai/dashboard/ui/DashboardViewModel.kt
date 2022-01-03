@@ -97,7 +97,7 @@ class DashboardViewModel() : ViewModel() {
                                 DynamicLayout(it.categoryId,it.dynamic_layout?.project_dialog)
                             )
                         }
-                        val list = repository.insertCategories(
+                        repository.insertCategories(
                             catList,
                             dynamicList
                         )
@@ -113,7 +113,9 @@ class DashboardViewModel() : ViewModel() {
                         }
                     }
                 }else {
-                    _categoriesResponse.value = response
+                    GlobalScope.launch(Dispatchers.Main) {
+                        _categoriesResponse.value = response
+                    }
                 }
             }
         }

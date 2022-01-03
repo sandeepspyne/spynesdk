@@ -259,13 +259,18 @@ class SubCategoryAndAngleFragment :
     }
 
     private fun updateSku() {
-        Utilities.showProgressDialog(requireContext())
+        setSubcategoryData()
 
-        viewModel.updateVideoSku(
-            viewModel.sku?.skuId!!,
-            viewModel.subCategory.value?.prod_sub_cat_id!!,
-            viewModel.exterirorAngles.value!!
-        )
+        viewModel.isSubCategoryConfirmed.value = true
+        viewModel.isSkuCreated.value = true
+        viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+        viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+
+        //add sku to local database
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.updateSubcategory()
+        }
     }
 
     private fun hideViews() {
