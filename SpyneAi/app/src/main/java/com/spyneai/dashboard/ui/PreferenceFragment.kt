@@ -65,6 +65,7 @@ import android.content.DialogInterface
 import android.provider.Settings
 import android.widget.Toast as Toast
 import com.google.android.gms.location.*
+import com.google.gson.Gson
 import com.spyneai.R
 import com.spyneai.dashboard.data.repository.DashboardRepository
 import com.spyneai.shoot.data.ShootRepository
@@ -78,7 +79,6 @@ import kotlinx.coroutines.withContext
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>() {
 
     val REQUEST_IMAGE_CAPTURE = 1
-    val dasboardRepository: DashboardRepository
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
@@ -90,7 +90,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     lateinit var spLocationAdapter: ArrayAdapter<String>
     lateinit var currentPhotoPath: String
     val location_data = JSONObject()
-    val location_d = JSONObject()
 
     var snackbar: Snackbar? = null
     var isActive = false
@@ -676,11 +675,15 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 is Resource.Success -> {
                     //upload to gcp
                     viewModel.fileUrl = it.value.data.fileUrl
-                    uploadImageToGcpUrl(
-                        "xyz",
-                        it.value.data.presignedUrl,
-                        it.value.data.fileUrl
-                    )
+                    viewModel.preSignedUrl=it.value.data.presignedUrl
+                    GlobalScope.launch {
+                        withContext(Dispatchers.Main) {
+                            imageUpload(
+                                path = viewModel.siteImagePath,
+                                preSignedUrl = it.value.data.presignedUrl,
+                                fileUrl = it.value.data.fileUrl
+                            )
+                        }}
                     viewModel._gcpUrlResponse.value = null
                 }
 
@@ -692,56 +695,37 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         })
     }
 
-    private fun uploadImageToGcpUrl(path: String, preSignedUrl: String, fileUrl: String) {
+    private suspend fun imageUpload(path: String, preSignedUrl: String, fileUrl: String) {
         val requestFile = File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
-        val uploadResponse = dasboardRepository.captureCheckInOut(
-            image.preSignedUrl!!,
-            requestFile)
-
-        //upload video with presigned url
-        val request = GcpClient.buildService(ClipperApi::class.java)
-
-        val call = request.uploadVideo(
-            "application/octet-stream",
-            preSignedUrl,
-            requestFile
-        )
-
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.d("VideoUploader", "onResponse: " + response.code())
-                Utilities.hideProgressDialog()
-                if (response.isSuccessful) {
-                    //set clock in
-                    checkInOut()
-                    requireContext().captureEvent(
-                        Events.SITEIMAGE_UPLOADED,
-                        HashMap<String,Any?>().apply {
-                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                            put("fileUrl",viewModel.fileUrl)
-                            put("response",response)
-                        })
-                } else {
-
-                    //retry gcp upload
-                    showErrorSnackBar(path, preSignedUrl, fileUrl)
-
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+         val shootRepository = ShootRepository()
+        val uploadResponse = shootRepository.uploadImageToGcp(preSignedUrl, requestFile)
+        when (uploadResponse) {
+            is Resource.Failure -> {
                 Utilities.hideProgressDialog()
                 requireContext().captureEvent(
                     Events.SITEIMAGE_UPLOADED_FAIL,
                     HashMap<String,Any?>().apply {
                         put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                        put("response",t.localizedMessage)
+                        put("throwable",uploadResponse.throwable)
                     })
-                //retry gcp upload
                 showErrorSnackBar(path, preSignedUrl, fileUrl)
             }
+            is Resource.Success->{
+                Utilities.hideProgressDialog()
+                checkInOut()
+                requireContext().captureEvent(
+                    Events.SITEIMAGE_UPLOADED,
+                    HashMap<String,Any?>().apply {
+                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                        put("fileUrl",viewModel.fileUrl)
+                        put("response",uploadResponse)
+                    })
 
-        })
+            }
+            else -> {
+                showErrorSnackBar(path, preSignedUrl, fileUrl)
+            }
+        }
     }
 
     private fun observeClockInOut() {
@@ -862,7 +846,14 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             Snackbar.LENGTH_INDEFINITE
         )
             .setAction("Retry") {
-                uploadImageToGcpUrl(path, preSignedUrl, fileUrl)
+                GlobalScope.launch {
+                    withContext(Dispatchers.Main) {
+                        imageUpload(
+                            path = viewModel.siteImagePath,
+                            preSignedUrl = viewModel.preSignedUrl,
+                            fileUrl = viewModel.fileUrl
+                        )
+                    }}
                 requireContext().captureEvent(
                     Events.SITEIMAGE_UPLOAD_RETRY,
                     HashMap<String,Any?>().apply {

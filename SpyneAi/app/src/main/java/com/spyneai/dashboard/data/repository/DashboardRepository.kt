@@ -61,13 +61,6 @@ class DashboardRepository() : BaseRepository() {
     ) = safeApiCall {
         clipperApi.captureCheckInOut(type,location,location_id,imageUrl)
     }
-    suspend fun uploadImageToGcp(
-        path : String,
-        preSignedUrl : String,
-        fileUrl : String
-    ) = safeApiCall {
-        GCPApiClient().getClient().uploadImageToGcp(path,preSignedUrl,fileUrl)
-    }
 
     suspend fun getLocations(
     )= safeApiCall {
