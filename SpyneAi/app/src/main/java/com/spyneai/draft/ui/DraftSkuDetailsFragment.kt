@@ -22,11 +22,14 @@ import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.posthog.Events
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.DraftClickedImages
-import com.spyneai.shoot.data.model.Image
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.ui.base.ProcessActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDetailsBinding>() {
 
@@ -56,77 +59,82 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         intent = requireActivity().intent
 
         binding.tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
+        
 
         if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB, false)) {
             binding.shimmerCompletedSKU.stopShimmer()
             binding.shimmerCompletedSKU.visibility = View.GONE
             binding.nsv.visibility = View.VISIBLE
 
-            val list = viewModel.getImagesbySkuId(intent.getStringExtra(AppConstants.SKU_ID)!!)
-            binding.tvTotalSku.text = list.size.toString()
+            GlobalScope.launch(Dispatchers.IO) {
+                val list = viewModel.getImagesbySkuId(intent.getStringExtra(AppConstants.SKU_ID)!!)
 
+                GlobalScope.launch(Dispatchers.Main) {
+                    binding.tvTotalSku.text = list.size.toString()
 
-            if (!list.isNullOrEmpty()) {
-                if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID
-                    || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID) {
-                    localExterior = list?.filter {
-                        it.categoryName == "Exterior"
-                    } as ArrayList
-                } else {
-                    localExterior = list
-                }
+                    if (!list.isNullOrEmpty()) {
+                        if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID
+                            || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID) {
+                            localExterior = list?.filter {
+                                it.type == "Exterior"
+                            } as ArrayList
+                        } else {
+                            localExterior = list as ArrayList<Image>
+                        }
 
-                if (localExterior.size > 0) {
-                    if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CATEGORY_ID
-                        || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID)
-                        binding.tvExterior.visibility = View.VISIBLE
+                        if (localExterior.size > 0) {
+                            if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CATEGORY_ID
+                                || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID)
+                                binding.tvExterior.visibility = View.VISIBLE
 
-                    binding.rvExteriorImage.visibility = View.VISIBLE
+                            binding.rvExteriorImage.visibility = View.VISIBLE
 
-                    binding.rvExteriorImage.apply {
-                          adapter = LocalDraftImagesAdapter(requireContext(),
-                              localExterior,
-                              intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
+                            binding.rvExteriorImage.apply {
+                                adapter = LocalDraftImagesAdapter(requireContext(),
+                                    localExterior,
+                                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
+                            }
+                        }
+
+                        localInteriorList = list?.filter {
+                            it.type == "Interior"
+                        } as ArrayList
+
+                        if (localInteriorList.size > 0) {
+                            binding.tvInterior.visibility = View.VISIBLE
+                            binding.rvInteriors.visibility = View.VISIBLE
+                            binding.rvInteriors.apply {
+                                adapter = LocalDraftImagesAdapter(requireContext(),
+                                    localInteriorList,
+                                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!
+                                )
+                            }
+                        }
+
+                        localMiscList = list?.filter {
+                            it.type == "Focus Shoot"
+                        } as ArrayList
+
+                        if (localMiscList.size > 0) {
+                            binding.tvFocused.visibility = View.VISIBLE
+                            binding.rvFocused.visibility = View.VISIBLE
+                            binding.rvFocused.apply {
+                                adapter = LocalDraftImagesAdapter(requireContext(),
+                                    localMiscList,
+                                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
+                            }
+                        }
+
+                        if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
+                            localThreeSixtyInteriorList = list?.filter {
+                                it.type == "360int"
+                            } as ArrayList
+                        }
                     }
-                }
 
-                localInteriorList = list?.filter {
-                    it.categoryName == "Interior"
-                } as ArrayList
-
-                if (localInteriorList.size > 0) {
-                    binding.tvInterior.visibility = View.VISIBLE
-                    binding.rvInteriors.visibility = View.VISIBLE
-                    binding.rvInteriors.apply {
-                         adapter = LocalDraftImagesAdapter(requireContext(),
-                             localInteriorList,
-                             intent.getStringExtra(AppConstants.CATEGORY_ID)!!
-                         )
-                    }
-                }
-
-                localMiscList = list?.filter {
-                    it.categoryName == "Focus Shoot"
-                } as ArrayList
-
-                if (localMiscList.size > 0) {
-                    binding.tvFocused.visibility = View.VISIBLE
-                    binding.rvFocused.visibility = View.VISIBLE
-                    binding.rvFocused.apply {
-                        adapter = LocalDraftImagesAdapter(requireContext(),
-                            localMiscList,
-                            intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
-                    }
-                }
-
-                if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
-                    localThreeSixtyInteriorList = list?.filter {
-                        it.categoryName == "360int"
-                    } as ArrayList
+                    binding.flContinueShoot.visibility = View.VISIBLE
                 }
             }
-
-            binding.flContinueShoot.visibility = View.VISIBLE
         } else {
             getSkuDetails()
 
@@ -137,6 +145,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             onResumeClick()
         }
     }
+    
 
     private fun onResumeClick() {
         var shootIntent: Intent? = null
@@ -273,7 +282,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             resumeExterior() -> {
                 if (fromLocalDb){
                     localExterior.forEach {
-                        map.put(it.overlayId.toString(), it.imagePath!!)
+                        map.put(it.overlayId.toString(), it.path!!)
                     }
                 }else{
                     exterior.forEach {
@@ -285,7 +294,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             resumeInterior() -> {
                 if (fromLocalDb){
                     localInteriorList.forEach {
-                        map.put(it.overlayId.toString(), it.imagePath!!)
+                        map.put(it.overlayId.toString(), it.path!!)
                     }
                 }else{
                     interiorList.forEach {
@@ -297,7 +306,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             resumeMisc() -> {
                 if (fromLocalDb){
                     localMiscList.forEach {
-                        map.put(it.overlayId.toString(), it.imagePath!!)
+                        map.put(it.overlayId.toString(), it.path!!)
                     }
                 }else{
                     miscList.forEach {
@@ -398,7 +407,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
     private fun getExteriorImagesList(): java.util.ArrayList<String> {
         if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB, false)) {
             val s = localExterior?.map {
-                it.imagePath
+                it.path
             }
 
             return s as ArrayList<String>

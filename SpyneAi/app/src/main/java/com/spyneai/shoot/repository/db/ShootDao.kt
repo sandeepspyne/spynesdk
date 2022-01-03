@@ -95,6 +95,11 @@ interface ShootDao {
     @Query("SELECT * FROM project where status = 'draft'")
     fun getDraftProjects(): List<Project>
 
+    @Query("SELECT * FROM sku where project_uuid = :projectUuid")
+    fun getSkusByProjectId(projectUuid: String) : List<Sku>
+
+    @Query("select * from image where sku_uuid = :skuUuid")
+    fun getImagesBySkuId(skuUuid: String): List<Image>
 
     @Transaction
     fun saveSku(sku : Sku,project: Project){
@@ -114,8 +119,14 @@ interface ShootDao {
     @Query("Select * from project where uuid = :uuid")
     fun getProject(uuid: String) : Project
 
+    @Query("select * from sku where uuid = :uuid")
+    fun getSku(uuid: String) : Sku
+
     @Query("UPDATE project SET imagesCount = imagesCount + 1, thumbnail= :thumbnail WHERE uuid =:uuid ")
     fun updateProjectThumbnail(uuid: String,thumbnail: String) : Int
+
+    @Query("UPDATE sku SET imagesCount = imagesCount + 1, thumbnail= :thumbnail WHERE uuid =:uuid ")
+    fun updateSkuThumbnail(uuid: String,thumbnail: String) : Int
 
     @Query("UPDATE sku SET imagesCount = imagesCount + 1 WHERE uuid =:uuid ")
     fun updateSkuImageCount(uuid: String) : Int
@@ -126,7 +137,9 @@ interface ShootDao {
         Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $imageId")
         if (image.sequence == 1){
             val thumbUpdate = updateProjectThumbnail(image.projectUuid!!,image.path)
+            val skuThumbUpdate = updateSkuThumbnail(image.skuUuid!!,image.path)
             Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $thumbUpdate")
+            Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $skuThumbUpdate")
         }
         else{
             val updateProjectImagesCount = updateProjectImageCount(image.projectUuid!!)

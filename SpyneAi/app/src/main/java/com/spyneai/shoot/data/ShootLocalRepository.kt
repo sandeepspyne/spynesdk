@@ -923,10 +923,22 @@ class ShootLocalRepository {
     ).build().shootDao().updateSku(sku)
 
 
+    fun getSkusByProjectId(uuid: String) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getSkusByProjectId(uuid)
 
 
+    fun getProject(uuid: String) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getProject(uuid)
 
 
+    fun getSkuById(uuid: String) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().getSku(uuid)
 
 
 

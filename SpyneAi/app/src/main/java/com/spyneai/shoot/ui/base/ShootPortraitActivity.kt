@@ -281,21 +281,21 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                 shootViewModel.shootList.value = ArrayList()
 
                 list.forEachIndexed { index, image ->
-                    val shootData = ShootData(
-                        image.imagePath!!,
-                        image.projectId!!,
-                        image.skuId!!,
-                        getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
-                        Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                        image.overlayId?.toInt()!!,
-                        index.plus(1)
-                    )
-
-                    shootData.imageClicked = true
-
-                    shootViewModel.shootList.value!!.add(
-                        shootData
-                    )
+//                    val shootData = ShootData(
+//                        image.path!!,
+//                        image.projectId!!,
+//                        image.skuId!!,
+//                        getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
+//                        Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
+//                        image.overlayId?.toInt()!!,
+//                        index.plus(1)
+//                    )
+//
+//                    shootData.imageClicked = true
+//
+//                    shootViewModel.shootList.value!!.add(
+//                        shootData
+//                    )
                 }
 
                 if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
@@ -344,24 +344,24 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
                 if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB, false)) {
 
-                    list.forEachIndexed { index, image ->
-                        val shootData = ShootData(
-                            image.imagePath!!,
-                            image.projectId!!,
-                            image.skuId!!,
-                            getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
-                            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                            image.overlayId?.toInt()!!,
-                            image.sequence!!,
-                            image.angle!!,
-                            image.name!!
-                        )
-
-                        shootData.imageClicked = true
-                        shootViewModel.shootList.value!!.add(
-                            shootData
-                        )
-                    }
+//                    list.forEachIndexed { index, image ->
+//                        val shootData = ShootData(
+//                            image.path!!,
+//                            image.projectId!!,
+//                            image.skuId!!,
+//                            getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
+//                            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
+//                            image.overlayId?.toInt()!!,
+//                            image.sequence!!,
+//                            image.angle!!,
+//                            image.name!!
+//                        )
+//
+//                        shootData.imageClicked = true
+//                        shootViewModel.shootList.value!!.add(
+//                            shootData
+//                        )
+//                    }
 
                     val s = ""
                 } else {

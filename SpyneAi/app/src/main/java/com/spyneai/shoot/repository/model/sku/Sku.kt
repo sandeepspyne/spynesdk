@@ -23,6 +23,7 @@ class Sku(
     @ColumnInfo(name = "initial_frames") var initialFrames: Int? = null,
     @ColumnInfo(name = "is_360") var isThreeSixty: Boolean = false,
     @ColumnInfo(name = "total_frames") var totalFrames: Int? = 0,
+    @ColumnInfo(name = "360_frames") var threeSixtyFrames: Int? = 0,
     @ColumnInfo(name = "background_name") var backgroundName: String? = null,
     @ColumnInfo(name = "background_id") var backgroundId: String? = null,
     @ColumnInfo(name = "additional_data") var additionalData: String? = null,
@@ -30,6 +31,7 @@ class Sku(
     @ColumnInfo(name = "status") var status: String = "draft",
     @ColumnInfo(name = "is_paid") var isPaid: Boolean = false,
     @ColumnInfo(name = "rating") var rating: String? = null,
+    @SerializedName("thumbnail") var thumbnail: String? = null,
     @ColumnInfo(name = "created_at") var createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "updated_at") var updatedAt: Long = System.currentTimeMillis(),
     var imagesCount: Int = 0

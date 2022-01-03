@@ -17,8 +17,12 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_completed_skus.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class DraftSkusActivity : AppCompatActivity() {
     lateinit var viewModel: DraftViewModel
@@ -50,85 +54,108 @@ class DraftSkusActivity : AppCompatActivity() {
 
         shimmerCompletedSKU.startShimmer()
 
-        if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
-            val skusList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!)
-            val localSkusAdapter = LocalSkusAdapter(this,skusList)
+        //load data from local
+        loadDataFromLocal()
 
-            tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
-            tvTotalSku.text =  skusList.size.toString()
+//        if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+//            val skusList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!)
+//            val localSkusAdapter = LocalSkusAdapter(this,skusList)
+//
+//            tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
+//            tvTotalSku.text =  skusList.size.toString()
+//
+//            shimmerCompletedSKU.stopShimmer()
+//            shimmerCompletedSKU.visibility = View.GONE
+//            rvSkus.visibility = View.VISIBLE
+//
+//            rvSkus.adapter = localSkusAdapter
+//        }else {
+//            viewModel.getDrafts(
+//                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString()
+//            )
+//
+//            log("Completed SKUs(auth key): " + Utilities.getPreference(this, AppConstants.AUTH_KEY))
+//            viewModel.draftResponse.observe(
+//                this,  {
+//                    when (it) {
+//                        is Resource.Success -> {
+//                            shimmerCompletedSKU.stopShimmer()
+//                            shimmerCompletedSKU.visibility = View.GONE
+//                            rvSkus.visibility = View.VISIBLE
+//
+//                            if (!it.value.data.project_data.isNullOrEmpty()) {
+//                                val localSkuList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!)
+//
+//                                if (localSkuList.size >= it.value.data.project_data[position].sku.size) {
+//                                    val localSkusAdapter = LocalSkusAdapter(this,localSkuList)
+//
+//                                    tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
+//                                    tvTotalSku.text =  localSkuList.size.toString()
+//
+//                                    rvSkus.adapter = localSkusAdapter
+//                                }
+//                                else {
+//                                    skuList.clear()
+//                                    skuList.addAll(it.value.data.project_data[position].sku)
+//                                    tvProjectName.text = it.value.data.project_data[position].project_name
+//                                    tvTotalSku.text = it.value.data.project_data[position].sku.size.toString()
+//
+//                                    skusAdapter = DraftSkusAdapter(
+//                                        this,
+//                                        it.value.data.project_data[position].project_id,
+//                                        it.value.data.project_data[position].category,
+//                                        it.value.data.project_data[position].categoryId,
+//                                        skuList
+//                                    )
+//
+//                                    val layoutManager: RecyclerView.LayoutManager =
+//                                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+//                                    rvSkus.setLayoutManager(layoutManager)
+//                                    rvSkus.setAdapter(skusAdapter)
+//                                }
+//                            }
+//                        }
+//                        is Resource.Loading -> {
+//
+//                        }
+//                        is Resource.Failure -> {
+//                            shimmerCompletedSKU.stopShimmer()
+//                            shimmerCompletedSKU.visibility = View.GONE
+//
+//                            if (it.errorCode == 404) {
+//                                rvSkus.visibility = View.GONE
+//                            } else {
+//                                this.captureFailureEvent(
+//                                    Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
+//                                    it.errorMessage!!
+//                                )
+//
+//                            }
+//                        }
+//
+//                    }
+//                }
+//            )
+//        }
 
-            shimmerCompletedSKU.stopShimmer()
-            shimmerCompletedSKU.visibility = View.GONE
-            rvSkus.visibility = View.VISIBLE
+    }
 
-            rvSkus.adapter = localSkusAdapter
-        }else {
-            viewModel.getDrafts(
-                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString()
-            )
+    private fun loadDataFromLocal() {
+        GlobalScope.launch(Dispatchers.IO) {
+            val skusList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!) as ArrayList<Sku>
 
-            log("Completed SKUs(auth key): " + Utilities.getPreference(this, AppConstants.AUTH_KEY))
-            viewModel.draftResponse.observe(
-                this,  {
-                    when (it) {
-                        is Resource.Success -> {
-                            shimmerCompletedSKU.stopShimmer()
-                            shimmerCompletedSKU.visibility = View.GONE
-                            rvSkus.visibility = View.VISIBLE
+            GlobalScope.launch(Dispatchers.Main) {
+                val localSkusAdapter = LocalSkusAdapter(this@DraftSkusActivity, skusList)
 
-                            if (!it.value.data.project_data.isNullOrEmpty()) {
-                                val localSkuList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!)
+                tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
+                tvTotalSku.text =  skusList.size.toString()
 
-                                if (localSkuList.size >= it.value.data.project_data[position].sku.size) {
-                                    val localSkusAdapter = LocalSkusAdapter(this,localSkuList)
+                shimmerCompletedSKU.stopShimmer()
+                shimmerCompletedSKU.visibility = View.GONE
+                rvSkus.visibility = View.VISIBLE
 
-                                    tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
-                                    tvTotalSku.text =  localSkuList.size.toString()
-
-                                    rvSkus.adapter = localSkusAdapter
-                                }
-                                else {
-                                    skuList.clear()
-                                    skuList.addAll(it.value.data.project_data[position].sku)
-                                    tvProjectName.text = it.value.data.project_data[position].project_name
-                                    tvTotalSku.text = it.value.data.project_data[position].sku.size.toString()
-
-                                    skusAdapter = DraftSkusAdapter(
-                                        this,
-                                        it.value.data.project_data[position].project_id,
-                                        it.value.data.project_data[position].category,
-                                        it.value.data.project_data[position].categoryId,
-                                        skuList
-                                    )
-
-                                    val layoutManager: RecyclerView.LayoutManager =
-                                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                                    rvSkus.setLayoutManager(layoutManager)
-                                    rvSkus.setAdapter(skusAdapter)
-                                }
-                            }
-                        }
-                        is Resource.Loading -> {
-
-                        }
-                        is Resource.Failure -> {
-                            shimmerCompletedSKU.stopShimmer()
-                            shimmerCompletedSKU.visibility = View.GONE
-
-                            if (it.errorCode == 404) {
-                                rvSkus.visibility = View.GONE
-                            } else {
-                                this.captureFailureEvent(
-                                    Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
-                                    it.errorMessage!!
-                                )
-
-                            }
-                        }
-
-                    }
-                }
-            )
+                rvSkus.adapter = localSkusAdapter
+            }
         }
 
     }

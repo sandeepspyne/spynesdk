@@ -856,6 +856,11 @@ class ShootViewModel : ViewModel() {
         }
     }
 
+    suspend fun setProjectAndSkuData(projectUuid: String, skuUuid: String) {
+        project = localRepository.getProject(projectUuid)
+        sku = localRepository.getSkuById(skuUuid)
+    }
+
     var gifDialogShown = false
     var createProjectDialogShown = false
 

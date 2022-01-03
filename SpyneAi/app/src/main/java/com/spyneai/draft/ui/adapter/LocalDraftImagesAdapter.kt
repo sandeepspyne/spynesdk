@@ -11,7 +11,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
-import com.spyneai.shoot.data.model.Image
+import com.spyneai.shoot.repository.model.image.Image
 
 class LocalDraftImagesAdapter(
     val context: Context,
@@ -35,7 +35,7 @@ class LocalDraftImagesAdapter(
         val ivRaw = view.findViewById<TextView>(R.id.ivRaw) as ImageView
 
         try {
-            imageList[position].imagePath?.let {
+            imageList[position].path?.let {
                 if (categoryId == AppConstants.CARS_CATEGORY_ID || categoryId == AppConstants.BIKES_CATEGORY_ID) {
                     Glide.with(context) // replace with 'this' if it's in activity
                         .load(it)

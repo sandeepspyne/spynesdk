@@ -35,6 +35,9 @@ import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
 import com.spyneai.shoot.utils.shoot
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.File
 import java.util.*
@@ -221,8 +224,9 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
         shootViewModel.project = Project(
-            getUuid(),
-            projectId =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
+            uuid =  intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            categoryName = shootViewModel.categoryDetails.value?.categoryName,
+            categoryId = shootViewModel.categoryDetails.value?.categoryId
         )
 
         //set sku data
@@ -242,26 +246,18 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel.project = Project(
-            getUuid(),
-            projectId =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
-        )
-
-        //set sku data
-        val sku = Sku(
-            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            skuName = intent.getStringExtra(AppConstants.SKU_NAME),
-            skuId = intent.getStringExtra(AppConstants.SKU_ID),
-            categoryName = shootViewModel.categoryDetails.value?.categoryName
-        )
-
-        shootViewModel.sku = sku
+        GlobalScope.launch(Dispatchers.IO) {
+            shootViewModel.setProjectAndSkuData(
+                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                intent.getStringExtra(AppConstants.SKU_ID)!!
+            )
+        }
 
         if (intent.getBooleanExtra(AppConstants.SKU_CREATED, false)) {
             shootViewModel.exterirorAngles.value =
                 intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
 
-            shootViewModel.sku!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+            //shootViewModel.sku!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
 
             shootViewModel.subCategory.value = getSubcategoryResponse()
 
