@@ -502,9 +502,7 @@ class ShootViewModel : ViewModel() {
         _updateVideoSkuRes.value = repository.updateVideoSku(skuId, prodSubCatId, initialImageCount)
     }
 
-    suspend fun insertSku() {
-        localRepository.insertSku(sku!!)
-    }
+    suspend fun insertSku() = localRepository.insertSku(sku!!)
 
     fun updateTotalImages(skuId: String) {
         localRepository.updateTotalImageCount(skuId)

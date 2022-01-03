@@ -283,18 +283,18 @@ class SubCategoryAndAngleFragment :
             tvDescription.visibility = View.INVISIBLE
             rv.visibility = View.INVISIBLE
         }
-
     }
 
     private fun selectAngles() {
+        setSubcategoryData()
+
         AngleSelectionDialog().show(
             requireActivity().supportFragmentManager,
             "AngleSelectionDialog"
         )
-
     }
 
-    private fun createSku() {
+    private fun setSubcategoryData(){
         viewModel.project?.apply {
             subCategoryName = viewModel.subCategory.value?.sub_cat_name
             subCategoryId = viewModel.subCategory.value?.prod_sub_cat_id
@@ -306,6 +306,10 @@ class SubCategoryAndAngleFragment :
             initialFrames = viewModel.exterirorAngles.value
             totalFrames = viewModel.exterirorAngles.value
         }
+    }
+
+    private fun createSku() {
+        setSubcategoryData()
 
         viewModel.isSubCategoryConfirmed.value = true
         viewModel.isSkuCreated.value = true

@@ -86,8 +86,10 @@ interface ShootDao {
 
     @Transaction
     fun updateSubcategory(project: Project,sku: Sku){
-        Log.d(AppConstants.SHOOT_DAO_TAG, "updateSubcategory: "+updateProject(project))
-        Log.d(AppConstants.SHOOT_DAO_TAG, "updateSubcategory: "+ updateSku(sku))
+        val projectUpdate = updateProject(project)
+        Log.d(AppConstants.SHOOT_DAO_TAG, "updateSubcategory: $projectUpdate")
+        val skuUpdate = updateSku(sku)
+        Log.d(AppConstants.SHOOT_DAO_TAG, "updateSubcategory: $skuUpdate")
     }
 
     @Query("SELECT * FROM project where status = 'draft'")
@@ -98,8 +100,10 @@ interface ShootDao {
 
     @Transaction
     fun saveSku(sku : Sku){
-        Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: "+insertSku(sku))
-        Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: "+updateProjectSkuCount(sku.projectUuid!!))
+        val skuid = insertSku(sku)
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: $skuid")
+        val projectudpate = updateProjectSkuCount(sku.projectUuid!!)
+        Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: $projectudpate")
     }
 
     @Insert

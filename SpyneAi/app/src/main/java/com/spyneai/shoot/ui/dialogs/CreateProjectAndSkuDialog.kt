@@ -32,7 +32,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
         dialog?.setCancelable(false)
 
-
         when(viewModel.categoryDetails.value?.categoryId){
             AppConstants.BIKES_CATEGORY_ID -> {
                 binding.iv.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.bikes_vin))
@@ -74,9 +73,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
         viewModel.project = project
 
-        GlobalScope.launch(Dispatchers.IO) {
-            viewModel.insertProject()
-        }
         //update shoot session
         Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
 
@@ -89,6 +85,12 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                 skuName = project.projectName
             )
             viewModel.sku = sku
+
+            GlobalScope.launch(Dispatchers.IO) {
+                val id = viewModel.insertProject()
+                Log.d(TAG, "createProject: $id")
+                viewModel.insertSku()
+            }
         }
 
         viewModel.projectId.value = project.uuid
@@ -96,13 +98,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         viewModel.isProjectCreated.value = true
         viewModel.getSubCategories.value = true
         dismiss()
-
-//        Utilities.showProgressDialog(requireContext())
-//
-//        viewModel.createProject(
-//            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-//            removeWhiteSpace(binding.etVinNumber.text.toString()),
-//            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(), null,viewModel.location_data.value)
     }
 
 
