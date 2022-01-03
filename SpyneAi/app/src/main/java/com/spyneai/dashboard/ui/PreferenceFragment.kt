@@ -58,16 +58,12 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 import android.location.LocationManager
-
 import android.content.Context.LOCATION_SERVICE
-
 import android.content.DialogInterface
 import android.provider.Settings
 import android.widget.Toast as Toast
 import com.google.android.gms.location.*
-import com.google.gson.Gson
 import com.spyneai.R
-import com.spyneai.dashboard.data.repository.DashboardRepository
 import com.spyneai.shoot.data.ShootRepository
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
@@ -113,7 +109,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        getLocationData()
 
         if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
             val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
@@ -201,14 +197,15 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     getDistanceFromLatLon(currentLat!!, currentLong!!, "checkin")
 
                 }else{
-
-                    showLocationSnackBar()
                     requireContext().captureEvent(
                         Events.GET_LOCATION_FAIL_CHECKIN,
                         HashMap<String,Any?>().apply {
                             put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
                             put("location_data",location_data)
+                            put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
                         })
+                    showLocationSnackBar()
+
                 }
 
 
@@ -228,13 +225,15 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         })
 
                 }else{
-                    showLocationSnackBar()
                     requireContext().captureEvent(
                         Events.GET_LOCATION_FAIL_CHECKOUT,
                         HashMap<String,Any?>().apply {
                             put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
                             put("location_data",location_data)
+                            put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
                         })
+                    showLocationSnackBar()
+
                 }
             }
             if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
@@ -877,13 +876,15 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             Snackbar.LENGTH_INDEFINITE
         )
             .setAction("Retry") {
-               getLocationData()
                 requireContext().captureEvent(
-                Events.GET_LOCATION_RETRY,
-                HashMap<String,Any?>().apply {
-                    put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                    put("location_data",location_data)
-                })
+                    Events.GET_LOCATION_RETRY,
+                    HashMap<String,Any?>().apply {
+                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                        put("location_data",location_data)
+                        put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
+                    })
+                getLocationData()
+
             }
             .setActionTextColor(
                 ContextCompat.getColor(
