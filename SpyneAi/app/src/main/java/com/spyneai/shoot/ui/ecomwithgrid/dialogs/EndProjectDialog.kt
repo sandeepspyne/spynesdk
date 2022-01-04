@@ -21,32 +21,42 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
 
         dialog?.setCancelable(false)
 
-        viewModel.getProjectDetail(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.projectId.value.toString()
-        )
+        viewModel.project?.let {
+            binding.apply {
+                pbEndProject.visibility = View.GONE
+                btYes.isEnabled = true
 
-        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-
-                    binding.pbEndProject.visibility = View.GONE
-                    binding.btYes.isEnabled = true
-
-                    binding.tvProjectName.text = it.value.data.project_name
-                    binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
-                    binding.tvTotalImageCaptured.text = it.value.data.total_images.toString()
-
-                }
-                is Resource.Loading -> {
-
-                }
-                is Resource.Failure -> {
-                    handleApiError(it)
-                }
+                tvProjectName.text = it.projectName
+                tvTotalSkuCaptured.text = it.skuCount.toString()
+                tvTotalImageCaptured.text = it.imagesCount.toString()
             }
-        })
+        }
 
+//        viewModel.getProjectDetail(
+//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+//            viewModel.projectId.value.toString()
+//        )
+//
+//        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Resource.Success -> {
+//
+//                    binding.pbEndProject.visibility = View.GONE
+//                    binding.btYes.isEnabled = true
+//
+//                    binding.tvProjectName.text = it.value.data.project_name
+//                    binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
+//                    binding.tvTotalImageCaptured.text = it.value.data.total_images.toString()
+//
+//                }
+//                is Resource.Loading -> {
+//
+//                }
+//                is Resource.Failure -> {
+//                    handleApiError(it)
+//                }
+//            }
+//        })
 
 
         binding.btNo.setOnClickListener {
@@ -55,7 +65,7 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
         }
 
         binding.btYes.setOnClickListener {
-            viewModel.updateProjectStatus(viewModel.sku?.projectId!!)
+            viewModel.updateProjectStatus()
             viewModel.showProjectDetail.value = true
             dismiss()
             log("end project dialog dismiss- Yes")

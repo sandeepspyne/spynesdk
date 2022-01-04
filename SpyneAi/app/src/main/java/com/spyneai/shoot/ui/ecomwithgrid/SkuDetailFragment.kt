@@ -50,6 +50,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         GlobalScope.launch(Dispatchers.IO) {
             val project = viewModel.getProject(viewModel.projectId.value!!)
+            viewModel.project = project
 
             GlobalScope.launch(Dispatchers.Main) {
                 viewModel.totalSkuCaptured.value = project.skuCount.toString()
@@ -103,34 +104,29 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 //            }
 //        })
 
-        if (viewModel.shootList.value.isNullOrEmpty()){
-            //load from local
-        }else {
-            viewModel.shootList.observe(viewLifecycleOwner, {
-                try {
+        viewModel.shootList.observe(viewLifecycleOwner, {
+            try {
 
-                    totalSkuImages = it.size
+                totalSkuImages = it.size
 
-                    binding.tvTotalImageCaptured.text = it.size.toString()
+                binding.tvTotalImageCaptured.text = it.size.toString()
 
 
-                    skuImageAdapter = SkuImageAdapter(
-                        requireContext(),
-                        it
-                    )
+                skuImageAdapter = SkuImageAdapter(
+                    requireContext(),
+                    it
+                )
 
-                    binding.rvSkuImages.apply {
-                        this?.layoutManager =
-                            GridLayoutManager(requireContext(), 3)
-                        this?.adapter = skuImageAdapter
-                    }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                binding.rvSkuImages.apply {
+                    this?.layoutManager =
+                        GridLayoutManager(requireContext(), 3)
+                    this?.adapter = skuImageAdapter
                 }
-            })
-        }
 
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        })
 
         binding.btNextSku.setOnClickListener {
             endProject = false

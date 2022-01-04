@@ -80,12 +80,6 @@ class ImageLocalRepository {
         com.spyneai.shoot.utils.log("insertImage: "+newRowId)
     }
 
-    suspend fun insertImage(image: com.spyneai.shoot.repository.model.image.Image){
-        return Room.databaseBuilder(
-            BaseApplication.getContext(),
-            AppDatabase::class.java, "spyne-db"
-        ).build().shootDao().saveImage(image)
-    }
 
     fun updateImage(image: Image){
         val updatevalues = ContentValues().apply {

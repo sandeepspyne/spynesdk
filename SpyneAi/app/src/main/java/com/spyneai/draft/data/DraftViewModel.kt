@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.getUuid
 import com.spyneai.orders.data.repository.MyOrdersRepository
@@ -25,7 +27,7 @@ class DraftViewModel : ViewModel() {
     private val repository = MyOrdersRepository()
     private val shootRepository = ShootRepository()
     private val processedRepository = ProcessedRepository()
-    private val localRepository = ShootLocalRepository()
+    private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
     private val imagesLocalRepository = ImageLocalRepository()
 
     private val _draftResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()

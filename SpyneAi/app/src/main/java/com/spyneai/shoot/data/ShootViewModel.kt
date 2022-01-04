@@ -9,6 +9,7 @@ import androidx.work.*
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -29,7 +30,7 @@ import org.json.JSONObject
 class ShootViewModel : ViewModel() {
     private val TAG = "ShootViewModel"
     private val repository = ShootRepository()
-    private val localRepository = ShootLocalRepository()
+    private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
     private val imageRepository = ImageLocalRepository()
 
     val showHint: MutableLiveData<Boolean> = MutableLiveData()
@@ -254,7 +255,9 @@ class ShootViewModel : ViewModel() {
                         }
                     }
                 } else {
-                    _subCategoriesResponse.value = response
+                   GlobalScope.launch(Dispatchers.Main) {
+                       _subCategoriesResponse.value = response
+                   }
                 }
             }
         }
@@ -454,7 +457,7 @@ class ShootViewModel : ViewModel() {
         if (imageRepository.isImageExist(newImage.skuUuid!!, newImage.name!!)) {
             //imageRepository.updateImage(image)
         } else {
-            imageRepository.insertImage(
+            localRepository.insertImage(
                 newImage
             )
         }
@@ -518,7 +521,9 @@ class ShootViewModel : ViewModel() {
 
     fun getImagesbySkuId(skuId: String) = imageRepository.getImagesBySkuId(skuId)
 
-    fun updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
+    fun updateProjectStatus() = viewModelScope.launch {
+        localRepository.updateProjectToOngoing(project?.uuid!!)
+    }
 
 
     fun updateFootwearSubcategory(
@@ -765,7 +770,6 @@ class ShootViewModel : ViewModel() {
                         var foundNext = false
 
                         for (i in position..list.size.minus(1)) {
-                            val s = ""
                             if (!list[i].isSelected && !list[i].imageClicked) {
                                 foundNext = true
                                 list[i].isSelected = true
@@ -843,16 +847,13 @@ class ShootViewModel : ViewModel() {
             CameraSettings().apply {
                 isGryroActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO, true
-                )
+                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO, true)
                 isOverlayActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY, true
-                )
+                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY, true)
                 isGridActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GRID, false
-                )
+                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GRID, false)
             }
         }
     }
@@ -860,9 +861,7 @@ class ShootViewModel : ViewModel() {
     suspend fun setProjectAndSkuData(projectUuid: String, skuUuid: String) {
         project = getProject(projectUuid)
         sku = localRepository.getSkuById(skuUuid)
-        val s = ""
     }
-
 
     suspend fun getProject(projectUuid: String) = localRepository.getProject(projectUuid)
 
@@ -892,10 +891,7 @@ class ShootViewModel : ViewModel() {
             GlobalScope.launch(Dispatchers.Main) {
                 selectBackground(BaseApplication.getContext().getString(R.string.app_name))
             }
-
         }
-
-
     }
 
     var gifDialogShown = false

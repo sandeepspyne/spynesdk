@@ -17,7 +17,7 @@ import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ImageLocalRepository
-import com.spyneai.shoot.data.ShootLocalRepository
+
 
 class InternetWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {

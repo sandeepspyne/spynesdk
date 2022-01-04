@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
@@ -21,7 +23,7 @@ class ThreeSixtyViewModel : ViewModel() {
 
     private val repository = ShootRepository()
     private val threeSixtyRepository = ThreeSixtyRepository()
-    private val localRepository = ShootLocalRepository()
+    private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
     private val videoRepository = VideoLocalRepository()
 
     var fromDrafts  = false

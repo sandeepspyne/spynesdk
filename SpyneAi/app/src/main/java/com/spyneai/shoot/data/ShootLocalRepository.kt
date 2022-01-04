@@ -16,8 +16,9 @@ import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.repository.db.ShootDao
 
-class ShootLocalRepository {
+class ShootLocalRepository(val shootDao: ShootDao) {
 
     private val dbWritable = DBHelper(BaseApplication.getContext()).writableDatabase
     private val dbReadable = DBHelper(BaseApplication.getContext()).readableDatabase
@@ -25,17 +26,11 @@ class ShootLocalRepository {
 
 
     fun insertProject(project: com.spyneai.shoot.repository.model.project.Project): Long {
-        return Room.databaseBuilder(
-            BaseApplication.getContext(),
-            AppDatabase::class.java, "spyne-db"
-        ).build().shootDao().insertProject(project)
+        return shootDao.insertProject(project)
     }
 
     suspend fun insertSku(sku: com.spyneai.shoot.repository.model.sku.Sku,
-    project: com.spyneai.shoot.repository.model.project.Project) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().saveSku(sku,project)
+    project: com.spyneai.shoot.repository.model.project.Project) = shootDao.saveSku(sku,project)
 
     fun insertProject(project: Project) {
         val values = ContentValues().apply {
@@ -128,10 +123,7 @@ class ShootLocalRepository {
 //        return projectList
 //    }
 
-    fun getDraftProjects() = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getDraftProjects()
+    fun getDraftProjects() = shootDao.getDraftProjects()
 
     private fun getProjectThumbnail(projectId: String): String? {
         val projection = arrayOf(
@@ -841,10 +833,7 @@ class ShootLocalRepository {
     }
 
     fun getSubcategories(): List<NewSubCatResponse.Subcategory> {
-        return Room.databaseBuilder(
-            BaseApplication.getContext(),
-            AppDatabase::class.java, "spyne-db"
-        ).build().shootDao().getSubcategories()
+        return shootDao.getSubcategories()
     }
 
     fun insertSubCategories(
@@ -855,10 +844,7 @@ class ShootLocalRepository {
         interiorTags: List<NewSubCatResponse.Tags.InteriorTags>,
         focusTags: List<NewSubCatResponse.Tags.FocusShoot>
     ) {
-        Room.databaseBuilder(
-            BaseApplication.getContext(),
-            AppDatabase::class.java, "spyne-db"
-        ).build().shootDao().saveSubcategoriesData(data,
+        shootDao.saveSubcategoriesData(data,
             interior,
             misc,
         exteriorTagsTags,
@@ -866,91 +852,49 @@ class ShootLocalRepository {
         focusTags)
     }
 
-    fun getInteriorList(subcatId: String) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getInterior(subcatId)
+    fun getInteriorList(subcatId: String) = shootDao.getInterior(subcatId)
 
-    fun getMiscList(subcatId: String) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getMisc(subcatId)
+    fun getMiscList(subcatId: String) = shootDao.getMisc(subcatId)
 
-    fun insertOverlays(overlays: List<OverlaysResponse.Overlays>) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().insertOverlays(overlays)
+    fun insertOverlays(overlays: List<OverlaysResponse.Overlays>) = shootDao.insertOverlays(overlays)
 
-    fun getOverlays(prodSubcategoryId: String, frames: String) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getOverlays(prodSubcategoryId, frames.toInt())
+    fun getOverlays(prodSubcategoryId: String, frames: String) = shootDao.getOverlays(prodSubcategoryId, frames.toInt())
 
-    fun insertBackgrounds(backgrounds: List<CarsBackgroundRes.Background>) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().insertBackgrounds(backgrounds)
+    fun insertBackgrounds(backgrounds: List<CarsBackgroundRes.Background>) = shootDao.insertBackgrounds(backgrounds)
 
-    fun getBackgrounds(category: String) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getBackgrounds(category)
+    fun getBackgrounds(category: String) = shootDao.getBackgrounds(category)
 
-    fun getExteriorTags() = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getExteriorTags()
+    fun getExteriorTags() = shootDao.getExteriorTags()
 
-    fun getInteriorTags() = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getInteriorTags()
+    fun getInteriorTags() = shootDao.getInteriorTags()
 
-    fun getFocusTags() = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getFocusTags()
+    fun getFocusTags() = shootDao.getFocusTags()
 
     fun updateSubcategory(project: com.spyneai.shoot.repository.model.project.Project,
-                          sku: com.spyneai.shoot.repository.model.sku.Sku) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().updateSubcategory(project,sku)
+                          sku: com.spyneai.shoot.repository.model.sku.Sku) = shootDao.updateSubcategory(project,sku)
 
-    fun updateSkuExteriorAngles(sku : com.spyneai.shoot.repository.model.sku.Sku) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().updateSku(sku)
+    fun updateSkuExteriorAngles(sku : com.spyneai.shoot.repository.model.sku.Sku) = shootDao.updateSku(sku)
 
 
-    fun getSkusByProjectId(uuid: String) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getSkusByProjectId(uuid)
+    fun getSkusByProjectId(uuid: String) = shootDao.getSkusByProjectId(uuid)
 
 
-    fun getProject(uuid: String) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getProject(uuid)
+    fun getProject(uuid: String) = shootDao.getProject(uuid)
 
 
-    fun getSkuById(uuid: String) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getSku(uuid)
+    fun getSkuById(uuid: String) = shootDao.getSku(uuid)
 
 
     fun saveProjectData(projectList:ArrayList<com.spyneai.shoot.repository.model.project.Project>,
                         skuList: ArrayList<com.spyneai.shoot.repository.model.sku.Sku>,
-                        imageList: ArrayList<com.spyneai.shoot.repository.model.image.Image>) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().saveProjectData(projectList,skuList,imageList)
+                        imageList: ArrayList<com.spyneai.shoot.repository.model.image.Image>) = shootDao.saveProjectData(projectList,skuList,imageList)
 
-    fun updateBackground(map: HashMap<String,Any>) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().updateBackground(map)
+    fun updateBackground(map: HashMap<String,Any>) = shootDao.updateBackground(map)
+
+    fun updateProjectToOngoing(projectUuid : String) = shootDao.updateProjectStatus(projectUuid)
+
+    fun insertImage(image: com.spyneai.shoot.repository.model.image.Image){
+        return shootDao.saveImage(image)
+    }
 
 }

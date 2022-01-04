@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
@@ -24,7 +25,7 @@ import okhttp3.RequestBody
 class ProcessViewModel : ViewModel() {
 
     private val repository = ProcessRepository()
-    private val localRepository = ShootLocalRepository()
+    private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
 
     var fromVideo = false
     val exteriorAngles: MutableLiveData<Int> = MutableLiveData()
