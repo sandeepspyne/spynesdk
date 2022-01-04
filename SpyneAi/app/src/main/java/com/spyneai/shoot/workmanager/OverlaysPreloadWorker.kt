@@ -19,7 +19,8 @@ class OverlaysPreloadWorker(private val appContext: Context, workerParams: Worke
             Glide.with(appContext)
                 .load(overlaysList?.get(position))
                 .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .skipMemoryCache(false)
                 .preload()
 
             preloadNextOverlay(overlaysList!!,position.plus(1))

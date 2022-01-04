@@ -274,68 +274,74 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
     private fun loadOverlay(name : String,overlay : String) {
 
-        val requestOptions = RequestOptions()
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .signature(ObjectKey(overlay))
-
         Glide.with(requireContext())
             .load(overlay)
-            .addListener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    val properties =  HashMap<String,Any?>()
-                    properties["name"] = name
-                    properties["error"] = e?.localizedMessage
-                    properties["category"] = viewModel.categoryDetails.value?.categoryName
-
-                    requireContext().captureEvent(
-                        Events.OVERLAY_LOAD_FIALED,
-                        properties
-                    )
-
-                    snackbar = Snackbar.make(binding.root, "Overlay Failed to load", Snackbar.LENGTH_INDEFINITE)
-                        .setAction("Retry") {
-                            if(viewModel.showOverlay.value==true) {
-                                loadOverlay(name,overlay)
-                            }
-                        }
-                        .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
-
-                    snackbar?.show()
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-
-                    if (snackbar != null)
-                        snackbar?.dismiss()
-
-                    val properties =  HashMap<String,Any?>()
-                    properties["name"] = name
-                    properties["category"] = viewModel.categoryDetails.value?.categoryName
-
-                    requireContext().captureEvent(
-                        Events.OVERLAY_LOADED,
-                        properties
-                    )
-
-                    getPreviewDimensions(binding.imgOverlay!!)
-                    return false
-                }
-
-            })
-            .apply(requestOptions)
+            .diskCacheStrategy(DiskCacheStrategy.DATA)
+            .skipMemoryCache(false)
             .into(binding.imgOverlay!!)
+
+//        val requestOptions = RequestOptions()
+//            .diskCacheStrategy(DiskCacheStrategy.ALL)
+//            .signature(ObjectKey(overlay))
+//
+//        Glide.with(requireContext())
+//            .load(overlay)
+//            .addListener(object : RequestListener<Drawable> {
+//                override fun onLoadFailed(
+//                    e: GlideException?,
+//                    model: Any?,
+//                    target: Target<Drawable>?,
+//                    isFirstResource: Boolean
+//                ): Boolean {
+//                    val properties =  HashMap<String,Any?>()
+//                    properties["name"] = name
+//                    properties["error"] = e?.localizedMessage
+//                    properties["category"] = viewModel.categoryDetails.value?.categoryName
+//
+//                    requireContext().captureEvent(
+//                        Events.OVERLAY_LOAD_FIALED,
+//                        properties
+//                    )
+//
+//                    snackbar = Snackbar.make(binding.root, "Overlay Failed to load", Snackbar.LENGTH_INDEFINITE)
+//                        .setAction("Retry") {
+//                            if(viewModel.showOverlay.value==true) {
+//                                loadOverlay(name,overlay)
+//                            }
+//                        }
+//                        .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
+//
+//                    snackbar?.show()
+//                    return false
+//                }
+//
+//                override fun onResourceReady(
+//                    resource: Drawable?,
+//                    model: Any?,
+//                    target: Target<Drawable>?,
+//                    dataSource: DataSource?,
+//                    isFirstResource: Boolean
+//                ): Boolean {
+//
+//                    if (snackbar != null)
+//                        snackbar?.dismiss()
+//
+//                    val properties =  HashMap<String,Any?>()
+//                    properties["name"] = name
+//                    properties["category"] = viewModel.categoryDetails.value?.categoryName
+//
+//                    requireContext().captureEvent(
+//                        Events.OVERLAY_LOADED,
+//                        properties
+//                    )
+//
+//                    getPreviewDimensions(binding.imgOverlay!!)
+//                    return false
+//                }
+//
+//            })
+//            .apply(requestOptions)
+//            .into(binding.imgOverlay!!)
 
     }
 
@@ -791,8 +797,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.id
                     loadOverlay(data.angle_name,data.display_thumbnail)
-
-
 
                 binding.tvShoot?.text = getString(R.string.angles)+" ${position.plus(1)}/${viewModel.getSelectedAngles(getString(
                     R.string.app_name))}"

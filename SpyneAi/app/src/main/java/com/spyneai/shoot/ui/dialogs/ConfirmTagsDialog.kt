@@ -404,6 +404,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
                 Glide.with(requireContext())
                     .load(overlay)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .skipMemoryCache(false)
                     .into(binding.ivOverlay)
 
 //                viewModel.shootDimensions.value.let {
