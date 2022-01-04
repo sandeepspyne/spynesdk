@@ -45,10 +45,10 @@ class MyCompletedProjectsAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): MyCompletedProjectsAdapter.ViewHolder {
+    ): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_completed_projects, parent, false)
-        return MyCompletedProjectsAdapter.ViewHolder(view)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: MyCompletedProjectsAdapter.ViewHolder, position: Int) {

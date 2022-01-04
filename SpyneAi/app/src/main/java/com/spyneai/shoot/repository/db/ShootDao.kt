@@ -213,6 +213,8 @@ interface ShootDao {
     @Query("UPDATE sku SET background_name = :backgroundName, background_id= :backgroundId WHERE uuid =:uuid ")
     fun updateSkuBackground(uuid: String,backgroundName: String,backgroundId: String) : Int
 
+    @Query("Select path from image where sku_uuid = :skuUuid")
+    fun getImagesPathBySkuId(skuUuid : String) : List<String>
 
 }
 

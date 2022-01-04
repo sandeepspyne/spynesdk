@@ -814,9 +814,5 @@ class ImageLocalRepository {
         return cursor.count
     }
 
-    fun getImagesBySkuId(uuid: String) = Room.databaseBuilder(
-        BaseApplication.getContext(),
-        AppDatabase::class.java, "spyne-db"
-    ).build().shootDao().getImagesBySkuId(uuid)
 
 }

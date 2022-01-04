@@ -32,6 +32,7 @@ class ShootViewModel : ViewModel() {
     private val repository = ShootRepository()
     private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
     private val imageRepository = ImageLocalRepository()
+    private val imageRepositoryV2 = ImagesRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
 
     val showHint: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -519,7 +520,7 @@ class ShootViewModel : ViewModel() {
         localRepository.updateSubcategoryId(sku?.skuId!!, subcategoryId, subcategoryName)
     }
 
-    fun getImagesbySkuId(skuId: String) = imageRepository.getImagesBySkuId(skuId)
+    fun getImagesbySkuId(skuId: String) = imageRepositoryV2.getImagesBySkuId(skuId)
 
     fun updateProjectStatus() = viewModelScope.launch {
         localRepository.updateProjectToOngoing(project?.uuid!!)

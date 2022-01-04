@@ -12,17 +12,20 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.processedimages.ui.ProcessedImageActivity
 
+
 class SkusAdapter(
     val context: Context,
     val viewModel: MyOrdersViewModel,
     val skuList: ArrayList<GetProjectsResponse.Sku>,
-    val projectId : String
+    val projectId : String,
+    val btnlistener: BtnClickListener?,
 ) : RecyclerView.Adapter<SkusAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -87,6 +90,9 @@ class SkusAdapter(
         holder.tvSkuName.text = skuList[position].sku_name
         holder.tvDate.text = skuList[position].created_on
 
+        holder.ivDownloadSKU.setOnClickListener {
+            //delete sku images
+        }
 
         if (context.getString(R.string.app_name) == AppConstants.KARVI){
             holder.ivDownloadSKU.visibility = View.INVISIBLE
@@ -139,5 +145,9 @@ class SkusAdapter(
 
     override fun getItemCount(): Int {
         return skuList.size
+    }
+
+    open interface BtnClickListener {
+        fun onBtnClick(position : Int, sku : GetProjectsResponse.Sku)
     }
 }
