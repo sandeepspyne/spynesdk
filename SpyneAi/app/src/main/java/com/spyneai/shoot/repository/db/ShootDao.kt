@@ -194,6 +194,26 @@ interface ShootDao {
 
     @Query("DELETE FROM image")
     fun images()
+
+    @Transaction
+    fun updateBackground(map: HashMap<String,Any>){
+        updateProjectStatus(
+            map["project_uuid"].toString())
+
+        updateSkuBackground(
+            map["sku_uuid"].toString(),
+            map["bg_name"].toString(),
+            map["bg_id"].toString()
+        )
+    }
+
+    @Query("UPDATE project SET status = 'ongoing' WHERE uuid =:uuid ")
+    fun updateProjectStatus(uuid: String) : Int
+
+    @Query("UPDATE sku SET background_name = :backgroundName, background_id= :backgroundId WHERE uuid =:uuid ")
+    fun updateSkuBackground(uuid: String,backgroundName: String,backgroundId: String) : Int
+
+
 }
 
 

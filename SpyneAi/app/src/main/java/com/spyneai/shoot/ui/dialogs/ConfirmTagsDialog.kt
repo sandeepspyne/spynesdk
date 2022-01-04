@@ -154,7 +154,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                     }
 
                     "Interior" -> {
-                        updateTotalImages()
                         uploadImages()
 
                         if (viewModel.allInteriorClicked) {
@@ -166,7 +165,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                     }
 
                     "Focus Shoot" -> {
-                        updateTotalImages()
                         uploadImages()
 
                         if (viewModel.allMisc)
@@ -323,9 +321,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             viewModel.
             insertImage(viewModel.shootData.value!!)
         }
-
-        if (!requireContext().isMyServiceRunning(ImageUploadingService::class.java))
-            startService()
     }
 
     private fun getMetaValue(): String {
@@ -364,11 +359,11 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 return tags[index].fieldId
             }
             "Interior" -> {
-                val tags = viewModel.tags["Interior"] as List<NewSubCatResponse.Tags.ExteriorTags>
+                val tags = viewModel.tags["Interior"] as List<NewSubCatResponse.Tags.InteriorTags>
                 return tags[index].fieldId
             }
             "Focus Shoot" -> {
-                val tags = viewModel.tags["Focus Shoot"] as List<NewSubCatResponse.Tags.ExteriorTags>
+                val tags = viewModel.tags["Focus Shoot"] as List<NewSubCatResponse.Tags.FocusShoot>
                 return tags[index].fieldId
             }
             else -> {

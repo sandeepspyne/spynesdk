@@ -9,7 +9,7 @@ import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.ProcessViewModel
-import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.RegularShootSummaryFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
@@ -29,22 +29,16 @@ class ProcessActivity : AppCompatActivity() {
 
         processViewModel.fromVideo = intent.getBooleanExtra(AppConstants.FROM_VIDEO,false)
 
-        val sku = Sku()
-        sku.skuId = intent.getStringExtra("sku_id")
-        sku.projectId = intent.getStringExtra("project_id")
-        processViewModel.sku = sku
+        processViewModel.sku = Sku(
+            uuid =  intent.getStringExtra("sku_id")!!,
+            projectUuid = intent.getStringExtra("project_id")
+        )
 
         processViewModel.exteriorAngles.value =  intent.getIntExtra("exterior_angles",0)
         processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)
         processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!
         processViewModel.categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
 
-        Log.d(TAG, "onCreate: "+processViewModel.exteriorAngles.value)
-        Log.d(TAG, "onCreate: "+processViewModel.interiorMiscShootsCount)
-
-
-//        if (processViewModel.categoryName == "Automobiles" || processViewModel.categoryName == "Bikes")
-//            processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!
 
         if (intent.getBooleanExtra("process_sku",true)){
             supportFragmentManager.beginTransaction()

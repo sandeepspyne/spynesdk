@@ -12,8 +12,8 @@ import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
-import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.data.model.UpdateTotalFramesRes
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.ProjectStateUpdateWorker
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +35,7 @@ class ProcessViewModel : ViewModel() {
     val skuQueued: MutableLiveData<Boolean> = MutableLiveData()
     var addRegularShootSummaryFragment: MutableLiveData<Boolean> = MutableLiveData()
     var backgroundSelect: String? = null
+    var bgName = ""
 
     var numberPlateBlur = false
     var windowCorrection = false
@@ -215,4 +216,12 @@ class ProcessViewModel : ViewModel() {
                     .build()
             )
     }
+
+    suspend fun updateBackground() = localRepository.updateBackground(HashMap<String,Any>()
+        .apply {
+            put("project_uuid", sku!!.projectUuid!!)
+            put("sku_uuid", sku!!.skuId!!)
+            put("bg_id", backgroundSelect!!)
+            put("bg_name", bgName!!)
+        })
 }

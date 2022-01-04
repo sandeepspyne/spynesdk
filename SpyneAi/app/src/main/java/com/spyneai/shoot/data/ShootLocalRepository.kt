@@ -948,15 +948,9 @@ class ShootLocalRepository {
         AppDatabase::class.java, "spyne-db"
     ).build().shootDao().saveProjectData(projectList,skuList,imageList)
 
-
-
-
-
-
-
-
-
-
-
+    fun updateBackground(map: HashMap<String,Any>) = Room.databaseBuilder(
+        BaseApplication.getContext(),
+        AppDatabase::class.java, "spyne-db"
+    ).build().shootDao().updateBackground(map)
 
 }

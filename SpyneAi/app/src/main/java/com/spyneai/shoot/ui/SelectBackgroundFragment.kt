@@ -24,6 +24,9 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.CarsBackgroundRes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -173,25 +176,22 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             if (viewModel.interiorMiscShootsCount > 0)
                 updateTotalFrames()
             else {
-                processRequest(true)
+                processRequest()
             }
         }
 
-        observeTotalFrameUpdate()
-        observeProcessSku()
     }
 
-    private fun processRequest(showDialog: Boolean) {
+    private fun processRequest() {
         when (getString(R.string.app_name)) {
             AppConstants.KARVI,
             AppConstants.SWEEP,
             AppConstants.CARS24,
             AppConstants.CARS24_INDIA -> {
                 //process image call
-                processSku(showDialog)
+                processSku()
             }
             AppConstants.SWIGGY -> {
-
                 processFoodImage()
                 Utilities.showProgressDialog(requireContext())
             }
@@ -207,7 +207,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         viewModel.addRegularShootSummaryFragment.value = true
                     } else {
                         //process image call
-                        processSku(showDialog)
+                        processSku()
                     }
                 }
             }
@@ -217,13 +217,11 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     viewModel.addRegularShootSummaryFragment.value = true
                 } else {
                     //process image call
-                    processSku(showDialog)
+                    processSku()
                 }
             }
         }
 
-        observeProcessSku()
-        observeFoodProcess()
     }
 
     private fun processFoodImage() {
@@ -301,6 +299,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     viewModel.backgroundSelect = response.data[0].imageId
                     backgroundSelect = response.data[0].imageId
                     viewModel.backgroundSelect = backgroundSelect
+                    viewModel.bgName = response.data[0].bgName
 
                     carBackgroundGifList.clear()
                     for (element in response.data) {
@@ -333,6 +332,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     viewModel.backgroundSelect = backgroundSelect
                     backgroundSelect = carBackgroundGifList[position].imageId
                     viewModel.backgroundSelect = backgroundSelect
+                    viewModel.bgName = carBackgroundGifList[position].bgName
                     carbackgroundsAdapter.notifyDataSetChanged()
 
                     Glide.with(requireContext()) // replace with 'this' if it's in activity
@@ -355,17 +355,18 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
 
     private fun updateTotalFrames() {
-        Utilities.showProgressDialog(requireContext())
-        val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
-
-        Log.d(TAG, "updateTotalFrames: " + viewModel.exteriorAngles.value)
-
-
-        viewModel.updateCarTotalFrames(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.sku?.skuId!!,
-            totalFrames.toString()
-        )
+        processRequest()
+//        Utilities.showProgressDialog(requireContext())
+//        val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+//
+//        Log.d(TAG, "updateTotalFrames: " + viewModel.exteriorAngles.value)
+//
+//
+//        viewModel.updateCarTotalFrames(
+//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+//            viewModel.sku?.skuId!!,
+//            totalFrames.toString()
+//        )
     }
 
     private fun observeTotalFrameUpdate() {
@@ -382,7 +383,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     }
 
                     requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED, properties)
-                    processRequest(false)
+                    processRequest()
                 }
 
                 is Resource.Failure -> {
@@ -406,32 +407,27 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         })
     }
 
-    private fun processSku(showDialog: Boolean) {
-        if (!viewModel.backgroundSelect.isNullOrEmpty()) {
-            if (showDialog)
-                Utilities.showProgressDialog(requireContext())
+    private fun processSku() {
 
-            requireContext().captureEvent(
-                Events.PROCESS_INITIATED,
-                HashMap<String, Any?>()
-                    .apply {
-                        this.put("sku_id", viewModel.sku?.skuId!!)
-                        this.put("background_id", backgroundSelect)
-                    }
-
-
-            )
-
-            viewModel.processSku(
-                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-                viewModel.sku?.skuId!!,
-                backgroundSelect,
-                false,
-                viewModel.numberPlateBlur,
-                viewModel.windowCorrection,
-                viewModel.tintWindow
-            )
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.updateBackground()
         }
+
+
+        Utilities.hideProgressDialog()
+
+        requireContext().captureEvent(
+            Events.PROCESS,
+            HashMap<String, Any?>()
+                .apply {
+                    this.put("sku_id", viewModel.sku?.uuid!!)
+                    this.put("background_id", backgroundSelect)
+                }
+
+
+        )
+
+        viewModel.startTimer.value = true
     }
 
 
@@ -474,7 +470,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         it.errorMessage!!
                     )
 
-                    handleApiError(it) { processSku(true) }
+                    handleApiError(it) { processSku() }
                 }
             }
         })

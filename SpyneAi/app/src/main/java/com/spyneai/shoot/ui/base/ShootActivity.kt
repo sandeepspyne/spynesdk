@@ -177,8 +177,8 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 processIntent.apply {
                     this.putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
                     this.putExtra(AppConstants.CATEGORY_ID, intent.getStringExtra(AppConstants.CATEGORY_ID))
-                    this.putExtra("sku_id", shootViewModel.sku?.skuId)
-                    this.putExtra("project_id", shootViewModel.sku?.projectId)
+                    this.putExtra("sku_id", shootViewModel.sku?.uuid)
+                    this.putExtra("project_id", shootViewModel.sku?.projectUuid)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku", shootViewModel.processSku)
                     this.putExtra("interior_misc_count", getInteriorMiscCount())
