@@ -95,7 +95,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     var locationManager : LocationManager? =null
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
@@ -186,7 +185,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     permissionRequest.launch(permissions.toTypedArray())
                 }
 
-
                 if(location_data.has("latitude")){
                     requireContext().captureEvent(
                     Events.GET_LOCATION_SUCCESS_CHECKIN,
@@ -207,8 +205,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     showLocationSnackBar()
 
                 }
-
-
             }
 
 
@@ -720,9 +716,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         put("response",uploadResponse)
                     })
 
-            }
-            else -> {
-                showErrorSnackBar(path, preSignedUrl, fileUrl)
             }
         }
     }
