@@ -56,6 +56,7 @@ class DashboardViewModel() : ViewModel() {
     val creditsMessage: MutableLiveData<String> = MutableLiveData()
     var type = "checkin"
     var fileUrl = ""
+    var preSignedUrl = ""
     var siteImagePath = ""
     var resultCode: Int? = null
     val continueAnyway: MutableLiveData<Boolean> = MutableLiveData()

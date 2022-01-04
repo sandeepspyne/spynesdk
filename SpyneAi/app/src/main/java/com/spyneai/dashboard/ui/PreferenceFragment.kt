@@ -58,14 +58,18 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 import android.location.LocationManager
-
 import android.content.Context.LOCATION_SERVICE
-
 import android.content.DialogInterface
 import android.provider.Settings
 import android.widget.Toast as Toast
 import com.google.android.gms.location.*
 import com.spyneai.R
+import com.spyneai.shoot.data.ShootRepository
+import id.zelory.compressor.Compressor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>() {
@@ -82,6 +86,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     lateinit var spLocationAdapter: ArrayAdapter<String>
     lateinit var currentPhotoPath: String
     val location_data = JSONObject()
+
     var snackbar: Snackbar? = null
     var isActive = false
     var currentLat: Double? = 0.0
@@ -104,7 +109,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        getLocationData()
 
         if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
             val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
@@ -175,10 +180,34 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             })
 
             binding.btClockIn.setOnClickListener {
-                if (allPermissionsGranted())
+                if (allPermissionsGranted()){
                     onPermissionGranted()
-                else
+                } else {
                     permissionRequest.launch(permissions.toTypedArray())
+                }
+
+
+                if(location_data.has("latitude")){
+                    requireContext().captureEvent(
+                    Events.GET_LOCATION_SUCCESS_CHECKIN,
+                    HashMap<String,Any?>().apply {
+                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                        put("location_data",location_data)
+                    })
+                    getDistanceFromLatLon(currentLat!!, currentLong!!, "checkin")
+
+                }else{
+                    requireContext().captureEvent(
+                        Events.GET_LOCATION_FAIL_CHECKIN,
+                        HashMap<String,Any?>().apply {
+                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                            put("location_data",location_data)
+                            put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
+                        })
+                    showLocationSnackBar()
+
+                }
+
 
             }
 
@@ -186,8 +215,26 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
             binding.btnClockOut.setOnClickListener {
                 viewModel.type = "checkout"
-                getLocationData()
-                getDistanceFromLatLon(currentLat!!, currentLong!!, "checkout")
+                if(location_data.has("latitude")){
+                    getDistanceFromLatLon(currentLat!!, currentLong!!, "checkout")
+                    requireContext().captureEvent(
+                        Events.GET_LOCATION_SUCCESS_CHECKOUT,
+                        HashMap<String,Any?>().apply {
+                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                            put("location_data",location_data)
+                        })
+
+                }else{
+                    requireContext().captureEvent(
+                        Events.GET_LOCATION_FAIL_CHECKOUT,
+                        HashMap<String,Any?>().apply {
+                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                            put("location_data",location_data)
+                            put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
+                        })
+                    showLocationSnackBar()
+
+                }
             }
             if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
                 viewModel.siteImagePath =
@@ -396,16 +443,16 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         val selected = getSelectedItem()?.coordinates
         var R = 6371 // Radius of the earth in km
         var dLat = deg2rad(selected?.latitude!!?.minus(lat1))  // deg2rad below
-        var dLon = deg2rad(selected.longitude - lon1);
+        var dLon = deg2rad(selected.longitude - lon1)
         var a = sin(dLat / 2) * sin(dLat / 2) +
                 cos(deg2rad(lat1)) * cos(deg2rad(selected?.latitude)) *
                 sin(dLon / 2) * sin(dLon / 2)
-        var c = 2 * atan2(sqrt(a), sqrt(1 - a));
+        var c = 2 * atan2(sqrt(a), sqrt(1 - a))
         var d = R * c * 1000 // Distance in m
 
         if (d > getSelectedItem()?.thresholdDistanceInMeters!!) {
             if (lat1 == 0.0 || lon1 == 0.0){
-                Toast.makeText(requireContext(),"Unable to detect your location, please try again!",Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"Unable to detect your location, please try after some time!",Toast.LENGTH_LONG).show()
             }else {
                 InvalidLocationDialog().show(
                     requireActivity().supportFragmentManager,
@@ -515,19 +562,28 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         viewModel.resultCode = resultCode
         val s = ""
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Utilities.apply {
-                savePrefrence(requireContext(), AppConstants.SITE_IMAGE_PATH, currentPhotoPath)
-                savePrefrence(
-                    requireContext(),
-                    AppConstants.SITE_CITY_NAME,
-                    getSelectedItem()?.locationName
-                )
-                saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
-                saveLong(requireContext(), AppConstants.CLOCKED_IN_TIME, System.currentTimeMillis())
+            GlobalScope.launch {
+                withContext(Dispatchers.Default){
+                    val file: File = File(currentPhotoPath)
+                    val length = file.length()
+                    val before: Long = length / 1024
+                    val compressedImageFile = Compressor.compress(requireContext(), file)
+                    val length2 = compressedImageFile.length()
+                    val after: Long = length2 / 1024
+                    Utilities.apply {
+                        savePrefrence(requireContext(), AppConstants.SITE_IMAGE_PATH, compressedImageFile.path)
+                        savePrefrence(requireContext(), AppConstants.SITE_CITY_NAME, getSelectedItem()?.locationName)
+                        saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
+                        saveLong(requireContext(), AppConstants.CLOCKED_IN_TIME, System.currentTimeMillis())
+                    }
+                    viewModel.siteImagePath = compressedImageFile.path
+                }
+                withContext(Dispatchers.Main){
+                    setCheckOut(true)
+                }
             }
 
-            viewModel.siteImagePath = currentPhotoPath
-            setCheckOut(true)
+
         } else {
             val s = ""
         }
@@ -550,32 +606,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
     }
 
-    val resultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val s = ""
-            if (result.resultCode == RESULT_OK) {
-                Utilities.apply {
-                    savePrefrence(requireContext(), AppConstants.SITE_IMAGE_PATH, currentPhotoPath)
-                    savePrefrence(
-                        requireContext(),
-                        AppConstants.SITE_CITY_NAME,
-                        location_data.getString("city")
-                    )
-                    saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
-                    saveLong(
-                        requireContext(),
-                        AppConstants.CLOCKED_IN_TIME,
-                        System.currentTimeMillis()
-                    )
-                }
-
-                viewModel.siteImagePath = currentPhotoPath
-                setCheckOut(true)
-            } else {
-                val s = ""
-            }
-
-        }
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
@@ -603,7 +633,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             AppConstants.CLOCKED_IN_TIME
         )
 
-        isActive = true
+        isActive = false
         upDateTimer(time)
 
         binding.apply {
@@ -644,55 +674,57 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 is Resource.Success -> {
                     //upload to gcp
                     viewModel.fileUrl = it.value.data.fileUrl
-                    uploadImageToGcpUrl(
-                        viewModel.siteImagePath,
-                        it.value.data.presignedUrl,
-                        it.value.data.fileUrl
-                    )
+                    viewModel.preSignedUrl=it.value.data.presignedUrl
+                    GlobalScope.launch {
+                        withContext(Dispatchers.Main) {
+                            imageUpload(
+                                path = viewModel.siteImagePath,
+                                preSignedUrl = it.value.data.presignedUrl,
+                                fileUrl = it.value.data.fileUrl
+                            )
+                        }}
                     viewModel._gcpUrlResponse.value = null
                 }
 
                 is Resource.Failure -> {
-                    binding.progressBar.visibility = View.GONE
+                    Utilities.hideProgressDialog()
                     handleApiError(it) { getGcpUrl() }
                 }
             }
         })
     }
 
-    private fun uploadImageToGcpUrl(path: String, preSignedUrl: String, fileUrl: String) {
-        val requestFile =
-            File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
-
-        //upload video with presigned url
-        val request = GcpClient.buildService(ClipperApi::class.java)
-
-        val call = request.uploadVideo(
-            "application/octet-stream",
-            preSignedUrl,
-            requestFile
-        )
-
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.d("VideoUploader", "onResponse: " + response.code())
-                binding.progressBar.visibility = View.GONE
-                if (response.isSuccessful) {
-                    //set clock in
-                    checkInOut()
-                } else {
-                    //retry gcp upload
-                    showErrorSnackBar(path, preSignedUrl, fileUrl)
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                binding.progressBar.visibility = View.GONE
-                //retry gcp upload
+    private suspend fun imageUpload(path: String, preSignedUrl: String, fileUrl: String) {
+        val requestFile = File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+         val shootRepository = ShootRepository()
+        val uploadResponse = shootRepository.uploadImageToGcp(preSignedUrl, requestFile)
+        when (uploadResponse) {
+            is Resource.Failure -> {
+                Utilities.hideProgressDialog()
+                requireContext().captureEvent(
+                    Events.SITEIMAGE_UPLOADED_FAIL,
+                    HashMap<String,Any?>().apply {
+                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                        put("throwable",uploadResponse.throwable)
+                    })
                 showErrorSnackBar(path, preSignedUrl, fileUrl)
             }
+            is Resource.Success->{
+                Utilities.hideProgressDialog()
+                checkInOut()
+                requireContext().captureEvent(
+                    Events.SITEIMAGE_UPLOADED,
+                    HashMap<String,Any?>().apply {
+                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                        put("fileUrl",viewModel.fileUrl)
+                        put("response",uploadResponse)
+                    })
 
-        })
+            }
+            else -> {
+                showErrorSnackBar(path, preSignedUrl, fileUrl)
+            }
+        }
     }
 
     private fun observeClockInOut() {
@@ -701,7 +733,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 is Resource.Success -> {
                     var eventName =   ""
 
-                    binding.progressBar.visibility = View.GONE
+                    Utilities.hideProgressDialog()
                     if (viewModel.type == "checkin") {
                         eventName = Events.CHECKIN_SUCCESS
                         Toast.makeText(
@@ -760,7 +792,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 }
 
                 is Resource.Failure -> {
-                    binding.progressBar.visibility = View.GONE
+                    Utilities.hideProgressDialog()
                     val eventName = if (viewModel.type == "checkin") Events.CHECKIN_FAILURE else Events.CHECKOUT_FAILURE
                     requireContext()
                         .captureEvent(
@@ -777,7 +809,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun checkInOut() {
-        binding.progressBar.visibility = View.VISIBLE
+        Utilities.showProgressDialog(requireContext())
 
         viewModel.captureCheckInOut(
             viewModel.type,
@@ -813,7 +845,46 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             Snackbar.LENGTH_INDEFINITE
         )
             .setAction("Retry") {
-                uploadImageToGcpUrl(path, preSignedUrl, fileUrl)
+                GlobalScope.launch {
+                    withContext(Dispatchers.Main) {
+                        imageUpload(
+                            path = viewModel.siteImagePath,
+                            preSignedUrl = viewModel.preSignedUrl,
+                            fileUrl = viewModel.fileUrl
+                        )
+                    }}
+                requireContext().captureEvent(
+                    Events.SITEIMAGE_UPLOAD_RETRY,
+                    HashMap<String,Any?>().apply {
+                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                        put("fileUrl",viewModel.fileUrl)
+                    })
+            }
+            .setActionTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.primary
+                )
+            )
+
+        snackbar?.show()
+    }
+    private fun showLocationSnackBar() {
+        snackbar = Snackbar.make(
+            binding.root,
+            "Unable to get Location",
+            Snackbar.LENGTH_INDEFINITE
+        )
+            .setAction("Retry") {
+                requireContext().captureEvent(
+                    Events.GET_LOCATION_RETRY,
+                    HashMap<String,Any?>().apply {
+                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                        put("location_data",location_data)
+                        put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
+                    })
+                getLocationData()
+
             }
             .setActionTextColor(
                 ContextCompat.getColor(
@@ -826,7 +897,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun getGcpUrl() {
-        binding.progressBar.visibility = View.VISIBLE
+        Utilities.showProgressDialog(requireContext())
         viewModel.getGCPUrl(File(viewModel.siteImagePath).name)
     }
 
@@ -944,7 +1015,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             Toast.makeText(requireContext(), "Please Select Location", Toast.LENGTH_LONG).show()
         } else {
             getLocationData()
-            getDistanceFromLatLon(currentLat!!, currentLong!!, "checkin")
         }
     }
 
