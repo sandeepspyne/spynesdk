@@ -21,6 +21,9 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.EndProjectDialog
 import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>() {
@@ -45,74 +48,89 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             }
         }
 
-        viewModel.getProjectDetail(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.projectId.value!!
-        )
+        GlobalScope.launch(Dispatchers.IO) {
+            val project = viewModel.getProject(viewModel.projectId.value!!)
 
-        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-                    viewModel.totalSkuCaptured.value = it.value.data.total_sku.toString()
-                    viewModel.totalImageCaptured.value = it.value.data.total_images.toString()
+            GlobalScope.launch(Dispatchers.Main) {
+                viewModel.totalSkuCaptured.value = project.skuCount.toString()
+                viewModel.totalImageCaptured.value = project.imagesCount.toString()
 
-                    binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
-                }
-
-
-                is Resource.Loading -> {
-
-                }
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    handleApiError(it)
-                }
+                binding.tvTotalSkuCaptured.text = project.skuCount.toString()
             }
-        })
+        }
+//        viewModel.getProjectDetail(
+//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+//            viewModel.projectId.value!!
+//        )
 
-        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-                    log("update total images for sku(" + viewModel.sku?.skuId.toString() + "): " + totalSkuImages.toString())
+//        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Resource.Success -> {
+//                    Utilities.hideProgressDialog()
+//                    viewModel.totalSkuCaptured.value = it.value.data.total_sku.toString()
+//                    viewModel.totalImageCaptured.value = it.value.data.total_images.toString()
+//
+//                    binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
+//                }
+//
+//
+//                is Resource.Loading -> {
+//
+//                }
+//                is Resource.Failure -> {
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it)
+//                }
+//            }
+//        })
+//
+//        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Resource.Success -> {
+//                    Utilities.hideProgressDialog()
+//                    log("update total images for sku(" + viewModel.sku?.skuId.toString() + "): " + totalSkuImages.toString())
+//
+//                }
+//                is Resource.Loading -> {
+//                    Utilities.showProgressDialog(requireContext())
+//
+//                }
+//                is Resource.Failure -> {
+//                    log("update total images for sku(" + viewModel.sku?.skuId.toString() + ") failed")
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it)
+//                }
+//            }
+//        })
 
+        if (viewModel.shootList.value.isNullOrEmpty()){
+            //load from local
+        }else {
+            viewModel.shootList.observe(viewLifecycleOwner, {
+                try {
+
+                    totalSkuImages = it.size
+
+                    binding.tvTotalImageCaptured.text = it.size.toString()
+
+
+                    skuImageAdapter = SkuImageAdapter(
+                        requireContext(),
+                        it
+                    )
+
+                    binding.rvSkuImages.apply {
+                        this?.layoutManager =
+                            GridLayoutManager(requireContext(), 3)
+                        this?.adapter = skuImageAdapter
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
+            })
+        }
 
-                }
-                is Resource.Failure -> {
-                    log("update total images for sku(" + viewModel.sku?.skuId.toString() + ") failed")
-                    Utilities.hideProgressDialog()
-                    handleApiError(it)
-                }
-            }
-        })
-
-        viewModel.shootList.observe(viewLifecycleOwner, {
-            try {
-
-                totalSkuImages = it.size
-
-                binding.tvTotalImageCaptured.text = it.size.toString()
-
-
-                skuImageAdapter = SkuImageAdapter(
-                    requireContext(),
-                    it
-                )
-
-                binding.rvSkuImages.apply {
-                    this?.layoutManager =
-                        GridLayoutManager(requireContext(), 3)
-                    this?.adapter = skuImageAdapter
-                }
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
 
         binding.btNextSku.setOnClickListener {
             endProject = false
@@ -172,11 +190,12 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     }
 
     private fun updateTotalFrames() {
-        viewModel.updateTotalFrames(
-            viewModel.sku?.skuId.toString(),
-            totalSkuImages.toString(),
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
-        )
+        processRequest()
+//        viewModel.updateTotalFrames(
+//            viewModel.sku?.skuId.toString(),
+//            totalSkuImages.toString(),
+//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
+//        )
     }
 
     private fun observeTotalFrameUpdate() {
@@ -223,45 +242,15 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             log("end project dialog called")
             EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
         } else {
-            observeUpdateTotalFrames()
-
-
+            nextSku()
         }
-
-
     }
 
     private fun observeUpdateTotalFrames() {
         viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    viewModel.shootList.value?.clear()
-                    val intent = Intent(activity, ShootPortraitActivity::class.java)
-                    intent.putExtra("project_id", viewModel.projectId.value)
-                   // intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
-
-                    intent.putExtra(
-                        AppConstants.CATEGORY_NAME,
-                        viewModel.categoryDetails.value?.categoryName
-                    )
-                    intent.putExtra(
-                        AppConstants.CATEGORY_ID,
-                        viewModel.categoryDetails.value?.categoryId
-                    )
-
-                    if (viewModel.fromDrafts) {
-                        intent.putExtra(
-                            AppConstants.SKU_COUNT,
-                            requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT, 0).plus(1)
-                        )
-                        intent.putExtra(
-                            "skuNumber",
-                            requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT, 0).plus(1)
-                        )
-                    } else
-                        intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
-
-                    startActivity(intent)
+                    nextSku()
                 }
 
                 is Resource.Failure -> {
@@ -279,6 +268,36 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         })
     }
 
+    private fun nextSku() {
+        viewModel.shootList.value?.clear()
+        val intent = Intent(activity, ShootPortraitActivity::class.java)
+        intent.putExtra("project_id", viewModel.projectId.value)
+        // intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+
+        intent.putExtra(
+            AppConstants.CATEGORY_NAME,
+            viewModel.categoryDetails.value?.categoryName
+        )
+        intent.putExtra(
+            AppConstants.CATEGORY_ID,
+            viewModel.categoryDetails.value?.categoryId
+        )
+
+        if (viewModel.fromDrafts) {
+            intent.putExtra(
+                AppConstants.SKU_COUNT,
+                requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT, 0).plus(1)
+            )
+            intent.putExtra(
+                "skuNumber",
+                requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT, 0).plus(1)
+            )
+        } else
+            intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+
+        startActivity(intent)
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -286,10 +305,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             binding.ivAddAngle.visibility = View.VISIBLE
             binding.tvAddAngle.visibility = View.VISIBLE
         }
-//        if (viewModel.categoryDetails.value?.imageType.equals("Info")) {
-//            binding.ivAddAngle.visibility = View.GONE
-//            binding.tvAddAngle.visibility = View.GONE
-//        }
     }
 
 

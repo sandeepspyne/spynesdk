@@ -39,6 +39,9 @@ import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
 import com.spyneai.shoot.utils.log
 import com.spyneai.shoot.utils.shoot
 import com.theartofdev.edmodo.cropper.CropImage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.File
 import java.util.*
@@ -251,147 +254,125 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)!!
 
-        shootViewModel.project = Project(
-            getUuid(),
-            projectId =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
-        )
+        GlobalScope.launch(Dispatchers.IO) {
+            shootViewModel.setProjectAndSkuData(
+                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                intent.getStringExtra(AppConstants.SKU_ID)!!
+            )
 
-        //set sku data
-        val sku = Sku(
-            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            skuName = intent.getStringExtra(AppConstants.SKU_NAME),
-            skuId = intent.getStringExtra(AppConstants.SKU_ID),
-            categoryName = shootViewModel.categoryDetails.value?.categoryName
-        )
+            GlobalScope.launch(Dispatchers.Main) {
+                when (intent.getStringExtra(AppConstants.CATEGORY_ID)) {
+                    AppConstants.FOOTWEAR_CATEGORY_ID,
+                    AppConstants.MENS_FASHION_CATEGORY_ID,
+                    AppConstants.WOMENS_FASHION_CATEGORY_ID,
+                    AppConstants.CAPS_CATEGORY_ID,
+                    AppConstants.FASHION_CATEGORY_ID,
+                    AppConstants.ACCESSORIES_CATEGORY_ID,
+                    AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID -> {
 
-        shootViewModel.sku = sku
-        shootViewModel.isSkuCreated.value = true
+                        if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
+                            == intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
+                        ) {
+                            if (intent.getStringExtra(AppConstants.SUB_CAT_ID) == null){
+                                observeProjectCreated()
+                                shootViewModel.getSubCategories.value = true
+                            }else {
+                                setClickedImages()
+                                shootViewModel.stopShoot.value = true
+                            }
+                        } else {
+                            setClickedImages()
 
-        when (intent.getStringExtra(AppConstants.CATEGORY_ID)) {
-            AppConstants.FOOTWEAR_CATEGORY_ID,
-            AppConstants.MENS_FASHION_CATEGORY_ID,
-            AppConstants.WOMENS_FASHION_CATEGORY_ID,
-            AppConstants.CAPS_CATEGORY_ID,
-            AppConstants.FASHION_CATEGORY_ID,
-            AppConstants.ACCESSORIES_CATEGORY_ID,
-            AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID -> {
+                            shootViewModel.exterirorAngles.value = 0
+                            //sub category selected
+                            shootViewModel.subCatName.value =
+                                intent.getStringExtra(AppConstants.SUB_CAT_NAME)
 
-                val list = shootViewModel.getImagesbySkuId(shootViewModel.sku?.skuId!!)
+                            shootViewModel.subCategory.value = NewSubCatResponse.Subcategory(
+                                1,
+                                "",
+                                "",
+                                "",
+                                1,
+                                1,
+                                intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+                                intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+                                intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
+                                ""
+                            )
 
-                shootViewModel.shootList.value = ArrayList()
+                            shootViewModel.isSubCategoryConfirmed.value = true
+                            shootViewModel.showDialog = false
+                        }
 
-                list.forEachIndexed { index, image ->
-//                    val shootData = ShootData(
-//                        image.path!!,
-//                        image.projectId!!,
-//                        image.skuId!!,
-//                        getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
-//                        Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-//                        image.overlayId?.toInt()!!,
-//                        index.plus(1)
-//                    )
-//
-//                    shootData.imageClicked = true
-//
-//                    shootViewModel.shootList.value!!.add(
-//                        shootData
-//                    )
-                }
+                        shootViewModel.isSkuCreated.value = true
 
-                if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
-                    == intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
-                ) {
-                    shootViewModel.stopShoot.value = true
-                } else {
-                    shootViewModel.exterirorAngles.value = 0
-
-                    //sub category selected
-                    shootViewModel.subCatName.value =
-                        intent.getStringExtra(AppConstants.SUB_CAT_NAME)
-
-                    shootViewModel.subCategory.value = NewSubCatResponse.Subcategory(
-                        1,
-                        "",
-                        "",
-                        "",
-                        1,
-                        1,
-                        intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
-                        intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-                        intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
-                        ""
-                    )
-
-                    shootViewModel.isSubCategoryConfirmed.value = true
-
-                    // if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
-                    shootViewModel.showDialog = false
-                }
-
-
-                // shootViewModel.stopShoot.value = true
-                // }
-
-            }
-            else -> {
-                shootViewModel.showDialog = false
-                shootViewModel.isSubCategoryConfirmed.value = true
-
-                shootViewModel.shootList.value = ArrayList()
-
-                //set total clicked images
-                val list = shootViewModel.getImagesbySkuId(shootViewModel.sku?.skuId!!)
-
-                if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB, false)) {
-
-//                    list.forEachIndexed { index, image ->
-//                        val shootData = ShootData(
-//                            image.path!!,
-//                            image.projectId!!,
-//                            image.skuId!!,
-//                            getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
-//                            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-//                            image.overlayId?.toInt()!!,
-//                            image.sequence!!,
-//                            image.angle!!,
-//                            image.name!!
-//                        )
-//
-//                        shootData.imageClicked = true
-//                        shootViewModel.shootList.value!!.add(
-//                            shootData
-//                        )
-//                    }
-
-                    val s = ""
-                } else {
-                    val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
-                    val imageNameList =
-                        intent.getStringArrayListExtra(AppConstants.SHOOT_IMAGE_NAME_LIST)
-
-                    list?.forEachIndexed { index, image ->
-                        val shootData = ShootData(
-                            image,
-                            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                            intent.getStringExtra(AppConstants.SKU_ID)!!,
-                            getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
-                            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                            index,
-                            index.plus(1),
-                            0,
-                            imageNameList!![index]
-                        )
-
-                        shootData.imageClicked = true
-                        shootViewModel.shootList.value!!.add(
-                            shootData
-                        )
                     }
+                    else -> {
+                        shootViewModel.showDialog = false
+                        shootViewModel.isSubCategoryConfirmed.value = true
 
-                    val s = ""
+                        shootViewModel.shootList.value = ArrayList()
 
+                            if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB, false)) {
+                                setClickedImages()
+                            } else {
+                                shootViewModel.shootList.value = ArrayList()
+
+                                val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
+                                val imageNameList =
+                                    intent.getStringArrayListExtra(AppConstants.SHOOT_IMAGE_NAME_LIST)
+
+                                list?.forEachIndexed { index, image ->
+                                    val shootData = ShootData(
+                                        image,
+                                        intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                                        intent.getStringExtra(AppConstants.SKU_ID)!!,
+                                        getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
+                                        Utilities.getPreference(this@ShootPortraitActivity, AppConstants.AUTH_KEY).toString(),
+                                        index,
+                                        index.plus(1),
+                                        0,
+                                        imageNameList!![index]
+                                    )
+
+                                    shootData.imageClicked = true
+                                    shootViewModel.shootList.value!!.add(
+                                        shootData
+                                    )
+                                }
+
+                            }
+
+                    }
                 }
+            }
+        }
 
+
+    }
+
+    private fun setClickedImages() {
+        shootViewModel.shootList.value = ArrayList()
+        GlobalScope.launch(Dispatchers.IO) {
+            val list = shootViewModel.getImagesbySkuId(shootViewModel.sku?.uuid!!)
+            list.forEachIndexed { index, image ->
+                val shootData = ShootData(
+                    image.path!!,
+                    image.projectUuid!!,
+                    image.skuUuid!!,
+                    getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
+                    Utilities.getPreference(this@ShootPortraitActivity, AppConstants.AUTH_KEY).toString(),
+                    image.overlayId?.toInt()!!,
+                    image.sequence!!,
+                    image.angle!!,
+                    image.name!!
+                )
+
+                shootData.imageClicked = true
+                shootViewModel.shootList.value!!.add(
+                    shootData
+                )
             }
         }
     }

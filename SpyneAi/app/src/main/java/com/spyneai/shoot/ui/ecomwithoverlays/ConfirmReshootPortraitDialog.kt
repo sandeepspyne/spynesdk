@@ -148,8 +148,6 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
             viewModel.
             insertImage(viewModel.shootData.value!!)
         }
-
-        startService()
     }
 
     private fun startService() {

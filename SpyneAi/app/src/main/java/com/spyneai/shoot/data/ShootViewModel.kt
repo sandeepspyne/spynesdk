@@ -858,9 +858,13 @@ class ShootViewModel : ViewModel() {
     }
 
     suspend fun setProjectAndSkuData(projectUuid: String, skuUuid: String) {
-        project = localRepository.getProject(projectUuid)
+        project = getProject(projectUuid)
         sku = localRepository.getSkuById(skuUuid)
+        val s = ""
     }
+
+
+    suspend fun getProject(projectUuid: String) = localRepository.getProject(projectUuid)
 
     fun checkInteriorShootStatus() {
         val response = (subCategoriesResponse.value as Resource.Success).value

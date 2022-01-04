@@ -246,12 +246,6 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            shootViewModel.setProjectAndSkuData(
-                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                intent.getStringExtra(AppConstants.SKU_ID)!!
-            )
-        }
 
         if (intent.getBooleanExtra(AppConstants.SKU_CREATED, false)) {
             shootViewModel.exterirorAngles.value =

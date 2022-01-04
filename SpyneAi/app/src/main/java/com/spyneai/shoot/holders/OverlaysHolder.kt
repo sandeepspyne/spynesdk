@@ -65,7 +65,7 @@ class OverlaysHolder(
                 &&
                 (overlays.prod_cat_id != AppConstants.CARS_CATEGORY_ID &&
                         overlays.prod_cat_id != AppConstants.BIKES_CATEGORY_ID)){
-                itemView.loadSmartly(overlays.display_thumbnail,binding?.ivOverlay!!)
+                itemView.loadSmartly(overlays.imagePath!!,binding?.ivOverlay!!)
             }else{
                 Glide.with(itemView)
                     .load(overlays.imagePath)

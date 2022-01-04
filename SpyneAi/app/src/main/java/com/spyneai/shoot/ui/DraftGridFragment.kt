@@ -12,6 +12,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.FragmentGridEcomBinding
+import com.spyneai.getImageCategory
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.adapters.ClickedAdapter
@@ -21,6 +22,9 @@ import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
 import com.theartofdev.edmodo.cropper.CropImage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(),
@@ -96,7 +100,7 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
             }
         })
 
-        setClickedImages()
+        setDraftImages()
 
         viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
             setClickedImages()
@@ -118,6 +122,36 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
                 viewModel.updateSelectItem.value = false
             }
         })
+    }
+
+    private fun setDraftImages() {
+        viewModel.shootList.value = ArrayList()
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val list = viewModel.getImagesbySkuId(viewModel.sku?.uuid!!)
+
+            list.forEachIndexed { index, image ->
+                val shootData = ShootData(
+                    image.path!!,
+                    image.projectUuid!!,
+                    image.skuUuid!!,
+                    getImageCategory(viewModel.categoryDetails.value?.categoryId!!),
+                    Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                    image.overlayId?.toInt()!!,
+                    index.plus(1)
+                )
+
+                shootData.imageClicked = true
+
+                viewModel.shootList.value!!.add(
+                    shootData
+                )
+            }
+
+            GlobalScope.launch(Dispatchers.Main) {
+                setClickedImages()
+            }
+        }
     }
 
     private fun setClickedImages() {
