@@ -119,7 +119,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     "Exterior" -> {
                         uploadImages()
                         if (viewModel.allExteriorClicked){
-                            checkInteriorShootStatus()
+                            viewModel.checkInteriorShootStatus()
                             viewModel.isCameraButtonClickable = false
                         }
 
@@ -257,39 +257,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             .dontAnimate()
             .into(binding.ivCapturedOverlay)
     }
-
-    private fun checkInteriorShootStatus() {
-        val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
-
-        GlobalScope.launch(Dispatchers.IO) {
-            val interiorList = viewModel.getInteriorList()
-
-            if (!interiorList.isNullOrEmpty()){
-                response.interior = interiorList
-                GlobalScope.launch(Dispatchers.Main) {
-                    viewModel.showInteriorDialog.value = true
-                }
-                return@launch
-            }
-
-            val MiscList = viewModel.getMiscList()
-            if (!MiscList.isNullOrEmpty()){
-                response.miscellaneous = MiscList
-                GlobalScope.launch(Dispatchers.Main) {
-                    viewModel.showMiscDialog.value = true
-                }
-                return@launch
-            }
-
-            GlobalScope.launch(Dispatchers.Main) {
-                viewModel.selectBackground(getString(R.string.app_name))
-            }
-
-        }
-
-
-    }
-
 
 
     override fun getViewModel() = ShootViewModel::class.java

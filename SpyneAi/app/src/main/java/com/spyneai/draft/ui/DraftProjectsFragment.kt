@@ -46,57 +46,57 @@ class DraftProjectsFragment : BaseFragment<DraftViewModel, FragmentDraftProjects
         binding.shimmerCompletedSKU.visibility = View.GONE
         binding.rvDraftProjects.visibility = View.VISIBLE
 
-        //showLocalDraftProjects()
+        showLocalDraftProjects()
 
-        viewModel.getDrafts(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
-        )
-
-        viewModel.draftResponse.observe(
-            viewLifecycleOwner, {
-                when (it) {
-                    is Resource.Success -> {
-                        binding.shimmerCompletedSKU.stopShimmer()
-                        binding.shimmerCompletedSKU.visibility = View.GONE
-                        binding.rvDraftProjects.visibility = View.VISIBLE
-
-                        showLocalDraftProjects()
-
-//                        if (it.value.data != null) {
-//                            val localDraftList = viewModel.getDraftsFromLocal()
+//        viewModel.getDrafts(
+//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
+//        )
 //
-//                            if (it.value.data.project_data.size == localDraftList.size) {
-//                                draftProjectList.clear()
-//                                draftProjectList.addAll(viewModel.getDraftsFromLocal())
-//                                binding.rvDraftProjects.adapter = localDraftProjectsAdapter
-//                                localDraftProjectsAdapter.notifyDataSetChanged()
-//                            } else {
-//                                completedProjectList.clear()
-//                                completedProjectList.addAll(it.value.data.project_data)
-//                                binding.rvDraftProjects.adapter = draftProjectsAdapter
-//                                draftProjectsAdapter.notifyDataSetChanged()
-//                            }
+//        viewModel.draftResponse.observe(
+//            viewLifecycleOwner, {
+//                when (it) {
+//                    is Resource.Success -> {
+//                        binding.shimmerCompletedSKU.stopShimmer()
+//                        binding.shimmerCompletedSKU.visibility = View.GONE
+//                        binding.rvDraftProjects.visibility = View.VISIBLE
+//
+//                        showLocalDraftProjects()
+//
+////                        if (it.value.data != null) {
+////                            val localDraftList = viewModel.getDraftsFromLocal()
+////
+////                            if (it.value.data.project_data.size == localDraftList.size) {
+////                                draftProjectList.clear()
+////                                draftProjectList.addAll(viewModel.getDraftsFromLocal())
+////                                binding.rvDraftProjects.adapter = localDraftProjectsAdapter
+////                                localDraftProjectsAdapter.notifyDataSetChanged()
+////                            } else {
+////                                completedProjectList.clear()
+////                                completedProjectList.addAll(it.value.data.project_data)
+////                                binding.rvDraftProjects.adapter = draftProjectsAdapter
+////                                draftProjectsAdapter.notifyDataSetChanged()
+////                            }
+////                        }
+//                    }
+//
+//                    is Resource.Failure -> {
+//                        binding.shimmerCompletedSKU.stopShimmer()
+//                        binding.shimmerCompletedSKU.visibility = View.GONE
+//                        binding.rvDraftProjects.visibility = View.VISIBLE
+//
+//                        if (it.errorCode == 404) {
+//                            binding.rvDraftProjects.visibility = View.GONE
+//                        } else {
+//                            requireContext().captureFailureEvent(
+//                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String, Any?>(),
+//                                it.errorMessage!!
+//                            )
+//                            handleApiError(it)
 //                        }
-                    }
-
-                    is Resource.Failure -> {
-                        binding.shimmerCompletedSKU.stopShimmer()
-                        binding.shimmerCompletedSKU.visibility = View.GONE
-                        binding.rvDraftProjects.visibility = View.VISIBLE
-
-                        if (it.errorCode == 404) {
-                            binding.rvDraftProjects.visibility = View.GONE
-                        } else {
-                            requireContext().captureFailureEvent(
-                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String, Any?>(),
-                                it.errorMessage!!
-                            )
-                            handleApiError(it)
-                        }
-                    }
-                }
-            }
-        )
+//                    }
+//                }
+//            }
+//        )
     }
 
     private fun showLocalDraftProjects() {

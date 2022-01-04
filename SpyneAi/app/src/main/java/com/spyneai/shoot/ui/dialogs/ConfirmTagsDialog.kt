@@ -146,7 +146,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                     "Exterior" -> {
                         uploadImages()
                         if (viewModel.allExteriorClicked) {
-                            checkInteriorShootStatus()
+                            viewModel.checkInteriorShootStatus()
                             viewModel.isCameraButtonClickable = false
                         }
 
@@ -444,27 +444,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         })
     }
 
-    private fun checkInteriorShootStatus() {
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    when {
-                        it.value.interior.isNotEmpty() -> {
-                            viewModel.showInteriorDialog.value = true
-                        }
-                        it.value.miscellaneous.isNotEmpty() -> {
-                            viewModel.showMiscDialog.value = true
-                        }
-                        else -> {
-                            viewModel.selectBackground(getString(R.string.app_name))
-                        }
-                    }
-                }
-                else -> {
-                }
-            }
-        })
-    }
 
 
     private fun tagsValid(): Boolean {

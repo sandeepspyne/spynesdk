@@ -280,7 +280,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 )
                 if (isChecked)
                     viewModel.showLeveler.value = isChecked
-                else viewModel.showLeveler.value = false
+                else
+                    viewModel.showLeveler.value = false
             }
 
             binding.switchShowOverlay?.isChecked = viewModel.getCameraSetting().isOverlayActive

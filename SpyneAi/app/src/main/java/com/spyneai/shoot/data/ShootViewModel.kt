@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
+import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
@@ -859,6 +860,38 @@ class ShootViewModel : ViewModel() {
     suspend fun setProjectAndSkuData(projectUuid: String, skuUuid: String) {
         project = localRepository.getProject(projectUuid)
         sku = localRepository.getSkuById(skuUuid)
+    }
+
+    fun checkInteriorShootStatus() {
+        val response = (subCategoriesResponse.value as Resource.Success).value
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val interiorList = getInteriorList()
+
+            if (!interiorList.isNullOrEmpty()){
+                response.interior = interiorList
+                GlobalScope.launch(Dispatchers.Main) {
+                    showInteriorDialog.value = true
+                }
+                return@launch
+            }
+
+            val MiscList =getMiscList()
+            if (!MiscList.isNullOrEmpty()){
+                response.miscellaneous = MiscList
+                GlobalScope.launch(Dispatchers.Main) {
+                    showMiscDialog.value = true
+                }
+                return@launch
+            }
+
+            GlobalScope.launch(Dispatchers.Main) {
+                selectBackground(BaseApplication.getContext().getString(R.string.app_name))
+            }
+
+        }
+
+
     }
 
     var gifDialogShown = false

@@ -32,6 +32,9 @@ import com.spyneai.setLocale
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.utils.log
 import com.spyneai.videorecording.model.TSVParams
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegularShootSummaryBinding>(),View.OnTouchListener {
 
@@ -65,11 +68,10 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         binding.tvTotalImagesClicked.text = viewModel.exteriorAngles.value.toString()
         binding.tvTotalCost.text = viewModel.exteriorAngles.value.toString()
 
-        observeReduceCredits()
-        observepaidStatus()
+
 
         binding.tvGenerateGif.setOnClickListener {
-            reduceCredits(true)
+            processSku()
         }
 
         when(getString(R.string.app_name)){
@@ -82,7 +84,6 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
             }
         }
 
-        observeProcessSku()
     }
 
     private fun observeProcessSku() {
@@ -115,7 +116,8 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                             },
                         it.errorMessage!!)
 
-                    handleApiError(it) { processSku(true)}
+                    handleApiError(it) { processSku()
+                    }
                 }
             }
         })
@@ -379,7 +381,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         viewModel.downloadHDRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
-                    processSku(false)
+                    processSku()
                 }
 
                 is Resource.Failure -> {
@@ -410,21 +412,26 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         })
     }
 
-    private fun processSku(showLoader : Boolean) {
-        if (!viewModel.backgroundSelect.isNullOrEmpty()){
-            if (showLoader)
-                Utilities.showProgressDialog(requireContext())
-
-            viewModel.processSku(
-                Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-                viewModel.sku?.skuId!!,
-                viewModel.backgroundSelect!!,
-                true,
-                viewModel.numberPlateBlur,
-                viewModel.windowCorrection,
-                viewModel.tintWindow
-            )
+    private fun processSku() {
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.updateBackground()
         }
+
+
+        Utilities.hideProgressDialog()
+
+        requireContext().captureEvent(
+            Events.PROCESS,
+            HashMap<String, Any?>()
+                .apply {
+                    this.put("sku_id", viewModel.sku?.uuid!!)
+                    this.put("background_id", viewModel.backgroundSelect)
+                }
+
+
+        )
+
+        viewModel.startTimer.value = true
     }
 
     override fun getViewModel() = ProcessViewModel::class.java

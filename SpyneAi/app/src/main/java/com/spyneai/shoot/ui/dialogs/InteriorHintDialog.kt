@@ -32,7 +32,7 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
             viewModel.showMiscDialog.value = true
             viewModel.iniProgressFrame.value = false
             viewModel.startInteriorShots.value = true
-          checkMiscShootStatus()
+            viewModel.checkMiscShootStatus(getString(R.string.app_name))
             dismiss()
         }
 
@@ -82,25 +82,6 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
         binding.tvShootNowInterior.text = getString(R.string.shoot_now)
     }
 
-    private fun checkMiscShootStatus() {
-        val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
-
-        GlobalScope.launch(Dispatchers.IO) {
-            val MiscList = viewModel.getMiscList()
-            if (!MiscList.isNullOrEmpty()){
-                response.miscellaneous = MiscList
-                GlobalScope.launch(Dispatchers.Main) {
-                    viewModel.showMiscDialog.value = true
-                }
-                return@launch
-            }
-
-            GlobalScope.launch(Dispatchers.Main) {
-                viewModel.selectBackground(getString(R.string.app_name))
-            }
-
-        }
-    }
 
 
 

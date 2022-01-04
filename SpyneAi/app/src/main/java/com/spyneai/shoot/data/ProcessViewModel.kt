@@ -200,7 +200,6 @@ class ProcessViewModel : ViewModel() {
             .putString("auth_key", authKey)
             .putString("project_id", projectId)
 
-
         val constraints: Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -220,7 +219,7 @@ class ProcessViewModel : ViewModel() {
     suspend fun updateBackground() = localRepository.updateBackground(HashMap<String,Any>()
         .apply {
             put("project_uuid", sku!!.projectUuid!!)
-            put("sku_uuid", sku!!.skuId!!)
+            put("sku_uuid", sku!!.uuid!!)
             put("bg_id", backgroundSelect!!)
             put("bg_name", bgName!!)
         })

@@ -192,15 +192,17 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 processSku()
             }
             AppConstants.SWIGGY -> {
-                processFoodImage()
-                Utilities.showProgressDialog(requireContext())
+//                processFoodImage()
+//                Utilities.showProgressDialog(requireContext())
+                processSku()
             }
             AppConstants.SPYNE_AI -> {
                 if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
                         .equals("Food & Beverages")
                 ) {
-                    processFoodImage()
-                    Utilities.showProgressDialog(requireContext())
+//                    processFoodImage()
+//                    Utilities.showProgressDialog(requireContext())
+                    processSku()
                 } else {
                     if (binding.cb360.isChecked) {
                         viewModel.backgroundSelect = backgroundSelect
@@ -408,7 +410,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
     }
 
     private fun processSku() {
-
         GlobalScope.launch(Dispatchers.IO) {
             viewModel.updateBackground()
         }
