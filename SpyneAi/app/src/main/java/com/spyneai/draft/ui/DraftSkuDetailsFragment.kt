@@ -66,75 +66,75 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             binding.shimmerCompletedSKU.visibility = View.GONE
             binding.nsv.visibility = View.VISIBLE
 
-            GlobalScope.launch(Dispatchers.IO) {
-                val list = viewModel.getImagesbySkuId(intent.getStringExtra(AppConstants.SKU_ID)!!)
-
-                GlobalScope.launch(Dispatchers.Main) {
-                    binding.tvTotalSku.text = list.size.toString()
-
-                    if (!list.isNullOrEmpty()) {
-                        if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID
-                            || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID) {
-                            localExterior = list?.filter {
-                                it.type == "Exterior"
-                            } as ArrayList
-                        } else {
-                            localExterior = list as ArrayList<Image>
-                        }
-
-                        if (localExterior.size > 0) {
-                            if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CATEGORY_ID
-                                || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID)
-                                binding.tvExterior.visibility = View.VISIBLE
-
-                            binding.rvExteriorImage.visibility = View.VISIBLE
-
-                            binding.rvExteriorImage.apply {
-                                adapter = LocalDraftImagesAdapter(requireContext(),
-                                    localExterior,
-                                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
-                            }
-                        }
-
-                        localInteriorList = list?.filter {
-                            it.type == "Interior"
-                        } as ArrayList
-
-                        if (localInteriorList.size > 0) {
-                            binding.tvInterior.visibility = View.VISIBLE
-                            binding.rvInteriors.visibility = View.VISIBLE
-                            binding.rvInteriors.apply {
-                                adapter = LocalDraftImagesAdapter(requireContext(),
-                                    localInteriorList,
-                                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!
-                                )
-                            }
-                        }
-
-                        localMiscList = list?.filter {
-                            it.type == "Focus Shoot"
-                        } as ArrayList
-
-                        if (localMiscList.size > 0) {
-                            binding.tvFocused.visibility = View.VISIBLE
-                            binding.rvFocused.visibility = View.VISIBLE
-                            binding.rvFocused.apply {
-                                adapter = LocalDraftImagesAdapter(requireContext(),
-                                    localMiscList,
-                                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
-                            }
-                        }
-
-                        if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
-                            localThreeSixtyInteriorList = list?.filter {
-                                it.type == "360int"
-                            } as ArrayList
-                        }
-                    }
-
-                    binding.flContinueShoot.visibility = View.VISIBLE
-                }
-            }
+//            GlobalScope.launch(Dispatchers.IO) {
+//                val list = viewModel.getImagesbySkuId(intent.getStringExtra(AppConstants.SKU_ID)!!)
+//
+//                GlobalScope.launch(Dispatchers.Main) {
+//                    binding.tvTotalSku.text = list.size.toString()
+//
+//                    if (!list.isNullOrEmpty()) {
+//                        if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID
+//                            || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID) {
+//                            localExterior = list?.filter {
+//                                it.type == "Exterior"
+//                            } as ArrayList
+//                        } else {
+//                            localExterior = list as ArrayList<Image>
+//                        }
+//
+//                        if (localExterior.size > 0) {
+//                            if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CATEGORY_ID
+//                                || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID)
+//                                binding.tvExterior.visibility = View.VISIBLE
+//
+//                            binding.rvExteriorImage.visibility = View.VISIBLE
+//
+//                            binding.rvExteriorImage.apply {
+//                                adapter = LocalDraftImagesAdapter(requireContext(),
+//                                    localExterior,
+//                                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
+//                            }
+//                        }
+//
+//                        localInteriorList = list?.filter {
+//                            it.type == "Interior"
+//                        } as ArrayList
+//
+//                        if (localInteriorList.size > 0) {
+//                            binding.tvInterior.visibility = View.VISIBLE
+//                            binding.rvInteriors.visibility = View.VISIBLE
+//                            binding.rvInteriors.apply {
+//                                adapter = LocalDraftImagesAdapter(requireContext(),
+//                                    localInteriorList,
+//                                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!
+//                                )
+//                            }
+//                        }
+//
+//                        localMiscList = list?.filter {
+//                            it.type == "Focus Shoot"
+//                        } as ArrayList
+//
+//                        if (localMiscList.size > 0) {
+//                            binding.tvFocused.visibility = View.VISIBLE
+//                            binding.rvFocused.visibility = View.VISIBLE
+//                            binding.rvFocused.apply {
+//                                adapter = LocalDraftImagesAdapter(requireContext(),
+//                                    localMiscList,
+//                                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
+//                            }
+//                        }
+//
+//                        if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
+//                            localThreeSixtyInteriorList = list?.filter {
+//                                it.type == "360int"
+//                            } as ArrayList
+//                        }
+//                    }
+//
+//                    binding.flContinueShoot.visibility = View.VISIBLE
+//                }
+//            }
         } else {
             getSkuDetails()
 

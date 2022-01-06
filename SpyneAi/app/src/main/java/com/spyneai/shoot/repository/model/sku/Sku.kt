@@ -10,9 +10,12 @@ import com.google.gson.annotations.SerializedName
 class Sku(
     @PrimaryKey(autoGenerate = false)
     var uuid: String,
+    val isCreated: Boolean = false,
+    val toProcessAt: Long = System.currentTimeMillis(),
+    val retryCount: Int = 0,
     @SerializedName("sku_name")
     @ColumnInfo(name = "sku_name")
-    var skuName: String? = null,
+    var skuName: String?= null,
     @ColumnInfo(name = "category_name") var categoryName: String? = null,
     @ColumnInfo(name = "category_id") var categoryId: String? = null,
     @ColumnInfo(name = "subcategory_name") var subcategoryName: String? = null,

@@ -93,7 +93,7 @@ class CompletedSkusActivity : AppCompatActivity() {
                                         sku: GetProjectsResponse.Sku
                                     ) {
                                         //show delete sku dialog
-                                        val imagesPathList = ImageLocalRepository().getImagesPathBySkuId()
+                                        //val imagesPathList = ImageLocalRepository().getImagesPathBySkuId()
                                     }
 
                                 }

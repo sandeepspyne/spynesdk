@@ -81,18 +81,18 @@ class ReshootPortraitActivity : AppCompatActivity() {
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel.project = Project(
-            getUuid(),
-            projectId =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
-        )
-
-        val sku = Sku(
-            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            skuName = intent.getStringExtra(AppConstants.SKU_NAME),
-            skuId = intent.getStringExtra(AppConstants.SKU_ID)
-        )
-
-        shootViewModel.sku = sku
+//        shootViewModel.project = Project(
+//            getUuid(),
+//            projectId =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
+//        )
+//
+//        val sku = Sku(
+//            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+//            skuName = intent.getStringExtra(AppConstants.SKU_NAME),
+//            skuId = intent.getStringExtra(AppConstants.SKU_ID)
+//        )
+//
+//        shootViewModel.sku = sku
     }
 
     override fun onBackPressed() {

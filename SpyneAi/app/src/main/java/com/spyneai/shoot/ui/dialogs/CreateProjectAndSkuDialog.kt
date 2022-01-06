@@ -91,6 +91,11 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                 val id = viewModel.insertProject()
                 Log.d(TAG, "createProject: $id")
                 viewModel.insertSku()
+
+                GlobalScope.launch(Dispatchers.Main) {
+                    requireContext().startUploadingService(CreateProjectAndSkuDialog::class.java.simpleName)
+                    dismiss()
+                }
             }
         }
 
@@ -98,7 +103,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         //notify project created
         viewModel.isProjectCreated.value = true
         viewModel.getSubCategories.value = true
-        dismiss()
     }
 
 

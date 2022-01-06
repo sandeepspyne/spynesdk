@@ -48,6 +48,8 @@ import android.net.NetworkCapabilities
 
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.os.Build
+import androidx.core.content.ContextCompat
+import com.spyneai.service.*
 
 
 var TAG = "Locale_Check"
@@ -371,6 +373,41 @@ fun View.loadSmartly(path : String,imageView : ImageView){
 }
 
 fun getUuid() = UUID.randomUUID().toString().replace("-","")
+
+fun Context.startUploadingService(startedBy : String) {
+    val prperties = HashMap<String,Any?>()
+        .apply {
+            put("email", Utilities.getPreference(this@startUploadingService, AppConstants.EMAIL_ID).toString())
+            put("medium","Explicit Broadcast")
+        }
+
+    if (!this?.isMyServiceRunning(ImageUploadingService::class.java)){
+        Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
+
+        var action = Actions.START
+        if (getServiceState(this) == ServiceState.STOPPED && action == Actions.STOP)
+            return
+
+        val serviceIntent = Intent(this, ImageUploadingService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,startedBy)
+        serviceIntent.action = action.name
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            log("Starting the service in >=26 Mode")
+            ContextCompat.startForegroundService(this, serviceIntent)
+            return
+        } else {
+            log("Starting the service in < 26 Mode")
+            this.startService(serviceIntent)
+        }
+
+        prperties.put("state","Started")
+        this.captureEvent(Events.SERVICE_STARTED,prperties)
+    }else {
+        prperties.put("state","Running")
+        this.captureEvent(Events.SERVICE_STARTED,prperties)
+    }
+}
 
 
 

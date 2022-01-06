@@ -8,7 +8,9 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.os.*
 import android.util.Log
+import com.spyneai.BaseApplication
 import com.spyneai.R
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isInternetActive
@@ -77,7 +79,14 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
         when (action) {
             Actions.START.name -> {
+                val prjSync = ProjectSkuSync(this,
+                    AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
+                )
+
+                prjSync.uploadParent("type",null)
+
                 this.serviceStartedBy = intent.getStringExtra(AppConstants.SERVICE_STARTED_BY)
+
                 if (!uploadRunning){
                     val properties = java.util.HashMap<String, Any?>()
                         .apply {
@@ -86,10 +95,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                         }
 
                     captureEvent(Events.SERVICE_STARTED, properties)
-
                     resumeUpload("onStartCommand")
                 }
-
             }
             Actions.STOP.name -> stopService()
             else -> error("No action in the received intent")

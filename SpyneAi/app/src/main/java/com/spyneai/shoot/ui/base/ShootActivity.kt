@@ -223,18 +223,19 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel.project = Project(
-            uuid =  intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            categoryName = shootViewModel.categoryDetails.value?.categoryName,
-            categoryId = shootViewModel.categoryDetails.value?.categoryId
-        )
+//        shootViewModel.project = Project(
+//            uuid =  intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+//            categoryName = shootViewModel.categoryDetails.value?.categoryName!!,
+//            categoryId = shootViewModel.categoryDetails.value?.categoryId!!
+//        )
 
         //set sku data
         val sku = Sku(
             uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            skuName = intent.getStringExtra(AppConstants.SKU_NAME),
+            skuName = intent.getStringExtra(AppConstants.SKU_NAME)!!,
             skuId = intent.getStringExtra(AppConstants.SKU_ID),
-            categoryName = shootViewModel.categoryDetails.value?.categoryName
+            categoryName = shootViewModel.categoryDetails.value?.categoryName!!,
+            categoryId = shootViewModel.categoryDetails.value?.categoryId!!
         )
 
         shootViewModel.sku = sku

@@ -81,7 +81,17 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
 
                             skusAdapter = SkusAdapter(requireContext(),
                                 viewModel, skuList,
-                              projectId
+                              projectId,
+                                object : SkusAdapter.BtnClickListener{
+                                    override fun onBtnClick(
+                                        position: Int,
+                                        sku: GetProjectsResponse.Sku
+                                    ) {
+                                        //show delete sku dialog
+                                        //val imagesPathList = ImageLocalRepository().getImagesPathBySkuId()
+                                    }
+
+                                }
                             )
 
                             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

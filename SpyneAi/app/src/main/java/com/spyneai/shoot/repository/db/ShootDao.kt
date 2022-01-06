@@ -9,6 +9,7 @@ import com.spyneai.shoot.data.model.CarsBackgroundRes
 
 import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.Project
+import com.spyneai.shoot.repository.model.project.ProjectWithSku
 import com.spyneai.shoot.repository.model.sku.Sku
 import io.sentry.protocol.App
 
@@ -215,6 +216,9 @@ interface ShootDao {
 
     @Query("Select path from image where sku_uuid = :skuUuid")
     fun getImagesPathBySkuId(skuUuid : String) : List<String>
+
+    @Query("Select * from project where isCreated = :isCreated and toProcessAt <= :currentTime LIMIT :limit")
+    fun getProjectWithSkus(isCreated: Boolean = false, currentTime: Long = System.currentTimeMillis(),limit: Int = 1) : ProjectWithSku
 
 }
 

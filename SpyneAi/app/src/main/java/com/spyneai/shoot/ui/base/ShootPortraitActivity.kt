@@ -242,10 +242,10 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel.project = Project(
-            getUuid(),
-            projectId =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
-        )
+//        shootViewModel.project = Project(
+//            getUuid(),
+//            projectId =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
+//        )
     }
 
     private fun setUpDraftsData() {

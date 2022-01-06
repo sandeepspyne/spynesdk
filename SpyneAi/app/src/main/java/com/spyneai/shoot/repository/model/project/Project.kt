@@ -9,11 +9,14 @@ import com.google.gson.annotations.SerializedName
 data class Project(
     @PrimaryKey(autoGenerate = false)
     val uuid: String,
+    val isCreated: Boolean = false,
+    val toProcessAt: Long = System.currentTimeMillis(),
+    val retryCount: Int = 0,
+    @SerializedName("project_name") var projectName: String? = null,
     @SerializedName("category_id") val categoryId: String? = null,
     @SerializedName("category_name") val categoryName: String? = null,
     @SerializedName("subcategory_name") var subCategoryName : String? = null,
     @SerializedName("subcategory_id")var subCategoryId : String? = null,
-    @SerializedName("project_name") var projectName: String? = null,
     @SerializedName("project_id") val projectId: String? = null,
     @SerializedName("dynamic_layout") val dynamicLayout: String? = null,
     @SerializedName("location_data") val locationData: String? = null,

@@ -29,8 +29,10 @@ class ShootLocalRepository(val shootDao: ShootDao) {
         return shootDao.insertProject(project)
     }
 
-    suspend fun insertSku(sku: com.spyneai.shoot.repository.model.sku.Sku,
-    project: com.spyneai.shoot.repository.model.project.Project) = shootDao.saveSku(sku,project)
+    suspend fun insertSku(
+        sku: com.spyneai.shoot.repository.model.sku.Sku,
+        project: com.spyneai.shoot.repository.model.project.Project
+    ) = shootDao.saveSku(sku, project)
 
     fun insertProject(project: Project) {
         val values = ContentValues().apply {
@@ -844,23 +846,28 @@ class ShootLocalRepository(val shootDao: ShootDao) {
         interiorTags: List<NewSubCatResponse.Tags.InteriorTags>,
         focusTags: List<NewSubCatResponse.Tags.FocusShoot>
     ) {
-        shootDao.saveSubcategoriesData(data,
+        shootDao.saveSubcategoriesData(
+            data,
             interior,
             misc,
-        exteriorTagsTags,
-        interiorTags,
-        focusTags)
+            exteriorTagsTags,
+            interiorTags,
+            focusTags
+        )
     }
 
     fun getInteriorList(subcatId: String) = shootDao.getInterior(subcatId)
 
     fun getMiscList(subcatId: String) = shootDao.getMisc(subcatId)
 
-    fun insertOverlays(overlays: List<OverlaysResponse.Overlays>) = shootDao.insertOverlays(overlays)
+    fun insertOverlays(overlays: List<OverlaysResponse.Overlays>) =
+        shootDao.insertOverlays(overlays)
 
-    fun getOverlays(prodSubcategoryId: String, frames: String) = shootDao.getOverlays(prodSubcategoryId, frames.toInt())
+    fun getOverlays(prodSubcategoryId: String, frames: String) =
+        shootDao.getOverlays(prodSubcategoryId, frames.toInt())
 
-    fun insertBackgrounds(backgrounds: List<CarsBackgroundRes.Background>) = shootDao.insertBackgrounds(backgrounds)
+    fun insertBackgrounds(backgrounds: List<CarsBackgroundRes.Background>) =
+        shootDao.insertBackgrounds(backgrounds)
 
     fun getBackgrounds(category: String) = shootDao.getBackgrounds(category)
 
@@ -870,10 +877,13 @@ class ShootLocalRepository(val shootDao: ShootDao) {
 
     fun getFocusTags() = shootDao.getFocusTags()
 
-    fun updateSubcategory(project: com.spyneai.shoot.repository.model.project.Project,
-                          sku: com.spyneai.shoot.repository.model.sku.Sku) = shootDao.updateSubcategory(project,sku)
+    fun updateSubcategory(
+        project: com.spyneai.shoot.repository.model.project.Project,
+        sku: com.spyneai.shoot.repository.model.sku.Sku
+    ) = shootDao.updateSubcategory(project, sku)
 
-    fun updateSkuExteriorAngles(sku : com.spyneai.shoot.repository.model.sku.Sku) = shootDao.updateSku(sku)
+    fun updateSkuExteriorAngles(sku: com.spyneai.shoot.repository.model.sku.Sku) =
+        shootDao.updateSku(sku)
 
 
     fun getSkusByProjectId(uuid: String) = shootDao.getSkusByProjectId(uuid)
@@ -885,15 +895,17 @@ class ShootLocalRepository(val shootDao: ShootDao) {
     fun getSkuById(uuid: String) = shootDao.getSku(uuid)
 
 
-    fun saveProjectData(projectList:ArrayList<com.spyneai.shoot.repository.model.project.Project>,
-                        skuList: ArrayList<com.spyneai.shoot.repository.model.sku.Sku>,
-                        imageList: ArrayList<com.spyneai.shoot.repository.model.image.Image>) = shootDao.saveProjectData(projectList,skuList,imageList)
+    fun saveProjectData(
+        projectList: ArrayList<com.spyneai.shoot.repository.model.project.Project>,
+        skuList: ArrayList<com.spyneai.shoot.repository.model.sku.Sku>,
+        imageList: ArrayList<com.spyneai.shoot.repository.model.image.Image>
+    ) = shootDao.saveProjectData(projectList, skuList, imageList)
 
-    fun updateBackground(map: HashMap<String,Any>) = shootDao.updateBackground(map)
+    fun updateBackground(map: HashMap<String, Any>) = shootDao.updateBackground(map)
 
-    fun updateProjectToOngoing(projectUuid : String) = shootDao.updateProjectStatus(projectUuid)
+    fun updateProjectToOngoing(projectUuid: String) = shootDao.updateProjectStatus(projectUuid)
 
-    fun insertImage(image: com.spyneai.shoot.repository.model.image.Image){
+    fun insertImage(image: com.spyneai.shoot.repository.model.image.Image) {
         return shootDao.saveImage(image)
     }
 
