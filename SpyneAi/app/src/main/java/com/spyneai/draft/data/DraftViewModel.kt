@@ -50,8 +50,18 @@ class DraftViewModel : ViewModel() {
             val skuList = ArrayList<Sku>()
             val imageList = ArrayList<Image>()
 
+            val looplist = ArrayList<GetProjectsResponse.Project_data>().apply {
+                add(response.value.data.project_data[0])
+                add(response.value.data.project_data[1])
+                add(response.value.data.project_data[2])
+                add(response.value.data.project_data[3])
+                add(response.value.data.project_data[4])
+                add(response.value.data.project_data[5])
+                add(response.value.data.project_data[6])
+            }
+
             GlobalScope.launch(Dispatchers.IO) {
-                response.value.data.project_data.forEach {
+               looplist.forEach {
                     val project = Project(
                         uuid = getUuid(),
                         categoryId = it.categoryId,
