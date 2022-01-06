@@ -66,7 +66,6 @@ class HomeDashboardFragment :
     var filteredList = ArrayList<NewCategoriesResponse.Data>()
 
 
-
     lateinit var handler: Handler
     private var runnable: Runnable? = null
 

@@ -75,8 +75,8 @@ android {
         spyne {
             dimension 'version'
             applicationId "com.spyneai"
-            versionCode 76
-            versionName "2.84"
+            versionCode 77
+            versionName "2.85"
         }
 
         sweepCars {
