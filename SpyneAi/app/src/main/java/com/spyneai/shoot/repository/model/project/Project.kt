@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class Project(
     @PrimaryKey(autoGenerate = false)
     val uuid: String,
-    val isCreated: Boolean = false,
+    var isCreated: Boolean = false,
     val toProcessAt: Long = System.currentTimeMillis(),
     val retryCount: Int = 0,
     @SerializedName("project_name") var projectName: String? = null,
