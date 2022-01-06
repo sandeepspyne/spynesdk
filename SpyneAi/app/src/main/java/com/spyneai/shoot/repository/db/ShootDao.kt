@@ -109,7 +109,7 @@ interface ShootDao {
         val skuid = insertSku(sku)
         Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: $skuid")
         Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: "+sku.projectUuid)
-        val projectudpate = updateProject(project)
+        val projectudpate = updateProjectSkuCount(project.uuid)
         Log.d(AppConstants.SHOOT_DAO_TAG, "saveSku: $projectudpate")
     }
 
@@ -118,6 +118,9 @@ interface ShootDao {
 
     @Query("UPDATE project SET imagesCount = imagesCount + 1 WHERE uuid =:uuid ")
     fun updateProjectImageCount(uuid: String) : Int
+
+    @Query("UPDATE project SET skuCount = skuCount + 1, isCreated = :isCreated WHERE uuid =:uuid ")
+    fun updateProjectSkuCount(uuid: String,isCreated: Boolean = false) : Int
 
     @Query("Select * from project where uuid = :uuid")
     fun getProject(uuid: String) : Project

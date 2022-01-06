@@ -497,11 +497,6 @@ class ShootViewModel : ViewModel() {
     }
 
     suspend fun insertSku() {
-        project?.apply {
-            imagesCount = 0
-            skuCount = skuCount.plus(1)
-            isCreated = false
-        }
         localRepository.insertSku(sku!!,project!!)
     }
 
