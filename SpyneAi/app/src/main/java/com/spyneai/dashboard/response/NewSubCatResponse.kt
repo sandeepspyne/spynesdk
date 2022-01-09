@@ -1,9 +1,9 @@
 package com.spyneai.dashboard.response
 
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-
 
 data class NewSubCatResponse(
     val `data`: List<Subcategory>,
@@ -28,7 +28,6 @@ data class NewSubCatResponse(
         val sub_cat_name: String,
         val updated_at: String
     )
-
     @Entity
     data class Interior(
         @PrimaryKey
@@ -45,7 +44,6 @@ data class NewSubCatResponse(
         var imagePath: String? = null,
         var sequenceNumber: Int = 0
     )
-
     @Entity
     data class Miscellaneous(
         @PrimaryKey
@@ -60,7 +58,6 @@ data class NewSubCatResponse(
         var imagePath: String? = null,
         var sequenceNumber: Int = 0
     )
-
     data class Tags(
         @SerializedName("Exterior")
         val exteriorTags: List<ExteriorTags>,

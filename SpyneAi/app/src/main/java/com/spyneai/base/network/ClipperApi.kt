@@ -20,6 +20,8 @@ import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.repository.model.project.CreateProjectAndSkuRes
+import com.spyneai.shoot.repository.model.project.ProjectBody
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.response.UploadFolderRes
@@ -141,6 +143,10 @@ interface ClipperApi {
                               @Field("dynamic_layout") dynamic_layout: JSONObject? = null,
                               @Field("location_data") location_data: JSONObject? = null,
                               @Field("source") source : String = "App_android") : CreateProjectRes
+
+
+    @POST("v2/project/create/v2")
+    suspend fun createProject(@Body projectBody: ProjectBody) : CreateProjectAndSkuRes
 
     @FormUrlEncoded
     @POST("v2/sku/create/v2")

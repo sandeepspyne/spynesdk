@@ -68,7 +68,7 @@ class MiscHolder(
                 .into(binding?.ivOverlay!!)
         }else {
             Glide.with(itemView)
-                .load(data.display_thumbnail)
+                .load(data.display_name)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(binding?.ivOverlay!!)
         }

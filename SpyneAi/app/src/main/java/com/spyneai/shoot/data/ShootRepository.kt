@@ -10,6 +10,7 @@ import com.spyneai.base.room.AppDatabase
 import com.spyneai.interfaces.GcpClient
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
+import com.spyneai.shoot.repository.model.project.ProjectBody
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONArray
@@ -201,6 +202,11 @@ class ShootRepository : BaseRepository() {
         file : RequestBody
     ) = safeApiCall {
         GCPApiClient().getClient().uploadFileToGcp(fileUrl,file)
+    }
+
+    suspend fun createProject(projectBody: ProjectBody
+    )= safeApiCall {
+        clipperApi.createProject(projectBody)
     }
 
 }

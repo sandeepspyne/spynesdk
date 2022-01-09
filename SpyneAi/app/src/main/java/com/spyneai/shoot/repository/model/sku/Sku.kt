@@ -11,6 +11,7 @@ class Sku(
     @PrimaryKey(autoGenerate = false)
     var uuid: String,
     val isCreated: Boolean = false,
+    var isSelectAble: Boolean = false,
     val toProcessAt: Long = System.currentTimeMillis(),
     val retryCount: Int = 0,
     @SerializedName("sku_name")
@@ -37,7 +38,9 @@ class Sku(
     @SerializedName("thumbnail") var thumbnail: String? = null,
     @ColumnInfo(name = "created_at") var createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "updated_at") var updatedAt: Long = System.currentTimeMillis(),
-    var imagesCount: Int = 0
+    var imagesCount: Int = 0,
+    val imagePresent: Int = 0,
+    val videoPresent: Int = 0
 ){
 
 
