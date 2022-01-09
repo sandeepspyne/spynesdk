@@ -509,6 +509,7 @@ class ShootViewModel : ViewModel() {
     }
 
     suspend fun updateSubcategory() {
+        sku?.isSelectAble = true
         localRepository.updateSubcategory(project!!,sku!!)
     }
 

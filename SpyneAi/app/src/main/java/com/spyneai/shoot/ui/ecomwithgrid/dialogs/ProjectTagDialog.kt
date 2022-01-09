@@ -360,7 +360,6 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             skuName = removeWhiteSpace(binding.etSkuName.text.toString())
         )
 
-        viewModel.sku = sku
 
         viewModel.isSubCategoryConfirmed.value = true
         viewModel.isSkuCreated.value = true
@@ -368,10 +367,14 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             AppConstants.ECOM_CATEGORY_ID,
             AppConstants.FOOD_AND_BEV_CATEGORY_ID,
             AppConstants.PHOTO_BOX_CATEGORY_ID-> {
+                //set sku selectable for ecom and other non subcategory, categories
+                sku.isSelectAble = true
                 viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
                 viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
             }
         }
+
+        viewModel.sku = sku
         viewModel.getSubCategories.value = true
 
         //add sku to local database

@@ -882,8 +882,11 @@ class ShootLocalRepository(val shootDao: ShootDao) {
         sku: com.spyneai.shoot.repository.model.sku.Sku
     ) = shootDao.updateSubcategory(project, sku)
 
-    fun updateSkuExteriorAngles(sku: com.spyneai.shoot.repository.model.sku.Sku) =
+    fun updateSkuExteriorAngles(sku: com.spyneai.shoot.repository.model.sku.Sku) {
+        sku.isSelectAble = true
         shootDao.updateSku(sku)
+    }
+
 
 
     fun getSkusByProjectId(uuid: String) = shootDao.getSkusByProjectId(uuid)
