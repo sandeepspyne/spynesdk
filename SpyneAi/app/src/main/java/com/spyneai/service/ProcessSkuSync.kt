@@ -10,9 +10,11 @@ import com.spyneai.captureEvent
 import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.shoot.data.ProcessRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.db.ShootDao
 import com.spyneai.shoot.repository.model.project.ProjectBody
+import com.spyneai.shoot.repository.model.sku.Sku
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -65,66 +67,63 @@ class ProcessSkuSync(
 
     suspend fun  startUploading(){
         do {
-            val projectWithSku = shootDao.getProjectWithSkus()
+            val sku = shootDao.getProcessAbleSku() ?: break
 
-            var projectBody: ProjectBody? = null
+            if (sku.totalFramesUpdated){
+                processSku(sku)
+            }else {
+                //update total frames
+                val isTotalFramesUpdated = updateTotalFrames(sku)
 
-            projectWithSku.let {
-                it.project?.let { project ->
-                    val skuList = ArrayList<ProjectBody.SkuData>()
+                if (!isTotalFramesUpdated)
+                    continue
 
-                    it.skus?.let { skus ->
-                        skus.forEach { sku ->
-                            if (!sku.isCreated && sku.isSelectAble){
-                                skuList.add(ProjectBody.SkuData(
-                                    localId = sku.uuid,
-                                    skuName = sku.skuName!!,
-                                    prodCatId = sku.categoryId!!,
-                                    prodSubCatId = sku.subcategoryId,
-                                    initialNo = sku.initialFrames!!,
-                                    totalFramesNo = sku.totalFrames!!,
-                                    imagePresent = sku.imagePresent,
-                                    videoPresent = sku.videoPresent
-                                ))
-                            }
-                        }
-                    }
+                processSku(sku)
 
-                    projectBody = ProjectBody(
-                        projectData = ProjectBody.ProjectData(
-                            projectName = project.projectName!!,
-                            localId = project.uuid,
-                            categoryId = project.categoryId!!,
-                            dynamicLayout = ProjectBody.ProjectData.DynamicLayout(project.dynamicLayout),
-                            locationData = ProjectBody.ProjectData.LocationData(project.locationData)
-                        ),
-                        skuData = skuList
-                    )
-                }
-
-                projectBody?.let {
-                    val isProjecCreated = createProject(projectBody!!)
-                }
+                continue
             }
 
-        }while (projectWithSku != null)
+        }while (sku != null)
 
         Log.d(TAG, "startUploading: all done")
     }
 
-    private suspend fun createProject(projectBody: ProjectBody): Boolean {
-        val response = ShootRepository().createProject(projectBody)
+    private suspend fun processSku(sku: Sku) : Boolean {
+        val response = ProcessRepository().processSku(
+            Utilities.getPreference(context,AppConstants.AUTH_KEY)!!,
+            sku.skuId!!,
+            sku.backgroundId!!,
+            sku.isThreeSixty,
+            sku.additionalData?.getBoolean("number_plate_blure")!!,
+            sku.additionalData?.getBoolean("window_correction")!!,
+            sku.additionalData?.getBoolean("tint_window")!!)
 
         if (response is com.spyneai.base.network.Resource.Failure)
             return false
 
-        //update local sku's
-        val res = (response as com.spyneai.base.network.Resource.Success).value
-
-
+        //update sku processed
+        sku.isProcessed = true
+        shootDao.updateSku(sku)
 
         return true
     }
+
+    private suspend fun updateTotalFrames(sku: Sku): Boolean {
+        val response = ShootRepository().updateTotalFrames(
+            Utilities.getPreference(context,AppConstants.AUTH_KEY)!!,
+            sku.skuId!!,
+            sku.totalFrames.toString())
+
+        if (response is com.spyneai.base.network.Resource.Failure)
+            return false
+
+        //update total frames updated
+        sku.totalFramesUpdated = true
+        shootDao.updateSku(sku)
+        return true
+    }
+
+
 
     private fun getRandomNumberInRange(): Int {
         val r = Random()
