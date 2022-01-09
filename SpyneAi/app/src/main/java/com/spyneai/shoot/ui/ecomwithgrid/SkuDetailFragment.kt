@@ -106,11 +106,9 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
-
                 totalSkuImages = it.size
 
                 binding.tvTotalImageCaptured.text = it.size.toString()
-
 
                 skuImageAdapter = SkuImageAdapter(
                     requireContext(),
