@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import com.bumptech.glide.load.resource.transcode.ResourceTranscoder
 import com.google.gson.Gson
 import com.spyneai.captureEvent
 import com.spyneai.isInternetActive
@@ -12,12 +13,14 @@ import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.db.ShootDao
+import com.spyneai.shoot.repository.model.project.ProjectBody
 import com.spyneai.shoot.repository.model.project.ProjectWithSku
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.HashMap
+import com.spyneai.base.network.Resource
 
 class ProjectSkuSync(
     val context: Context,
@@ -66,17 +69,70 @@ class ProjectSkuSync(
         do {
             val projectWithSku = shootDao.getProjectWithSkus()
 
-            projectWithSku?.project?.let {
-                Log.d(TAG, "startUploading: "+Gson().toJson(it).toString())
-            }
+            var projectBody: ProjectBody? = null
 
-            projectWithSku?.skus?.let {
-                Log.d(TAG, "startUploading: "+Gson().toJson(it).toString())
+            projectWithSku.let {
+                it.project?.let { project ->
+                    val skuList = ArrayList<ProjectBody.SkuData>()
+
+                    it.skus?.let { skus ->
+                        skus.forEach { sku ->
+                            if (!sku.isCreated && sku.isSelectAble){
+                                skuList.add(
+                                    ProjectBody.SkuData(
+                                    localId = sku.uuid,
+                                    skuName = sku.skuName!!,
+                                    prodCatId = sku.categoryId!!,
+                                    prodSubCatId = sku.subcategoryId,
+                                    initialNo = sku.initialFrames!!,
+                                    totalFramesNo = sku.totalFrames!!,
+                                    imagePresent = sku.imagePresent,
+                                    videoPresent = sku.videoPresent
+                                ))
+                            }
+                        }
+                    }
+
+                    projectBody = ProjectBody(
+                        projectData = ProjectBody.ProjectData(
+                            projectName = project.projectName!!,
+                            localId = project.uuid,
+                            categoryId = project.categoryId!!,
+                            dynamicLayout = ProjectBody.ProjectData.DynamicLayout(project.dynamicLayout),
+                            locationData = ProjectBody.ProjectData.LocationData(project.locationData)
+                        ),
+                        skuData = skuList
+                    )
+                }
+
+                projectBody?.let {
+                    val isProjecCreated = createProject(projectBody!!)
+                }
             }
 
         }while (projectWithSku != null)
 
         Log.d(TAG, "startUploading: all done")
+    }
+
+    private suspend fun createProject(projectBody: ProjectBody): Boolean {
+        val response = ShootRepository().createProject(projectBody)
+
+        if (response is Resource.Failure)
+            return false
+
+        val res = (response as Resource.Success).value
+        val projectId = res.data.projectId
+
+        //update project
+        shootDao.updateProjectServerId(projectBody.projectData.localId,projectId)
+
+        res.data.skusList.forEach {
+            shootDao.updateSkuAndImageIds(projectId,it.localId,it.skuId)
+        }
+
+
+        return true
     }
 
     private fun getRandomNumberInRange(): Int {
