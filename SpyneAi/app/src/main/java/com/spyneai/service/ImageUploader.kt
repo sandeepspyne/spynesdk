@@ -19,10 +19,8 @@ import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.model.image.Image
+import kotlinx.coroutines.*
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONObject
@@ -41,6 +39,8 @@ class ImageUploader(
     var connectionLost: Boolean = false
 ) {
     val TAG = "ImageUploader"
+    val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.IO + job)
 
     fun uploadParent(type : String,startedBy : String?) {
         context.captureEvent("UPLOAD PARENT TRIGGERED",HashMap<String,Any?>().apply {
@@ -60,7 +60,7 @@ class ImageUploader(
                 !Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false)
             ) {
                 if (context.isInternetActive())
-                    GlobalScope.launch(Dispatchers.Default) {
+                    scope.launch {
                         Log.d(TAG, "uploadParent: start")
                         Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, true)
                         context.captureEvent("START UPLOADING CALLED",HashMap())
@@ -92,6 +92,7 @@ class ImageUploader(
                 )
                 Utilities.saveBool(context,AppConstants.UPLOADING_RUNNING,false)
                 listener.onConnectionLost()
+                job.cancel()
                 break
             }
 
@@ -347,6 +348,7 @@ class ImageUploader(
             deleteTempFiles(File(outputDirectory))
             listener.onUploaded()
             Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+            job.cancel()
         }
     }
 

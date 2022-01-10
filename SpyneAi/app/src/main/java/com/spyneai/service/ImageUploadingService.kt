@@ -184,6 +184,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
             stopSelf()
 
             Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
+            //cancel all jobs started by service
+            imageUploader?.job?.cancel()
 
         } catch (e: Exception) {
         }
