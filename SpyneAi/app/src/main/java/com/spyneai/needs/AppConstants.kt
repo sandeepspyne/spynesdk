@@ -224,6 +224,10 @@ object AppConstants {
     val ALL_UPLOADED_BREAK = "ALL UPLOADED BREAK"
 
 
+    val PROJECT_SYNC_RUNNING = "PROJECT_SYNC_RUNNING"
+    val PROJECT_SYNC_TRIGGERED = "PROJECT_SYNC_TRIGGERED"
+
+    val RETRY_DELAY_TIME = 1000
 
     val imageCatNameMap = HashMap<String,String>().apply {
         put(ECOM_CATEGORY_ID,"Ecom")

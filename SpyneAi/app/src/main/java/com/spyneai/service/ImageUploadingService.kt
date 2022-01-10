@@ -23,7 +23,7 @@ import com.spyneai.shoot.data.model.Image
 
 
 
-class ImageUploadingService : Service(), ImageUploader.Listener {
+class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener {
 
     private var wakeLock: PowerManager.WakeLock? = null
     lateinit var notificationManager: NotificationManager
@@ -79,8 +79,10 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
         when (action) {
             Actions.START.name -> {
-                val prjSync = ProjectSkuSync(this,
-                    AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
+                val prjSync = ProjectSkuSync(
+                    this,
+                    AppDatabase.getInstance(BaseApplication.getContext()).shootDao(),
+                    this
                 )
 
                 prjSync.uploadParent("type",null)
@@ -221,6 +223,62 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
     override fun onUploadFail(task: Image) {
         uploadRunning = false
+    }
+
+    override fun inProgress(title: String, type: SeverSyncTypes) {
+        val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
+        val finalContent = getString(R.string.innter_connection_label)+internet
+        var notification = createNotification(title,finalContent, true)
+
+        notificationManager.notify(notificationId, notification)
+
+        if (type == SeverSyncTypes.UPLOAD)
+            uploadRunning = true
+    }
+
+    override fun onCompleted(title: String,
+                             type: SeverSyncTypes,
+                             stopService: Boolean) {
+
+        val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
+        val content = getString(R.string.innter_connection_label)+internet
+        var notification = createNotification(title,content, true)
+
+        notificationManager.notify(notificationId, notification)
+
+        if (type == SeverSyncTypes.UPLOAD)
+            uploadRunning = false
+
+        //update notification after five minutes
+        if (stopService){
+            Handler(Looper.getMainLooper()).postDelayed({
+                val title = getString(R.string.all_uploaded)
+                val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
+                val content = getString(R.string.innter_connection_label)+internet
+                var notification = createNotification(title,content, false)
+
+                notificationManager.notify(notificationId, notification)
+                stopService()
+            },180000)
+        }
+    }
+
+
+
+    override fun onConnectionLost(title: String, type: SeverSyncTypes) {
+        captureEvent(Events.INTERNET_DISCONNECTED,
+            HashMap<String,Any?>().apply {
+                put("medium","Service")
+            })
+
+        val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
+        val content = getString(R.string.innter_connection_label)+internet
+        var notification = createNotification(title,content, true)
+
+        notificationManager.notify(notificationId, notification)
+
+        if (type == SeverSyncTypes.UPLOAD)
+            uploadRunning = false
     }
 
     override fun onConnectionLost() {

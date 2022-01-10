@@ -407,6 +407,12 @@ fun Context.startUploadingService(startedBy : String) {
         prperties.put("state","Running")
         this.captureEvent(Events.SERVICE_STARTED,prperties)
     }
+
+    fun Long.toDateFormat() : String{
+        val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss a")
+        val netDate = Date(this)
+        return sdf.format(netDate)
+    }
 }
 
 
