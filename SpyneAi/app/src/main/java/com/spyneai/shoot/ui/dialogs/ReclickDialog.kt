@@ -24,11 +24,12 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
                 if (it.getString("image_type").toString().contains("Info")) {
                     viewModel.categoryDetails.value?.imageType = it.getString("image_type").toString()
                     viewModel.currentShoot = it.getInt("position")
-//                    viewModel.hideLeveler.value = true
-                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
-                    viewModel.overlayId = it.getInt("overlay_id")
+                    viewModel.hideLeveler.value = true
+                    viewModel.showLeveler.value = false
+//                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+//                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+//                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+//                    viewModel.overlayId = it.getInt("overlay_id")
                     viewModel.updateSelectItem.value = true
 
                 } else {
