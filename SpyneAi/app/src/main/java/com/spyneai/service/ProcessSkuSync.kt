@@ -16,10 +16,12 @@ import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.db.ShootDao
 import com.spyneai.shoot.repository.model.project.ProjectBody
 import com.spyneai.shoot.repository.model.sku.Sku
+import com.spyneai.toDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -70,51 +72,102 @@ class ProcessSkuSync(
         do {
             val sku = shootDao.getProcessAbleSku() ?: break
 
-            val properties = HashMap<String,Any?>()
-                .apply {
-                    put("project_id",sku.projectId)
-                    put("sku_id",sku.skuId)
-                    put("data",Gson().toJson(sku))
-                }
-
-            context.captureEvent(
-                Events.SKU_SELECTED,
-                properties
-            )
-
-            if (retryCount > 4){
-                //skip project
-                val skip = shootDao.skipSku(
-                    sku.uuid,
-                    sku.toProcessAt.plus( sku.retryCount * AppConstants.RETRY_DELAY_TIME)
+            if (connectionLost){
+                val count = shootDao.getPendingSku()
+                context.captureEvent(
+                    Events.PROCESS_SKU_CONNECTION_CONNECTION_BREAK,
+                    HashMap<String,Any?>()
+                        .apply {
+                            put("sku_remaining",count)
+                        }
                 )
+                Utilities.saveBool(context,AppConstants.PROCESS_SKU_RUNNING,false)
+                listener.onConnectionLost("Process Sku Stopped",SeverSyncTypes.CREATE)
+                break
+            }else {
+                val properties = HashMap<String,Any?>()
+                    .apply {
+                        put("project_id",sku.projectId)
+                        put("sku_id",sku.skuId)
+                        put("data",Gson().toJson(sku))
+                    }
 
                 context.captureEvent(
-                    Events.SKU_SKIPPED,
-                    properties.apply {
-                        put("db_count",skip)
-                    }
+                    Events.SKU_SELECTED,
+                    properties
                 )
-                continue
-            }
 
-            if (sku.totalFramesUpdated){
-                processSku(sku)
-            }else {
-                //update total frames
-                val isTotalFramesUpdated = updateTotalFrames(sku)
+                if (retryCount > 4){
+                    //skip project
+                    val skip = shootDao.skipSku(
+                        sku.uuid,
+                        sku.toProcessAt.plus( sku.retryCount * AppConstants.RETRY_DELAY_TIME)
+                    )
 
-                if (!isTotalFramesUpdated)
+                    context.captureEvent(
+                        Events.SKU_SKIPPED,
+                        properties.apply {
+                            put("db_count",skip)
+                        }
+                    )
                     continue
+                }
 
-                processSku(sku)
+                //in progress listener
+                listener.inProgress("Processing Sku ${sku.skuName}",SeverSyncTypes.PROCESS)
 
-                continue
+
+                if (sku.totalFramesUpdated){
+                    processSku(sku)
+                }else {
+                    //update total frames
+                    val isTotalFramesUpdated = updateTotalFrames(sku)
+
+                    if (!isTotalFramesUpdated)
+                        continue
+
+                    processSku(sku)
+
+                    continue
+                }
             }
-
         }while (sku != null)
 
-        Log.d(TAG, "startUploading: all done")
+        if (!connectionLost){
+            //get pending projects count
+            val count = shootDao.getPendingSku()
+
+            context.captureEvent(
+                Events.ALL_SKUS_PROCESSED_BREAKS,
+                HashMap<String,Any?>().apply {
+                    put("sku_remaining",count)
+                }
+            )
+
+            if (count > 0){
+                val sku = shootDao.getOldestSku()
+                val scheduleTime = sku.toProcessAt.minus(System.currentTimeMillis())
+                if (scheduleTime > 0){
+                    Log.d(TAG, "selectLastImageAndUpload: "+scheduleTime)
+                    Log.d(TAG, "selectLastImageAndUpload: "+ TimeUnit.MILLISECONDS.toMinutes(scheduleTime))
+                    Log.d(TAG, "selectLastImageAndUpload: "+sku.toProcessAt.toDate())
+                    val handler = Handler(Looper.getMainLooper())
+
+                    handler.postDelayed({
+                        Log.d(TAG, "selectLastImageAndUpload: "+sku.toProcessAt.toDate())
+                        GlobalScope.launch(Dispatchers.IO) {
+                            processSku()
+                        }
+                    },scheduleTime)
+                }
+                else{
+                    processSku()
+                }
+            }else {
+                listener.onCompleted("All Skus Processed",SeverSyncTypes.PROCESS,false)
+                Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
+            }
+        }
     }
 
     private suspend fun updateTotalFrames(sku: Sku): Boolean {

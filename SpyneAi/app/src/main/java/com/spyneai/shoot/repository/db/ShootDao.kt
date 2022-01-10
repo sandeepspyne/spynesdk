@@ -93,6 +93,12 @@ interface ShootDao {
     @Query("select * from project where isCreated = :isCreated LIMIT :limit")
     fun getOldestProject(isCreated: Boolean = false,limit: Int = 1) : Project
 
+    @Query("select COUNT(*) from sku where is_processed = :isProcessed and background_id != null")
+    fun getPendingSku(isProcessed: Boolean = false) : Int
+
+    @Query("select * from sku where is_processed = :isProcessed and background_id != null LIMIT :limit")
+    fun getOldestSku(isProcessed: Boolean = false,limit: Int = 1): Sku
+
     @Update
     fun updateSku(sku: Sku): Int
 
