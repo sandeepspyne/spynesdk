@@ -20,6 +20,7 @@ import kotlin.collections.HashMap
 import com.spyneai.base.network.Resource
 import com.spyneai.posthog.Events
 import com.spyneai.toDate
+import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class ProjectSkuSync(
@@ -32,7 +33,7 @@ class ProjectSkuSync(
 
     val TAG = "ProjectSkuSync"
 
-    fun uploadParent(type : String,startedBy : String?) {
+    fun projectSyncParent(type : String, startedBy : String?) {
         context.captureEvent(Events.PROJECT_SYNC_TRIGGERED,HashMap<String,Any?>().apply {
             put("type",type)
             put("service_started_by",startedBy)
@@ -58,7 +59,7 @@ class ProjectSkuSync(
                     }
                 else {
                     Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
-                    listener.onConnectionLost("Create Project Failed",SeverSyncTypes.CREATE)
+                    listener.onConnectionLost("Create Project Stopped",SeverSyncTypes.CREATE)
                     Log.d(TAG, "uploadParent: connection lost")
                 }
             }
@@ -69,83 +70,98 @@ class ProjectSkuSync(
         do {
             val projectWithSku = shootDao.getProjectWithSkus()
 
-
-            if (projectWithSku.project == null){
+            if (connectionLost){
                 val count = shootDao.getPendingProjects()
                 context.captureEvent(
-                    Events.ALL_PROJECTS_CREATED_BREAKS,
-                    HashMap<String,Any?>().apply {
-                       put("project_remaining",count)
-                    }
+                    Events.PROJECT_CONNECTION_BREAK,
+                    HashMap<String,Any?>()
+                        .apply {
+                            put("project_remaining",count)
+                        }
                 )
+                Utilities.saveBool(context,AppConstants.PROJECT_SYNC_RUNNING,false)
+                listener.onConnectionLost("Create Project Stopped",SeverSyncTypes.CREATE)
                 break
             }else {
-
-                val properties = HashMap<String,Any?>().apply {
-                    put("project_id",projectWithSku.project.uuid)
-                    put("data",Gson().toJson(projectWithSku))
-                }
-
-                context.captureEvent(
-                    Events.SELECTED_PROJECT,
-                    properties
-                )
-
-                if (retryCount >4){
-                    //skip project
-                    val skip = shootDao.skipProject(
-                        projectWithSku.project.uuid,
-                        projectWithSku.project.toProcessAt.plus( projectWithSku.project.retryCount * AppConstants.RETRY_DELAY_TIME)
+                if (projectWithSku.project == null){
+                    val count = shootDao.getPendingProjects()
+                    context.captureEvent(
+                        Events.ALL_PROJECTS_CREATED_BREAKS,
+                        HashMap<String,Any?>().apply {
+                            put("project_remaining",count)
+                        }
                     )
+                    break
+                }else {
+                    //in progress listener
+                    listener.inProgress("Creating project ${projectWithSku.project.projectName} and its sku's",SeverSyncTypes.CREATE)
+
+                    val properties = HashMap<String,Any?>().apply {
+                        put("project_id",projectWithSku.project.uuid)
+                        put("data",Gson().toJson(projectWithSku))
+                    }
 
                     context.captureEvent(
-                        Events.PROJECTED_SKIPPED,
-                        properties.apply {
-                            put("db_count",skip)
-                        }
+                        Events.SELECTED_PROJECT,
+                        properties
                     )
-                    continue
-                }
-                var projectBody: ProjectBody? = null
 
-                projectWithSku.let {
-                    it.project?.let { project ->
-                        val skuList = ArrayList<ProjectBody.SkuData>()
+                    if (retryCount >4){
+                        //skip project
+                        val skip = shootDao.skipProject(
+                            projectWithSku.project.uuid,
+                            projectWithSku.project.toProcessAt.plus( projectWithSku.project.retryCount * AppConstants.RETRY_DELAY_TIME)
+                        )
 
-                        it.skus?.let { skus ->
-                            skus.forEach { sku ->
-                                if (!sku.isCreated && sku.isSelectAble){
-                                    skuList.add(
-                                        ProjectBody.SkuData(
-                                            localId = sku.uuid,
-                                            skuName = sku.skuName!!,
-                                            prodCatId = sku.categoryId!!,
-                                            prodSubCatId = sku.subcategoryId,
-                                            initialNo = sku.initialFrames!!,
-                                            totalFramesNo = sku.totalFrames!!,
-                                            imagePresent = sku.imagePresent,
-                                            videoPresent = sku.videoPresent
-                                        ))
+                        context.captureEvent(
+                            Events.PROJECTED_SKIPPED,
+                            properties.apply {
+                                put("db_count",skip)
+                            }
+                        )
+                        continue
+                    }
+                    var projectBody: ProjectBody? = null
+
+                    projectWithSku.let {
+                        it.project?.let { project ->
+                            val skuList = ArrayList<ProjectBody.SkuData>()
+
+                            it.skus?.let { skus ->
+                                skus.forEach { sku ->
+                                    if (!sku.isCreated && sku.isSelectAble){
+                                        skuList.add(
+                                            ProjectBody.SkuData(
+                                                localId = sku.uuid,
+                                                skuName = sku.skuName!!,
+                                                prodCatId = sku.categoryId!!,
+                                                prodSubCatId = sku.subcategoryId,
+                                                initialNo = sku.initialFrames!!,
+                                                totalFramesNo = sku.totalFrames!!,
+                                                imagePresent = sku.imagePresent,
+                                                videoPresent = sku.videoPresent
+                                            ))
+                                    }
                                 }
                             }
+
+                            projectBody = ProjectBody(
+                                projectData = ProjectBody.ProjectData(
+                                    projectName = project.projectName!!,
+                                    localId = project.uuid,
+                                    categoryId = project.categoryId!!,
+                                    dynamicLayout = ProjectBody.ProjectData.DynamicLayout(project.dynamicLayout),
+                                    locationData = ProjectBody.ProjectData.LocationData(project.locationData)
+                                ),
+                                skuData = skuList
+                            )
                         }
-
-                        projectBody = ProjectBody(
-                            projectData = ProjectBody.ProjectData(
-                                projectName = project.projectName!!,
-                                localId = project.uuid,
-                                categoryId = project.categoryId!!,
-                                dynamicLayout = ProjectBody.ProjectData.DynamicLayout(project.dynamicLayout),
-                                locationData = ProjectBody.ProjectData.LocationData(project.locationData)
-                            ),
-                            skuData = skuList
-                        )
                     }
+
+                    createProject(projectBody!!)
+
+                    continue
                 }
-
-                createProject(projectBody!!)
-
-                continue
             }
 
 
@@ -174,6 +190,9 @@ class ProjectSkuSync(
                 else{
                     startProjectSync()
                 }
+            }else {
+                listener.onCompleted("All Projects Created",SeverSyncTypes.CREATE,false)
+                Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
             }
         }
 
@@ -235,7 +254,7 @@ class ProjectSkuSync(
         return true
     }
 
-    private fun getRandomNumberInRange(): Int {
+    fun getRandomNumberInRange(): Int {
         val r = Random()
         return r.nextInt(100 - 10 + 1) + 10
     }

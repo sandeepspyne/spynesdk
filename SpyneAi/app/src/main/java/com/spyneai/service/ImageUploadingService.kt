@@ -85,7 +85,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
                     this
                 )
 
-                prjSync.uploadParent("type",null)
+                prjSync.projectSyncParent("type",null)
 
                 this.serviceStartedBy = intent.getStringExtra(AppConstants.SERVICE_STARTED_BY)
 

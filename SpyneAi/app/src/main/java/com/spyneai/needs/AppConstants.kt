@@ -229,6 +229,9 @@ object AppConstants {
 
     val RETRY_DELAY_TIME = 1000
 
+    val PROCESS_SKU_RUNNING = "PROCESS_SKU_RUNNING"
+    val PROCESS_SKU_PARENT_TRIGGERED = "PROCESS_SKU_PARENT_TRIGGERED"
+
     val imageCatNameMap = HashMap<String,String>().apply {
         put(ECOM_CATEGORY_ID,"Ecom")
         put(FOOTWEAR_CATEGORY_ID,"Footwear")
