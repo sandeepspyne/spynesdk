@@ -49,7 +49,9 @@ import android.net.NetworkCapabilities
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.os.Build
 import androidx.core.content.ContextCompat
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.service.*
+import com.spyneai.shoot.data.ShootLocalRepository
 
 
 var TAG = "Locale_Check"
@@ -408,13 +410,35 @@ fun Context.startUploadingService(startedBy : String) {
 //        this.captureEvent(Events.SERVICE_STARTED,prperties)
 //    }
 
-    fun Long.toDateFormat() : String{
-        val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss a")
-        val netDate = Date(this)
-        return sdf.format(netDate)
-    }
+}
 
+fun Long.toDateFormat() : String{
+    val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss a")
+    val netDate = Date(this)
+    return sdf.format(netDate)
+}
 
+fun Context.allDataSynced() : Boolean {
+    var allDataSynced = true
+
+    //check projects
+    val shootDao = AppDatabase.getInstance(this).shootDao()
+
+    val pendingProjects = shootDao.getPendingProjects()
+    if (pendingProjects > 0)
+        return false
+
+    val pendingSkus = shootDao.getPendingSku()
+
+    if (pendingSkus > 0)
+        return false
+
+    val pendingImages = shootDao.totalRemainingUpload(isUploaded = false, isMarkedDone = false)
+
+    if (pendingImages > 0)
+        return false
+
+    return allDataSynced
 }
 
 

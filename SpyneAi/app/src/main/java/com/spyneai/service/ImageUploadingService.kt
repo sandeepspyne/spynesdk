@@ -8,12 +8,9 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.os.*
 import android.util.Log
-import com.spyneai.BaseApplication
-import com.spyneai.R
+import com.spyneai.*
 import com.spyneai.base.room.AppDatabase
-import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -261,7 +258,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
             uploadRunning = false
 
         //update notification after five minutes
-        if (stopService){
+        if (allDataSynced()){
             Handler(Looper.getMainLooper()).postDelayed({
                 val title = getString(R.string.all_uploaded)
                 val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
