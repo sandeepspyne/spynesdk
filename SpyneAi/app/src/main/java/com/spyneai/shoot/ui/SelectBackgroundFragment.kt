@@ -409,28 +409,33 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
     private fun processSku() {
         GlobalScope.launch(Dispatchers.IO) {
-            viewModel.updateBackground()
+            val s  = viewModel.updateBackground()
+
+            GlobalScope.launch(Dispatchers.Main) {
+                Utilities.hideProgressDialog()
+
+                requireContext().captureEvent(
+                    Events.PROCESS,
+                    HashMap<String, Any?>()
+                        .apply {
+                            this.put("sku_id", viewModel.sku?.uuid!!)
+                            this.put("background_id", backgroundSelect)
+                        }
+
+
+                )
+
+                //start sync service
+                requireContext().startUploadingService(
+                    SelectBackgroundFragment::class.java.simpleName
+                )
+
+                viewModel.startTimer.value = true
+            }
         }
 
-        Utilities.hideProgressDialog()
-
-        requireContext().captureEvent(
-            Events.PROCESS,
-            HashMap<String, Any?>()
-                .apply {
-                    this.put("sku_id", viewModel.sku?.uuid!!)
-                    this.put("background_id", backgroundSelect)
-                }
 
 
-        )
-
-        viewModel.startTimer.value = true
-
-        //start sync service
-        requireContext().startUploadingService(
-            SelectBackgroundFragment::class.java.simpleName
-        )
     }
 
 

@@ -25,6 +25,7 @@ abstract class BaseRepository {
                     put("message",throwable.localizedMessage)
                 }.toString()
 
+                val s = ""
                 when(throwable){
 
                     is ServerException -> {

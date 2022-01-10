@@ -11,7 +11,7 @@ import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.project.ProjectWithSku
 import com.spyneai.shoot.repository.model.sku.Sku
-
+import io.sentry.protocol.App
 
 
 @Dao
@@ -93,24 +93,27 @@ interface ShootDao {
     @Query("select * from project where isCreated = :isCreated LIMIT :limit")
     fun getOldestProject(isCreated: Boolean = false,limit: Int = 1) : Project
 
-    @Query("select COUNT(*) from sku where is_processed = :isProcessed and background_id != null")
-    fun getPendingSku(isProcessed: Boolean = false) : Int
+    @Query("select COUNT(*) from sku where is_processed = :isProcessed and isCreated = :isCreated")
+    fun getPendingSku(isProcessed: Boolean = false,isCreated: Boolean = true) : Int
 
-    @Query("select * from sku where is_processed = :isProcessed and background_id != null LIMIT :limit")
-    fun getOldestSku(isProcessed: Boolean = false,limit: Int = 1): Sku
+    @Query("select * from sku where is_processed = :isProcessed and isCreated = :isCreated LIMIT :limit")
+    fun getOldestSku(isProcessed: Boolean = false,isCreated: Boolean = true,limit: Int = 1): Sku
+
+    @Query("select * from sku")
+    fun getAllSKus() : List<Sku>
 
     @Update
     fun updateSku(sku: Sku): Int
 
-    @Query("update sku set sku_id = :skuId, isCreated = :isCreated where uuid = :uuid")
-    fun updateSKuServerId(uuid: String,skuId: String,isCreated: Boolean = true): Int
+    @Query("update sku set sku_id = :skuId,project_id = :projectId, isCreated = :isCreated where uuid = :uuid")
+    fun updateSKuServerId(uuid: String,skuId: String,projectId: String,isCreated: Boolean = true): Int
 
     @Query("update image set sku_id = :skuId, project_id = :projectId where sku_uuid = :skuUuid")
     fun updateImageIds(skuUuid: String,skuId: String,projectId: String): Int
 
     @Transaction
     fun updateSkuAndImageIds(projectId: String,skuUuid: String,skuId: String){
-        updateSKuServerId(skuUuid,skuId)
+        updateSKuServerId(skuUuid,skuId,projectId)
         updateImageIds(skuUuid,skuId,projectId)
     }
 
@@ -228,14 +231,17 @@ interface ShootDao {
 
     @Transaction
     fun updateBackground(map: HashMap<String,Any>){
-        updateProjectStatus(
+        val p  = updateProjectStatus(
             map["project_uuid"].toString())
 
-        updateSkuBackground(
+        Log.d(AppConstants.SHOOT_DAO_TAG, "updateBackground: $p")
+        val s = updateSkuBackground(
             map["sku_uuid"].toString(),
             map["bg_name"].toString(),
             map["bg_id"].toString()
         )
+
+        Log.d(AppConstants.SHOOT_DAO_TAG, "updateBackground: $s")
     }
 
     @Query("UPDATE project SET status = 'ongoing' WHERE uuid =:uuid ")
@@ -258,8 +264,9 @@ interface ShootDao {
     @Query("update project set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid ")
     fun skipProject(uuid: String,toProcessAt: Long) : Int
 
-    @Query("Select * from sku where is_processed = :isProcessed and background_id != null and sku_id != null and toProcessAt <= :currentTime LIMIT :limit")
-    fun getProcessAbleSku(isProcessed: Boolean = false, currentTime: Long = System.currentTimeMillis(),limit: Int = 1) : Sku
+    @Query("Select * from sku where is_processed = :isProcessed and isCreated = :isCreated and toProcessAt <= :currentTime LIMIT :limit")
+    fun getProcessAbleSku(isProcessed: Boolean = false, isCreated: Boolean = true, currentTime: Long = System.currentTimeMillis(),limit: Int = 1) : Sku
+
 
     @Query("update sku set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid ")
     fun skipSku(uuid: String,toProcessAt: Long) : Int

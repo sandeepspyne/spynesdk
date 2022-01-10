@@ -37,6 +37,7 @@ class ProcessSkuSync(
     val TAG = "ProcessSkuSync"
 
     fun processSkuParent(type : String,startedBy : String?) {
+        Log.d(TAG, "processSkuParent: ")
         context.captureEvent(Events.PROCESS_SKU_PARENT_TRIGGERED,HashMap<String,Any?>().apply {
             put("type",type)
             put("service_started_by",startedBy)
@@ -48,31 +49,48 @@ class ProcessSkuSync(
 
         val handler = Handler(Looper.getMainLooper())
 
-        handler.postDelayed({
-            if (Utilities.getBool(context, AppConstants.PROCESS_SKU_PARENT_TRIGGERED, true)
-                &&
-                !Utilities.getBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
-            ) {
-                if (context.isInternetActive())
-                    GlobalScope.launch(Dispatchers.Default) {
-                        Log.d(TAG, "uploadParent: start")
-                         Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, true)
-                        context.captureEvent(Events.PROCESS_SKU_STARTED,HashMap())
-                        processSku()
-                    }
-                else {
-                    Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
-                    listener.onConnectionLost("Process Sku Stopped",SeverSyncTypes.PROCESS)
-                    Log.d(TAG, "uploadParent: connection lost")
-                }
+        if (context.isInternetActive())
+            GlobalScope.launch(Dispatchers.Default) {
+                Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, true)
+                context.captureEvent(Events.PROCESS_SKU_STARTED,HashMap())
+                processSku()
             }
-        }, getRandomNumberInRange().toLong())
+        else {
+            Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
+            listener.onConnectionLost("Process Sku Stopped",SeverSyncTypes.PROCESS)
+            Log.d(TAG, "uploadParent: connection lost")
+        }
+
+//        handler.postDelayed({
+//            if (Utilities.getBool(context, AppConstants.PROCESS_SKU_PARENT_TRIGGERED, true)
+//                &&
+//                !Utilities.getBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
+//            ) {
+//                if (context.isInternetActive())
+//                    GlobalScope.launch(Dispatchers.Default) {
+//                        Log.d(TAG, "uploadParent: start")
+//                         Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, true)
+//                        context.captureEvent(Events.PROCESS_SKU_STARTED,HashMap())
+//                        processSku()
+//                    }
+//                else {
+//                    Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
+//                    listener.onConnectionLost("Process Sku Stopped",SeverSyncTypes.PROCESS)
+//                    Log.d(TAG, "uploadParent: connection lost")
+//                }
+//            }else{
+//                Log.d(TAG, "processSkuParent: running")
+//            }
+//        }, getRandomNumberInRange().toLong())
     }
 
-    suspend fun  processSku(){
+    private suspend fun  processSku(){
         do {
+            Log.d(TAG, "processSku: ")
             val sku = shootDao.getProcessAbleSku() ?: break
 
+            Log.d(TAG, "processSku: "+Gson().toJson(sku))
+            
             if (connectionLost){
                 val count = shootDao.getPendingSku()
                 context.captureEvent(
@@ -122,14 +140,20 @@ class ProcessSkuSync(
                     processSku(sku)
                 }else {
                     //update total frames
-                    val isTotalFramesUpdated = updateTotalFrames(sku)
+                    if (sku.totalFrames!! > sku.initialFrames!!){
+                        val isTotalFramesUpdated = updateTotalFrames(sku)
 
-                    if (!isTotalFramesUpdated)
+                        if (!isTotalFramesUpdated)
+                            continue
+
+                        processSku(sku)
+
                         continue
+                    }else {
+                        processSku(sku)
 
-                    processSku(sku)
-
-                    continue
+                        continue
+                    }
                 }
             }
         }while (sku != null)
@@ -137,6 +161,8 @@ class ProcessSkuSync(
         if (!connectionLost){
             //get pending projects count
             val count = shootDao.getPendingSku()
+
+            Log.d(TAG, "processSku: count $count")
 
             context.captureEvent(
                 Events.ALL_SKUS_PROCESSED_BREAKS,
@@ -165,6 +191,7 @@ class ProcessSkuSync(
                     processSku()
                 }
             }else {
+                Log.d(TAG, "processSku: all processed")
                 listener.onCompleted("All Skus Processed",SeverSyncTypes.PROCESS,false)
                 Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
             }
@@ -172,6 +199,7 @@ class ProcessSkuSync(
     }
 
     private suspend fun updateTotalFrames(sku: Sku): Boolean {
+        Log.d(TAG, "updateTotalFrames: "+sku.totalFrames)
         val properties = HashMap<String,Any?>()
             .apply {
                 put("project_id",sku.projectId)
@@ -189,17 +217,17 @@ class ProcessSkuSync(
             properties
         )
 
-        if (response is Resource.Failure){
-            context.captureEvent(
-                Events.UPDATE_TOTAL_FRAMES_FAILED,
-                properties.apply {
-                    put("response",response)
-                    put("throwable",response.throwable)
-                }
-            )
-            retryCount++
-            return false
-        }
+//        if (response is Resource.Failure){
+//            context.captureEvent(
+//                Events.UPDATE_TOTAL_FRAMES_FAILED,
+//                properties.apply {
+//                    put("response",response)
+//                    put("throwable",response.throwable)
+//                }
+//            )
+//            retryCount++
+//            return false
+//        }
 
         context.captureEvent(
             Events.SKU_TOTAL_FRAMES_UPDATED,
@@ -231,33 +259,33 @@ class ProcessSkuSync(
                 put("data",Gson().toJson(sku))
             }
 
-        val additionalData = JSONObject(sku.additionalData)
+        //val additionalData = JSONObject(sku.additionalData)
 
         val response = ProcessRepository().processSku(
             Utilities.getPreference(context,AppConstants.AUTH_KEY)!!,
             sku.skuId!!,
             sku.backgroundId!!,
             sku.isThreeSixty,
-            additionalData.getBoolean("number_plate_blure")!!,
-            additionalData.getBoolean("window_correction")!!,
-            additionalData.getBoolean("tint_window")!!)
+            false,
+           false,
+            false)
 
         context.captureEvent(
             Events.PROCESS_SKU_INTIATED,
             properties
         )
 
-        if (response is Resource.Failure){
-            context.captureEvent(
-                Events.PROCESS_SKU_FAILED,
-                properties.apply {
-                    put("response",response)
-                    put("throwable",response.throwable)
-                }
-            )
-            retryCount++
-            return false
-        }
+//        if (response is Resource.Failure){
+//            context.captureEvent(
+//                Events.PROCESS_SKU_FAILED,
+//                properties.apply {
+//                    put("response",response)
+//                    put("throwable",response.throwable)
+//                }
+//            )
+//            retryCount++
+//            return false
+//        }
 
         context.captureEvent(
             Events.SKU_PROCESSED,
@@ -266,6 +294,7 @@ class ProcessSkuSync(
             }
         )
 
+        Log.d(TAG, "processSku: ")
         //update sku processed
         sku.isProcessed = true
         val updateCount = shootDao.updateSku(sku)

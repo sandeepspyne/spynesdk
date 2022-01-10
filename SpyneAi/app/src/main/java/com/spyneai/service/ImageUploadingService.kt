@@ -90,6 +90,14 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
                 prjSync.projectSyncParent("Image Uploading Service",serviceStartedBy)
 
+                val processSkuSync = ProcessSkuSync(
+                    this,
+                    shootDao,
+                    this
+                )
+
+                processSkuSync.processSkuParent("Image Uploading Service",serviceStartedBy)
+
 //                if (!uploadRunning){
 //                    val properties = java.util.HashMap<String, Any?>()
 //                        .apply {

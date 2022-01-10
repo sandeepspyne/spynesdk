@@ -381,7 +381,7 @@ fun Context.startUploadingService(startedBy : String) {
             put("medium","Explicit Broadcast")
         }
 
-    if (!this?.isMyServiceRunning(ImageUploadingService::class.java)){
+//    if (!this?.isMyServiceRunning(ImageUploadingService::class.java)){
         Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
 
         var action = Actions.START
@@ -403,10 +403,10 @@ fun Context.startUploadingService(startedBy : String) {
 
         prperties.put("state","Started")
         this.captureEvent(Events.SERVICE_STARTED,prperties)
-    }else {
-        prperties.put("state","Running")
-        this.captureEvent(Events.SERVICE_STARTED,prperties)
-    }
+//    }else {
+//        prperties.put("state","Running")
+//        this.captureEvent(Events.SERVICE_STARTED,prperties)
+//    }
 
     fun Long.toDateFormat() : String{
         val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss a")
