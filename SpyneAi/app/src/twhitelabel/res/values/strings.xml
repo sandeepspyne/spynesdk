@@ -30,7 +30,7 @@
     <string name="before">Before</string>
     <string name="after">After</string>
     <string name="shoot_now">Shoot Now</string>
-    <string name="order">Order Now</string>
+    <string name="order">Projects</string>
     <string name="preview_order">Proceed To Order</string>
     <string name="your_sku">Your SKUs</string>
     <string name="report_issue">Report Issue</string>
@@ -39,7 +39,7 @@
     <string name="no_data">No marketplaces</string>
     <string name="no_datas">No Backgrounds</string>
     <string name="demo_sku">Demo Skus</string>
-    <string name="order_now">Order Now</string>
+    <string name="order_now">Projects</string>
     <string name="shoot_selection">Shoot Selection</string>
     <string name="sku_names">Sku Name</string>
     <string name="sku">Sku:</string>

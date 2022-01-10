@@ -37,7 +37,6 @@
             app:menu="@menu/dashboard_bottom_menu"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-
             app:labelVisibilityMode="labeled">
         </com.google.android.material.bottomnavigation.BottomNavigationView>
 
