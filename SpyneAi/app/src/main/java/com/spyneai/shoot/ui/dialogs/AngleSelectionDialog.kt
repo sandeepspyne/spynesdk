@@ -120,10 +120,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                 updateSku()
                 observerUpdateSku()
             } else {
-                createSku(
-                   " createProjectRes.project_id",
-                    viewModel.subCategory.value?.prod_sub_cat_id!!
-                )
+                createSku()
             }
         }
     }
@@ -202,7 +199,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
         )
     }
 
-    private fun createSku(projectId: String, prod_sub_cat_id: String) {
+    private fun createSku() {
         viewModel.sku?.apply {
             initialFrames = viewModel.exterirorAngles.value
             totalFrames = viewModel.exterirorAngles.value
@@ -217,10 +214,16 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
         //add sku to local database
         GlobalScope.launch(Dispatchers.IO) {
             viewModel.updateSubcategory()
+
+            //start sync service
+            GlobalScope.launch(Dispatchers.Main) {
+                requireContext().startUploadingService(
+                    AngleSelectionDialog::class.java.simpleName
+                )
+
+                dismiss()
+            }
         }
-
-        dismiss()
-
 
 
 //        viewModel.createSku(

@@ -33,6 +33,8 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.repository.model.sku.Sku
+import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
+import com.spyneai.startUploadingService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -381,9 +383,20 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         GlobalScope.launch {
             val id = viewModel.insertSku()
             Log.d(TAG, "createProject: "+id)
+
+            //start sync service
+            GlobalScope.launch(Dispatchers.Main) {
+                if (sku.isSelectAble){
+                    requireContext().startUploadingService(
+                        ProjectTagDialog::class.java.simpleName
+                    )
+                }
+
+                dismiss()
+            }
+
         }
 
-        dismiss()
     }
 
     private fun observeCreateProject() {

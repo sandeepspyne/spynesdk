@@ -33,7 +33,9 @@ import com.spyneai.shoot.adapters.OverlaysAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
+import com.spyneai.startUploadingService
 import kotlinx.android.synthetic.main.fragment_overlays.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -146,6 +148,13 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     //update exterior angles in local DB
                    GlobalScope.launch(Dispatchers.IO) {
                        viewModel.updateSkuExteriorAngles()
+
+                       //start sync service
+                       GlobalScope.launch(Dispatchers.Main) {
+                           requireContext().startUploadingService(
+                               OverlayEcomFragment::class.java.simpleName
+                           )
+                       }
                    }
 
                     viewModel.displayName = it.value.data[0].display_name
