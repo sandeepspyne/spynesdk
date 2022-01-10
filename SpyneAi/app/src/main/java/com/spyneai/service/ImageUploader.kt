@@ -95,8 +95,6 @@ class ImageUploader(
                 break
             }
 
-            var skipFlag = -1
-
             var image = localRepository.getOldestImage()
 
 //            if (image.uuid == null) {

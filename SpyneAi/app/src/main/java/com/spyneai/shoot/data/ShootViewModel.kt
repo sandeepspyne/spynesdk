@@ -31,7 +31,7 @@ class ShootViewModel : ViewModel() {
     private val TAG = "ShootViewModel"
     private val repository = ShootRepository()
     private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
-    private val imageRepository = ImageLocalRepository()
+   // private val imageRepository = ImageLocalRepository()
     private val imageRepositoryV2 = ImagesRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
 
     val showHint: MutableLiveData<Boolean> = MutableLiveData()
@@ -455,8 +455,8 @@ class ShootViewModel : ViewModel() {
             debugData = shootData.debugData
         )
 
-        if (imageRepository.isImageExist(newImage.skuUuid!!, newImage.name!!)) {
-            //imageRepository.updateImage(image)
+        if (imageRepositoryV2.isImageExist(newImage.skuUuid!!, newImage.name!!)) {
+            imageRepositoryV2.updateImage(newImage)
         } else {
             localRepository.insertImage(
                 newImage

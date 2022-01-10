@@ -296,6 +296,12 @@ interface ShootDao {
     @Query("select * from image where uuid = :uuid")
     fun getImage(uuid: String) : Image
 
+    @Query("select * from image where sku_uuid = :skuUuid and name = :imageName")
+    fun getImage(skuUuid: String,imageName: String) : Image
+
+    @Update
+    fun updateImage(image: Image): Int
+
 }
 
 
