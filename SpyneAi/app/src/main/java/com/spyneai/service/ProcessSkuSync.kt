@@ -103,7 +103,8 @@ class ProcessSkuSync(
                 Utilities.saveBool(context,AppConstants.PROCESS_SKU_RUNNING,false)
                 listener.onConnectionLost("Process Sku Stopped",SeverSyncTypes.CREATE)
                 break
-            }else {
+            }
+            else {
                 val properties = HashMap<String,Any?>()
                     .apply {
                         put("project_id",sku.projectId)

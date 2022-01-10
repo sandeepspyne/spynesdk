@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.spyneai.needs.AppConstants
 import org.json.JSONObject
 
 @Entity
@@ -30,7 +31,7 @@ class Sku(
     @ColumnInfo(name = "total_frames") var totalFrames: Int? = 0,
     @ColumnInfo(name = "360_frames") var threeSixtyFrames: Int? = 0,
     @ColumnInfo(name = "background_name") var backgroundName: String? = null,
-    @ColumnInfo(name = "background_id") var backgroundId: String? = null,
+    @ColumnInfo(name = "background_id") var backgroundId: String = AppConstants.DEFAULT_BG_ID,
     @ColumnInfo(name = "additional_data") var additionalData: String? = null,
     @ColumnInfo(name = "is_processed") var isProcessed: Boolean = false,
     @ColumnInfo(name = "status") var status: String = "draft",

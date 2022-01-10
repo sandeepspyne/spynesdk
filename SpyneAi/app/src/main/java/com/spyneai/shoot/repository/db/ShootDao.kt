@@ -93,7 +93,7 @@ interface ShootDao {
     @Query("select * from project where isCreated = :isCreated LIMIT :limit")
     fun getOldestProject(isCreated: Boolean = false,limit: Int = 1) : Project
 
-    @Query("select COUNT(*) from sku where is_processed = :isProcessed and isCreated = :isCreated")
+    @Query("select COUNT(*) from sku where is_processed = :isProcessed and isCreated = :isCreated and background_id != 'DEFAULT_BG_ID'")
     fun getPendingSku(isProcessed: Boolean = false,isCreated: Boolean = true) : Int
 
     @Query("select * from sku where is_processed = :isProcessed and isCreated = :isCreated LIMIT :limit")
@@ -264,7 +264,7 @@ interface ShootDao {
     @Query("update project set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid ")
     fun skipProject(uuid: String,toProcessAt: Long) : Int
 
-    @Query("Select * from sku where is_processed = :isProcessed and isCreated = :isCreated and toProcessAt <= :currentTime LIMIT :limit")
+    @Query("Select * from sku where is_processed = :isProcessed and isCreated = :isCreated and background_id != 'DEFAULT_BG_ID' and toProcessAt <= :currentTime LIMIT :limit")
     fun getProcessAbleSku(isProcessed: Boolean = false, isCreated: Boolean = true, currentTime: Long = System.currentTimeMillis(),limit: Int = 1) : Sku
 
 
