@@ -16,11 +16,9 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.gson.Gson
-import com.spyneai.R
+import com.spyneai.*
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentRegularShootSummaryBinding
@@ -28,7 +26,6 @@ import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.setLocale
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.utils.log
 import com.spyneai.videorecording.model.TSVParams
@@ -52,8 +49,8 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
         //setup360View()
 
-        getUserCredits()
-        observeCredits()
+//        getUserCredits()
+//        observeCredits()
 
         binding.ivBackGif.setOnClickListener {
             viewModel.isRegularShootSummaryActive = false
@@ -432,6 +429,11 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         )
 
         viewModel.startTimer.value = true
+
+        //start sync service
+        requireContext().startUploadingService(
+            RegularShootSummaryFragment::class.java.simpleName
+        )
     }
 
     override fun getViewModel() = ProcessViewModel::class.java

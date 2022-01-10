@@ -9,21 +9,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import com.spyneai.R
+import com.spyneai.*
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.enable
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentSelectBackgroundBinding
-import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.CarsBackgroundRes
+import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -414,7 +412,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             viewModel.updateBackground()
         }
 
-
         Utilities.hideProgressDialog()
 
         requireContext().captureEvent(
@@ -429,6 +426,11 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         )
 
         viewModel.startTimer.value = true
+
+        //start sync service
+        requireContext().startUploadingService(
+            SelectBackgroundFragment::class.java.simpleName
+        )
     }
 
 
