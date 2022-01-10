@@ -271,6 +271,31 @@ interface ShootDao {
     @Query("update sku set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid ")
     fun skipSku(uuid: String,toProcessAt: Long) : Int
 
+
+    @Query("select Count(*) from image where is_uploaded = :isUploaded and is_marked_done = :isMarkedDone")
+    fun totalRemainingUpload(isUploaded: Boolean = false,isMarkedDone : Boolean = false) : Int
+
+    @Query("select * from image where is_uploaded = :isUploaded or is_marked_done = :isMarkedDone and to_process_at <= :currentTime limit 1")
+    fun getOldestImage(isUploaded: Boolean = false,isMarkedDone : Boolean = false,currentTime: Long = System.currentTimeMillis()) : Image
+
+    @Query("update image set to_process_at = :toProcessAt, retry_count = retry_count + 1 where uuid = :uuid ")
+    fun skipImage(uuid: String,toProcessAt: Long) : Int
+
+    @Query("update image set is_uploaded = :done,is_marked_done = :done where uuid = :uuid")
+    fun markDone(uuid: String,done: Boolean = true) : Int
+
+    @Query("update image set pre_signed_url = :preUrl, image_id = :imageId where uuid = :uuid")
+    fun addPreSignedUrl(uuid: String,preUrl: String,imageId : String) : Int
+
+    @Query("update image set is_uploaded = :isUploaded where uuid = :uuid")
+    fun markUploaded(uuid: String,isUploaded: Boolean = true) : Int
+
+    @Query("update image set is_marked_done = :isMarkedDone where uuid = :uuid")
+    fun markStatusUploaded(uuid: String,isMarkedDone: Boolean = true) : Int
+
+    @Query("select * from image where uuid = :uuid")
+    fun getImage(uuid: String) : Image
+
 }
 
 

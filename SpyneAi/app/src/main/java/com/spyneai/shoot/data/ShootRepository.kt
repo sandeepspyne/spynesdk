@@ -6,8 +6,8 @@ import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.*
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.interfaces.GcpClient
-import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.ProjectBody
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -58,14 +58,14 @@ class ShootRepository : BaseRepository() {
         clipperApi.getPreSignedUrl(
             image.projectId,
             image.skuId,
-            image.categoryName,
+            image.type,
             image.name,
             image.overlayId?.toInt(),
             uploadType,
             image.sequence!!,
-            image.isReclick != 0,
-            image.isReshoot != 0,
-            image.meta,
+            image.isReclick,
+            image.isReshoot,
+            image.tags,
             image.debugData,
             image.angle!!
         )

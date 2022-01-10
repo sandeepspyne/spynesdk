@@ -18,9 +18,9 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImageLocalRepository
+import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.data.model.Image
-
+import com.spyneai.shoot.repository.model.image.Image
 
 
 class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener {
@@ -193,7 +193,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
     override fun inProgress(task: Image) {
         currentImage = task
-        val category = if (task.categoryName == "Focus Shoot") getString(R.string.miscellanous) else task.categoryName
+        val category = if (task.type == "Focus Shoot") getString(R.string.miscellanous) else task.type
         val title = getString(R.string.upload)+task.skuName+"("+category+"-"+task.sequence+")"
         val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
         val content = getString(R.string.innter_connection_label)+internet
@@ -208,7 +208,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
         var title = getString(R.string.image_uploaded)
         if (currentImage != null){
-            val category = if (currentImage?.categoryName == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.categoryName
+            val category = if (currentImage?.type == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.type
             title = getString(R.string.last_uploaded)+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
         }
 
@@ -300,7 +300,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
         val title = if (currentImage == null) getString(R.string.uploading_paused)
         else {
-            val category = if (currentImage?.categoryName == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.categoryName
+            val category = if (currentImage?.type == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.type
             getString(R.string.uploading_paused_on)+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
         }
         val content = getString(R.string.internet_connection)
@@ -348,7 +348,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
         if (imageUploader == null)
             imageUploader = ImageUploader(this,
-                ImageLocalRepository(),
+                ImagesRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).shootDao()),
                 ShootRepository(),
                 this
             )

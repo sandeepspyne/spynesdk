@@ -16,8 +16,10 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImageLocalRepository
+import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.data.model.Image
+import com.spyneai.shoot.repository.model.image.Image
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -30,7 +32,7 @@ import kotlin.collections.HashMap
 
 class ImageUploader(
     val context: Context,
-    val localRepository: ImageLocalRepository,
+    val localRepository: ImagesRepoV2,
     val shootRepository: ShootRepository,
     var listener: Listener,
     var lastIdentifier: String = "0",
@@ -95,27 +97,27 @@ class ImageUploader(
 
             var skipFlag = -1
 
-            var image = localRepository.getOldestImage("0")
+            var image = localRepository.getOldestImage()
 
-            if (image.itemId == null) {
-                imageType = AppConstants.SKIPPED
-                image = localRepository.getOldestImage("-1")
-                skipFlag = -2
-            }
+//            if (image.uuid == null) {
+//                imageType = AppConstants.SKIPPED
+//                image = localRepository.getOldestImage()
+//                skipFlag = -2
+//            }
 
-            if (image.itemId == null && imageType == AppConstants.SKIPPED) {
-                //make second time skipped images elligible for upload
-                val count = localRepository.updateSkipedImages()
-                val markDoneSkippedCount = localRepository.updateMarkDoneSkipedImages()
+//            if (image.uuid == null && imageType == AppConstants.SKIPPED) {
+//                //make second time skipped images elligible for upload
+//                val count = localRepository.updateSkipedImages()
+//                val markDoneSkippedCount = localRepository.updateMarkDoneSkipedImages()
+//
+//                Log.d(TAG, "name: count"+count+" "+markDoneSkippedCount)
+//
+//                //check if we don"t have any new image clicked while uploading skipped images
+//                if (count > 0 || markDoneSkippedCount > 0)
+//                    image = localRepository.getOldestImage()
+//            }
 
-                Log.d(TAG, "name: count"+count+" "+markDoneSkippedCount)
-
-                //check if we don"t have any new image clicked while uploading skipped images
-                if (count > 0 || markDoneSkippedCount > 0)
-                    image = localRepository.getOldestImage("-1")
-            }
-
-            if (image.itemId == null){
+            if (image.uuid == null){
                 context.captureEvent(
                     AppConstants.ALL_UPLOADED_BREAK,
                     HashMap<String,Any?>()
@@ -140,10 +142,10 @@ class ImageUploader(
                         put("remaining_images",JSONObject().apply {
                             put("upload_remaining",localRepository.totalRemainingUpload())
                             put("mark_done_remaining",localRepository.totalRemainingMarkDone())
-                            put("remaining_above", localRepository.getRemainingAbove(image.itemId!!))
-                            put("remaining_above_skipped", localRepository.getRemainingAboveSkipped(image.itemId!!))
-                            put("remaining_below", localRepository.getRemainingBelow(image.itemId!!))
-                            put("remaining_below_skipped", localRepository.getRemainingBelowSkipped(image.itemId!!))
+                            put("remaining_above", localRepository.getRemainingAbove(image.uuid!!))
+                            put("remaining_above_skipped", localRepository.getRemainingAboveSkipped(image.uuid!!))
+                            put("remaining_below", localRepository.getRemainingBelow(image.uuid!!))
+                            put("remaining_below_skipped", localRepository.getRemainingBelowSkipped(image.uuid!!))
                         }.toString())
 
                     }
@@ -156,26 +158,25 @@ class ImageUploader(
                 listener.inProgress(image)
 
                 if (retryCount > 4) {
-                    val dbStatus = if (image.isUploaded != 1)
-                        localRepository.skipImage(image.itemId!!, skipFlag)
-                    else {
-                        localRepository.skipMarkDoneFailedImage(image.itemId!!)
-                    }
+                    val skip = localRepository.skipImage(
+                        image.uuid,
+                        image.toProcessAT.plus( image.retryCount * AppConstants.RETRY_DELAY_TIME)
+                    )
 
                     captureEvent(
                         Events.MAX_RETRY,
                         image,
                         false,
                         "Image upload limit reached",
-                        dbStatus
+                        skip
                     )
                     retryCount = 0
                     continue
                 }
 
-                if (image.isUploaded == 0 || image.isUploaded == -1) {
+                if (!image.isUploaded) {
                     if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL) {
-                        when (image.categoryName) {
+                        when (image.type) {
                             "Exterior",
                             "Interior",
                             "Focus Shoot",
@@ -195,8 +196,8 @@ class ImageUploader(
                             else -> {
                                 val bitmap =
                                     modifyOrientation(
-                                        BitmapFactory.decodeFile(image.imagePath),
-                                        image.imagePath
+                                        BitmapFactory.decodeFile(image.path),
+                                        image.path
                                     )
 
                                 try {
@@ -213,7 +214,7 @@ class ImageUploader(
                                     bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
                                     os.close()
 
-                                    image.imagePath = outputFile.path
+                                    image.path = outputFile.path
                                     val imageUploaded = uploadImage(image)
 
                                     if (!imageUploaded)
@@ -240,9 +241,9 @@ class ImageUploader(
                         }
                     } else {
                         val uploadType = if (retryCount == 1) "Direct" else "Retry"
-                        image.meta =
-                            if (image.meta.isNullOrEmpty()) JSONObject().toString() else JSONObject(
-                                image.meta
+                        image.tags =
+                            if (image.tags.isNullOrEmpty()) JSONObject().toString() else JSONObject(
+                                image.tags
                             ).toString()
                         image.debugData =
                             if (image.debugData.isNullOrEmpty()) JSONObject().toString() else JSONObject(
@@ -254,7 +255,7 @@ class ImageUploader(
                         if (!gotPresigned)
                             continue
 
-                        when (image.categoryName) {
+                        when (image.type) {
                             "Exterior",
                             "Interior",
                             "Focus Shoot",
@@ -274,8 +275,8 @@ class ImageUploader(
                             else -> {
                                 val bitmap =
                                     modifyOrientation(
-                                        BitmapFactory.decodeFile(image.imagePath),
-                                        image.imagePath
+                                        BitmapFactory.decodeFile(image.path),
+                                        image.path
                                     )
 
                                 try {
@@ -292,7 +293,7 @@ class ImageUploader(
                                     bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
                                     os.close()
 
-                                    image.imagePath = outputFile.path
+                                    image.path = outputFile.path
 
                                     val imageUploaded = uploadImage(image)
 
@@ -328,7 +329,7 @@ class ImageUploader(
                             true,
                             null
                         )
-                        localRepository.markDone(image)
+                        localRepository.markDone(image.uuid)
                         retryCount = 0
                         continue
                     } else {
@@ -396,7 +397,7 @@ class ImageUploader(
 
         captureEvent(
             Events.IS_PRESIGNED_URL_UPDATED,
-            localRepository.getImage(image.itemId!!),
+            localRepository.getImage(image.uuid!!),
             true,
             null,
             count,
@@ -408,7 +409,7 @@ class ImageUploader(
 
     private suspend fun uploadImage(image: Image): Boolean {
         val requestFile =
-            File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+            File(image.path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
 
         val uploadResponse = shootRepository.uploadImageToGcp(
             image.preSignedUrl!!,
@@ -452,11 +453,11 @@ class ImageUploader(
             retryCount = retryCount
         )
 
-        val markUploadCount = localRepository.markUploaded(image)
+        val markUploadCount = localRepository.markUploaded(image.uuid)
 
         captureEvent(
             Events.IS_MARK_GCP_UPLOADED_UPDATED,
-            localRepository.getImage(image.itemId!!),
+            localRepository.getImage(image.uuid!!),
             true,
             null,
             markUploadCount,
@@ -497,11 +498,11 @@ class ImageUploader(
             response = Gson().toJson(markUploadResponse).toString()
         )
 
-        val count = localRepository.markStatusUploaded(image)
+        val count = localRepository.markStatusUploaded(image.uuid)
 
         captureEvent(
             Events.IS_MARK_DONE_STATUS_UPDATED,
-            localRepository.getImage(image.itemId!!),
+            localRepository.getImage(image.uuid!!),
             true,
             null,
             count,

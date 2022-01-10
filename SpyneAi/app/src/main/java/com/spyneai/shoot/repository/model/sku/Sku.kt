@@ -15,7 +15,7 @@ class Sku(
     val isCreated: Boolean = false,
     var isSelectAble: Boolean = false,
     val toProcessAt: Long = System.currentTimeMillis(),
-    val retryCount: Int = 0,
+    val retryCount: Int = 1,
     @SerializedName("sku_name")
     @ColumnInfo(name = "sku_name")
     var skuName: String?= null,

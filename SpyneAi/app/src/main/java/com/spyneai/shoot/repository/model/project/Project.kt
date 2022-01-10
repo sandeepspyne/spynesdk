@@ -11,7 +11,7 @@ data class Project(
     val uuid: String,
     var isCreated: Boolean = false,
     val toProcessAt: Long = System.currentTimeMillis(),
-    val retryCount: Int = 0,
+    val retryCount: Int = 1,
     @SerializedName("project_name") var projectName: String? = null,
     @SerializedName("category_id") val categoryId: String? = null,
     @SerializedName("category_name") val categoryName: String? = null,
