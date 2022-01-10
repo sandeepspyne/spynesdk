@@ -84,8 +84,8 @@ interface ShootDao {
     @Update
     fun updateProject(project: Project): Int
 
-    @Query("update project set projectId = :projectId where uuid = :uuid")
-    fun updateProjectServerId(uuid: String,projectId: String): Int
+    @Query("update project set projectId = :projectId, isCreated = :isCreated where uuid = :uuid")
+    fun updateProjectServerId(uuid: String,projectId: String,isCreated: Boolean = true): Int
 
     @Query("select COUNT(*) from project where isCreated = :isCreated ")
     fun getPendingProjects(isCreated: Boolean = false) : Int
@@ -102,8 +102,8 @@ interface ShootDao {
     @Update
     fun updateSku(sku: Sku): Int
 
-    @Query("update sku set sku_id = :skuId where uuid = :uuid")
-    fun updateSKuServerId(uuid: String,skuId: String): Int
+    @Query("update sku set sku_id = :skuId, isCreated = :isCreated where uuid = :uuid")
+    fun updateSKuServerId(uuid: String,skuId: String,isCreated: Boolean = true): Int
 
     @Query("update image set sku_id = :skuId, project_id = :projectId where sku_uuid = :skuUuid")
     fun updateImageIds(skuUuid: String,skuId: String,projectId: String): Int

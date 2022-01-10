@@ -20,6 +20,7 @@ import com.spyneai.toDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -230,14 +231,16 @@ class ProcessSkuSync(
                 put("data",Gson().toJson(sku))
             }
 
+        val additionalData = JSONObject(sku.additionalData)
+
         val response = ProcessRepository().processSku(
             Utilities.getPreference(context,AppConstants.AUTH_KEY)!!,
             sku.skuId!!,
             sku.backgroundId!!,
             sku.isThreeSixty,
-            sku.additionalData?.getBoolean("number_plate_blure")!!,
-            sku.additionalData?.getBoolean("window_correction")!!,
-            sku.additionalData?.getBoolean("tint_window")!!)
+            additionalData.getBoolean("number_plate_blure")!!,
+            additionalData.getBoolean("window_correction")!!,
+            additionalData.getBoolean("tint_window")!!)
 
         context.captureEvent(
             Events.PROCESS_SKU_INTIATED,

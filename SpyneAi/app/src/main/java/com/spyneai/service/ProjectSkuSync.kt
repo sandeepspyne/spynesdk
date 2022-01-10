@@ -34,6 +34,7 @@ class ProjectSkuSync(
     val TAG = "ProjectSkuSync"
 
     fun projectSyncParent(type : String, startedBy : String?) {
+        Log.d(TAG, "projectSyncParent: ")
         context.captureEvent(Events.PROJECT_SYNC_TRIGGERED,HashMap<String,Any?>().apply {
             put("type",type)
             put("service_started_by",startedBy)
@@ -68,6 +69,7 @@ class ProjectSkuSync(
 
     suspend fun  startProjectSync(){
         do {
+            Log.d(TAG, "startProjectSync: ")
             val projectWithSku = shootDao.getProjectWithSkus()
 
             if (connectionLost){
@@ -83,7 +85,7 @@ class ProjectSkuSync(
                 listener.onConnectionLost("Create Project Stopped",SeverSyncTypes.CREATE)
                 break
             }else {
-                if (projectWithSku.project == null){
+                if (projectWithSku == null){
                     val count = shootDao.getPendingProjects()
                     context.captureEvent(
                         Events.ALL_PROJECTS_CREATED_BREAKS,
@@ -94,10 +96,10 @@ class ProjectSkuSync(
                     break
                 }else {
                     //in progress listener
-                    listener.inProgress("Creating project ${projectWithSku.project.projectName} and its sku's",SeverSyncTypes.CREATE)
+                    listener.inProgress("Creating project ${projectWithSku.project?.projectName} and its sku's",SeverSyncTypes.CREATE)
 
                     val properties = HashMap<String,Any?>().apply {
-                        put("project_id",projectWithSku.project.uuid)
+                        put("project_id",projectWithSku.project?.uuid)
                         put("data",Gson().toJson(projectWithSku))
                     }
 
@@ -109,7 +111,7 @@ class ProjectSkuSync(
                     if (retryCount >4){
                         //skip project
                         val skip = shootDao.skipProject(
-                            projectWithSku.project.uuid,
+                            projectWithSku.project?.uuid!!,
                             projectWithSku.project.toProcessAt.plus( projectWithSku.project.retryCount * AppConstants.RETRY_DELAY_TIME)
                         )
 
@@ -141,6 +143,8 @@ class ProjectSkuSync(
                                                 imagePresent = sku.imagePresent,
                                                 videoPresent = sku.videoPresent
                                             ))
+
+                                        Log.d(TAG, "startProjectSync: "+Gson().toJson(sku))
                                     }
                                 }
                             }
@@ -200,6 +204,7 @@ class ProjectSkuSync(
     }
 
     private suspend fun createProject(projectBody: ProjectBody): Boolean {
+        Log.d(TAG, "createProject: ")
         val response = ShootRepository().createProject(projectBody)
 
         val properties = HashMap<String,Any?>().apply {
@@ -227,7 +232,11 @@ class ProjectSkuSync(
 
 
         val res = (response as Resource.Success).value
+
+        Log.d(TAG, "createProject: "+Gson().toJson(res))
+
         val projectId = res.data.projectId
+
         context.captureEvent(
             Events.PROJECT_CREATED,
             properties.apply {
@@ -238,6 +247,7 @@ class ProjectSkuSync(
 
         //update project
         val update = shootDao.updateProjectServerId(projectBody.projectData.localId,projectId)
+
         context.captureEvent(
             Events.PROJECT_DB_UPDATE,
             properties.apply {

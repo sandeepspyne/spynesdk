@@ -145,8 +145,6 @@ interface ClipperApi {
                               @Field("source") source : String = "App_android") : CreateProjectRes
 
 
-    @POST("v2/project/create/v2")
-    suspend fun createProject(@Body projectBody: ProjectBody) : CreateProjectAndSkuRes
 
     @FormUrlEncoded
     @POST("v2/sku/create/v2")

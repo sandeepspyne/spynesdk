@@ -3,9 +3,7 @@ package com.spyneai.shoot.data
 import androidx.room.Room
 import com.spyneai.BaseApplication
 import com.spyneai.base.BaseRepository
-import com.spyneai.base.network.ClipperApiClient
-import com.spyneai.base.network.ClipperApiStagingClient
-import com.spyneai.base.network.GCPApiClient
+import com.spyneai.base.network.*
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.interfaces.GcpClient
 import com.spyneai.shoot.data.model.Image
@@ -20,6 +18,7 @@ import org.json.JSONObject
 class ShootRepository : BaseRepository() {
 
     private var clipperApi = ClipperApiClient().getClient()
+    private var projectApi = ProjectApiClient().getClient()
 
     suspend fun getSubCategories(
         authKey : String,prodId : String
@@ -206,7 +205,7 @@ class ShootRepository : BaseRepository() {
 
     suspend fun createProject(projectBody: ProjectBody
     )= safeApiCall {
-        clipperApi.createProject(projectBody)
+        projectApi.createProject(projectBody)
     }
 
 }

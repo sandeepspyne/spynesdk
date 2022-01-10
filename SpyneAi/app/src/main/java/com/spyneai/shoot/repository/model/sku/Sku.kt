@@ -31,7 +31,7 @@ class Sku(
     @ColumnInfo(name = "360_frames") var threeSixtyFrames: Int? = 0,
     @ColumnInfo(name = "background_name") var backgroundName: String? = null,
     @ColumnInfo(name = "background_id") var backgroundId: String? = null,
-    @ColumnInfo(name = "additional_data") var additionalData: JSONObject? = null,
+    @ColumnInfo(name = "additional_data") var additionalData: String? = null,
     @ColumnInfo(name = "is_processed") var isProcessed: Boolean = false,
     @ColumnInfo(name = "status") var status: String = "draft",
     @ColumnInfo(name = "is_paid") var isPaid: Boolean = false,
@@ -40,7 +40,7 @@ class Sku(
     @ColumnInfo(name = "created_at") var createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "updated_at") var updatedAt: Long = System.currentTimeMillis(),
     var imagesCount: Int = 0,
-    val imagePresent: Int = 0,
+    val imagePresent: Int = 1,
     val videoPresent: Int = 0,
     var totalFramesUpdated: Boolean = false
 ){
