@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,10 +22,6 @@ class PagedFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingProjectsBin
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.shimmerCompletedSKU.stopShimmer()
-        binding.shimmerCompletedSKU.visibility = View.GONE
-        binding.rvMyOngoingProjects.visibility = View.VISIBLE
 
         adapter = ProjectPagedAdapter()
 
@@ -45,6 +42,11 @@ class PagedFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingProjectsBin
     private fun fetchProjects() {
         lifecycleScope.launch {
             viewModel.getAllProjects().distinctUntilChanged().collectLatest {
+                if (!binding.rvMyOngoingProjects.isVisible){
+                    binding.shimmerCompletedSKU.stopShimmer()
+                    binding.shimmerCompletedSKU.visibility = View.GONE
+                    binding.rvMyOngoingProjects.visibility = View.VISIBLE
+                }
                 adapter.submitData(it)
             }
         }

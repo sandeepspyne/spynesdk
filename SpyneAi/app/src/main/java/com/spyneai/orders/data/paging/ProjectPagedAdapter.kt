@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 class ProjectPagedAdapter : PagingDataAdapter<ProjectPagedRes.ProjectPagedResItem, ProjectPagedHolder>(REPO_COMPARATOR) {
 // body is unchanged
 
-
     object REPO_COMPARATOR : DiffUtil.ItemCallback<ProjectPagedRes.ProjectPagedResItem>() {
         override fun areItemsTheSame(oldItem: ProjectPagedRes.ProjectPagedResItem, newItem: ProjectPagedRes.ProjectPagedResItem) =
             oldItem.prodCatId == newItem.prodCatId
