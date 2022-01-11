@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.spyneai.BaseApplication
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
+import com.spyneai.base.network.ProjectApiClient
 import com.spyneai.base.network.SpyneAiApiClient
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.repository.model.category.DynamicLayout
@@ -15,6 +16,7 @@ class DashboardRepository() : BaseRepository() {
 
     private var spyneApi = SpyneAiApiClient().getClient()
     private var clipperApi = ClipperApiClient().getClient()
+
 
     fun getCategories(): List<NewCategoriesResponse.Category> {
         return Room.databaseBuilder(

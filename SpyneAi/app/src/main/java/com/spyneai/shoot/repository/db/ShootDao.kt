@@ -278,7 +278,7 @@ interface ShootDao {
     @Query("select * from image where is_uploaded = :isUploaded or is_marked_done = :isMarkedDone and to_process_at <= :currentTime limit 1")
     fun getOldestImage(isUploaded: Boolean = false,isMarkedDone : Boolean = false,currentTime: Long = System.currentTimeMillis()) : Image
 
-    @Query("update image set to_process_at = :toProcessAt, retry_count = retry_count + 1 where uuid = :uuid ")
+    @Query("update image set to_process_at = :toProcessAt, retry_count = retry_count + 1 where uuid = :uuid")
     fun skipImage(uuid: String,toProcessAt: Long) : Int
 
     @Query("update image set is_uploaded = :done,is_marked_done = :done where uuid = :uuid")

@@ -14,6 +14,7 @@ import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.data.paging.ProjectPagedRes
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
@@ -239,6 +240,8 @@ interface ClipperApi {
         @Query("auth_key") authKey: String,
         @Query("status") status: String
     ) : GetProjectsResponse
+
+
 
     @GET("v3/project/getDetailsProject")
     suspend fun getDrafts(

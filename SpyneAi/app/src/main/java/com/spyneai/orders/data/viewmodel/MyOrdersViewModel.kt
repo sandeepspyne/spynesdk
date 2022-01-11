@@ -4,17 +4,42 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
+import com.spyneai.base.network.ClipperApiClient
+import com.spyneai.base.network.ProjectApiClient
 import com.spyneai.base.network.Resource
+import com.spyneai.orders.data.paging.PagedRepository
+import com.spyneai.orders.data.paging.ProjectPagedRes
 import com.spyneai.orders.data.repository.MyOrdersRepository
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class MyOrdersViewModel : ViewModel() {
 
 
     private val repository = MyOrdersRepository()
+    private val pagedRepository = PagedRepository(ProjectApiClient().getClient())
+
+    private lateinit var _projectsFlow: Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>>
+    val projectsFlow: Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>>
+        get() = _projectsFlow
+
+
+//    fun getAllProjects() = viewModelScope.launch {
+//        _projectsFlow = pagedRepository.getSearchResultStream()
+//    }
+
+        fun getAllProjects() : Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
+            return pagedRepository.getSearchResultStream()
+                .cachedIn(viewModelScope)
+        }
+
 
     val position: MutableLiveData<Int> = MutableLiveData()
     val ongoingCardPosition: MutableLiveData<Int> = MutableLiveData()
