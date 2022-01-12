@@ -51,5 +51,6 @@ class ProjectPagedHolder(view: View) : RecyclerView.ViewHolder(view) {
         tvProjectName.text = item?.projectName
         tvCategory.text = item?.category
         tvDate.text = item?.createdOn
+        tvSkus.text = item?.totalSku.toString()
     }
 }

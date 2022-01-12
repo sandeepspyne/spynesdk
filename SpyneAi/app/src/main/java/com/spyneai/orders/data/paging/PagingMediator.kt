@@ -48,9 +48,12 @@ class PagingMediator(val doggoApiService: ProjectApi, val appDatabase: AppDataba
                 val keys = response.map {
                     RemoteKeys(projectId = it.projectId, prevKey = prevKey, nextKey = nextKey)
                 }
+
+               // val finalList = ArrayList<ProjectPagedRes.ProjectPagedResItem>()
+
                 val s = appDatabase.getRepoDao().insertAll(keys)
                 Log.d(TAG, "load: ${Gson().toJson(s)}")
-                val ss = appDatabase.getPagingDao().insertAll(response)
+                val ss = appDatabase.getPagingDao().insertWithCheck(response)
                 Log.d(TAG, "load: ${Gson().toJson(ss)}")
             }
             return MediatorResult.Success(endOfPaginationReached = isEndOfList)

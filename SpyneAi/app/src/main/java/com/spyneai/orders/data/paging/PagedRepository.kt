@@ -15,34 +15,34 @@ class PagedRepository(
     private val appDatabase: AppDatabase
 ) {
 
-//    fun getSearchResultStream(): Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
-//        return Pager(
-//            config = PagingConfig(
-//                pageSize = NETWORK_PAGE_SIZE,
-//                enablePlaceholders = false
-//            ),
-//            pagingSourceFactory = { ProjectDataSource(service) }
-//        ).flow
-//    }
+    fun getSearchResultStream(): Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = DEFAULT_PAGE_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { ProjectDataSource(service,appDatabase) }
+        ).flow
+    }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 10
         const val DEFAULT_PAGE_INDEX = 0
     }
 
-    fun getDefaultPageConfig(): PagingConfig {
-        return PagingConfig(pageSize = DEFAULT_PAGE_SIZE, enablePlaceholders = true)
-    }
-
-    fun getSearchResultStream(
-        pagingConfig: PagingConfig = getDefaultPageConfig()): Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
-        if (appDatabase == null) throw IllegalStateException("Database is not initialized")
-
-        val pagingSourceFactory = { appDatabase.getPagingDao().getAllProjects() }
-        return Pager(
-            config = pagingConfig,
-            pagingSourceFactory = pagingSourceFactory,
-            remoteMediator = PagingMediator(service, appDatabase)
-        ).flow
-    }
+//    fun getDefaultPageConfig(): PagingConfig {
+//        return PagingConfig(pageSize = DEFAULT_PAGE_SIZE, enablePlaceholders = true)
+//    }
+//
+//    fun getSearchResultStream(
+//        pagingConfig: PagingConfig = getDefaultPageConfig()): Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
+//        if (appDatabase == null) throw IllegalStateException("Database is not initialized")
+//
+//        val pagingSourceFactory = { appDatabase.getPagingDao().getAllProjects() }
+//        return Pager(
+//            config = pagingConfig,
+//            pagingSourceFactory = pagingSourceFactory,
+//            remoteMediator = PagingMediator(service, appDatabase)
+//        ).flow
+//    }
 }

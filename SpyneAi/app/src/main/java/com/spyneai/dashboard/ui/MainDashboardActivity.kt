@@ -24,6 +24,7 @@ import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.paging.ProjectPagedRes
+import com.spyneai.orders.data.paging.RemoteKeys
 import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.orders.ui.fragment.MyOrdersFragment
 import com.spyneai.posthog.Events
@@ -146,9 +147,10 @@ class MainDashboardActivity : AppCompatActivity() {
             .apply {
                 add(
                     ProjectPagedRes.ProjectPagedResItem(
-                    projectId = "012345678",prodCatId = "12234",
-                        category = "salkhdalks",projectName = "prj0",
-                        status = "Draft",createdOn = "2021-10-19T10:21:38.000Z",totalSku = 10
+                    projectId = "2b28f897",prodCatId = "12234",
+                        category = "salkhdalks",projectName = "prj1",
+                        status = "Draft",createdOn = "2021-10-19T10:21:38.000Z",
+                        totalSku = 72
                 ))
 
                 add(
@@ -159,10 +161,15 @@ class MainDashboardActivity : AppCompatActivity() {
                     ))
             }
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val dao = AppDatabase.getInstance(BaseApplication.getContext()).getPagingDao()
+        val keys = ArrayList<RemoteKeys>()
 
-            val items = dao.insertAll(list)
+        keys.add(RemoteKeys("2b28f897",null,1))
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val dao = AppDatabase.getInstance(BaseApplication.getContext())
+
+            val items = dao.getPagingDao().insertAll(list)
+            val itemss = dao.getRepoDao().insertAll(keys)
 
             Log.d(TAG, "onCreate: "+items)
         }
