@@ -12,8 +12,8 @@ interface PagingDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(doggoModel: List<ProjectPagedRes.ProjectPagedResItem>) : List<Long>
 
-    @Query("SELECT * FROM projectpagedresitem")
-    fun getAllProjects(): PagingSource<Int, ProjectPagedRes.ProjectPagedResItem>
+    @Query("SELECT * FROM projectpagedresitem where status = :status")
+    fun getAllProjects(status: String = "Draft"): PagingSource<Int, ProjectPagedRes.ProjectPagedResItem>
 
     @Query("DELETE FROM projectpagedresitem")
     suspend fun clearAllProjects()

@@ -23,6 +23,7 @@ import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.data.paging.ProjectPagedRes
 import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.orders.ui.fragment.MyOrdersFragment
 import com.spyneai.posthog.Events
@@ -41,6 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -138,6 +140,32 @@ class MainDashboardActivity : AppCompatActivity() {
                 continueShoot()
             }
         })
+
+
+        val list = ArrayList<ProjectPagedRes.ProjectPagedResItem>()
+            .apply {
+                add(
+                    ProjectPagedRes.ProjectPagedResItem(
+                    projectId = "012345678",prodCatId = "12234",
+                        category = "salkhdalks",projectName = "prj0",
+                        status = "Draft",createdOn = "2021-10-19T10:21:38.000Z",totalSku = 10
+                ))
+
+                add(
+                    ProjectPagedRes.ProjectPagedResItem(
+                        projectId = "9101112",prodCatId = "12234",
+                        category = "salkhdalks",projectName = "prj(-1)",
+                        status = "Ongoing",createdOn = "2021-10-19T10:21:38.000Z",totalSku = 10
+                    ))
+            }
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val dao = AppDatabase.getInstance(BaseApplication.getContext()).getPagingDao()
+
+            val items = dao.insertAll(list)
+
+            Log.d(TAG, "onCreate: "+items)
+        }
     }
 
 
