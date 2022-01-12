@@ -171,7 +171,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.showLeveler.observe(viewLifecycleOwner, {
             if (it && isSensorAvaliable) {
                 binding.flLevelIndicator.start(viewModel.categoryDetails.value?.categoryName!!)
-            } else binding.flLevelIndicator.visibility = View.GONE
+            } else
+                binding.flLevelIndicator.visibility = View.GONE
         })
 
 //            viewModel.hideLeveler.observe(viewLifecycleOwner, {

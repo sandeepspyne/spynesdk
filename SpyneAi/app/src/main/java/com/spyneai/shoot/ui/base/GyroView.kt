@@ -25,7 +25,7 @@ class GyroView : FrameLayout {
     var cameraAngle = 45
     var angle = 0
     var upcomingAngle = 0
-    var cateoryName = ""
+    var cateoryName : String? = null
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -47,11 +47,12 @@ class GyroView : FrameLayout {
     fun start(cateoryName : String){
         this.cateoryName = cateoryName
 
-        if (cateoryName == "Footwear" ||
-            cateoryName == "E-Commerce")
-            binding.tvLevelIndicator.visibility = View.GONE
-
-        binding.flLevelIndicator.visibility = View.VISIBLE
+        this.cateoryName?.let {
+            if (cateoryName == "Footwear" || cateoryName == "E-Commerce")
+                binding.tvLevelIndicator.visibility = View.GONE
+            else
+                binding.flLevelIndicator.visibility = View.VISIBLE
+        }
 
         getPreviewDimensions(binding.ivGryroRing!!, 1)
         getPreviewDimensions(binding.tvCenter!!, 2)
@@ -304,167 +305,171 @@ class GyroView : FrameLayout {
                     }
                 }
             }
+
             AppConstants.SPYNE_AI, AppConstants.SELL_ANY_CAR -> {
-                when (cateoryName) {
-                    "Automobiles", "Bikes" -> {
-                        if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
-                            gyroMeterOnLevel(true)
-                        } else {
-                            gyroMeterOffLevel()
-
-                            if (movearrow)
-                                moveArrow(roll + 90)
-
-                            if (rotatedarrow) {
-                                if (pitch > 0) {
-                                    rotateArrow(pitch.minus(0).roundToInt())
-                                } else {
-                                    rotateArrow(pitch.plus(0).roundToInt())
-                                }
-                            }
-                        }
-                    }
-
-                    "Food & Beverages", "E-Commerce", "Photo Box"  -> {
-
-                        // angle name
-                        if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            angle = 0
-
-                        if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
-                            angle = 90
-
-                        if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
-                            angle = 45
-
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE){
-                            when (angle) {
-                                0 -> {
-                                    binding.tvAngleValue!!.visibility = View.VISIBLE
-                                    binding.tvAngleValue!!.text = "0" + "\u00B0"
-                                    binding.groupOverlay!!.visibility = View.GONE
-                                }
-                                45 -> {
-                                    binding.tvAngleValue!!.visibility = View.VISIBLE
-                                    binding.tvAngleValue!!.text = "45" + "\u00B0"
-                                    binding.groupOverlay!!.visibility = View.GONE
-                                }
-                                90 -> {
-                                    binding.tvAngleValue!!.visibility = View.VISIBLE
-                                    binding.tvAngleValue!!.text = "90" + "\u00B0"
-                                    binding.groupOverlay!!.visibility = View.GONE
-                                }
-                                else -> {
-                                    binding.tvAngleValue!!.visibility = View.INVISIBLE
-                                    binding.groupOverlay!!.visibility = View.GONE
-                                }
-                            }
-                        }
-
-                        //hide moving line
-                        if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            binding.tvLevelIndicator.visibility = View.GONE
-                        else
-                            binding.tvLevelIndicator.visibility = View.VISIBLE
-
-
-                        if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= 4 && pitch.roundToInt() >= -4))
-                                    && (abs(roll.roundToInt()) <= 4 && abs(roll.roundToInt()) >= -4)) ||
-                            (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
-                            (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) ) {
-                            binding.lottieDownArrow!!.visibility = View.INVISIBLE
-                            binding.lottieUpArrow!!.visibility = View.INVISIBLE
-                            binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
-                            binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
-                            binding.tvAngleRed!!.visibility = View.INVISIBLE
-                            isGyroOnCorrectAngle = true
-
-
-
-                            //angle 90
-                            if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
-                                cameraAngle = 0
-                                gyroMeterOnLevel(false)
-                            }
-                            //angle 45
-                            else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
-                                cameraAngle = 45
-                                gyroMeterOnLevel(false)
-                            }
-
-
-
-                            else {
-                                cameraAngle = 90
+                cateoryName?.let {
+                    when (it) {
+                        "Automobiles", "Bikes" -> {
+                            if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
                                 gyroMeterOnLevel(true)
-                            }
+                            } else {
+                                gyroMeterOffLevel()
 
-                        } else {
-                            if (binding.flLevelIndicator.visibility == View.VISIBLE){
-                                binding.lottieDownArrow!!.visibility = View.VISIBLE
-                                binding.lottieUpArrow!!.visibility = View.VISIBLE
-                                binding.tvAngleRed!!.visibility = View.VISIBLE
-                            }
+                                if (movearrow)
+                                    moveArrow(roll + 90)
 
-                            binding.tvAngleValue!!.visibility = View.INVISIBLE
-                            binding.groupOverlay!!.visibility = View.GONE
-                            binding.tvAngleValue!!.visibility = View.INVISIBLE
-                            isGyroOnCorrectAngle = false
-                            val gyroAngle = (-pitch.roundToInt())
-
-                            binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
-                            gyroMeterOffLevel()
-
-                            if (movearrow) {
-                                if (abs(roll.roundToInt()) < 100) {
-                                    moveArrow((pitch + 85).unaryMinus())
-                                } else {
-                                    moveArrow(pitch + 85)
-                                }
-                            }
-
-                            if (roll.roundToInt() == 1 || roll.roundToInt() == -1) {
-                                if (roll.roundToInt() == 1) {
-                                    rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                                } else {
-                                    rotateArrow((pitch + 85).roundToInt())
+                                if (rotatedarrow) {
+                                    if (pitch > 0) {
+                                        rotateArrow(pitch.minus(0).roundToInt())
+                                    } else {
+                                        rotateArrow(pitch.plus(0).roundToInt())
+                                    }
                                 }
                             }
                         }
-                    }
-                    else -> {
-                        //hide moving line
-                        if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            binding.tvLevelIndicator.visibility = View.GONE
-                        else
-                            binding.tvLevelIndicator.visibility = View.VISIBLE
 
-                        if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                            pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                            (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                        ) {
+                        "Food & Beverages", "E-Commerce", "Photo Box"  -> {
+
+                            // angle name
                             if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                                gyroMeterOnLevel(false)
-                            else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                                gyroMeterOnLevel(false)
-                            else
-                                gyroMeterOnLevel(true)
-                        } else {
-                            gyroMeterOffLevel()
+                                angle = 0
 
-                            if (movearrow) {
-                                if (abs(roll.roundToInt()) < 100) {
-                                    moveArrow((pitch + 85).unaryMinus())
-                                } else {
-                                    moveArrow(pitch + 85)
+                            if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
+                                angle = 90
+
+                            if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
+                                angle = 45
+
+                            if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                                when (angle) {
+                                    0 -> {
+                                        binding.tvAngleValue!!.visibility = View.VISIBLE
+                                        binding.tvAngleValue!!.text = "0" + "\u00B0"
+                                        binding.groupOverlay!!.visibility = View.GONE
+                                    }
+                                    45 -> {
+                                        binding.tvAngleValue!!.visibility = View.VISIBLE
+                                        binding.tvAngleValue!!.text = "45" + "\u00B0"
+                                        binding.groupOverlay!!.visibility = View.GONE
+                                    }
+                                    90 -> {
+                                        binding.tvAngleValue!!.visibility = View.VISIBLE
+                                        binding.tvAngleValue!!.text = "90" + "\u00B0"
+                                        binding.groupOverlay!!.visibility = View.GONE
+                                    }
+                                    else -> {
+                                        binding.tvAngleValue!!.visibility = View.INVISIBLE
+                                        binding.groupOverlay!!.visibility = View.GONE
+                                    }
                                 }
                             }
 
-                            if (roll.roundToInt() == 1 || roll.roundToInt() == -1) {
-                                if (roll.roundToInt() == 1) {
-                                    rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                                } else {
-                                    rotateArrow((pitch + 85).roundToInt())
+                            //hide moving line
+                            if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                                binding.tvLevelIndicator.visibility = View.GONE
+                            else
+                                binding.tvLevelIndicator.visibility = View.VISIBLE
+
+
+                            if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= 4 && pitch.roundToInt() >= -4))
+                                        && (abs(roll.roundToInt()) <= 4 && abs(roll.roundToInt()) >= -4)) ||
+                                (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
+                                (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) ) {
+                                binding.lottieDownArrow!!.visibility = View.INVISIBLE
+                                binding.lottieUpArrow!!.visibility = View.INVISIBLE
+                                binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
+                                binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
+                                binding.tvAngleRed!!.visibility = View.INVISIBLE
+                                isGyroOnCorrectAngle = true
+
+
+
+                                //angle 90
+                                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
+                                    cameraAngle = 0
+                                    gyroMeterOnLevel(false)
+                                }
+                                //angle 45
+                                else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
+                                    cameraAngle = 45
+                                    gyroMeterOnLevel(false)
+                                }
+
+
+
+                                else {
+                                    cameraAngle = 90
+                                    gyroMeterOnLevel(true)
+                                }
+
+                            } else {
+                                if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                                    binding.lottieDownArrow!!.visibility = View.VISIBLE
+                                    binding.lottieUpArrow!!.visibility = View.VISIBLE
+                                    binding.tvAngleRed!!.visibility = View.VISIBLE
+                                }
+
+                                binding.tvAngleValue!!.visibility = View.INVISIBLE
+                                binding.groupOverlay!!.visibility = View.GONE
+                                binding.tvAngleValue!!.visibility = View.INVISIBLE
+                                isGyroOnCorrectAngle = false
+                                val gyroAngle = (-pitch.roundToInt())
+
+                                binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
+                                gyroMeterOffLevel()
+
+                                if (movearrow) {
+                                    if (abs(roll.roundToInt()) < 100) {
+                                        moveArrow((pitch + 85).unaryMinus())
+                                    } else {
+                                        moveArrow(pitch + 85)
+                                    }
+                                }
+
+                                if (roll.roundToInt() == 1 || roll.roundToInt() == -1) {
+                                    if (roll.roundToInt() == 1) {
+                                        rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                                    } else {
+                                        rotateArrow((pitch + 85).roundToInt())
+                                    }
+                                }
+                            }
+                        }
+
+                        else -> {
+                            //hide moving line
+                            if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                                binding.tvLevelIndicator.visibility = View.GONE
+                            else
+                                binding.tvLevelIndicator.visibility = View.VISIBLE
+
+                            if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                                pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
+                                (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
+                            ) {
+                                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                                    gyroMeterOnLevel(false)
+                                else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
+                                    gyroMeterOnLevel(false)
+                                else
+                                    gyroMeterOnLevel(true)
+                            } else {
+                                gyroMeterOffLevel()
+
+                                if (movearrow) {
+                                    if (abs(roll.roundToInt()) < 100) {
+                                        moveArrow((pitch + 85).unaryMinus())
+                                    } else {
+                                        moveArrow(pitch + 85)
+                                    }
+                                }
+
+                                if (roll.roundToInt() == 1 || roll.roundToInt() == -1) {
+                                    if (roll.roundToInt() == 1) {
+                                        rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                                    } else {
+                                        rotateArrow((pitch + 85).roundToInt())
+                                    }
                                 }
                             }
                         }
@@ -531,6 +536,7 @@ class GyroView : FrameLayout {
                     }
                 }
             }
+
             else -> {
                 if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
                     gyroMeterOnLevel(true)

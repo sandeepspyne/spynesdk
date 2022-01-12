@@ -75,8 +75,8 @@ android {
         spyne {
             dimension 'version'
             applicationId "com.spyneai"
-            versionCode 77
-            versionName "2.85"
+            versionCode 79
+            versionName "2.87"
         }
 
         sweepCars {
@@ -145,8 +145,8 @@ android {
         automoser {
             dimension 'version'
             applicationId "com.spyneai.automoser"
-            versionCode 15
-            versionName "2.4"
+            versionCode 16
+            versionName "2.5"
         }
 
         //ecom
