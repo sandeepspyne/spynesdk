@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.spyneai.BaseApplication
 import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ProjectApiClient
 import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.orders.data.paging.PagedRepository
 import com.spyneai.orders.data.paging.ProjectPagedRes
 import com.spyneai.orders.data.repository.MyOrdersRepository
@@ -24,39 +27,39 @@ class MyOrdersViewModel : ViewModel() {
 
 
     private val repository = MyOrdersRepository()
-    private val pagedRepository = PagedRepository(ProjectApiClient().getClient())
 
-    private lateinit var _projectsFlow: Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>>
-    val projectsFlow: Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>>
-        get() = _projectsFlow
+    @ExperimentalPagingApi
+    private val pagedRepository = PagedRepository(
+        ProjectApiClient().getClient(),
+        AppDatabase.getInstance(BaseApplication.getContext())
+    )
 
 
-//    fun getAllProjects() = viewModelScope.launch {
-//        _projectsFlow = pagedRepository.getSearchResultStream()
-//    }
-
-        fun getAllProjects() : Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
-            return pagedRepository.getSearchResultStream()
-                .cachedIn(viewModelScope)
-        }
+    @ExperimentalPagingApi
+    fun getAllProjects(): Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
+        return pagedRepository.getSearchResultStream()
+            .cachedIn(viewModelScope)
+    }
 
 
     val position: MutableLiveData<Int> = MutableLiveData()
     val ongoingCardPosition: MutableLiveData<Int> = MutableLiveData()
     val projectItemClicked: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val _CompletedSKUsResponse: MutableLiveData<Resource<CompletedSKUsResponse>> = MutableLiveData()
+    private val _CompletedSKUsResponse: MutableLiveData<Resource<CompletedSKUsResponse>> =
+        MutableLiveData()
     val completedSKUsResponse: LiveData<Resource<CompletedSKUsResponse>>
         get() = _CompletedSKUsResponse
 
-    private val _getProjectsResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
+    private val _getProjectsResponse: MutableLiveData<Resource<GetProjectsResponse>> =
+        MutableLiveData()
     val getProjectsResponse: LiveData<Resource<GetProjectsResponse>>
         get() = _getProjectsResponse
 
-    private val _getOngoingSkusResponse: MutableLiveData<Resource<GetOngoingSkusResponse>> = MutableLiveData()
+    private val _getOngoingSkusResponse: MutableLiveData<Resource<GetOngoingSkusResponse>> =
+        MutableLiveData()
     val getOngoingSkusResponse: LiveData<Resource<GetOngoingSkusResponse>>
         get() = _getOngoingSkusResponse
-
 
 
     fun getCompletedSKUs(
@@ -83,7 +86,8 @@ class MyOrdersViewModel : ViewModel() {
 
     }
 
-    private val _getCompletedProjectsResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
+    private val _getCompletedProjectsResponse: MutableLiveData<Resource<GetProjectsResponse>> =
+        MutableLiveData()
     val getCompletedProjectsResponse: LiveData<Resource<GetProjectsResponse>>
         get() = _getCompletedProjectsResponse
 

@@ -1,20 +1,22 @@
 package com.spyneai.orders.data.paging
 
 import android.net.Uri
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.ProjectApi
+import com.spyneai.orders.data.paging.PagedRepository.Companion.DEFAULT_PAGE_INDEX
 import com.spyneai.shoot.repository.model.project.Project
 import retrofit2.HttpException
 import java.io.IOException
 
-private const val DEFAULT_PAGE_INDEX = 0
 
 class ProjectDataSource(
     private val service: ProjectApi
     ) : PagingSource<Int, ProjectPagedRes.ProjectPagedResItem>() {
 
+    @ExperimentalPagingApi
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProjectPagedRes.ProjectPagedResItem> {
         val page = params.key ?: DEFAULT_PAGE_INDEX
         //val apiQuery = query + IN_QUALIFIER
