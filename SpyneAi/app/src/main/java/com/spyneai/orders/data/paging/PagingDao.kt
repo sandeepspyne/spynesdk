@@ -14,6 +14,14 @@ interface PagingDao {
         val list = ArrayList<ProjectPagedRes.ProjectPagedResItem>()
 
         response.forEach {
+            if (it.status == "Done")
+                it.status = "completed"
+
+            if (it.status == "In Progress")
+                it.status = "ongoing"
+
+            it.status = it.status.lowercase()
+
             val dbItem = getProject(it.projectId)
 
             if (dbItem == null){

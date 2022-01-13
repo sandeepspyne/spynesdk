@@ -1,5 +1,6 @@
 package com.spyneai.orders.ui.adapter
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.paging.ExperimentalPagingApi
@@ -17,10 +18,18 @@ class OrdersSlideAdapter (fa: FragmentActivity) : FragmentStateAdapter(fa) {
     @ExperimentalPagingApi
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            0-> PagedFragment()
-            1-> OngoingProjectsFragment()
-            else -> CompletedProjectsFragment()
+            0-> getFragment("draft")
+            1-> getFragment("ongoing")
+            else -> getFragment("completed")
         }
     }
+
+    @ExperimentalPagingApi
+    fun getFragment(status : String) = PagedFragment()
+        .apply {
+            arguments = Bundle().apply {
+                putString("status",status)
+            }
+        }
 
 }

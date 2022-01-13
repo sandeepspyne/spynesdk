@@ -20,7 +20,8 @@ import java.io.IOException
 
 class ProjectDataSource(
     private val service: ProjectApi,
-    val appDatabase: AppDatabase
+    val appDatabase: AppDatabase,
+    val status: String
     ) : PagingSource<Int, ProjectPagedRes.ProjectPagedResItem>() {
 
     val TAG = "ProjectDataSource"
@@ -33,7 +34,10 @@ class ProjectDataSource(
 
         return try {
             if (BaseApplication.getContext().isInternetActive()){
-                val response = service.getPagedProjects(page)
+                val response = service.getPagedProjects(
+                    pageNo = page,
+                    status = status
+                )
 
                 val prevKey = if (page == DEFAULT_PAGE_INDEX) null else page - 1
                 val nextKey = if (response.isNullOrEmpty()) null else page + 1
@@ -43,7 +47,10 @@ class ProjectDataSource(
                     Log.d(TAG, "load: ${Gson().toJson(ss)}")
                 }
 
-                val finalResponse = appDatabase.getPagingDao().getProjectsWithLimitAndSkip(page.times(10))
+                val finalResponse = appDatabase.getPagingDao().getProjectsWithLimitAndSkip(
+                    offset = page.times(10),
+                    status = status
+                )
 
                 LoadResult.Page(
                     finalResponse,
@@ -51,7 +58,10 @@ class ProjectDataSource(
                     nextKey = nextKey
                 )
             }else{
-                val response = appDatabase.getPagingDao().getProjectsWithLimitAndSkip(page.times(10))
+                val response = appDatabase.getPagingDao().getProjectsWithLimitAndSkip(
+                    offset = page.times(10),
+                    status = status
+                )
 
                 val prevKey = if (page == DEFAULT_PAGE_INDEX) null else page - 1
                 val nextKey = if (response.isNullOrEmpty()) null else page + 1

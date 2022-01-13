@@ -41,7 +41,7 @@ class PagedFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingProjectsBin
 
     private fun fetchProjects() {
         lifecycleScope.launch {
-            viewModel.getAllProjects().distinctUntilChanged().collectLatest {
+            viewModel.getAllProjects(arguments?.getString("status").toString()).distinctUntilChanged().collectLatest {
                 if (!binding.rvMyOngoingProjects.isVisible){
                     binding.shimmerCompletedSKU.stopShimmer()
                     binding.shimmerCompletedSKU.visibility = View.GONE

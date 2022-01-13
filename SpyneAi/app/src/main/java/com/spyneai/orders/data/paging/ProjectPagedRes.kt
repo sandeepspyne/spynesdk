@@ -20,7 +20,7 @@ class ProjectPagedRes : ArrayList<ProjectPagedRes.ProjectPagedResItem>(){
         @SerializedName("project_name")
         val projectName: String,
         @SerializedName("status")
-        val status: String,
+        var status: String,
         @SerializedName("total_sku")
         val totalSku: Int
     )

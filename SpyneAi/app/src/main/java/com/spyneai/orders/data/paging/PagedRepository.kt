@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.Flow
 @ExperimentalPagingApi
 class PagedRepository(
     private val service: ProjectApi,
-    private val appDatabase: AppDatabase
+    private val appDatabase: AppDatabase,
+    private val status : String
 ) {
 
     fun getSearchResultStream(): Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
@@ -21,7 +22,7 @@ class PagedRepository(
                 pageSize = DEFAULT_PAGE_SIZE,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { ProjectDataSource(service,appDatabase) }
+            pagingSourceFactory = { ProjectDataSource(service,appDatabase,status) }
         ).flow
     }
 

@@ -28,16 +28,16 @@ class MyOrdersViewModel : ViewModel() {
 
     private val repository = MyOrdersRepository()
 
-    @ExperimentalPagingApi
-    private val pagedRepository = PagedRepository(
-        ProjectApiClient().getClient(),
-        AppDatabase.getInstance(BaseApplication.getContext())
-    )
+
 
 
     @ExperimentalPagingApi
-    fun getAllProjects(): Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
-        return pagedRepository.getSearchResultStream()
+    fun getAllProjects(status: String): Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
+        return PagedRepository(
+            ProjectApiClient().getClient(),
+            AppDatabase.getInstance(BaseApplication.getContext()),
+            status
+        ).getSearchResultStream()
             .cachedIn(viewModelScope)
     }
 
