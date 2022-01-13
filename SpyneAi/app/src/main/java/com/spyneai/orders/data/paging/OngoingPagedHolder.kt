@@ -61,6 +61,7 @@ class OngoingPagedHolder(
             tvCategory.text = "Automobiles"
         } else {
             llThreeSixty.visibility = View.GONE
+            tvCategory.text = item.categoryName
         }
 
 
