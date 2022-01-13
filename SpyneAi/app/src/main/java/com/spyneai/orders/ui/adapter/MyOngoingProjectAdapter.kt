@@ -47,16 +47,13 @@ class MyOngoingProjectAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): MyOngoingProjectAdapter.ViewHolder {
+    ): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_ongoing_projects, parent, false)
-        return MyOngoingProjectAdapter.ViewHolder(view)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: MyOngoingProjectAdapter.ViewHolder, position: Int) {
-
-
-
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (getProjectList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (getProjectList[position].categoryId == getProjectList[position].subCategoryId)) {
             holder.llThreeSixty.visibility = View.VISIBLE
             holder.tvCategory.text = "Automobiles"
