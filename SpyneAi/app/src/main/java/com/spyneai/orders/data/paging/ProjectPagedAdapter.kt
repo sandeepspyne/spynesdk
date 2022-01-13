@@ -40,7 +40,7 @@ class ProjectPagedAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (status) {
-            "draft" -> DraftPagedHolder.getInstance(parent)
+            "draft" -> DraftPagedHolder.getInstance(context,parent)
             "ongoing" -> OngoingPagedHolder.getInstance(context,parent)
             else -> CompletedPagedHolder.getInstance(parent)
         }
