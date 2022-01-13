@@ -1,10 +1,10 @@
 package com.spyneai.reshoot.data
 
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 
 class SelectedImagesHelper {
     companion object {
         var selectedOverlayIds = HashMap<Int,ReshootImage>()
-        var selectedImages = ArrayList<ImagesOfSkuRes.Data>()
+        var selectedImages = ArrayList<Image>()
     }
 }

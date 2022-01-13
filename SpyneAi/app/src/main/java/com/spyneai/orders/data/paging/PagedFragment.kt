@@ -51,6 +51,7 @@ class PagedFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingProjectsBin
                     binding.rvMyOngoingProjects.visibility = View.VISIBLE
                 }
                 adapter.submitData(it)
+                
             }
         }
     }

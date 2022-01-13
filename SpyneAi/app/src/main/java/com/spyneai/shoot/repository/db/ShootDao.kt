@@ -109,7 +109,7 @@ interface ShootDao {
     @Query("update sku set sku_id = :skuId,project_id = :projectId, isCreated = :isCreated where uuid = :uuid")
     fun updateSKuServerId(uuid: String,skuId: String,projectId: String,isCreated: Boolean = true): Int
 
-    @Query("update image set sku_id = :skuId, project_id = :projectId where sku_uuid = :skuUuid")
+    @Query("update image set skuId = :skuId, projectId = :projectId where skuUuid = :skuUuid")
     fun updateImageIds(skuUuid: String,skuId: String,projectId: String): Int
 
     @Transaction
@@ -132,7 +132,7 @@ interface ShootDao {
     @Query("SELECT * FROM sku where project_uuid = :projectUuid")
     fun getSkusByProjectId(projectUuid: String) : List<Sku>
 
-    @Query("select * from image where sku_uuid = :skuUuid")
+    @Query("select * from image where skuUuid = :skuUuid")
     fun getImagesBySkuId(skuUuid: String): List<Image>
 
     @Transaction
@@ -240,7 +240,7 @@ interface ShootDao {
 
         Log.d(AppConstants.SHOOT_DAO_TAG, "updateBackground: $p")
         val s = updateSkuBackground(
-            map["sku_uuid"].toString(),
+            map["skuUuid"].toString(),
             map["bg_name"].toString(),
             map["bg_id"].toString()
         )
@@ -254,7 +254,7 @@ interface ShootDao {
     @Query("UPDATE sku SET background_name = :backgroundName, background_id= :backgroundId WHERE uuid =:uuid ")
     fun updateSkuBackground(uuid: String,backgroundName: String,backgroundId: String) : Int
 
-    @Query("Select path from image where sku_uuid = :skuUuid")
+    @Query("Select path from image where skuUuid = :skuUuid")
     fun getImagesPathBySkuId(skuUuid : String) : List<String>
 
 //    @Query("select * from project left join sku on project.uuid=sku.project_uuid where sku.isCreated = :skuIsCreated and project.isCreated = :isCreated  and project.toProcessAt <= :currentTime LIMIT :limit")
@@ -276,31 +276,31 @@ interface ShootDao {
     fun skipSku(uuid: String,toProcessAt: Long) : Int
 
 
-    @Query("select Count(*) from image where is_uploaded = :isUploaded and is_marked_done = :isMarkedDone")
+    @Query("select Count(*) from image where isUploaded = :isUploaded and isMarkedDone = :isMarkedDone")
     fun totalRemainingUpload(isUploaded: Boolean = false,isMarkedDone : Boolean = false) : Int
 
-    @Query("select * from image where is_uploaded = :isUploaded or is_marked_done = :isMarkedDone and to_process_at <= :currentTime limit 1")
+    @Query("select * from image where isUploaded = :isUploaded or isMarkedDone = :isMarkedDone and toProcessAt <= :currentTime limit 1")
     fun getOldestImage(isUploaded: Boolean = false,isMarkedDone : Boolean = false,currentTime: Long = System.currentTimeMillis()) : Image
 
-    @Query("update image set to_process_at = :toProcessAt, retry_count = retry_count + 1 where uuid = :uuid")
+    @Query("update image set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid")
     fun skipImage(uuid: String,toProcessAt: Long) : Int
 
-    @Query("update image set is_uploaded = :done,is_marked_done = :done where uuid = :uuid")
+    @Query("update image set isUploaded = :done,isMarkedDone = :done where uuid = :uuid")
     fun markDone(uuid: String,done: Boolean = true) : Int
 
-    @Query("update image set pre_signed_url = :preUrl, image_id = :imageId where uuid = :uuid")
+    @Query("update image set preSignedUrl = :preUrl, imageId = :imageId where uuid = :uuid")
     fun addPreSignedUrl(uuid: String,preUrl: String,imageId : String) : Int
 
-    @Query("update image set is_uploaded = :isUploaded where uuid = :uuid")
+    @Query("update image set isUploaded = :isUploaded where uuid = :uuid")
     fun markUploaded(uuid: String,isUploaded: Boolean = true) : Int
 
-    @Query("update image set is_marked_done = :isMarkedDone where uuid = :uuid")
+    @Query("update image set isMarkedDone = :isMarkedDone where uuid = :uuid")
     fun markStatusUploaded(uuid: String,isMarkedDone: Boolean = true) : Int
 
     @Query("select * from image where uuid = :uuid")
     fun getImage(uuid: String) : Image
 
-    @Query("select * from image where sku_uuid = :skuUuid and name = :imageName")
+    @Query("select * from image where skuUuid = :skuUuid and name = :imageName")
     fun getImage(skuUuid: String,imageName: String) : Image
 
     @Update
@@ -345,6 +345,43 @@ interface ShootDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(skuList: List<Sku>) : List<Long>
+
+
+    @Transaction
+    suspend fun insertImagesWithCheck(response: ArrayList<Image>,skuUuid: String){
+        val list = ArrayList<Image>()
+
+        response.forEach {
+            if (it.uuid ==  null){
+                it.uuid = getUuid()
+            }
+
+            if(it.overlayId == null)
+                it.overlayId = "1234"
+
+            it.skuUuid = skuUuid
+            it.path = it.input_image_lres_url
+
+
+
+            if (it.status == "Done" || it.status == "Yet to Start" || it.status == "Failed"){
+                it.isMarkedDone = true
+                it.isUploaded = true
+            }
+
+            val dbItem = getImage(it.uuid)
+
+            if (dbItem == null){
+                list.add(it)
+            }
+
+        }
+
+        insertAllImages(list)
+    }
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllImages(imageList: List<Image>) : List<Long>
 
 }
 

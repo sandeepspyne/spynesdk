@@ -6,7 +6,7 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.JavaViewHolderFactory
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 
 class SelectImageAdapter(
     list: List<Any>,
@@ -16,7 +16,7 @@ class SelectImageAdapter(
     override fun getLayoutId(position: Int, obj: Any?): Int {
         return when (obj) {
 
-            is ImagesOfSkuRes.Data -> R.layout.item_select_image
+            is Image -> R.layout.item_select_image
             else -> error("Unknown type: for position: $position")
         }
     }

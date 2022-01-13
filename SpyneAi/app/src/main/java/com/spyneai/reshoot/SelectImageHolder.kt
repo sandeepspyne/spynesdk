@@ -9,13 +9,13 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.ItemSelectImageBinding
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 
 
 class SelectImageHolder(
     itemView: View,
     listener: OnItemClickListener?)
-    : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<ImagesOfSkuRes.Data>{
+    : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<Image>{
 
     var listener: OnItemClickListener? = null
     var binding : ItemSelectImageBinding? = null
@@ -26,7 +26,7 @@ class SelectImageHolder(
         this.listener = listener
     }
 
-    override fun bind(data: ImagesOfSkuRes.Data) {
+    override fun bind(data: Image) {
 
         var color = Integer.toHexString(
             ContextCompat.getColor(

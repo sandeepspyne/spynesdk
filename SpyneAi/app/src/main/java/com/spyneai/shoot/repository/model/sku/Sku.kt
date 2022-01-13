@@ -38,15 +38,12 @@ class Sku(
     @ColumnInfo(name = "is_paid") var isPaid: Boolean = false,
     @ColumnInfo(name = "rating") var rating: String? = null,
     @SerializedName("thumbnail") var thumbnail: String? = null,
+    @SerializedName("video_id") val videoId : String? = null,
+    @SerializedName("video_url") val videoUrl : String? = null,
     @ColumnInfo(name = "created_at") var createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "updated_at") var updatedAt: Long = System.currentTimeMillis(),
     var imagesCount: Int = 0,
     val imagePresent: Int = 1,
     val videoPresent: Int = 0,
     var totalFramesUpdated: Boolean = false
-){
-
-
-    @Ignore
-    var imagesList: List<String>? = null
-}
+)

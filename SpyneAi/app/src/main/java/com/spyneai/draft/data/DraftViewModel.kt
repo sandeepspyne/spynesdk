@@ -1,27 +1,33 @@
 package com.spyneai.draft.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import androidx.paging.cachedIn
+import androidx.room.withTransaction
+import com.google.gson.Gson
 import com.spyneai.BaseApplication
+import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ProjectApiClient
 import com.spyneai.base.network.Resource
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.getUuid
-import com.spyneai.orders.data.paging.PagedRepository
+import com.spyneai.isInternetActive
 import com.spyneai.orders.data.repository.MyOrdersRepository
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.processedimages.ui.data.ProcessedRepository
 import com.spyneai.shoot.data.ImageLocalRepository
+import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import kotlinx.coroutines.Dispatchers
@@ -33,8 +39,10 @@ class DraftViewModel : ViewModel() {
     private val repository = MyOrdersRepository()
     private val shootRepository = ShootRepository()
     private val processedRepository = ProcessedRepository()
-    private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
-    private val imagesLocalRepository = ImageLocalRepository()
+    private val appDatabase = AppDatabase.getInstance(BaseApplication.getContext())
+    private val localRepository = ShootLocalRepository(appDatabase.shootDao())
+    private val imageRepositoryV2 = ImagesRepoV2(appDatabase.shootDao())
+
 
     private val _draftResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
     val draftResponse: LiveData<Resource<GetProjectsResponse>>
@@ -45,7 +53,7 @@ class DraftViewModel : ViewModel() {
         get() = _imagesOfSkuRes
 
     @ExperimentalPagingApi
-    fun getSkus(projectId: String?,projectUuid: String): Flow<PagingData<Sku>> {
+    fun getSkus(projectId: String?, projectUuid: String): Flow<PagingData<Sku>> {
         return SkuRepository(
             ProjectApiClient().getClient(),
             AppDatabase.getInstance(BaseApplication.getContext()),
@@ -53,6 +61,64 @@ class DraftViewModel : ViewModel() {
             projectUuid
         ).getSearchResultStream()
             .cachedIn(viewModelScope)
+    }
+
+
+    fun getImages(skuId: String?, skuUuid: String) = viewModelScope.launch {
+        _imagesOfSkuRes.value = Resource.Loading
+
+        if (skuId != null && BaseApplication.getContext().isInternetActive()) {
+            val response = processedRepository.getImagesOfSku(
+                skuId = skuId,
+                authKey = "c0451cb9-ed40-4da6-992f-c2481f17120f"
+            )
+
+            if (response is Resource.Success) {
+                appDatabase.withTransaction {
+                    val ss = appDatabase.shootDao().insertImagesWithCheck(
+                        response.value.data as ArrayList<Image>,
+                        skuUuid)
+
+                }
+
+                GlobalScope.launch(Dispatchers.IO) {
+                    val response = appDatabase.shootDao().getImagesBySkuId(
+                        skuUuid = skuUuid
+                    )
+
+                    GlobalScope.launch(Dispatchers.Main) {
+                        _imagesOfSkuRes.value = Resource.Success(
+                            ImagesOfSkuRes(
+                                data = response,
+                                message = "done",
+                                "",
+                                "",
+                                200
+                            ))
+                    }
+                }
+            }else{
+                _imagesOfSkuRes.value = response
+            }
+        } else {
+            GlobalScope.launch(Dispatchers.IO) {
+                val response = appDatabase.shootDao().getImagesBySkuId(
+                    skuUuid = skuUuid
+                )
+
+                GlobalScope.launch(Dispatchers.Main) {
+                    _imagesOfSkuRes.value = Resource.Success(
+                        ImagesOfSkuRes(
+                            data = response,
+                            message = "done",
+                            "",
+                            "",
+                            200
+                        ))
+                }
+            }
+
+        }
     }
 
     fun getDrafts(
@@ -78,7 +144,7 @@ class DraftViewModel : ViewModel() {
             }
 
             GlobalScope.launch(Dispatchers.IO) {
-               looplist.forEach {
+                looplist.forEach {
                     val project = Project(
                         uuid = getUuid(),
                         categoryId = it.categoryId,
@@ -132,7 +198,7 @@ class DraftViewModel : ViewModel() {
                                 angle = 0,
                                 isReshoot = false,
                                 isReclick = false,
-                                type = "Exterior"
+                                image_category = "Exterior"
                             )
                             imageList.add(image)
                         }
@@ -159,7 +225,7 @@ class DraftViewModel : ViewModel() {
     suspend fun getSkusByProjectId(projectId: String) =
         localRepository.getSkusByProjectId(projectId)
 
-    suspend fun getImagesbySkuId(skuId: String) = imagesLocalRepository.getImagesBySkuId(skuId)
+    suspend fun getImagesbySkuId(skuId: String) = imageRepositoryV2.getImagesBySkuId(skuId)
 
     fun getImagesOfSku(
         authKey: String,

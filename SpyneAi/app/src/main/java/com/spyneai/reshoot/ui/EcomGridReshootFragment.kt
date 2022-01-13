@@ -10,7 +10,7 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.FragmentEcomGridReshootBinding
 import com.spyneai.databinding.FragmentEcomOverlayReshootBinding
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.reshoot.ReshootAdapter
 import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.reshoot.data.SelectedImagesHelper
@@ -62,7 +62,7 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
         //observe new image clicked
         viewModel.onImageConfirmed.observe(viewLifecycleOwner, {
             if (viewModel.shootList.value != null) {
-                var list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
+                var list = reshootAdapter?.listItems as List<Image>
 
                 val position = viewModel.currentShoot
 
@@ -113,7 +113,7 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
 
         viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
             if (viewModel.shootList.value != null) {
-                var list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
+                var list = reshootAdapter?.listItems as List<Image>
 
                 val position = viewModel.currentShoot
 
@@ -165,7 +165,7 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
 
         viewModel.updateSelectItem.observe(viewLifecycleOwner,{ it ->
             if (it){
-                val list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
+                val list = reshootAdapter?.listItems as List<Image>
 
                 val element = list.firstOrNull {
                     it.isSelected
@@ -212,7 +212,7 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
         if (viewModel.shootList.value != null) {
             list.forEach { overlay ->
                 val element = viewModel.shootList.value!!.firstOrNull {
-                    it.overlayId == overlay.id
+                    it.overlayId == overlay.overlayId.toInt()
                 }
 
                 if (element != null) {
@@ -265,17 +265,17 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
             when(data){
-                is ImagesOfSkuRes.Data -> {
+                is Image -> {
                     if (data.imageClicked){
                         val bundle = Bundle()
-                        bundle.putInt("overlay_id",data.overlayId)
+                        bundle.putInt("overlay_id",data.overlayId.toInt())
                         bundle.putInt("position",position)
                         bundle.putString("image_type",data.image_category)
                         val reclickDialog = ReclickDialog()
                         reclickDialog.arguments = bundle
                         reclickDialog.show(requireActivity().supportFragmentManager,"ReclickDialog")
                     }else {
-                        val list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
+                        val list = reshootAdapter?.listItems as List<Image>
 
                         val element = list.firstOrNull {
                             it.isSelected
@@ -298,11 +298,11 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
         viewModel.currentShoot = position
 
        when(data){
-           is ImagesOfSkuRes.Data -> {
-               viewModel.reshotImageName = data.image_name
-               viewModel.reshootSequence = data.frame_seq_no.toInt()
+           is Image -> {
+               viewModel.reshotImageName = data.name
+               viewModel.reshootSequence = data.sequence
                viewModel.categoryDetails.value?.imageType = data.image_category
-               viewModel.overlayId = data.overlayId
+               viewModel.overlayId = data.overlayId.toInt()
            }
        }
     }

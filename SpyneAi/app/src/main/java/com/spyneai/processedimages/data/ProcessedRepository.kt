@@ -11,6 +11,6 @@ class ProcessedRepository : BaseRepository() {
         authKey: String,
         skuId: String
     ) = safeApiCall{
-        clipperApi.getImagesOfSku(authKey, skuId)
+        clipperApi.getImagesOfSku(authKey = authKey, skuId = skuId)
     }
 }

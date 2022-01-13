@@ -104,6 +104,7 @@ object AppConstants {
     val PRODUCT_ID: String = "product_id"
     val INDEX_NUMBER: String = "index_number"
     val SKU_ID: String = "sku_id"
+    val SKU_UUID: String = "sku_uuid"
     val SKU_NAME: String = "sku_name"
     val IMAGE_TYPE: String = "image_type"
     val IMAGE_URL: String = "image_url"

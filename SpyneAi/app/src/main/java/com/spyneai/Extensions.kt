@@ -32,7 +32,7 @@ import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.posthog.Events
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

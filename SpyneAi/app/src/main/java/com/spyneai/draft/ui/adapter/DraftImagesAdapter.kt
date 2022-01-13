@@ -9,11 +9,12 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
+
 
 class DraftImagesAdapter(
     val context: Context,
-    val imageList: ArrayList<ImagesOfSkuRes.Data>,
+    val imageList: ArrayList<Image>,
     val categoryName : String
 ) : BaseAdapter() {
     override fun getCount(): Int {

@@ -1,12 +1,7 @@
 package com.spyneai.shoot.data
 
-import androidx.room.Room
-import com.spyneai.BaseApplication
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.*
-import com.spyneai.base.room.AppDatabase
-import com.spyneai.interfaces.GcpClient
-import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.ProjectBody
 import okhttp3.MultipartBody
@@ -58,7 +53,7 @@ class ShootRepository : BaseRepository() {
         clipperApi.getPreSignedUrl(
             image.projectId,
             image.skuId,
-            image.type,
+            image.image_category,
             image.name,
             image.overlayId?.toInt(),
             uploadType,

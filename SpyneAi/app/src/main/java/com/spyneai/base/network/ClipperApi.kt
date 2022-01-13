@@ -19,6 +19,7 @@ import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.repository.model.project.CreateProjectAndSkuRes
@@ -212,8 +213,8 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v2/sku/getImagesById")
     suspend fun getImagesOfSku(
-        @Field("auth_key") authKey : String,
-        @Field("sku_id") skuId : String
+        @Field("sku_id") skuId : String,
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : ImagesOfSkuRes
 
     @GET("v2/overlays/fetch-ids")

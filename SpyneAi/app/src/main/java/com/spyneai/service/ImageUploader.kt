@@ -8,14 +8,12 @@ import android.media.ExifInterface
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.work.*
 import com.google.gson.Gson
 import com.spyneai.*
 import com.spyneai.base.network.Resource
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.model.image.Image
@@ -175,7 +173,7 @@ class ImageUploader(
 
                 if (!image.isUploaded) {
                     if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL) {
-                        when (image.type) {
+                        when (image.image_category) {
                             "Exterior",
                             "Interior",
                             "Focus Shoot",
@@ -254,7 +252,7 @@ class ImageUploader(
                         if (!gotPresigned)
                             continue
 
-                        when (image.type) {
+                        when (image.image_category) {
                             "Exterior",
                             "Interior",
                             "Focus Shoot",

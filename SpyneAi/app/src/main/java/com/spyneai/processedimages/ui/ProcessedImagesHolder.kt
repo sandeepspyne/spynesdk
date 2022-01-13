@@ -7,20 +7,20 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.ItemProcessedImageBinding
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 
 
 class ProcessedImagesHolder(
     val view: View,
     val listener: OnItemClickListener?,
     var binding: ItemProcessedImageBinding? = null
-) : RecyclerView.ViewHolder(view), GenericAdapter.Binder<ImagesOfSkuRes.Data> {
+) : RecyclerView.ViewHolder(view), GenericAdapter.Binder<Image> {
 
     init {
         binding = ItemProcessedImageBinding.bind(view)
     }
 
-    override fun bind(data: ImagesOfSkuRes.Data) {
+    override fun bind(data: Image) {
         binding.apply {
             Glide.with(view.context) // replace with 'this' if it's in activity
                 .load(data.input_image_hres_url)

@@ -10,14 +10,14 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.ItemReshootEcomBinding
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 
 class ReshootEcomHolder(
     itemView: View,
     listener: OnItemClickListener?,
     overlaySelectionListener : OnOverlaySelectionListener?
-) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<ImagesOfSkuRes.Data>{
+) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<Image>{
 
     var listener: OnItemClickListener? = null
     var overlaySelectionListener: OnOverlaySelectionListener? = null
@@ -30,7 +30,7 @@ class ReshootEcomHolder(
         this.overlaySelectionListener = overlaySelectionListener
     }
 
-    override fun bind(data: ImagesOfSkuRes.Data) {
+    override fun bind(data: Image) {
         when{
             data.isSelected -> {
                 binding?.flOverlay?.background = ContextCompat.getDrawable(

@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
+
 
 
 class ProcessedImagesAdapter(
     val context: Context,
-    val imageList: ArrayList<ImagesOfSkuRes.Data>,
+    val imageList: ArrayList<Image>,
     val listener : OnItemClickListener
 ) : RecyclerView.Adapter<ProcessedImagesAdapter.ViewHolder>() {
 

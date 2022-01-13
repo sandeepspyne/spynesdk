@@ -442,7 +442,7 @@ class ShootViewModel : ViewModel() {
             uuid = getUuid(),
             projectUuid = project?.uuid,
             skuUuid = sku?.uuid,
-            type = shootData.image_category,
+            image_category = shootData.image_category,
             skuName = sku?.skuName,
             name = name,
             sequence = shootData.sequence,

@@ -29,7 +29,7 @@ import com.spyneai.databinding.FragmentEcomOverlayReshootBinding
 import com.spyneai.databinding.FragmentReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.posthog.Events
 import com.spyneai.reshoot.ReshootAdapter
 import com.spyneai.reshoot.data.ReshootOverlaysRes

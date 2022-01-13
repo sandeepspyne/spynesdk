@@ -1,6 +1,7 @@
 package com.spyneai.draft.ui.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,16 +9,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.draft.ui.DraftSkuDetailsActivity
+import com.spyneai.loadSmartly
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.paging.OngoingPagedHolder
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
+import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.threesixty.data.VideoLocalRepository
+import com.spyneai.threesixty.ui.ThreeSixtyActivity
+import com.spyneai.threesixty.ui.TrimActivity
 
 class SkuPagedHolder(
     val context: Context,
     val view: View
 ) : RecyclerView.ViewHolder(view) {
-
     val tvSkuName: TextView = view.findViewById(R.id.tvSkuName)
     val tvCategory: TextView = view.findViewById(R.id.tvCategory)
     val tvImages: TextView = view.findViewById(R.id.tvImages)
@@ -42,9 +51,113 @@ class SkuPagedHolder(
     }
 
     private fun showData(item: Sku) {
-        tvSkuName.text = item?.skuName
-        tvCategory.text = item?.categoryName
-        tvDate.text = item?.createdAt.toString()
-        tvImages.text = item?.imagesCount.toString()
+        tvCategory.text = item.subcategoryName
+        tvDate.text = item.createdAt.toString()
+
+        if (item.categoryId != AppConstants.CARS_CATEGORY_ID)
+            try {
+                if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME).equals("Food & Beverages")) {
+                    Glide.with(context)
+                        .load(R.drawable.ic_food_thumbnail_draft)
+                        .into(ivThumbnail)
+                } else{
+//                    context.loadSmartly(item.images[0].input_lres,
+//                        ivThumbnail)
+                }
+            }catch (e: Exception){
+
+            }
+
+        if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subcategoryId)) {
+            Glide.with(context)
+                .load(R.drawable.three_sixty_thumbnail)
+                .into(ivThumbnail)
+        }
+
+        tvSkuName.text = item.skuName
+        tvImages.text = item.imagesCount.toString()
+
+
+        cvMain.setOnClickListener {
+            Utilities.savePrefrence(
+                context,
+                AppConstants.SKU_ID,
+                item.skuId
+            )
+
+            if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subcategoryId)) {
+                val videoPath = VideoLocalRepository().getVideoPath(item.uuid)
+
+                val intent = when{
+                    item.videoId != null -> {
+                        Intent(context, ShootActivity::class.java)
+                    }
+                    videoPath != null && videoPath != "" -> {
+                        Intent(context, TrimActivity::class.java)
+                    }
+                    else -> {
+                        Intent(context, ThreeSixtyActivity::class.java)
+                    }
+                }
+
+                intent.apply {
+                    putExtra(AppConstants.FROM_LOCAL_DB, true)
+                    putExtra(AppConstants.FROM_DRAFTS, true)
+                    putExtra(AppConstants.FROM_VIDEO, true)
+                    putExtra(AppConstants.PROJECT_ID, item.projectId)
+                    putExtra(AppConstants.PROJECT_UUIID, item.projectUuid)
+                    putExtra(AppConstants.CATEGORY_ID, item.categoryId)
+                    putExtra(AppConstants.SUB_CAT_ID,item.subcategoryId)
+                    putExtra(AppConstants.SUB_CAT_NAME,item.subcategoryName)
+                    putExtra(AppConstants.CATEGORY_NAME, item.categoryName)
+                    putExtra(AppConstants.SKU_NAME, item.skuName)
+                    putExtra(AppConstants.PROJECT_NAME, item.skuName)
+                   // putExtra(AppConstants.SKU_COUNT, item.imagesCount)
+                    putExtra(AppConstants.SKU_CREATED, false)
+                    putExtra(AppConstants.SKU_ID, "d2180513")
+                    putExtra(AppConstants.SKU_UUID, item.uuid)
+                    putExtra(AppConstants.EXTERIOR_ANGLES, item.initialFrames)
+                    //putExtra("is_paid",item.paid)
+                    //putExtra(AppConstants.IMAGE_TYPE,item.category)
+                    putExtra(AppConstants.IS_360,item.isThreeSixty)
+                    putExtra(AppConstants.VIDEO_PATH,videoPath)
+                }
+
+                context.startActivity(intent)
+            }else {
+                val draftIntent = Intent(
+                    context,
+                    DraftSkuDetailsActivity::class.java
+                ).apply {
+                    putExtra(AppConstants.FROM_LOCAL_DB, true)
+                    putExtra(AppConstants.FROM_DRAFTS, true)
+                    putExtra(AppConstants.PROJECT_ID,item.projectId)
+                    putExtra(AppConstants.PROJECT_UUIID,item.projectUuid)
+                    putExtra(AppConstants.CATEGORY_NAME, item.categoryId)
+                    putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
+                    putExtra(AppConstants.SUB_CAT_ID,item.subcategoryId)
+                    putExtra(AppConstants.SUB_CAT_NAME,item.subcategoryName)
+                    putExtra(AppConstants.SKU_NAME, item.skuName)
+                    putExtra(AppConstants.PROJECT_NAME, item.skuName)
+                   // putExtra(AppConstants.SKU_COUNT, skuList.size)
+                    putExtra(AppConstants.SKU_CREATED, false)
+                    putExtra(AppConstants.SKU_ID, "d2180513")
+                    putExtra(AppConstants.SKU_UUID, item.uuid)
+                    putExtra(AppConstants.EXTERIOR_ANGLES, item.initialFrames)
+                    //putExtra("is_paid",item.paid)
+                    //putExtra(AppConstants.IMAGE_TYPE,item.category)
+                    putExtra(AppConstants.IS_360,item.isThreeSixty)
+                }
+
+                if (!item.videoId.isNullOrEmpty()){
+                    draftIntent.apply {
+                        putExtra(AppConstants.FROM_VIDEO, true)
+                        putExtra(AppConstants.TOTAL_FRAME, item.imagesCount)
+                    }
+                }
+
+                context.startActivity(draftIntent)
+            }
+        }
     }
 }

@@ -29,7 +29,7 @@ import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.posthog.Events
 import com.spyneai.reshoot.ReshootAdapter
 import com.spyneai.reshoot.data.ReshootOverlaysRes
@@ -87,7 +87,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     AppConstants.ECOM_CATEGORY_ID,
                     AppConstants.PHOTO_BOX_CATEGORY_ID,
                     AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
-                        var list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
+                        var list = reshootAdapter?.listItems as List<Image>
 
                         val position = viewModel.currentShoot
 

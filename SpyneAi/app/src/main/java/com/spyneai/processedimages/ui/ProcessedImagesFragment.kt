@@ -37,7 +37,7 @@ import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
@@ -127,7 +127,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
-                    var dataList: List<ImagesOfSkuRes.Data> = it.value.data
+                    var dataList: List<Image> = it.value.data
 
                     val s = ""
                     for (i in 0..(dataList.size) -1) {
@@ -146,7 +146,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
 
-                            imageNameList.add(dataList[i].image_name)
+                            imageNameList.add(dataList[i].name)
                             frontFramesList.add(dataList!![i].output_image_lres_url)
 
                             Utilities.savePrefrence(
@@ -171,7 +171,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
 
-                            imageNameList.add(dataList[i].image_name)
+                            imageNameList.add(dataList[i].name)
                             frontFramesList.add(dataList!![i].output_image_lres_url)
 
                             Utilities.savePrefrence(
@@ -189,7 +189,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                             (imageListInterior as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
-                            imageNameList.add(dataList[i].image_name)
+                            imageNameList.add(dataList[i].name)
 
                             Utilities.savePrefrence(
                                 requireContext(),
@@ -202,7 +202,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                             (imageListFocused as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
-                            imageNameList.add(dataList[i].image_name)
+                            imageNameList.add(dataList[i].name)
 
                             Utilities.savePrefrence(
                                 requireContext(),
@@ -216,7 +216,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                             (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-                            imageNameList.add(dataList[i].image_name)
+                            imageNameList.add(dataList[i].name)
 
                             Utilities.savePrefrence(
                                 requireContext(),

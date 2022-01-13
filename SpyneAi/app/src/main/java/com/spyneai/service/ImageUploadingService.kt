@@ -192,7 +192,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
     override fun inProgress(task: Image) {
         currentImage = task
-        val category = if (task.type == "Focus Shoot") getString(R.string.miscellanous) else task.type
+        val category = if (task.image_category == "Focus Shoot") getString(R.string.miscellanous) else task.image_category
         val title = getString(R.string.upload)+task.skuName+"("+category+"-"+task.sequence+")"
         val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
         val content = getString(R.string.innter_connection_label)+internet
@@ -207,7 +207,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
         var title = getString(R.string.image_uploaded)
         if (currentImage != null){
-            val category = if (currentImage?.type == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.type
+            val category = if (currentImage?.image_category == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.image_category
             title = getString(R.string.last_uploaded)+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
         }
 
@@ -299,7 +299,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
         val title = if (currentImage == null) getString(R.string.uploading_paused)
         else {
-            val category = if (currentImage?.type == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.type
+            val category = if (currentImage?.image_category == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.image_category
             getString(R.string.uploading_paused_on)+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
         }
         val content = getString(R.string.internet_connection)

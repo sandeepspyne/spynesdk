@@ -6,7 +6,7 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.JavaViewHolderFactory
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 
@@ -20,7 +20,7 @@ class ReshootAdapter(
         return when (obj) {
 
             is ReshootOverlaysRes.Data -> R.layout.item_reshoot
-            is ImagesOfSkuRes.Data -> R.layout.item_reshoot_ecom
+            is Image -> R.layout.item_reshoot_ecom
             else -> error("Unknown type: for position: $position")
         }
     }

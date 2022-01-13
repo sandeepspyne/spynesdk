@@ -19,7 +19,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.enable
 import com.spyneai.databinding.FragmentSelectImagesBinding
 import com.spyneai.needs.AppConstants
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.reshoot.SelectImageAdapter
 import com.spyneai.reshoot.data.ReshootImage
@@ -70,11 +70,11 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
     }
 
     open fun onPermissionGranted() {
-        val list = selectImageAdapter?.listItems as ArrayList<ImagesOfSkuRes.Data>
+        val list = selectImageAdapter?.listItems as ArrayList<Image>
 
         val selectedList = list.filter {
             it.isSelected
-        } as ArrayList<ImagesOfSkuRes.Data>
+        } as ArrayList<Image>
 
         var reshootIntent : Intent? = null
 
@@ -84,7 +84,7 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
                 val selectedIdsMap = HashMap<Int,ReshootImage>()
 
                 selectedList.forEachIndexed { _, data ->
-                    selectedIdsMap[data.overlayId] = ReshootImage(data.image_name,data.frame_seq_no.toInt())
+                    selectedIdsMap[data.overlayId.toInt()] = ReshootImage(data.name,data.sequence)
                 }
 
                 SelectedImagesHelper.selectedOverlayIds = selectedIdsMap
@@ -106,7 +106,7 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
                 val selectedIdsMap = HashMap<Int, ReshootImage>()
 
                 selectedList.forEachIndexed { _, data ->
-                    selectedIdsMap[data.overlayId] = ReshootImage(data.image_name,data.frame_seq_no.toInt())
+                    selectedIdsMap[data.overlayId.toInt()] = ReshootImage(data.name,data.sequence)
                 }
 
                 SelectedImagesHelper.selectedOverlayIds = selectedIdsMap
@@ -145,11 +145,11 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
         when(data){
-            is ImagesOfSkuRes.Data -> {
+            is Image -> {
                 data.isSelected = !data.isSelected
                 selectImageAdapter?.notifyItemChanged(position)
 
-                val list = selectImageAdapter?.listItems as ArrayList<ImagesOfSkuRes.Data>
+                val list = selectImageAdapter?.listItems as ArrayList<Image>
 
                 val selectedList = list.filter {
                     it.isSelected == true

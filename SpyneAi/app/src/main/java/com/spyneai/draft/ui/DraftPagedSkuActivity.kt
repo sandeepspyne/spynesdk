@@ -28,8 +28,6 @@ import kotlinx.coroutines.launch
 class DraftPagedSkuActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDraftSkusBinding
     lateinit var viewModel: DraftViewModel
-    lateinit var skusAdapter: DraftSkusAdapter
-    lateinit var skuList: ArrayList<GetProjectsResponse.Sku>
     var position = 0
     lateinit var adapter: SkuPagedAdapter
 
@@ -60,9 +58,6 @@ class DraftPagedSkuActivity : AppCompatActivity() {
         position = intent.getIntExtra("position", 0)!!
 
         viewModel = ViewModelProvider(this, ViewModelFactory()).get(DraftViewModel::class.java)
-
-
-        skuList = ArrayList()
 
         binding.shimmerCompletedSKU.startShimmer()
 

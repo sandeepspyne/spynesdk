@@ -22,18 +22,14 @@ import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ActivityKarviShowImagesBinding
 import com.spyneai.gotoHome
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.isMagnatoMeterAvailable
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.ProcessedImage
-import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.orders.ui.adapter.KarviImagesAdapter
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
+import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 
 class KarviShowImagesActivity : AppCompatActivity() {
 
@@ -105,7 +101,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
-                    var dataList: List<ImagesOfSkuRes.Data> = it.value.data
+                    var dataList: List<Image> = it.value.data
 
                     for (i in 0..(dataList.size) -1) {
                         if (dataList!![i].image_category.equals("Exterior")) {
