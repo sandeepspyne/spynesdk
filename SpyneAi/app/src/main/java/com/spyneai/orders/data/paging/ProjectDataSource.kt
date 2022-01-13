@@ -22,12 +22,12 @@ class ProjectDataSource(
     private val service: ProjectApi,
     val appDatabase: AppDatabase,
     val status: String
-    ) : PagingSource<Int, ProjectPagedRes.ProjectPagedResItem>() {
+    ) : PagingSource<Int, Project>() {
 
     val TAG = "ProjectDataSource"
 
     @ExperimentalPagingApi
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProjectPagedRes.ProjectPagedResItem> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Project> {
         val page = params.key ?: DEFAULT_PAGE_INDEX
         Log.d(TAG, "load: "+page)
         //val apiQuery = query + IN_QUALIFIER
@@ -96,7 +96,7 @@ class ProjectDataSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, ProjectPagedRes.ProjectPagedResItem>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Project>): Int? {
         // We need to get the previous key (or next key if previous is null) of the page
         // that was closest to the most recently accessed index.
         // Anchor position is the most recently accessed index

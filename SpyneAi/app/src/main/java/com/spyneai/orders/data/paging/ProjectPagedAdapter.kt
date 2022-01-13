@@ -5,23 +5,24 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.spyneai.shoot.repository.model.project.Project
 
 class ProjectPagedAdapter(
     val context : Context,
     val status: String) :
-    PagingDataAdapter<ProjectPagedRes.ProjectPagedResItem, RecyclerView.ViewHolder>(REPO_COMPARATOR) {
+    PagingDataAdapter<Project, RecyclerView.ViewHolder>(REPO_COMPARATOR) {
 // body is unchanged
 
-    object REPO_COMPARATOR : DiffUtil.ItemCallback<ProjectPagedRes.ProjectPagedResItem>() {
+    object REPO_COMPARATOR : DiffUtil.ItemCallback<Project>() {
         override fun areItemsTheSame(
-            oldItem: ProjectPagedRes.ProjectPagedResItem,
-            newItem: ProjectPagedRes.ProjectPagedResItem
+            oldItem: Project,
+            newItem: Project
         ) =
-            oldItem.prodCatId == newItem.prodCatId
+            oldItem.projectId == newItem.projectId
 
         override fun areContentsTheSame(
-            oldItem: ProjectPagedRes.ProjectPagedResItem,
-            newItem: ProjectPagedRes.ProjectPagedResItem
+            oldItem: Project,
+            newItem: Project
         ) =
             oldItem == newItem
     }

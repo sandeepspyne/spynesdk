@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
 import androidx.work.*
 import com.spyneai.*
 import com.spyneai.R
@@ -24,7 +23,6 @@ import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.paging.ProjectPagedRes
-import com.spyneai.orders.data.paging.RemoteKeys
 import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.orders.ui.fragment.MyOrdersFragment
 import com.spyneai.posthog.Events
@@ -33,9 +31,9 @@ import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ImageLocalRepository
+import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
@@ -143,33 +141,31 @@ class MainDashboardActivity : AppCompatActivity() {
         })
 
 
-        val list = ArrayList<ProjectPagedRes.ProjectPagedResItem>()
+        val list = ArrayList<Project>()
             .apply {
                 add(
-                    ProjectPagedRes.ProjectPagedResItem(
-                    projectId = "2b28f897",prodCatId = "12234",
-                        category = "salkhdalks",projectName = "prj1",
+                    Project(
+                        getUuid(),
+                    projectId = "2b28f897",categoryId = "12234",
+                        categoryName = "salkhdalks",projectName = "prj1",
                         status = "Draft",createdOn = "2021-10-19T10:21:38.000Z",
-                        totalSku = 72
+                        skuCount = 72
                 ))
 
                 add(
-                    ProjectPagedRes.ProjectPagedResItem(
-                        projectId = "9101112",prodCatId = "12234",
-                        category = "salkhdalks",projectName = "prj(-1)",
-                        status = "Ongoing",createdOn = "2021-10-19T10:21:38.000Z",totalSku = 10
+                    Project(
+                        getUuid(),
+                        projectId = "9101112",categoryId = "12234",
+                        categoryName = "salkhdalks",projectName = "prj(-1)",
+                        status = "Ongoing",createdOn = "2021-10-19T10:21:38.000Z",skuCount = 10
                     ))
             }
 
-        val keys = ArrayList<RemoteKeys>()
-
-        keys.add(RemoteKeys("2b28f897",null,1))
 
         GlobalScope.launch(Dispatchers.IO) {
             val dao = AppDatabase.getInstance(BaseApplication.getContext())
 
             val items = dao.getPagingDao().insertAll(list)
-            val itemss = dao.getRepoDao().insertAll(keys)
 
             Log.d(TAG, "onCreate: "+items)
         }

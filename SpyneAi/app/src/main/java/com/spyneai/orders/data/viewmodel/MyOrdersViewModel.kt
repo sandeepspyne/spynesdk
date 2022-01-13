@@ -19,6 +19,7 @@ import com.spyneai.orders.data.repository.MyOrdersRepository
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
+import com.spyneai.shoot.repository.model.project.Project
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -32,7 +33,7 @@ class MyOrdersViewModel : ViewModel() {
 
 
     @ExperimentalPagingApi
-    fun getAllProjects(status: String): Flow<PagingData<ProjectPagedRes.ProjectPagedResItem>> {
+    fun getAllProjects(status: String): Flow<PagingData<Project>> {
         return PagedRepository(
             ProjectApiClient().getClient(),
             AppDatabase.getInstance(BaseApplication.getContext()),

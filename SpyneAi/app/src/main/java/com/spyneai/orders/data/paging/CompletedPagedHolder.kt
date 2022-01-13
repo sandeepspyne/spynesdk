@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.spyneai.R
+import com.spyneai.shoot.repository.model.project.Project
 
 class CompletedPagedHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -40,14 +41,16 @@ class CompletedPagedHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
     }
 
-    fun bind(item: ProjectPagedRes.ProjectPagedResItem?) {
-        showData(item)
+    fun bind(item: Project?) {
+        item?.let {
+            showData(item)
+        }
     }
 
-    private fun showData(item: ProjectPagedRes.ProjectPagedResItem?) {
+    private fun showData(item: Project) {
         tvProjectName.text = item?.projectName
-        tvCategory.text = item?.category
+        tvCategory.text = item?.categoryName
         tvDate.text = item?.createdOn
-        tvSkus.text = item?.totalSku.toString()
+        tvSkus.text = item?.skuCount.toString()
     }
 }

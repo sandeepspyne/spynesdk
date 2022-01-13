@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.needs.AppConstants
 import com.spyneai.orders.ui.activity.OngoingSkusActivity
+import com.spyneai.shoot.repository.model.project.Project
 
 class OngoingPagedHolder(
     val context: Context,
@@ -50,12 +51,12 @@ class OngoingPagedHolder(
         }
     }
 
-    fun bind(item: ProjectPagedRes.ProjectPagedResItem?) {
+    fun bind(item: Project?) {
         item?.let { showData(it) }
     }
 
-    private fun showData(item: ProjectPagedRes.ProjectPagedResItem) {
-        if (item.prodCatId == AppConstants.CARS_CATEGORY_ID && (item.prodCatId == item.prodCatId)) {
+    private fun showData(item: Project) {
+        if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.subCategoryId == item.categoryId)) {
             llThreeSixty.visibility = View.VISIBLE
             tvCategory.text = "Automobiles"
         } else {
@@ -75,12 +76,12 @@ class OngoingPagedHolder(
             tvImage.visibility = View.INVISIBLE
             tvImages.visibility = View.INVISIBLE
         } else {
-            if (item.category.equals("cat_d8R14zUNx")
-                || item.category.equals("cat_Ujt0kuFxY")
-                || item.category.equals("cat_Ujt0kuFxX")
-                || item.category.equals("E-Commerce")
-                || item.category.equals("Footwear")
-                || item.category.equals("Bikes")
+            if (item.categoryName.equals("cat_d8R14zUNx")
+                || item.categoryName.equals("cat_Ujt0kuFxY")
+                || item.categoryName.equals("cat_Ujt0kuFxX")
+                || item.categoryName.equals("E-Commerce")
+                || item.categoryName.equals("Footwear")
+                || item.categoryName.equals("Bikes")
             ) {
                 when (context.getString(R.string.app_name)) {
                     AppConstants.SWIGGYINSTAMART, AppConstants.SPYNE_AI, AppConstants.FLIPKART_GROCERY, AppConstants.EBAY, AppConstants.UDAAN ->
@@ -108,7 +109,7 @@ class OngoingPagedHolder(
             }
         }
 
-        tvSkus.text = item.totalSku.toString()
+        tvSkus.text = item.skuCount.toString()
 
         //tvImages.text = item.total_images.toString()
 //        tvImageCount.text =
@@ -155,10 +156,10 @@ class OngoingPagedHolder(
 
         cvMain.setOnClickListener {
 
-            if (item.category.equals("cat_d8R14zUNE") || item.category.equals("Automobiles")) {
+            if (item.categoryName.equals("cat_d8R14zUNE") || item.categoryName.equals("Automobiles")) {
 
             } else {
-                if (item.totalSku == 0) {
+                if (item.skuCount == 0) {
                     Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
                 } else if (item.status.equals("Uploaded")) {
                     Intent(context, OngoingSkusActivity::class.java)

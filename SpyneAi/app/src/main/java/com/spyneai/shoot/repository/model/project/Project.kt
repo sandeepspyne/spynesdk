@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 @Entity
 data class Project(
     @PrimaryKey(autoGenerate = false)
-    val uuid: String,
+    var uuid: String,
     var isCreated: Boolean = false,
     val toProcessAt: Long = System.currentTimeMillis(),
     val retryCount: Int = 1,
@@ -26,6 +26,7 @@ data class Project(
     @SerializedName("images_count") var imagesCount: Int = 0,
     @SerializedName("processed_images") var processedCount: Int = 0,
     @SerializedName("thumbnail") var thumbnail: String? = null,
+    @SerializedName("created_on") var createdOn: String? = null,
     @SerializedName("created_at") val createdAt: Long = System.currentTimeMillis(),
     @SerializedName("updated_at") val updatedAt: Long = System.currentTimeMillis()
 )
