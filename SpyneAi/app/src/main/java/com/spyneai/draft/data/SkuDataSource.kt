@@ -1,55 +1,51 @@
-package com.spyneai.orders.data.paging
+package com.spyneai.draft.data
 
-import android.net.Uri
 import android.util.Log
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import androidx.room.withTransaction
 import com.google.gson.Gson
 import com.spyneai.BaseApplication
-import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.ProjectApi
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.isInternetActive
-import com.spyneai.orders.data.paging.PagedRepository.Companion.DEFAULT_PAGE_INDEX
+import com.spyneai.orders.data.paging.PagedRepository
 import com.spyneai.shoot.repository.model.project.Project
+import com.spyneai.shoot.repository.model.sku.Sku
 import retrofit2.HttpException
 import java.io.IOException
 
-
-class ProjectDataSource(
+class SkuDataSource(
     private val service: ProjectApi,
     val appDatabase: AppDatabase,
-    val status: String
-    ) : PagingSource<Int, Project>() {
+    val projectId: String?,
+    val projectUuid : String,
+) : PagingSource<Int, Sku>() {
 
-    val TAG = "ProjectDataSource"
+    val TAG = "SkuDataSource"
 
-    @ExperimentalPagingApi
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Project> {
-        val page = params.key ?: DEFAULT_PAGE_INDEX
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Sku> {
+        val page = params.key ?: 0
         Log.d(TAG, "load: "+page)
-        //val apiQuery = query + IN_QUALIFIER
 
         return try {
-            if (BaseApplication.getContext().isInternetActive()){
-                val response = service.getPagedProjects(
+            if (projectId != null && BaseApplication.getContext().isInternetActive()){
+                val response = service.getPagedSku(
                     pageNo = page,
-                    status = status
+                    projectId = projectId
                 )
 
-                val prevKey = if (page == DEFAULT_PAGE_INDEX) null else page - 1
+                val prevKey = if (page == 0) null else page - 1
                 val nextKey = if (response.isNullOrEmpty()) null else page + 1
 
                 appDatabase.withTransaction {
-                    val ss = appDatabase.getPagingDao().insertWithCheck(response)
+                    val ss = appDatabase.shootDao().insertWithCheck(response)
                     Log.d(TAG, "load: ${Gson().toJson(ss)}")
                 }
 
-                val finalResponse = appDatabase.getPagingDao().getProjectsWithLimitAndSkip(
+                val finalResponse = appDatabase.shootDao().getSkusWithLimitAndSkip(
                     offset = page.times(10),
-                    status = status
+                    projectUuid = projectUuid
                 )
 
                 LoadResult.Page(
@@ -58,12 +54,12 @@ class ProjectDataSource(
                     nextKey = nextKey
                 )
             }else{
-                val response = appDatabase.getPagingDao().getProjectsWithLimitAndSkip(
+                val response = appDatabase.shootDao().getSkusWithLimitAndSkip(
                     offset = page.times(10),
-                    status = status
+                    projectUuid = projectUuid
                 )
 
-                val prevKey = if (page == DEFAULT_PAGE_INDEX) null else page - 1
+                val prevKey = if (page == 0) null else page - 1
                 val nextKey = if (response.isNullOrEmpty()) null else page + 1
 
 
@@ -80,13 +76,12 @@ class ProjectDataSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Project>): Int? {
-        // We need to get the previous key (or next key if previous is null) of the page
-        // that was closest to the most recently accessed index.
-        // Anchor position is the most recently accessed index
+    override fun getRefreshKey(state: PagingState<Int, Sku>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
     }
+
+
 }

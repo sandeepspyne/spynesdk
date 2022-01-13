@@ -41,7 +41,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun getPagingDao(): PagingDao
 
-
     companion object {
 
         @Volatile

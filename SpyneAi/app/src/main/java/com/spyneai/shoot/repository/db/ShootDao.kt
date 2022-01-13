@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.room.*
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 
@@ -158,6 +159,9 @@ interface ShootDao {
     @Query("select * from sku where uuid = :uuid")
     fun getSku(uuid: String) : Sku
 
+    @Query("select * from sku where project_uuid = :uuid")
+    fun getSkuWithProjectUuid(uuid: String) : Sku
+
     @Query("UPDATE project SET imagesCount = imagesCount + 1, thumbnail= :thumbnail WHERE uuid =:uuid ")
     fun updateProjectThumbnail(uuid: String,thumbnail: String) : Int
 
@@ -301,6 +305,43 @@ interface ShootDao {
 
     @Update
     fun updateImage(image: Image): Int
+
+
+    @Query("SELECT * FROM sku where project_uuid = :projectUuid LIMIT :limit OFFSET :offset")
+    suspend fun getSkusWithLimitAndSkip(offset: Int,projectUuid: String,limit: Int = 50) : List<Sku>
+
+    @Transaction
+    suspend fun insertWithCheck(response: ArrayList<Sku>){
+        val list = ArrayList<Sku>()
+
+        response.forEach {
+            if (it.uuid ==  null)
+                it.uuid = getUuid()
+
+            if (it.status == "Done")
+                it.status = "completed"
+
+            if (it.status == "In Progress")
+                it.status = "ongoing"
+
+            it.status = it.status.lowercase()
+
+            val dbItem = getSkuWithProjectUuid(it.projectUuid!!)
+
+            if (dbItem == null){
+                list.add(it)
+            }else {
+                if (it.imagesCount > dbItem.imagesCount)
+                    list.add(it)
+            }
+
+        }
+
+        insertAll(list)
+    }
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(skuList: List<Sku>) : List<Long>
 
 }
 

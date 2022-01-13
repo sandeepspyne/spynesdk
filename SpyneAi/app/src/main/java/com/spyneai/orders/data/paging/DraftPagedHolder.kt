@@ -116,6 +116,7 @@ class DraftPagedHolder(
                         putExtra("position", position)
                         putExtra(AppConstants.FROM_LOCAL_DB, false)
                         putExtra(AppConstants.PROJECT_NAME, item.projectName)
+                        putExtra(AppConstants.PROJECT_UUIID, item.uuid)
                         putExtra(AppConstants.PROJECT_ID, item.projectId)
                         context.startActivity(this)
                     }

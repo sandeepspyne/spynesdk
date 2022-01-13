@@ -41,6 +41,7 @@ interface PagingDao {
 
         insertAll(list)
     }
+
     @Query("SELECT * FROM project where status = :status")
     fun getAllProjects(status: String = "Draft"): PagingSource<Int, Project>
 
