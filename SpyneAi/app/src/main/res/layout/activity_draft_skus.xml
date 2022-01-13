@@ -68,14 +68,14 @@
             android:id="@+id/tvProject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_14"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:fontFamily="@font/poppins_medium"
             android:text="@string/project_name"
             android:textColor="@color/categories_text"
-            android:layout_marginLeft="17dp"
-            android:layout_marginTop="16dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginBottom="16dp"/>
+            android:textSize="@dimen/sp_14" />
 
         <TextView
             android:id="@+id/tvProjectName"

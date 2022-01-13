@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.draft.ui.DraftPagedSkuActivity
 import com.spyneai.draft.ui.DraftSkusActivity
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
@@ -42,12 +44,14 @@ class DraftPagedHolder(
         }
     }
 
+    @ExperimentalPagingApi
     fun bind(item: Project?) {
         item?.let {
             showData(item)
         }
     }
 
+    @ExperimentalPagingApi
     private fun showData(item: Project) {
         if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
            llThreeSixty.visibility = View.VISIBLE
@@ -111,7 +115,7 @@ class DraftPagedHolder(
 
        cvMain.setOnClickListener {
             if (item.categoryId == item.subCategoryId) {
-                Intent(context, DraftSkusActivity::class.java)
+                Intent(context, DraftPagedSkuActivity::class.java)
                     .apply {
                         putExtra("position", position)
                         putExtra(AppConstants.FROM_LOCAL_DB, false)
@@ -156,12 +160,13 @@ class DraftPagedHolder(
                     }
 
                     else -> {
-                        Intent(context, DraftSkusActivity::class.java)
+                        Intent(context, DraftPagedSkuActivity::class.java)
                             .apply {
                                 putExtra("position", position)
                                 putExtra(AppConstants.FROM_LOCAL_DB, false)
                                 putExtra(AppConstants.PROJECT_NAME, item.projectName)
                                 putExtra(AppConstants.PROJECT_ID, item.projectId)
+                                putExtra(AppConstants.PROJECT_UUIID, item.uuid)
                                 context.startActivity(this)
                             }
                     }

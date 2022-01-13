@@ -311,12 +311,15 @@ interface ShootDao {
     suspend fun getSkusWithLimitAndSkip(offset: Int,projectUuid: String,limit: Int = 50) : List<Sku>
 
     @Transaction
-    suspend fun insertWithCheck(response: ArrayList<Sku>){
+    suspend fun insertWithCheck(response: ArrayList<Sku>,projectUuid: String){
         val list = ArrayList<Sku>()
 
         response.forEach {
             if (it.uuid ==  null)
                 it.uuid = getUuid()
+
+            it.projectUuid = projectUuid
+            it.backgroundId = AppConstants.DEFAULT_BG_ID
 
             if (it.status == "Done")
                 it.status = "completed"

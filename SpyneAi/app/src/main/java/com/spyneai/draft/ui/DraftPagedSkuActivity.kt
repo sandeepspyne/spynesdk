@@ -1,47 +1,38 @@
 package com.spyneai.draft.ui
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.spyneai.R
-import com.spyneai.base.network.Resource
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.base.ViewModelFactory
-import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.databinding.ActivityDraftSkusBinding
 import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.draft.ui.adapter.DraftSkusAdapter
 import com.spyneai.draft.ui.adapter.LocalSkusAdapter
 import com.spyneai.draft.ui.adapter.SkuPagedAdapter
 import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.paging.LoaderStateAdapter
-import com.spyneai.orders.data.paging.ProjectPagedAdapter
 import com.spyneai.orders.data.response.GetProjectsResponse
-import com.spyneai.posthog.Events
 import com.spyneai.shoot.repository.model.sku.Sku
-import com.spyneai.shoot.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-
-class DraftSkusActivity : AppCompatActivity() {
+@ExperimentalPagingApi
+class DraftPagedSkuActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDraftSkusBinding
     lateinit var viewModel: DraftViewModel
     lateinit var skusAdapter: DraftSkusAdapter
     lateinit var skuList: ArrayList<GetProjectsResponse.Sku>
     var position = 0
     lateinit var adapter: SkuPagedAdapter
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDraftSkusBinding.inflate(layoutInflater)
@@ -75,7 +66,9 @@ class DraftSkusActivity : AppCompatActivity() {
 
         binding.shimmerCompletedSKU.startShimmer()
 
-
+        GlobalScope.launch(Dispatchers.IO) {
+            getSkus()
+        }
 
         //load data from local
         //loadDataFromLocal()
@@ -163,29 +156,29 @@ class DraftSkusActivity : AppCompatActivity() {
 
     }
 
-//
-//    private fun getSkus() {
-//        lifecycleScope.launch {
-//            viewModel.getSkus(
-//                intent.getStringExtra(AppConstants.PROJECT_ID),
-//                intent.getStringExtra(AppConstants.PROJECT_UUIID)!!
-//            ).distinctUntilChanged().collectLatest {
-//                if (!binding.rvSkus.isVisible){
-//                    binding.shimmerCompletedSKU.stopShimmer()
-//                    binding.shimmerCompletedSKU.visibility = View.GONE
-//                    binding.rvSkus.visibility = View.VISIBLE
-//                }
-//                adapter.submitData(it)
-//            }
-//        }
-//    }
+    @ExperimentalPagingApi
+    private fun getSkus() {
+        lifecycleScope.launch {
+            viewModel.getSkus(
+                "2567339c",
+                intent.getStringExtra(AppConstants.PROJECT_UUIID)!!
+            ).distinctUntilChanged().collectLatest {
+                if (!binding.rvSkus.isVisible){
+                    binding.shimmerCompletedSKU.stopShimmer()
+                    binding.shimmerCompletedSKU.visibility = View.GONE
+                    binding.rvSkus.visibility = View.VISIBLE
+                }
+                adapter.submitData(it)
+            }
+        }
+    }
 
     private fun loadDataFromLocal() {
         GlobalScope.launch(Dispatchers.IO) {
             val skusList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!) as ArrayList<Sku>
 
             GlobalScope.launch(Dispatchers.Main) {
-                val localSkusAdapter = LocalSkusAdapter(this@DraftSkusActivity, skusList)
+                //val localSkusAdapter = LocalSkusAdapter(this@DraftSkusActivity, skusList)
 
 //                tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
 //                tvTotalSku.text =  skusList.size.toString()

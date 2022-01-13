@@ -4,11 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.spyneai.BaseApplication
+import com.spyneai.base.network.ProjectApiClient
 import com.spyneai.base.network.Resource
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.getUuid
+import com.spyneai.orders.data.paging.PagedRepository
 import com.spyneai.orders.data.repository.MyOrdersRepository
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
@@ -21,6 +26,7 @@ import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class DraftViewModel : ViewModel() {
@@ -37,6 +43,17 @@ class DraftViewModel : ViewModel() {
     private val _imagesOfSkuRes: MutableLiveData<Resource<ImagesOfSkuRes>> = MutableLiveData()
     val imagesOfSkuRes: LiveData<Resource<ImagesOfSkuRes>>
         get() = _imagesOfSkuRes
+
+    @ExperimentalPagingApi
+    fun getSkus(projectId: String?,projectUuid: String): Flow<PagingData<Sku>> {
+        return SkuRepository(
+            ProjectApiClient().getClient(),
+            AppDatabase.getInstance(BaseApplication.getContext()),
+            projectId,
+            projectUuid
+        ).getSearchResultStream()
+            .cachedIn(viewModelScope)
+    }
 
     fun getDrafts(
         tokenId: String

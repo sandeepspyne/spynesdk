@@ -2,6 +2,7 @@ package com.spyneai.orders.data.paging
 
 import android.content.Context
 import android.view.ViewGroup
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +12,6 @@ class ProjectPagedAdapter(
     val context : Context,
     val status: String) :
     PagingDataAdapter<Project, RecyclerView.ViewHolder>(REPO_COMPARATOR) {
-// body is unchanged
 
     object REPO_COMPARATOR : DiffUtil.ItemCallback<Project>() {
         override fun areItemsTheSame(
@@ -27,6 +27,7 @@ class ProjectPagedAdapter(
             oldItem == newItem
     }
 
+    @ExperimentalPagingApi
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         getItem(position)?.let {
