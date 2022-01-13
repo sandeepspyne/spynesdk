@@ -23,7 +23,10 @@ class PagedFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingProjectsBin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = ProjectPagedAdapter()
+        adapter = ProjectPagedAdapter(
+            requireContext(),
+            arguments?.getString("status").toString()
+        )
 
         binding.rvMyOngoingProjects.layoutManager  =
             LinearLayoutManager(
