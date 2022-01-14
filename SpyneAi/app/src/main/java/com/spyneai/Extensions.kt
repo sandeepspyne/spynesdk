@@ -344,16 +344,22 @@ fun Context.loadSmartly(path : String?,imageView : ImageView){
     path?.let {
         if (path.contains("http") || path.contains("https")){
             imageView.rotation = 0F
+            Glide.with(this)
+                .load(path)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .skipMemoryCache(false)
+                .into(imageView)
         }
         else{
             imageView.rotation = 90F
+            Glide.with(this)
+                .load(path)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(imageView)
         }
 
-        Glide.with(this)
-            .load(path)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .into(imageView)
+
     }
 }
 

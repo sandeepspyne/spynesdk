@@ -61,8 +61,8 @@ class SkuPagedHolder(
                         .load(R.drawable.ic_food_thumbnail_draft)
                         .into(ivThumbnail)
                 } else{
-//                    context.loadSmartly(item.images[0].input_lres,
-//                        ivThumbnail)
+                    context.loadSmartly(item.thumbnail,
+                        ivThumbnail)
                 }
             }catch (e: Exception){
 
