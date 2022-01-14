@@ -359,9 +359,17 @@ interface ShootDao {
             if(it.overlayId == null)
                 it.overlayId = "1234"
 
+            if(it.output_image_hres_url == null)
+                it.output_image_hres_url = ""
+
+            if(it.output_image_lres_url == null)
+                it.output_image_lres_url = ""
+
+            if(it.output_image_lres_wm_url == null)
+                it.output_image_lres_wm_url = ""
+
             it.skuUuid = skuUuid
             it.path = it.input_image_lres_url
-
 
 
             if (it.status == "Done" || it.status == "Yet to Start" || it.status == "Failed"){

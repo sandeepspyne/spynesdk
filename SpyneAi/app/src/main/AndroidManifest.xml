@@ -53,9 +53,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".processedimages.ui.ProcessedPagedImagesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".orders.ui.activity.CompletedPagedActivity"
+            android:exported="false" />
+        <activity
             android:name=".draft.ui.DraftPagedSkuActivity"
             android:exported="false" />
-        <activity android:name=".RoomTestActivity"></activity>
+        <activity android:name=".RoomTestActivity" />
         <activity
             android:name=".reshoot.ui.ReshootPortraitActivity"
             android:exported="false"

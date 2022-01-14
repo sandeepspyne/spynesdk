@@ -37,10 +37,10 @@ class DraftPagedHolder(
 
     companion object {
         //get instance of the DoggoImageViewHolder
-        fun getInstance(context: Context,parent: ViewGroup): DraftPagedHolder {
+        fun getInstance(context: Context, parent: ViewGroup): DraftPagedHolder {
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.item_draft_project, parent, false)
-            return DraftPagedHolder(view,context)
+            return DraftPagedHolder(view, context)
         }
     }
 
@@ -54,11 +54,11 @@ class DraftPagedHolder(
     @ExperimentalPagingApi
     private fun showData(item: Project) {
         if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
-           llThreeSixty.visibility = View.VISIBLE
-           tvCategory.text = "Automobiles"
+            llThreeSixty.visibility = View.VISIBLE
+            tvCategory.text = "Automobiles"
         } else {
-           tvCategory.text = item.categoryName
-           llThreeSixty.visibility = View.GONE
+            tvCategory.text = item.categoryName
+            llThreeSixty.visibility = View.GONE
         }
 
 //        try {
@@ -108,22 +108,14 @@ class DraftPagedHolder(
 //            e.printStackTrace()
 //        }
 
-       tvProjectName.text = item.projectName
-       tvSkus.text = item.skuCount.toString()
-       tvDate.text = item.createdOn
-       tvImages.text = item.imagesCount.toString()
+        tvProjectName.text = item.projectName
+        tvSkus.text = item.skuCount.toString()
+        tvDate.text = item.createdOn
+        tvImages.text = item.imagesCount.toString()
 
-       cvMain.setOnClickListener {
+        cvMain.setOnClickListener {
             if (item.categoryId == item.subCategoryId) {
-                Intent(context, DraftPagedSkuActivity::class.java)
-                    .apply {
-                        putExtra("position", position)
-                        putExtra(AppConstants.FROM_LOCAL_DB, false)
-                        putExtra(AppConstants.PROJECT_NAME, item.projectName)
-                        putExtra(AppConstants.PROJECT_UUIID, item.uuid)
-                        putExtra(AppConstants.PROJECT_ID, item.projectId)
-                        context.startActivity(this)
-                    }
+                context.startActivity(getDraftIntent(item))
             } else {
                 when {
                     item.skuCount == 0 -> {
@@ -140,7 +132,11 @@ class DraftPagedHolder(
                     }
 
                     item.categoryName == "Footwear" && item.subCategoryName == "" -> {
-                        Utilities.savePrefrence(context, AppConstants.CATEGORY_NAME, item.categoryName)
+                        Utilities.savePrefrence(
+                            context,
+                            AppConstants.CATEGORY_NAME,
+                            item.categoryName
+                        )
 
                         Intent(context, ShootPortraitActivity::class.java)
                             .apply {
@@ -160,18 +156,20 @@ class DraftPagedHolder(
                     }
 
                     else -> {
-                        Intent(context, DraftPagedSkuActivity::class.java)
-                            .apply {
-                                putExtra("position", position)
-                                putExtra(AppConstants.FROM_LOCAL_DB, false)
-                                putExtra(AppConstants.PROJECT_NAME, item.projectName)
-                                putExtra(AppConstants.PROJECT_ID, item.projectId)
-                                putExtra(AppConstants.PROJECT_UUIID, item.uuid)
-                                context.startActivity(this)
-                            }
+                        context.startActivity(getDraftIntent(item))
                     }
                 }
             }
         }
+    }
+
+    @ExperimentalPagingApi
+    fun getDraftIntent(item: Project) = Intent(context, DraftPagedSkuActivity::class.java).apply {
+        putExtra("position", position)
+        putExtra(AppConstants.FROM_LOCAL_DB, true)
+        putExtra(AppConstants.PROJECT_NAME, item.projectName)
+        putExtra(AppConstants.SKU_COUNT, item.skuCount)
+        putExtra(AppConstants.PROJECT_UUIID, item.uuid)
+        putExtra(AppConstants.PROJECT_ID, item.projectId)
     }
 }

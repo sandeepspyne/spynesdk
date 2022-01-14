@@ -58,7 +58,6 @@ class CompletedSkusActivity : AppCompatActivity() {
 
         skuList = ArrayList<GetProjectsResponse.Sku>()
 
-
         shimmerCompletedSKU.startShimmer()
         viewModel.getCompletedProjects(
             Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(), status

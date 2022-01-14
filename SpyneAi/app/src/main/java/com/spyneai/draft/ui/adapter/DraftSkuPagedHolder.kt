@@ -15,15 +15,13 @@ import com.spyneai.draft.ui.DraftSkuDetailsActivity
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.paging.OngoingPagedHolder
-import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.ui.ThreeSixtyActivity
 import com.spyneai.threesixty.ui.TrimActivity
 
-class SkuPagedHolder(
+class DraftSkuPagedHolder(
     val context: Context,
     val view: View
 ) : RecyclerView.ViewHolder(view) {
@@ -39,10 +37,10 @@ class SkuPagedHolder(
         fun getInstance(
             context: Context,
             parent: ViewGroup
-        ): SkuPagedHolder {
+        ): DraftSkuPagedHolder {
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.item_draft_sku, parent, false)
-            return SkuPagedHolder(context, view)
+            return DraftSkuPagedHolder(context, view)
         }
     }
 

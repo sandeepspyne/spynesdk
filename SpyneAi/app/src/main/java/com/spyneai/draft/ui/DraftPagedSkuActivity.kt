@@ -42,7 +42,7 @@ class DraftPagedSkuActivity : AppCompatActivity() {
             "draft"
         )
 
-        binding.rvSkus.layoutManager  =
+        binding.rvSkus.layoutManager =
             LinearLayoutManager(
                 this, LinearLayoutManager.VERTICAL,
                 false
@@ -56,6 +56,9 @@ class DraftPagedSkuActivity : AppCompatActivity() {
         }
 
         position = intent.getIntExtra("position", 0)!!
+
+        binding.tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
+        binding.tvTotalSku.text = intent.getIntExtra(AppConstants.SKU_COUNT,0).toString()
 
         viewModel = ViewModelProvider(this, ViewModelFactory()).get(DraftViewModel::class.java)
 
@@ -158,7 +161,7 @@ class DraftPagedSkuActivity : AppCompatActivity() {
                 "2567339c",
                 intent.getStringExtra(AppConstants.PROJECT_UUIID)!!
             ).distinctUntilChanged().collectLatest {
-                if (!binding.rvSkus.isVisible){
+                if (!binding.rvSkus.isVisible) {
                     binding.shimmerCompletedSKU.stopShimmer()
                     binding.shimmerCompletedSKU.visibility = View.GONE
                     binding.rvSkus.visibility = View.VISIBLE
@@ -170,7 +173,8 @@ class DraftPagedSkuActivity : AppCompatActivity() {
 
     private fun loadDataFromLocal() {
         GlobalScope.launch(Dispatchers.IO) {
-            val skusList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!) as ArrayList<Sku>
+            val skusList =
+                viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!) as ArrayList<Sku>
 
             GlobalScope.launch(Dispatchers.Main) {
                 //val localSkusAdapter = LocalSkusAdapter(this@DraftSkusActivity, skusList)

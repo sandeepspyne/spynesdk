@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.shoot.repository.model.project.Project
 
+@ExperimentalPagingApi
 class ProjectPagedAdapter(
     val context : Context,
     val status: String) :
@@ -43,7 +44,7 @@ class ProjectPagedAdapter(
         return when (status) {
             "draft" -> DraftPagedHolder.getInstance(context,parent)
             "ongoing" -> OngoingPagedHolder.getInstance(context,parent)
-            else -> CompletedPagedHolder.getInstance(parent)
+            else -> CompletedPagedHolder.getInstance(context,parent)
         }
     }
 }

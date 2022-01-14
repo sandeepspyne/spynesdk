@@ -754,9 +754,9 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
     private fun getSkuImages() {
        // Utilities.showProgressDialog(requireContext())
 
-        viewModel.getImagesOfSku(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-            viewModel.skuId!!
+        viewModel.getImages(
+            requireActivity().intent.getStringExtra(AppConstants.SKU_ID),
+            requireActivity().intent.getStringExtra(AppConstants.SKU_UUID).toString()
         )
     }
 

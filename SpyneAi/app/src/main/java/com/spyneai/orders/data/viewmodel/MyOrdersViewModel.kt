@@ -13,6 +13,7 @@ import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ProjectApiClient
 import com.spyneai.base.network.Resource
 import com.spyneai.base.room.AppDatabase
+import com.spyneai.draft.data.SkuRepository
 import com.spyneai.orders.data.paging.PagedRepository
 import com.spyneai.orders.data.paging.ProjectPagedRes
 import com.spyneai.orders.data.repository.MyOrdersRepository
@@ -20,6 +21,7 @@ import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.repository.model.project.Project
+import com.spyneai.shoot.repository.model.sku.Sku
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -38,6 +40,17 @@ class MyOrdersViewModel : ViewModel() {
             ProjectApiClient().getClient(),
             AppDatabase.getInstance(BaseApplication.getContext()),
             status
+        ).getSearchResultStream()
+            .cachedIn(viewModelScope)
+    }
+
+    @ExperimentalPagingApi
+    fun getSkus(projectId: String?, projectUuid: String): Flow<PagingData<Sku>> {
+        return SkuRepository(
+            ProjectApiClient().getClient(),
+            AppDatabase.getInstance(BaseApplication.getContext()),
+            projectId,
+            projectUuid
         ).getSearchResultStream()
             .cachedIn(viewModelScope)
     }
