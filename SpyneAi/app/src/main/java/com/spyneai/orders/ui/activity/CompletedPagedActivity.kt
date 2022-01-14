@@ -73,7 +73,7 @@ class CompletedPagedActivity : AppCompatActivity() {
     private fun getSkus() {
         lifecycleScope.launch {
             viewModel.getSkus(
-                "2567339c",
+                intent.getStringExtra(AppConstants.PROJECT_ID),
                 intent.getStringExtra(AppConstants.PROJECT_UUIID)!!
             ).distinctUntilChanged().collectLatest {
                 if (!binding.rvSkus.isVisible) {

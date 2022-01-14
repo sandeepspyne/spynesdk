@@ -48,8 +48,7 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
 
         shootId = intent.getStringExtra("sku_id")!!
 
-        shootViewModel.getImagesOfSku(Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-        intent.getStringExtra("sku_id")!!)
+        shootViewModel.getImagesOfSku(intent.getStringExtra("sku_id")!!)
 
         shootViewModel.imagesOfSkuRes.observe(this,{
             when(it) {

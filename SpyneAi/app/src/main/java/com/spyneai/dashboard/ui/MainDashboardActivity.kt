@@ -140,34 +140,10 @@ class MainDashboardActivity : AppCompatActivity() {
             }
         })
 
-
-        val list = ArrayList<Project>()
-            .apply {
-                add(
-                    Project(
-                        getUuid(),
-                    projectId = "2b28f897",categoryId = "12234",
-                        categoryName = "salkhdalks",projectName = "prj1",
-                        status = "Draft",createdOn = "2021-10-19T10:21:38.000Z",
-                        skuCount = 72
-                ))
-
-                add(
-                    Project(
-                        getUuid(),
-                        projectId = "9101112",categoryId = "12234",
-                        categoryName = "salkhdalks",projectName = "prj(-1)",
-                        status = "Ongoing",createdOn = "2021-10-19T10:21:38.000Z",skuCount = 10
-                    ))
-            }
-
-
         GlobalScope.launch(Dispatchers.IO) {
-            val dao = AppDatabase.getInstance(BaseApplication.getContext())
+            val sku = AppDatabase.getInstance(BaseApplication.getContext()).shootDao().getProcessAbleSku()
 
-            val items = dao.getPagingDao().insertAll(list)
-
-            Log.d(TAG, "onCreate: "+items)
+            val s = ""
         }
     }
 

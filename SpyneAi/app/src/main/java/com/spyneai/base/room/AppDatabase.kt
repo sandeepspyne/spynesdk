@@ -31,8 +31,7 @@ import com.spyneai.threesixty.data.model.VideoDetails
     CarsBackgroundRes.Background::class,
     Project::class,
     Sku::class,
-    Image::class,
-    VideoDetails::class],
+    Image::class],
     version = 1,
     exportSchema = false)
 @TypeConverters(StringListConvertor::class)

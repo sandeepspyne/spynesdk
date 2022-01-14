@@ -160,42 +160,44 @@ class ProcessSkuSync(
         }while (sku != null)
 
         if (!connectionLost){
+            listener.onCompleted("All Skus Processed",SeverSyncTypes.PROCESS,false)
+            Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
             //get pending projects count
-            val count = shootDao.getPendingSku()
-
-            Log.d(TAG, "processSku: count $count")
-
-            context.captureEvent(
-                Events.ALL_SKUS_PROCESSED_BREAKS,
-                HashMap<String,Any?>().apply {
-                    put("sku_remaining",count)
-                }
-            )
-
-            if (count > 0){
-                val sku = shootDao.getOldestSku()
-                val scheduleTime = sku.toProcessAt.minus(System.currentTimeMillis())
-                if (scheduleTime > 0){
-                    Log.d(TAG, "selectLastImageAndUpload: "+scheduleTime)
-                    Log.d(TAG, "selectLastImageAndUpload: "+ TimeUnit.MILLISECONDS.toMinutes(scheduleTime))
-                    Log.d(TAG, "selectLastImageAndUpload: "+sku.toProcessAt.toDate())
-                    val handler = Handler(Looper.getMainLooper())
-
-                    handler.postDelayed({
-                        Log.d(TAG, "selectLastImageAndUpload: "+sku.toProcessAt.toDate())
-                        GlobalScope.launch(Dispatchers.IO) {
-                            processSku()
-                        }
-                    },scheduleTime)
-                }
-                else{
-                    processSku()
-                }
-            }else {
-                Log.d(TAG, "processSku: all processed")
-                listener.onCompleted("All Skus Processed",SeverSyncTypes.PROCESS,false)
-                Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
-            }
+//            val count = shootDao.getPendingSku()
+//
+//            Log.d(TAG, "processSku: count $count")
+//
+//            context.captureEvent(
+//                Events.ALL_SKUS_PROCESSED_BREAKS,
+//                HashMap<String,Any?>().apply {
+//                    put("sku_remaining",count)
+//                }
+//            )
+//
+//            if (count > 0){
+//                val sku = shootDao.getOldestSku()
+//                val scheduleTime = sku.toProcessAt.minus(System.currentTimeMillis())
+//                if (scheduleTime > 0){
+//                    Log.d(TAG, "selectLastImageAndUpload: "+scheduleTime)
+//                    Log.d(TAG, "selectLastImageAndUpload: "+ TimeUnit.MILLISECONDS.toMinutes(scheduleTime))
+//                    Log.d(TAG, "selectLastImageAndUpload: "+sku.toProcessAt.toDate())
+//                    val handler = Handler(Looper.getMainLooper())
+//
+//                    handler.postDelayed({
+//                        Log.d(TAG, "selectLastImageAndUpload: "+sku.toProcessAt.toDate())
+//                        GlobalScope.launch(Dispatchers.IO) {
+//                            processSku()
+//                        }
+//                    },scheduleTime)
+//                }
+//                else{
+//                    processSku()
+//                }
+//            }else {
+//                Log.d(TAG, "processSku: all processed")
+//                listener.onCompleted("All Skus Processed",SeverSyncTypes.PROCESS,false)
+//                Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
+//            }
         }
     }
 
@@ -209,26 +211,26 @@ class ProcessSkuSync(
             }
 
         val response = ShootRepository().updateTotalFrames(
-            Utilities.getPreference(context,AppConstants.AUTH_KEY)!!,
             sku.skuId!!,
-            sku.totalFrames.toString())
+            sku.totalFrames.toString(),
+            Utilities.getPreference(context,AppConstants.AUTH_KEY)!!)
 
         context.captureEvent(
             Events.UPDATE_TOTAL_FRAMES_INITIATED,
             properties
         )
 
-//        if (response is Resource.Failure){
-//            context.captureEvent(
-//                Events.UPDATE_TOTAL_FRAMES_FAILED,
-//                properties.apply {
-//                    put("response",response)
-//                    put("throwable",response.throwable)
-//                }
-//            )
-//            retryCount++
-//            return false
-//        }
+        if (response is Resource.Failure){
+            context.captureEvent(
+                Events.UPDATE_TOTAL_FRAMES_FAILED,
+                properties.apply {
+                    put("response",response)
+                    put("throwable",response.throwable)
+                }
+            )
+            retryCount++
+            return false
+        }
 
         context.captureEvent(
             Events.SKU_TOTAL_FRAMES_UPDATED,
@@ -276,17 +278,17 @@ class ProcessSkuSync(
             properties
         )
 
-//        if (response is Resource.Failure){
-//            context.captureEvent(
-//                Events.PROCESS_SKU_FAILED,
-//                properties.apply {
-//                    put("response",response)
-//                    put("throwable",response.throwable)
-//                }
-//            )
-//            retryCount++
-//            return false
-//        }
+        if (response is Resource.Failure){
+            context.captureEvent(
+                Events.PROCESS_SKU_FAILED,
+                properties.apply {
+                    put("response",response)
+                    put("throwable",response.throwable)
+                }
+            )
+            retryCount++
+            return false
+        }
 
         context.captureEvent(
             Events.SKU_PROCESSED,

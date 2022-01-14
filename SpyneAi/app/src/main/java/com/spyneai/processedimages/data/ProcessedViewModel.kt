@@ -33,11 +33,10 @@ class ProcessedViewModel : ViewModel() {
     val reshoot = MutableLiveData<Boolean>()
 
     fun getImagesOfSku(
-        authKey: String,
         skuId: String
     ) = viewModelScope.launch {
         _imagesOfSkuRes.value = Resource.Loading
-        _imagesOfSkuRes.value = processedRepository.getImagesOfSku(authKey, skuId)
+        _imagesOfSkuRes.value = processedRepository.getImagesOfSku(skuId)
     }
 
     fun getImages(skuId: String?, skuUuid: String) = viewModelScope.launch {
@@ -45,8 +44,7 @@ class ProcessedViewModel : ViewModel() {
 
         if (skuId != null && BaseApplication.getContext().isInternetActive()) {
             val response = processedRepository.getImagesOfSku(
-                skuId = skuId,
-                authKey = "85ababf3-15c0-496b-89a0-16a1d538955f"
+                skuId = skuId
             )
 
             if (response is Resource.Success) {

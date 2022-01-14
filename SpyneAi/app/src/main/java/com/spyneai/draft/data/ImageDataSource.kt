@@ -31,8 +31,7 @@ class ImageDataSource(
         return try {
             if (skuId != null && BaseApplication.getContext().isInternetActive()){
                 val response = service.getImagesOfSku(
-                    skuId = skuId,
-                    authKey = "c0451cb9-ed40-4da6-992f-c2481f17120f"
+                    skuId = skuId
                 )
 
                 val prevKey = if (page == 0) null else page - 1

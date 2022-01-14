@@ -112,7 +112,7 @@ class DraftSkuPagedHolder(
                     putExtra(AppConstants.PROJECT_NAME, item.skuName)
                    // putExtra(AppConstants.SKU_COUNT, item.imagesCount)
                     putExtra(AppConstants.SKU_CREATED, false)
-                    putExtra(AppConstants.SKU_ID, "d2180513")
+                    putExtra(AppConstants.SKU_ID, item.skuId)
                     putExtra(AppConstants.SKU_UUID, item.uuid)
                     putExtra(AppConstants.EXTERIOR_ANGLES, item.initialFrames)
                     //putExtra("is_paid",item.paid)

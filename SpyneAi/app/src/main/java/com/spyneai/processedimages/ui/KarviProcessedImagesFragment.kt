@@ -297,7 +297,6 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
         // Utilities.showProgressDialog(requireContext())
 
         viewModel.getImagesOfSku(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.skuId!!
         )
     }

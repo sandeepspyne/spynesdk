@@ -113,7 +113,7 @@ class CompletedSkuPagedHolder(
             )
             intent.putExtra(AppConstants.PROJECT_ID, item.projectId)
             intent.putExtra(AppConstants.PROJECT_UUIID, item.projectUuid)
-            intent.putExtra(AppConstants.SKU_ID, "38d35701")
+            intent.putExtra(AppConstants.SKU_ID, item.skuId)
             intent.putExtra(AppConstants.SKU_UUID, item.uuid)
             intent.putExtra(AppConstants.SKU_NAME, item.skuName)
             intent.putExtra(AppConstants.CATEGORY_ID, item.categoryId)

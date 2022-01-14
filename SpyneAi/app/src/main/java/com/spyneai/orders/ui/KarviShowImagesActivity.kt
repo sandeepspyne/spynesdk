@@ -301,7 +301,6 @@ class KarviShowImagesActivity : AppCompatActivity() {
         // Utilities.showProgressDialog(requireContext())
 
         viewModel.getImagesOfSku(
-            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
             viewModel.skuId!!
         )
     }

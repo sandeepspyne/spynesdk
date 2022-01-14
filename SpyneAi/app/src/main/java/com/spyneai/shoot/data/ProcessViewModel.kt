@@ -223,5 +223,6 @@ class ProcessViewModel : ViewModel() {
             put("sku_uuid", sku!!.uuid!!)
             put("bg_id", backgroundSelect!!)
             put("bg_name", bgName!!)
+            put("total_frames", interiorMiscShootsCount)
         })
 }

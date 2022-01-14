@@ -483,7 +483,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         binding.shimmerCompletedSKU.startShimmer()
 
         viewModel.getImagesOfSku(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             requireActivity().intent.getStringExtra(AppConstants.SKU_ID)!!
         )
     }

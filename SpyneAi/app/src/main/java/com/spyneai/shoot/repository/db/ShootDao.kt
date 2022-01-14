@@ -240,9 +240,10 @@ interface ShootDao {
 
         Log.d(AppConstants.SHOOT_DAO_TAG, "updateBackground: $p")
         val s = updateSkuBackground(
-            map["skuUuid"].toString(),
+            map["sku_uuid"].toString(),
             map["bg_name"].toString(),
-            map["bg_id"].toString()
+            map["bg_id"].toString(),
+            map["total_frames"] as Int
         )
 
         Log.d(AppConstants.SHOOT_DAO_TAG, "updateBackground: $s")
@@ -251,8 +252,8 @@ interface ShootDao {
     @Query("UPDATE project SET status = 'ongoing' WHERE uuid =:uuid ")
     fun updateProjectStatus(uuid: String) : Int
 
-    @Query("UPDATE sku SET background_name = :backgroundName, background_id= :backgroundId WHERE uuid =:uuid ")
-    fun updateSkuBackground(uuid: String,backgroundName: String,backgroundId: String) : Int
+    @Query("UPDATE sku SET background_name = :backgroundName, background_id= :backgroundId, total_frames = total_frames + :totalFrames  WHERE uuid =:uuid ")
+    fun updateSkuBackground(uuid: String,backgroundName: String,backgroundId: String,totalFrames : Int) : Int
 
     @Query("Select path from image where skuUuid = :skuUuid")
     fun getImagesPathBySkuId(skuUuid : String) : List<String>

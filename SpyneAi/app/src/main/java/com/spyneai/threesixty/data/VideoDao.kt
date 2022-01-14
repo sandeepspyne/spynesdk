@@ -10,12 +10,12 @@ import java.util.*
 @Dao
 interface VideoDao {
 
-    @Insert
-    fun insert(videoDetails: VideoDetails): Long
-
-    @Update
-    fun update(videoDetails: VideoDetails): Long
-
-    @Query("select * from videodetails where uuid= :uuid")
-    fun getVideo(uuid: String) : VideoDetails
+//    @Insert
+//    fun insert(videoDetails: VideoDetails): Long
+//
+//    @Update
+//    fun update(videoDetails: VideoDetails): Long
+//
+//    @Query("select * from videodetails where uuid= :uuid")
+//    fun getVideo(uuid: String) : VideoDetails
 }

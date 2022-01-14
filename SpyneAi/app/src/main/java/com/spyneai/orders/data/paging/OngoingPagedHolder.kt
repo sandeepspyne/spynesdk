@@ -122,40 +122,40 @@ class OngoingPagedHolder(
         tvDate.text = item.createdOn
 
         //need thumbnal
-//        try {
-//            if (item.sku[0].images.isNullOrEmpty()) {
-//                if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)){
-//                    Glide.with(context)
-//                        .load(R.drawable.three_sixty_thumbnail)
-//                        .into(ivThumbnail)
-//                }else {
-//                    Glide.with(context)
-//                        .load(R.mipmap.defaults)
-//                        .into(ivThumbnail)
-//                }
-//            }else {
-//                if (item.sku[0].images[0].input_lres == null){
-//                    if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)){
-//                        Glide.with(context)
-//                            .load(R.drawable.three_sixty_thumbnail)
-//                            .into(ivThumbnail)
-//                    }else {
-//                        Glide.with(context)
-//                            .load(R.mipmap.defaults)
-//                            .into(ivThumbnail)
-//                    }
-//                }else{
-//                    Glide.with(context) // replace with 'this' if it's in activity
-//                        .load(item.sku[0].images[0].input_lres)
-//                        .into(ivThumbnail)
-//                }
-//
-//            }
-//        }catch (e : Exception){
-//            e.printStackTrace()
-//        }catch (e : IndexOutOfBoundsException){
-//            e.printStackTrace()
-//        }
+        try {
+            if (item.skuCount == 0) {
+                if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)){
+                    Glide.with(context)
+                        .load(R.drawable.three_sixty_thumbnail)
+                        .into(ivThumbnail)
+                }else {
+                    Glide.with(context)
+                        .load(R.mipmap.defaults)
+                        .into(ivThumbnail)
+                }
+            }else {
+                if (item.thumbnail == null){
+                    if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)){
+                        Glide.with(context)
+                            .load(R.drawable.three_sixty_thumbnail)
+                            .into(ivThumbnail)
+                    }else {
+                        Glide.with(context)
+                            .load(R.mipmap.defaults)
+                            .into(ivThumbnail)
+                    }
+                }else{
+                    Glide.with(context) // replace with 'this' if it's in activity
+                        .load(item.thumbnail)
+                        .into(ivThumbnail)
+                }
+
+            }
+        }catch (e : Exception){
+            e.printStackTrace()
+        }catch (e : IndexOutOfBoundsException){
+            e.printStackTrace()
+        }
 
         cvMain.setOnClickListener {
 

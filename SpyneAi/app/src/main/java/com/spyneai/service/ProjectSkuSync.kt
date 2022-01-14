@@ -175,29 +175,32 @@ class ProjectSkuSync(
             //get pending projects count
             val count = shootDao.getPendingProjects()
 
-            if (count > 0){
-                val project = shootDao.getOldestProject()
-                val scheduleTime = project.toProcessAt.minus(System.currentTimeMillis())
-                if (scheduleTime > 0){
-                    Log.d(TAG, "selectLastImageAndUpload: "+scheduleTime)
-                    Log.d(TAG, "selectLastImageAndUpload: "+ TimeUnit.MILLISECONDS.toMinutes(scheduleTime))
-                    Log.d(TAG, "selectLastImageAndUpload: "+project.toProcessAt.toDate())
-                    val handler = Handler(Looper.getMainLooper())
+            listener.onCompleted("All Projects Created",SeverSyncTypes.CREATE,false)
+            Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
 
-                    handler.postDelayed({
-                        Log.d(TAG, "selectLastImageAndUpload: "+project.toProcessAt.toDate())
-                        GlobalScope.launch(Dispatchers.IO) {
-                            startProjectSync()
-                        }
-                    },scheduleTime)
-                }
-                else{
-                    startProjectSync()
-                }
-            }else {
-                listener.onCompleted("All Projects Created",SeverSyncTypes.CREATE,false)
-                Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
-            }
+//            if (count > 0){
+//                val project = shootDao.getOldestProject()
+//                val scheduleTime = project.toProcessAt.minus(System.currentTimeMillis())
+//                if (scheduleTime > 0){
+//                    Log.d(TAG, "selectLastImageAndUpload: "+scheduleTime)
+//                    Log.d(TAG, "selectLastImageAndUpload: "+ TimeUnit.MILLISECONDS.toMinutes(scheduleTime))
+//                    Log.d(TAG, "selectLastImageAndUpload: "+project.toProcessAt.toDate())
+//                    val handler = Handler(Looper.getMainLooper())
+//
+//                    handler.postDelayed({
+//                        Log.d(TAG, "selectLastImageAndUpload: "+project.toProcessAt.toDate())
+//                        GlobalScope.launch(Dispatchers.IO) {
+//                            startProjectSync()
+//                        }
+//                    },scheduleTime)
+//                }
+//                else{
+//                    startProjectSync()
+//                }
+//            }else {
+//                listener.onCompleted("All Projects Created",SeverSyncTypes.CREATE,false)
+//                Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
+//            }
         }
 
 

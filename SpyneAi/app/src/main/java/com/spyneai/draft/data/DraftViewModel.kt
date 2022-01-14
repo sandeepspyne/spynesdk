@@ -69,8 +69,7 @@ class DraftViewModel : ViewModel() {
 
         if (skuId != null && BaseApplication.getContext().isInternetActive()) {
             val response = processedRepository.getImagesOfSku(
-                skuId = skuId,
-                authKey = "c0451cb9-ed40-4da6-992f-c2481f17120f"
+                skuId = skuId
             )
 
             if (response is Resource.Success) {
@@ -228,11 +227,10 @@ class DraftViewModel : ViewModel() {
     suspend fun getImagesbySkuId(skuId: String) = imageRepositoryV2.getImagesBySkuId(skuId)
 
     fun getImagesOfSku(
-        authKey: String,
         skuId: String
     ) = viewModelScope.launch {
         _imagesOfSkuRes.value = Resource.Loading
-        _imagesOfSkuRes.value = processedRepository.getImagesOfSku(authKey, skuId)
+        _imagesOfSkuRes.value = processedRepository.getImagesOfSku(skuId)
     }
 
     private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> =
