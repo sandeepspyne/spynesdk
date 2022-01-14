@@ -160,7 +160,7 @@ class ProcessSkuSync(
         }while (sku != null)
 
         if (!connectionLost){
-            listener.onCompleted("All Skus Processed",SeverSyncTypes.PROCESS,false)
+            listener.onCompleted("All Skus Background Id Updated",SeverSyncTypes.PROCESS,false)
             Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
             //get pending projects count
 //            val count = shootDao.getPendingSku()

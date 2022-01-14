@@ -69,8 +69,9 @@ class ProjectSkuSync(
 
     suspend fun  startProjectSync(){
         do {
-            Log.d(TAG, "startProjectSync: ")
             val projectWithSku = shootDao.getProjectWithSkus()
+
+            Log.d(TAG, "startProjectSync: "+Gson().toJson(projectWithSku))
 
             if (connectionLost){
                 val count = shootDao.getPendingProjects()

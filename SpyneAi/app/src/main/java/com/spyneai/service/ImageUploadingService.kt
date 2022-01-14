@@ -96,15 +96,15 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
                 processSkuSync.processSkuParent("Image Uploading Service",serviceStartedBy)
 
 //                if (!uploadRunning){
-//                    val properties = java.util.HashMap<String, Any?>()
-//                        .apply {
-//                            put("service_state", "Started")
-//                            put("medium", "Image Uploading Service")
-//                        }
-//
-//                    captureEvent(Events.SERVICE_STARTED, properties)
-//                    resumeUpload("onStartCommand")
-//                }
+                    val properties = java.util.HashMap<String, Any?>()
+                        .apply {
+                            put("service_state", "Started")
+                            put("medium", "Image Uploading Service")
+                        }
+
+                    captureEvent(Events.SERVICE_STARTED, properties)
+                    resumeUpload("onStartCommand")
+              //  }
             }
             Actions.STOP.name -> stopService()
             else -> error("No action in the received intent")

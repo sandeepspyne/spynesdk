@@ -3,6 +3,7 @@ package com.spyneai.shoot.repository.model.image
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.spyneai.needs.AppConstants
 
 @Entity
 data class Image(
@@ -18,10 +19,10 @@ data class Image(
     var imageClicked : Boolean = false,
     var imagePath : String? = null,
     @SerializedName("project_uuid") val projectUuid: String? = null,
-    @SerializedName("project_id") val projectId: String? = null,
+    @SerializedName("project_id") var projectId: String? = null,
     @SerializedName("sku_name") val skuName: String?,
     @SerializedName("sku_uuid") var skuUuid: String?,
-    @SerializedName("sku_id") val skuId: String? = null,
+    @SerializedName("sku_id") var skuId: String? = null,
     @SerializedName("image_name") val name: String,
     @SerializedName("image_category") val image_category: String,
     @SerializedName("frame_seq_no") val sequence: Int,
@@ -30,7 +31,7 @@ data class Image(
     @SerializedName("is_reclick") val isReclick: Boolean,
     @SerializedName("is_reshoot") val isReshoot: Boolean,
     @SerializedName("path") var path: String,
-    @SerializedName("pre_signed_url") var preSignedUrl: String? = null,
+    @SerializedName("pre_signed_url") var preSignedUrl: String = AppConstants.DEFAULT_PRESIGNED_URL,
     @SerializedName("image_id") var imageId: String? = null,
     @SerializedName("tags") var tags: String? = null,
     @SerializedName("debug_data") var debugData: String? = null,

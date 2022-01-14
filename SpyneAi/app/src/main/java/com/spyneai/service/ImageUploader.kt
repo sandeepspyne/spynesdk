@@ -69,6 +69,10 @@ class ImageUploader(
                     listener.onConnectionLost()
                     Log.d(TAG, "uploadParent: connection lost")
                 }
+            }else {
+                scope.launch {
+                    startUploading()
+                }
             }
         }, getRandomNumberInRange().toLong())
     }
@@ -96,6 +100,8 @@ class ImageUploader(
 
             var image = localRepository.getOldestImage()
 
+            Log.d(TAG, "startUploading: "+Gson().toJson(image))
+
 //            if (image.uuid == null) {
 //                imageType = AppConstants.SKIPPED
 //                image = localRepository.getOldestImage()
@@ -114,7 +120,7 @@ class ImageUploader(
 //                    image = localRepository.getOldestImage()
 //            }
 
-            if (image.uuid == null){
+            if (image == null){
                 context.captureEvent(
                     AppConstants.ALL_UPLOADED_BREAK,
                     HashMap<String,Any?>()

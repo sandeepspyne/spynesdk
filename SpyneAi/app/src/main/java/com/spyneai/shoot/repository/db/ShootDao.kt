@@ -173,6 +173,13 @@ interface ShootDao {
 
     @Transaction
     fun saveImage(image: Image){
+        val sku = getSku(image.skuUuid.toString())
+
+        image.apply {
+            projectId = sku.projectId
+            skuId = sku.skuId
+        }
+
         val imageId = insertImage(image)
         Log.d(AppConstants.SHOOT_DAO_TAG, "saveImage: $imageId")
         if (image.sequence == 1){
@@ -280,7 +287,7 @@ interface ShootDao {
     @Query("select Count(*) from image where isUploaded = :isUploaded and isMarkedDone = :isMarkedDone")
     fun totalRemainingUpload(isUploaded: Boolean = false,isMarkedDone : Boolean = false) : Int
 
-    @Query("select * from image where isUploaded = :isUploaded or isMarkedDone = :isMarkedDone and toProcessAt <= :currentTime limit 1")
+    @Query("select * from image where skuId NOT NUll and projectId NOT NULL and isUploaded = :isUploaded or isMarkedDone = :isMarkedDone and toProcessAt <= :currentTime limit 1")
     fun getOldestImage(isUploaded: Boolean = false,isMarkedDone : Boolean = false,currentTime: Long = System.currentTimeMillis()) : Image
 
     @Query("update image set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid")
@@ -312,7 +319,7 @@ interface ShootDao {
     suspend fun getSkusWithLimitAndSkip(offset: Int,projectUuid: String,limit: Int = 50) : List<Sku>
 
     @Transaction
-    suspend fun insertWithCheck(response: ArrayList<Sku>,projectUuid: String){
+    suspend fun insertSkuWithCheck(response: ArrayList<Sku>, projectUuid: String){
         val list = ArrayList<Sku>()
 
         response.forEach {
@@ -330,7 +337,7 @@ interface ShootDao {
 
             it.status = it.status.lowercase()
 
-            val dbItem = getSkuWithProjectUuid(it.projectUuid!!)
+            val dbItem = getSku(it.uuid)
 
             if (dbItem == null){
                 list.add(it)

@@ -9,8 +9,6 @@ import com.spyneai.BaseApplication
 import com.spyneai.base.network.ProjectApi
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.isInternetActive
-import com.spyneai.orders.data.paging.PagedRepository
-import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import retrofit2.HttpException
 import java.io.IOException
@@ -39,7 +37,7 @@ class SkuDataSource(
                 val nextKey = if (response.isNullOrEmpty()) null else page + 1
 
                 appDatabase.withTransaction {
-                    val ss = appDatabase.shootDao().insertWithCheck(response,projectUuid)
+                    val ss = appDatabase.shootDao().insertSkuWithCheck(response,projectUuid)
                     Log.d(TAG, "load: ${Gson().toJson(ss)}")
                 }
 

@@ -54,7 +54,7 @@ class ShootRepository : BaseRepository() {
             image.projectId,
             image.skuId,
             image.image_category,
-            image.name,
+            image.skuName?.uppercase()+"_"+image.skuId+"_"+image.image_category+"_"+image.sequence,
             image.overlayId?.toInt(),
             uploadType,
             image.sequence!!,
