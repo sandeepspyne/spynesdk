@@ -18,6 +18,7 @@ import com.spyneai.databinding.FragmentSelectBackgroundBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.SeverSyncTypes
 import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.CarsBackgroundRes
@@ -427,7 +428,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                 //start sync service
                 requireContext().startUploadingService(
-                    SelectBackgroundFragment::class.java.simpleName
+                    SelectBackgroundFragment::class.java.simpleName,
+                    SeverSyncTypes.PROCESS
                 )
 
                 viewModel.startTimer.value = true

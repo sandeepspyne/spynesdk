@@ -31,6 +31,7 @@ import com.spyneai.databinding.ProjectTagDialogBinding
 import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.service.SeverSyncTypes
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
@@ -388,7 +389,8 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             GlobalScope.launch(Dispatchers.Main) {
                 if (sku.isSelectAble){
                     requireContext().startUploadingService(
-                        ProjectTagDialog::class.java.simpleName
+                        ProjectTagDialog::class.java.simpleName,
+                        SeverSyncTypes.CREATE
                     )
                 }
 

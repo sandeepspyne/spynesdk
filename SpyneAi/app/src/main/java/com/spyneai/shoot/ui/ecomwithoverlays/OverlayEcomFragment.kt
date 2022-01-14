@@ -29,6 +29,7 @@ import com.spyneai.databinding.FragmentOverlayEcomBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.SeverSyncTypes
 import com.spyneai.shoot.adapters.OverlaysAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
@@ -152,7 +153,8 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                        //start sync service
                        GlobalScope.launch(Dispatchers.Main) {
                            requireContext().startUploadingService(
-                               OverlayEcomFragment::class.java.simpleName
+                               OverlayEcomFragment::class.java.simpleName,
+                               SeverSyncTypes.CREATE
                            )
                        }
                    }

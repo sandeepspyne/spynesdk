@@ -382,7 +382,7 @@ fun View.loadSmartly(path : String,imageView : ImageView){
 
 fun getUuid() = UUID.randomUUID().toString().replace("-","")
 
-fun Context.startUploadingService(startedBy : String) {
+fun Context.startUploadingService(startedBy : String,syncTypes: SeverSyncTypes) {
     val prperties = HashMap<String,Any?>()
         .apply {
             put("email", Utilities.getPreference(this@startUploadingService, AppConstants.EMAIL_ID).toString())
@@ -398,6 +398,7 @@ fun Context.startUploadingService(startedBy : String) {
 
         val serviceIntent = Intent(this, ImageUploadingService::class.java)
         serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,startedBy)
+        serviceIntent.putExtra(AppConstants.SYNC_TYPE,syncTypes)
         serviceIntent.action = action.name
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

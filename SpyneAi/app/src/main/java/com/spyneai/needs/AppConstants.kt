@@ -4,6 +4,8 @@ package com.spyneai.needs
 
 object AppConstants {
 
+    val SYNC_TYPE = "SYNC_TYPE"
+
     val DEFAULT_BG_ID = "DEFAULT_BG_ID"
     val SHOOT_DAO_TAG = "ShootDao"
     val SERVICE_STARTED_BY = "SERVICE_STARTED_BY"

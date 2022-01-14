@@ -69,10 +69,6 @@ class ImageUploader(
                     listener.onConnectionLost()
                     Log.d(TAG, "uploadParent: connection lost")
                 }
-            }else {
-                scope.launch {
-                    startUploading()
-                }
             }
         }, getRandomNumberInRange().toLong())
     }

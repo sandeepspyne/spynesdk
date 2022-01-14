@@ -12,6 +12,7 @@ import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.SeverSyncTypes
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.shoot
@@ -218,7 +219,8 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
             //start sync service
             GlobalScope.launch(Dispatchers.Main) {
                 requireContext().startUploadingService(
-                    AngleSelectionDialog::class.java.simpleName
+                    AngleSelectionDialog::class.java.simpleName,
+                    SeverSyncTypes.CREATE
                 )
 
                 dismiss()

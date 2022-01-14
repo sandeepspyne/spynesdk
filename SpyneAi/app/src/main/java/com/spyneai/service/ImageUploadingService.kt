@@ -79,32 +79,47 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
                 this.serviceStartedBy = intent.getStringExtra(AppConstants.SERVICE_STARTED_BY)
                 val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
 
-                val prjSync = ProjectSkuSync(
-                    this,
-                        shootDao,
-                    this
-                )
+                when(intent.getSerializableExtra(AppConstants.SYNC_TYPE)){
+                    SeverSyncTypes.CREATE -> {
+                        val prjSync = ProjectSkuSync(
+                            this,
+                            shootDao,
+                            this
+                        )
 
-                prjSync.projectSyncParent("Image Uploading Service",serviceStartedBy)
+                        prjSync.projectSyncParent("Image Uploading Service",serviceStartedBy)
+                    }
 
-                val processSkuSync = ProcessSkuSync(
-                    this,
-                    shootDao,
-                    this
-                )
+                    SeverSyncTypes.PROCESS -> {
+                        val processSkuSync = ProcessSkuSync(
+                            this,
+                            shootDao,
+                            this
+                        )
 
-                processSkuSync.processSkuParent("Image Uploading Service",serviceStartedBy)
+                        processSkuSync.processSkuParent("Image Uploading Service",serviceStartedBy)
+                    }
 
-//                if (!uploadRunning){
-                    val properties = java.util.HashMap<String, Any?>()
-                        .apply {
-                            put("service_state", "Started")
-                            put("medium", "Image Uploading Service")
+                    SeverSyncTypes.UPLOAD -> {
+                        if (!uploadRunning){
+                            val properties = java.util.HashMap<String, Any?>()
+                                .apply {
+                                    put("service_state", "Started")
+                                    put("medium", "Image Uploading Service")
+                                }
+
+                            captureEvent(Events.SERVICE_STARTED, properties)
+                            resumeUpload("onStartCommand")
                         }
+                    }
+                }
 
-                    captureEvent(Events.SERVICE_STARTED, properties)
-                    resumeUpload("onStartCommand")
-              //  }
+
+
+
+
+
+
             }
             Actions.STOP.name -> stopService()
             else -> error("No action in the received intent")
