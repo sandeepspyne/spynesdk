@@ -17,6 +17,7 @@ import com.spyneai.shoot.repository.db.ShootDao
 import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
+import com.spyneai.threesixty.data.model.VideoDetails
 
 @Database(entities = [User::class,
     NewCategoriesResponse.Category::class,
@@ -30,7 +31,8 @@ import com.spyneai.shoot.repository.model.sku.Sku
     CarsBackgroundRes.Background::class,
     Project::class,
     Sku::class,
-    Image::class],
+    Image::class,
+    VideoDetails::class],
     version = 1,
     exportSchema = false)
 @TypeConverters(StringListConvertor::class)

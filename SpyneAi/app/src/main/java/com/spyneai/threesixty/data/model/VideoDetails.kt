@@ -1,6 +1,12 @@
 package com.spyneai.threesixty.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 class VideoDetails {
+    @PrimaryKey(autoGenerate = false)
+    var uuid: String? = ""
     var itemId : Long? = null
     var projectId : String? = null
     var skuName : String? = null
