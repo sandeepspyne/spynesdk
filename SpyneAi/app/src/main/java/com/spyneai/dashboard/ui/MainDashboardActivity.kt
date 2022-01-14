@@ -26,11 +26,9 @@ import com.spyneai.orders.data.paging.ProjectPagedRes
 import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.orders.ui.fragment.MyOrdersFragment
 import com.spyneai.posthog.Events
-import com.spyneai.service.Actions
-import com.spyneai.service.ImageUploadingService
-import com.spyneai.service.getServiceState
-import com.spyneai.service.log
+import com.spyneai.service.*
 import com.spyneai.shoot.data.ImageLocalRepository
+import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
@@ -139,12 +137,6 @@ class MainDashboardActivity : AppCompatActivity() {
                 continueShoot()
             }
         })
-
-        GlobalScope.launch(Dispatchers.IO) {
-            val sku = AppDatabase.getInstance(BaseApplication.getContext()).shootDao().getProcessAbleSku()
-
-            val s = ""
-        }
     }
 
 
@@ -356,43 +348,45 @@ class MainDashboardActivity : AppCompatActivity() {
     }
 
     private fun startUploadService() {
-        val shootLocalRepository = ImageLocalRepository()
-        if (shootLocalRepository.getOldestImage("0").itemId != null
-            || shootLocalRepository.getOldestImage("-1").itemId != null
-        ) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val shootLocalRepository = ImagesRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
+            if (shootLocalRepository.getOldestImage() != null
+            ) {
 
-            if (!isMyServiceRunning(ImageUploadingService::class.java))
-                Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
+                if (!isMyServiceRunning(ImageUploadingService::class.java))
+                    Utilities.saveBool(this@MainDashboardActivity, AppConstants.UPLOADING_RUNNING, false)
 
-            var action = Actions.START
-            if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-                return
+                var action = Actions.START
+                if (getServiceState(this@MainDashboardActivity) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+                    return@launch
 
-            val serviceIntent = Intent(this, ImageUploadingService::class.java)
-            serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,MainDashboardActivity::class.simpleName)
-            serviceIntent.action = action.name
+                val serviceIntent = Intent(this@MainDashboardActivity, ImageUploadingService::class.java)
+                serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,MainDashboardActivity::class.simpleName)
+                serviceIntent.putExtra(AppConstants.SYNC_TYPE,SeverSyncTypes.UPLOAD)
+                serviceIntent.action = action.name
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                log("Starting the service in >=26 Mode")
-                ContextCompat.startForegroundService(this, serviceIntent)
-                return
-            } else {
-                log("Starting the service in < 26 Mode")
-                startService(serviceIntent)
-            }
-
-            val properties = HashMap<String,Any?>()
-                .apply {
-                    put("service_state", "Started")
-                    put(
-                        "email",
-                        Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
-                            .toString()
-                    )
-                    put("medium", "Main Activity")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    log("Starting the service in >=26 Mode")
+                    ContextCompat.startForegroundService(this@MainDashboardActivity, serviceIntent)
+                    return@launch
+                } else {
+                    log("Starting the service in < 26 Mode")
+                    startService(serviceIntent)
                 }
 
-            captureEvent(Events.SERVICE_STARTED, properties)
+                val properties = HashMap<String,Any?>()
+                    .apply {
+                        put("service_state", "Started")
+                        put(
+                            "email",
+                            Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
+                                .toString()
+                        )
+                        put("medium", "Main Activity")
+                    }
+
+                captureEvent(Events.SERVICE_STARTED, properties)
+            }
         }
     }
 
