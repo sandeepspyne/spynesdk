@@ -61,52 +61,52 @@ class DraftPagedHolder(
             llThreeSixty.visibility = View.GONE
         }
 
-//        try {
-//            if (item.sku[0].images.isNullOrEmpty()) {
-//                if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
-//                    Glide.with(context)
-//                        .load(R.drawable.three_sixty_thumbnail)
-//                        .into(ivThumbnail)
-//                } else if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME)
-//                        .equals("Food & Beverages")
-//                ) {
-//                    Glide.with(context)
-//                        .load(R.drawable.ic_food_thumbnail_draft)
-//                        .into(ivThumbnail)
-//                } else {
-//                    Glide.with(context)
-//                        .load(R.mipmap.defaults)
-//                        .into(ivThumbnail)
-//                }
-//            } else {
-//                if (item.sku[0].images[0].input_lres == null) {
-//                    if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
-//                        Glide.with(context)
-//                            .load(R.drawable.three_sixty_thumbnail)
-//                            .into(ivThumbnail)
-//                    } else if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME)
-//                            .equals("Food & Beverages")
-//                    ) {
-//                        Glide.with(context)
-//                            .load(R.drawable.ic_food_thumbnail_draft)
-//                            .into(ivThumbnail)
-//                    } else {
-//                        Glide.with(context)
-//                            .load(R.mipmap.defaults)
-//                            .into(ivThumbnail)
-//                    }
-//                } else {
-//                    context.loadSmartly(
-//                        item.sku[0].images[0].input_lres,
-//                       ivThumbnail
-//                    )
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        } catch (e: IndexOutOfBoundsException) {
-//            e.printStackTrace()
-//        }
+        try {
+            if (item.imagesCount == 0) {
+                if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
+                    Glide.with(context)
+                        .load(R.drawable.three_sixty_thumbnail)
+                        .into(ivThumbnail)
+                } else if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME)
+                        .equals("Food & Beverages")
+                ) {
+                    Glide.with(context)
+                        .load(R.drawable.ic_food_thumbnail_draft)
+                        .into(ivThumbnail)
+                } else {
+                    Glide.with(context)
+                        .load(R.mipmap.defaults)
+                        .into(ivThumbnail)
+                }
+            } else {
+                if (item.thumbnail == null) {
+                    if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
+                        Glide.with(context)
+                            .load(R.drawable.three_sixty_thumbnail)
+                            .into(ivThumbnail)
+                    } else if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME)
+                            .equals("Food & Beverages")
+                    ) {
+                        Glide.with(context)
+                            .load(R.drawable.ic_food_thumbnail_draft)
+                            .into(ivThumbnail)
+                    } else {
+                        Glide.with(context)
+                            .load(R.mipmap.defaults)
+                            .into(ivThumbnail)
+                    }
+                } else {
+                    context.loadSmartly(
+                        item.thumbnail,
+                       ivThumbnail
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } catch (e: IndexOutOfBoundsException) {
+            e.printStackTrace()
+        }
 
         tvProjectName.text = item.projectName
         tvSkus.text = item.skuCount.toString()

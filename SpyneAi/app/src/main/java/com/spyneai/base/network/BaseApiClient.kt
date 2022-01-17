@@ -8,16 +8,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 open class
-BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
+BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>) {
 
     var builder: Api
 
-    fun getClient():Api{
+    fun getClient(): Api {
         return builder
     }
 
-    init  {
-         builder = Retrofit.Builder()
+    init {
+        builder = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(OkHttpClient.Builder().also { client ->
                 if (BuildConfig.DEBUG) {
@@ -27,7 +27,7 @@ BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
                 }
             }
                 .addInterceptor(RequestInterceptor())
-               .addInterceptor(com.spyneai.base.network.ResponseInterceptor())
+                .addInterceptor(com.spyneai.base.network.ResponseInterceptor())
                 .readTimeout(5, TimeUnit.MINUTES)
                 .writeTimeout(5, TimeUnit.MINUTES)
                 .connectTimeout(5, TimeUnit.MINUTES)

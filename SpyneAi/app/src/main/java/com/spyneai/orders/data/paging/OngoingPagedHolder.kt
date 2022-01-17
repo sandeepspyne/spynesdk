@@ -114,9 +114,9 @@ class OngoingPagedHolder(
 
         tvSkus.text = item.skuCount.toString()
 
-        //tvImages.text = item.total_images.toString()
-//        tvImageCount.text =
-//            item.processed_images.toString() + "/" + item.total_images.toString()
+        tvImages.text = item.imagesCount.toString()
+        tvImageCount.text =
+            item.processedCount.toString() + "/" + item.imagesCount.toString()
 
         tvProjectName.text = item.projectName
         tvDate.text = item.createdOn
