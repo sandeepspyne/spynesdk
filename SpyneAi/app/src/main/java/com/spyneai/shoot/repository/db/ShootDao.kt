@@ -94,10 +94,10 @@ interface ShootDao {
     @Query("select * from project where isCreated = :isCreated LIMIT :limit")
     fun getOldestProject(isCreated: Boolean = false,limit: Int = 1) : Project
 
-    @Query("select COUNT(*) from sku where is_processed = :isProcessed and isCreated = :isCreated and background_id != 'DEFAULT_BG_ID'")
+    @Query("select COUNT(*) from sku where isProcessed = :isProcessed and isCreated = :isCreated and backgroundId != 'DEFAULT_BG_ID'")
     fun getPendingSku(isProcessed: Boolean = false,isCreated: Boolean = true) : Int
 
-    @Query("select * from sku where is_processed = :isProcessed and isCreated = :isCreated LIMIT :limit")
+    @Query("select * from sku where isProcessed = :isProcessed and isCreated = :isCreated LIMIT :limit")
     fun getOldestSku(isProcessed: Boolean = false,isCreated: Boolean = true,limit: Int = 1): Sku
 
     @Query("select * from sku")
@@ -106,7 +106,7 @@ interface ShootDao {
     @Update
     fun updateSku(sku: Sku): Int
 
-    @Query("update sku set sku_id = :skuId,project_id = :projectId, isCreated = :isCreated where uuid = :uuid")
+    @Query("update sku set skuId = :skuId,projectId = :projectId, isCreated = :isCreated where uuid = :uuid")
     fun updateSKuServerId(uuid: String,skuId: String,projectId: String,isCreated: Boolean = true): Int
 
     @Query("update image set skuId = :skuId, projectId = :projectId where skuUuid = :skuUuid")
@@ -129,7 +129,7 @@ interface ShootDao {
     @Query("SELECT * FROM project where status = 'draft'")
     fun getDraftProjects(): List<Project>
 
-    @Query("SELECT * FROM sku where project_uuid = :projectUuid")
+    @Query("SELECT * FROM sku where projectUuid = :projectUuid")
     fun getSkusByProjectId(projectUuid: String) : List<Sku>
 
     @Query("select * from image where skuUuid = :skuUuid")
@@ -159,7 +159,7 @@ interface ShootDao {
     @Query("select * from sku where uuid = :uuid")
     fun getSku(uuid: String) : Sku
 
-    @Query("select * from sku where project_uuid = :uuid")
+    @Query("select * from sku where projectUuid = :uuid")
     fun getSkuWithProjectUuid(uuid: String) : Sku
 
     @Query("UPDATE project SET imagesCount = imagesCount + 1, thumbnail= :thumbnail WHERE uuid =:uuid ")
@@ -243,7 +243,7 @@ interface ShootDao {
     @Transaction
     fun updateBackground(map: HashMap<String,Any>){
         val p  = updateProjectStatus(
-            map["project_uuid"].toString())
+            map["projectUuid"].toString())
 
         Log.d(AppConstants.SHOOT_DAO_TAG, "updateBackground: $p")
         val s = updateSkuBackground(
@@ -259,13 +259,13 @@ interface ShootDao {
     @Query("UPDATE project SET status = 'ongoing' WHERE uuid =:uuid ")
     fun updateProjectStatus(uuid: String) : Int
 
-    @Query("UPDATE sku SET background_name = :backgroundName, background_id= :backgroundId, total_frames = total_frames + :totalFrames  WHERE uuid =:uuid ")
+    @Query("UPDATE sku SET backgroundName = :backgroundName, backgroundId= :backgroundId, totalFrames = totalFrames + :totalFrames  WHERE uuid =:uuid ")
     fun updateSkuBackground(uuid: String,backgroundName: String,backgroundId: String,totalFrames : Int) : Int
 
     @Query("Select path from image where skuUuid = :skuUuid")
     fun getImagesPathBySkuId(skuUuid : String) : List<String>
 
-//    @Query("select * from project left join sku on project.uuid=sku.project_uuid where sku.isCreated = :skuIsCreated and project.isCreated = :isCreated  and project.toProcessAt <= :currentTime LIMIT :limit")
+//    @Query("select * from project left join sku on project.uuid=sku.projectUuid where sku.isCreated = :skuIsCreated and project.isCreated = :isCreated  and project.toProcessAt <= :currentTime LIMIT :limit")
 //    fun getProjectWithSkus(isCreated: Boolean = false,skuIsCreated: Boolean = false,
 //                           limit: Int = 1,
 //                           currentTime: Long = System.currentTimeMillis()) : ProjectWithSku
@@ -276,7 +276,7 @@ interface ShootDao {
     @Query("update project set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid ")
     fun skipProject(uuid: String,toProcessAt: Long) : Int
 
-    @Query("Select * from sku where is_processed = :isProcessed and isCreated = :isCreated and background_id != 'DEFAULT_BG_ID' and toProcessAt <= :currentTime LIMIT :limit")
+    @Query("Select * from sku where isProcessed = :isProcessed and isCreated = :isCreated and backgroundId != 'DEFAULT_BG_ID' and toProcessAt <= :currentTime LIMIT :limit")
     fun getProcessAbleSku(isProcessed: Boolean = false, isCreated: Boolean = true, currentTime: Long = System.currentTimeMillis(),limit: Int = 1) : Sku
 
 
@@ -315,7 +315,7 @@ interface ShootDao {
     fun updateImage(image: Image): Int
 
 
-    @Query("SELECT * FROM sku where project_uuid = :projectUuid LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM sku where projectUuid = :projectUuid LIMIT :limit OFFSET :offset")
     suspend fun getSkusWithLimitAndSkip(offset: Int,projectUuid: String,limit: Int = 50) : List<Sku>
 
     @Transaction
@@ -327,21 +327,38 @@ interface ShootDao {
                 it.uuid = getUuid()
 
             it.projectUuid = projectUuid
-            it.backgroundId = AppConstants.DEFAULT_BG_ID
 
-            if (it.status == "Done")
+            if (it.status == "Done"){
                 it.status = "completed"
+                it.isProcessed = true
+            }
 
-            if (it.status == "In Progress")
+
+
+            if (it.status == "In Progress"){
                 it.status = "ongoing"
+                it.isProcessed = true
+            }
+
 
             it.status = it.status.lowercase()
 
             val dbItem = getSku(it.uuid)
 
             if (dbItem == null){
+                if (it.backgroundId == null)
+                    it.backgroundId = AppConstants.DEFAULT_BG_ID
+
+
                 list.add(it)
             }else {
+                if (it.backgroundId == null){
+                    it.backgroundId = dbItem.backgroundId
+                    it.backgroundName = dbItem.backgroundName
+                }
+
+
+
                 if (it.imagesCount > dbItem.imagesCount)
                     list.add(it)
             }

@@ -90,7 +90,6 @@ class ImageUploader(
                 )
                 Utilities.saveBool(context,AppConstants.UPLOADING_RUNNING,false)
                 listener.onConnectionLost()
-                job.cancel()
                 break
             }
 

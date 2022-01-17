@@ -27,8 +27,9 @@ interface PagingDao {
                 it.status = "ongoing"
 
             it.status = it.status.lowercase()
+            it.isCreated = true
 
-            val dbItem = getProject(it.projectId!!)
+            val dbItem = getProject(it.uuid)
 
             if (dbItem == null){
                 list.add(it)
@@ -36,7 +37,6 @@ interface PagingDao {
                 if (it.skuCount > dbItem.skuCount)
                     list.add(it)
             }
-
         }
 
         insertAll(list)
@@ -45,8 +45,8 @@ interface PagingDao {
     @Query("SELECT * FROM project where status = :status")
     fun getAllProjects(status: String = "Draft"): PagingSource<Int, Project>
 
-    @Query("SELECT * FROM project where projectId = :projectId")
-    fun getProject(projectId: String): Project
+    @Query("SELECT * FROM project where uuid = :uuid")
+    fun getProject(uuid: String): Project
 
     @Query("DELETE FROM project")
     suspend fun clearAllProjects()
