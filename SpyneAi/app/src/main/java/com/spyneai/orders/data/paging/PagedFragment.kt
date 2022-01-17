@@ -31,9 +31,6 @@ class PagedFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingProjectsBin
             arguments?.getString("status").toString()
         )
 
-        Log.d(TAG, "onViewCreated: "+ arguments?.getString("status").toString())
-        Toast.makeText(requireContext(), arguments?.getString("status").toString(),Toast.LENGTH_LONG).show()
-
         binding.rvMyOngoingProjects.layoutManager  =
             LinearLayoutManager(
                 requireContext(), LinearLayoutManager.VERTICAL,
