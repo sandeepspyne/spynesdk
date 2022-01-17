@@ -23,7 +23,7 @@ data class Image(
     @SerializedName("sku_name") val skuName: String?,
     @SerializedName("sku_uuid") var skuUuid: String?,
     @SerializedName("sku_id") var skuId: String? = null,
-    @SerializedName("image_name") val name: String,
+    @SerializedName("image_name") var name: String,
     @SerializedName("image_category") val image_category: String,
     @SerializedName("frame_seq_no") val sequence: Int,
     @SerializedName("angle") val angle: Int,

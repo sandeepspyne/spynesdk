@@ -353,6 +353,14 @@ class ImageUploader(
     }
 
     private suspend fun getPresigned(image: Image, uploadType: String): Boolean {
+        image.name = if (image.image_category == "360int")
+            image.skuName?.uppercase() + "_" + image.skuId + "_360int_1.JPG"
+        else{
+            image.skuName?.uppercase()+"_"+image.skuId+"_"+image.image_category+"_"+image.sequence+ "." + image.path.substringAfter(
+                "."
+            )
+        }
+
         var response = shootRepository.getPreSignedUrl(
             uploadType,
             image
