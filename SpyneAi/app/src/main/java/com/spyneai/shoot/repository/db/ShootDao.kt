@@ -397,7 +397,6 @@ interface ShootDao {
             it.skuUuid = skuUuid
             it.path = it.input_image_lres_url
 
-
             if (it.status == "Done" || it.status == "Yet to Start" || it.status == "Failed"){
                 it.isMarkedDone = true
                 it.isUploaded = true
@@ -406,6 +405,7 @@ interface ShootDao {
             val dbItem = getImage(it.uuid)
 
             if (dbItem == null){
+                it.preSignedUrl = AppConstants.DEFAULT_PRESIGNED_URL
                 list.add(it)
             }
 

@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkuDetailsActivity
 import com.spyneai.loadSmartly
@@ -53,6 +54,38 @@ class DraftSkuPagedHolder(
         tvCategory.text = item.subcategoryName
         tvDate.text = item.createdAt.toString()
 
+
+        if (item.thumbnail == null){
+            if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subcategoryId)) {
+                Glide.with(context)
+                    .load(R.drawable.three_sixty_thumbnail)
+                    .into(ivThumbnail)
+            } else if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME)
+                    .equals("Food & Beverages")
+            ) {
+                Glide.with(context)
+                    .load(R.drawable.ic_food_thumbnail_draft)
+                    .into(ivThumbnail)
+            } else {
+                Glide.with(context)
+                    .load(R.mipmap.defaults)
+                    .into(ivThumbnail)
+            }
+        }else {
+            if (item.categoryId == AppConstants.CARS_CATEGORY_ID || item.categoryId == AppConstants.BIKES_CATEGORY_ID){
+                Glide.with(context)
+                    .load(item.thumbnail)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(ivThumbnail)
+            }else {
+                context.loadSmartly(
+                    item.thumbnail,
+                    ivThumbnail
+                )
+            }
+        }
+
         if (item.categoryId != AppConstants.CARS_CATEGORY_ID)
             try {
                 if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME).equals("Food & Beverages")) {
@@ -75,7 +108,6 @@ class DraftSkuPagedHolder(
 
         tvSkuName.text = item.skuName
         tvImages.text = item.imagesCount.toString()
-
 
         cvMain.setOnClickListener {
             Utilities.savePrefrence(

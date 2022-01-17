@@ -10,6 +10,7 @@ import androidx.cardview.widget.CardView
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftPagedSkuActivity
 import com.spyneai.draft.ui.DraftSkusActivity
@@ -96,10 +97,18 @@ class DraftPagedHolder(
                             .into(ivThumbnail)
                     }
                 } else {
-                    context.loadSmartly(
-                        item.thumbnail,
-                       ivThumbnail
-                    )
+                    if (item.categoryId == AppConstants.CARS_CATEGORY_ID || item.categoryId == AppConstants.BIKES_CATEGORY_ID){
+                        Glide.with(context)
+                            .load(item.thumbnail)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(ivThumbnail)
+                    }else {
+                        context.loadSmartly(
+                            item.thumbnail,
+                            ivThumbnail
+                        )
+                    }
                 }
             }
         } catch (e: Exception) {
