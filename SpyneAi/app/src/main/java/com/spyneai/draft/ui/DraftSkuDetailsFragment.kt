@@ -89,6 +89,14 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         viewModel.imagesOfSkuRes.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Success ->setData(it.value.data as ArrayList<Image>)
+
+                is Resource.Failure -> {
+                    if (it.errorCode == 404){
+                        setData(ArrayList())
+                    }else {
+                        handleApiError(it) { fetchImages() }
+                    }
+                }
             }
         })
     }
@@ -100,7 +108,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
         binding.tvTotalSku.text = list.size.toString()
 
-        if (!list.isNullOrEmpty()) {
+        if (list != null) {
             if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID
                 || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID
             ) {
@@ -214,10 +222,12 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             putExtra(AppConstants.SUB_CAT_NAME, intent.getStringExtra(AppConstants.SUB_CAT_NAME))
             putExtra(AppConstants.SUB_CAT_ID, intent.getStringExtra(AppConstants.SUB_CAT_ID))
             putExtra(AppConstants.PROJECT_ID, intent.getStringExtra(AppConstants.PROJECT_ID))
+            putExtra(AppConstants.PROJECT_UUIID, intent.getStringExtra(AppConstants.PROJECT_UUIID))
             putExtra(AppConstants.SKU_NAME, intent.getStringExtra(AppConstants.SKU_NAME))
             putExtra(AppConstants.SKU_COUNT, intent.getIntExtra(AppConstants.SKU_COUNT, 0))
             putExtra(AppConstants.SKU_CREATED, true)
             putExtra(AppConstants.SKU_ID, intent.getStringExtra(AppConstants.SKU_ID))
+            putExtra(AppConstants.SKU_UUID, intent.getStringExtra(AppConstants.SKU_UUID))
             putExtra(
                 AppConstants.EXTERIOR_ANGLES,
                 intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
@@ -227,7 +237,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             putExtra(AppConstants.RESUME_MISC, resumeMisc())
             putExtra("is_paid", false)
             putExtra(AppConstants.IMAGE_TYPE, intent.getStringExtra(AppConstants.IMAGE_TYPE))
-            putExtra(AppConstants.IS_360, intent.getIntExtra(AppConstants.IS_360, 0))
+            putExtra(AppConstants.IS_360, intent.getBooleanExtra(AppConstants.IS_360, false))
         }
 
         if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB, false)) {

@@ -1,9 +1,11 @@
 package com.spyneai.orders.data.paging
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
@@ -18,6 +20,7 @@ import kotlinx.coroutines.launch
 @ExperimentalPagingApi
 class PagedFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingProjectsBinding>() {
 
+    val TAG = "PagedFragment"
     lateinit var adapter: ProjectPagedAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,6 +30,9 @@ class PagedFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingProjectsBin
             requireContext(),
             arguments?.getString("status").toString()
         )
+
+        Log.d(TAG, "onViewCreated: "+ arguments?.getString("status").toString())
+        Toast.makeText(requireContext(), arguments?.getString("status").toString(),Toast.LENGTH_LONG).show()
 
         binding.rvMyOngoingProjects.layoutManager  =
             LinearLayoutManager(

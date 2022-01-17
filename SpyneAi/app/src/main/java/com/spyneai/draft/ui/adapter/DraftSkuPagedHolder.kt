@@ -17,6 +17,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.ui.ThreeSixtyActivity
 import com.spyneai.threesixty.ui.TrimActivity
@@ -123,38 +124,58 @@ class DraftSkuPagedHolder(
 
                 context.startActivity(intent)
             }else {
-                val draftIntent = Intent(
-                    context,
-                    DraftSkuDetailsActivity::class.java
-                ).apply {
+                val intent = if (item.imagesCount > 0) {
+                    Intent(
+                        context,
+                        DraftSkuDetailsActivity::class.java
+                    )
+                }else {
+                    when (item.categoryId) {
+                        AppConstants.CARS_CATEGORY_ID, AppConstants.BIKES_CATEGORY_ID -> {
+                           Intent(
+                                context,
+                                ShootActivity::class.java
+                            )
+                        }
+                        else -> Intent(
+                            context,
+                            ShootPortraitActivity::class.java
+                        )
+                    }
+                }
+
+                intent.apply {
                     putExtra(AppConstants.FROM_LOCAL_DB, true)
                     putExtra(AppConstants.FROM_DRAFTS, true)
                     putExtra(AppConstants.PROJECT_ID,item.projectId)
                     putExtra(AppConstants.PROJECT_UUIID,item.projectUuid)
-                    putExtra(AppConstants.CATEGORY_NAME, item.categoryId)
+                    putExtra(AppConstants.CATEGORY_NAME, item.categoryName)
                     putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
                     putExtra(AppConstants.SUB_CAT_ID,item.subcategoryId)
                     putExtra(AppConstants.SUB_CAT_NAME,item.subcategoryName)
                     putExtra(AppConstants.SKU_NAME, item.skuName)
                     putExtra(AppConstants.PROJECT_NAME, item.skuName)
                    // putExtra(AppConstants.SKU_COUNT, skuList.size)
-                    putExtra(AppConstants.SKU_CREATED, false)
-                    putExtra(AppConstants.SKU_ID, "d2180513")
+                    putExtra(AppConstants.SKU_CREATED, true)
+                    putExtra(AppConstants.SKU_ID, item.skuId)
                     putExtra(AppConstants.SKU_UUID, item.uuid)
                     putExtra(AppConstants.EXTERIOR_ANGLES, item.initialFrames)
-                    //putExtra("is_paid",item.paid)
+                    putExtra("is_paid",item.isPaid)
                     //putExtra(AppConstants.IMAGE_TYPE,item.category)
                     putExtra(AppConstants.IS_360,item.isThreeSixty)
+                    putExtra(AppConstants.RESUME_EXTERIOR, true)
+                    putExtra(AppConstants.RESUME_INTERIOR, false)
+                    putExtra(AppConstants.RESUME_MISC, false)
                 }
 
                 if (!item.videoId.isNullOrEmpty()){
-                    draftIntent.apply {
+                    intent.apply {
                         putExtra(AppConstants.FROM_VIDEO, true)
                         putExtra(AppConstants.TOTAL_FRAME, item.imagesCount)
                     }
                 }
 
-                context.startActivity(draftIntent)
+                context.startActivity(intent)
             }
         }
     }

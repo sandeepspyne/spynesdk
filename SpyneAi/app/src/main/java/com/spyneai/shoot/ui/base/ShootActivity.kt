@@ -247,23 +247,33 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
+        GlobalScope.launch(Dispatchers.IO) {
+            shootViewModel.setProjectAndSkuData(
+                intent.getStringExtra(AppConstants.PROJECT_UUIID)!!,
+                intent.getStringExtra(AppConstants.SKU_UUID)!!
+            )
 
-        if (intent.getBooleanExtra(AppConstants.SKU_CREATED, false)) {
-            shootViewModel.exterirorAngles.value =
-                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
+            GlobalScope.launch(Dispatchers.Main) {
+                if (intent.getBooleanExtra(AppConstants.SKU_CREATED, false)) {
+                    shootViewModel.exterirorAngles.value =
+                        intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
 
-            //shootViewModel.sku!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+                    //shootViewModel.sku!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
 
-            shootViewModel.subCategory.value = getSubcategoryResponse()
+                    shootViewModel.subCategory.value = getSubcategoryResponse()
 
-            shootViewModel.isSubCategoryConfirmed.value = true
-            shootViewModel.isSkuCreated.value = true
-            shootViewModel.showGrid.value = shootViewModel.getCameraSetting().isGridActive
-            shootViewModel.showLeveler.value = shootViewModel.getCameraSetting().isGryroActive
-            shootViewModel.showOverlay.value = shootViewModel.getCameraSetting().isOverlayActive
-        }else{
-            shootViewModel.getSubCategories.value = true
+                    shootViewModel.isSubCategoryConfirmed.value = true
+                    shootViewModel.isSkuCreated.value = true
+                    shootViewModel.showGrid.value = shootViewModel.getCameraSetting().isGridActive
+                    shootViewModel.showLeveler.value = shootViewModel.getCameraSetting().isGryroActive
+                    shootViewModel.showOverlay.value = shootViewModel.getCameraSetting().isOverlayActive
+                }else{
+                    shootViewModel.getSubCategories.value = true
+                }
+            }
         }
+
+
     }
 
     private fun getSubcategoryResponse(): NewSubCatResponse.Subcategory? {

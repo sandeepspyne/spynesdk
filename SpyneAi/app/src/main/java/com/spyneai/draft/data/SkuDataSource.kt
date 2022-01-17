@@ -34,10 +34,10 @@ class SkuDataSource(
                 )
 
                 val prevKey = if (page == 0) null else page - 1
-                val nextKey = if (response.data.isNotEmpty()) null else page + 1
+                val nextKey = if (response.data.isNullOrEmpty()) null else page + 1
 
                 appDatabase.withTransaction {
-                    val ss = appDatabase.shootDao().insertSkuWithCheck(response.data,projectUuid)
+                    val ss = appDatabase.shootDao().insertSkuWithCheck(response.data,projectUuid,projectId)
                     Log.d(TAG, "load: ${Gson().toJson(ss)}")
                 }
 

@@ -319,7 +319,7 @@ interface ShootDao {
     suspend fun getSkusWithLimitAndSkip(offset: Int,projectUuid: String,limit: Int = 50) : List<Sku>
 
     @Transaction
-    suspend fun insertSkuWithCheck(response: ArrayList<Sku>, projectUuid: String){
+    suspend fun insertSkuWithCheck(response: ArrayList<Sku>, projectUuid: String,projectId: String? = null){
         val list = ArrayList<Sku>()
 
         response.forEach {
@@ -327,6 +327,7 @@ interface ShootDao {
                 it.uuid = getUuid()
 
             it.projectUuid = projectUuid
+            it.projectId = projectId
 
             if (it.status == "Done"){
                 it.status = "completed"

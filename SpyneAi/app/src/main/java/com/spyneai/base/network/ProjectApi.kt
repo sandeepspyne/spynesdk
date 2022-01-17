@@ -24,7 +24,7 @@ interface ProjectApi {
     suspend fun getPagedProjects(
         @Query("pageNo") pageNo: Int,
         @Query("count") count: Int = 10,
-        @Query("sortBy") sortBy: String = "ASC",
+        @Query("sortBy") sortBy: String = "DESC",
         @Query("auth_key") authKey: String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString(),
         @Query("status") status: String = "draft"
     ) : ProjectPagedRes

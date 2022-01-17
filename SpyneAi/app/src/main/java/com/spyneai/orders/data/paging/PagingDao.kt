@@ -23,7 +23,7 @@ interface PagingDao {
             if (it.status == "Done")
                 it.status = "completed"
 
-            if (it.status == "In Progress")
+            if (it.status == "In Progress" || it.status == "Yet to Start")
                 it.status = "ongoing"
 
             it.status = it.status.lowercase()
@@ -34,7 +34,7 @@ interface PagingDao {
             if (dbItem == null){
                 list.add(it)
             }else {
-                if (it.skuCount > dbItem.skuCount)
+                if (it.skuCount > dbItem.skuCount || it.processedCount > dbItem.processedCount)
                     list.add(it)
             }
         }
@@ -43,7 +43,7 @@ interface PagingDao {
     }
 
     @Query("SELECT * FROM project where status = :status")
-    fun getAllProjects(status: String = "Draft"): PagingSource<Int, Project>
+    fun getAllProjects(status: String = "draft"): PagingSource<Int, Project>
 
     @Query("SELECT * FROM project where uuid = :uuid")
     fun getProject(uuid: String): Project

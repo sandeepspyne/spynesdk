@@ -137,6 +137,14 @@ class MainDashboardActivity : AppCompatActivity() {
                 continueShoot()
             }
         })
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val shootDao = AppDatabase.getInstance(this@MainDashboardActivity).shootDao()
+
+            val s =  shootDao.getProject("3e8a876c803a47e6845b8b0a879a2cef")
+
+            val ss = ""
+        }
     }
 
 
