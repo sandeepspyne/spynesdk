@@ -22,14 +22,11 @@ import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.paging.ProjectPagedRes
 import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.orders.ui.fragment.MyOrdersFragment
 import com.spyneai.posthog.Events
 import com.spyneai.service.*
-import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ImagesRepoV2
-import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
@@ -39,7 +36,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -353,47 +349,44 @@ class MainDashboardActivity : AppCompatActivity() {
 
     private fun startUploadService() {
         GlobalScope.launch(Dispatchers.IO) {
-            val shootLocalRepository = ImagesRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
+            val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
+            val shootLocalRepository = ImagesRepoV2(shootDao)
             if (shootLocalRepository.getOldestImage() != null
             ) {
-
                 if (!isMyServiceRunning(ImageUploadingService::class.java))
                     Utilities.saveBool(this@MainDashboardActivity, AppConstants.UPLOADING_RUNNING, false)
 
-                var action = Actions.START
-                if (getServiceState(this@MainDashboardActivity) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-                    return@launch
+                startUploadingService(
+                    MainDashboardActivity::class.java.simpleName,
+                    ServerSyncTypes.UPLOAD
+                )
+            }
 
-                val serviceIntent = Intent(this@MainDashboardActivity, ImageUploadingService::class.java)
-                serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,MainDashboardActivity::class.simpleName)
-                serviceIntent.putExtra(AppConstants.SYNC_TYPE,SeverSyncTypes.UPLOAD)
-                serviceIntent.action = action.name
+            val pendingProjects = shootDao.getPendingProjects()
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    log("Starting the service in >=26 Mode")
-                    ContextCompat.startForegroundService(this@MainDashboardActivity, serviceIntent)
-                    return@launch
-                } else {
-                    log("Starting the service in < 26 Mode")
-                    startService(serviceIntent)
-                }
+            if (pendingProjects > 0){
+                if (!isMyServiceRunning(ImageUploadingService::class.java))
+                    Utilities.saveBool(this@MainDashboardActivity, AppConstants.PROJECT_SYNC_RUNNING, false)
 
-                val properties = HashMap<String,Any?>()
-                    .apply {
-                        put("service_state", "Started")
-                        put(
-                            "email",
-                            Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
-                                .toString()
-                        )
-                        put("medium", "Main Activity")
-                    }
+                startUploadingService(
+                    MainDashboardActivity::class.java.simpleName,
+                    ServerSyncTypes.CREATE
+                )
+            }
 
-                captureEvent(Events.SERVICE_STARTED, properties)
+            val pendingSkus = shootDao.getPendingSku()
+
+            if (pendingSkus > 0){
+                if (!isMyServiceRunning(ImageUploadingService::class.java))
+                    Utilities.saveBool(this@MainDashboardActivity, AppConstants.PROCESS_SKU_RUNNING, false)
+
+                startUploadingService(
+                    MainDashboardActivity::class.java.simpleName,
+                    ServerSyncTypes.PROCESS
+                )
             }
         }
     }
-
 
     private fun cancelAllWorkers() {
         //cancel all workers

@@ -6,15 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.spyneai.*
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.posthog.Events
-import com.spyneai.service.SeverSyncTypes
+import com.spyneai.service.ServerSyncTypes
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -220,7 +216,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
             GlobalScope.launch(Dispatchers.Main) {
                 requireContext().startUploadingService(
                     AngleSelectionDialog::class.java.simpleName,
-                    SeverSyncTypes.CREATE
+                    ServerSyncTypes.CREATE
                 )
 
                 dismiss()

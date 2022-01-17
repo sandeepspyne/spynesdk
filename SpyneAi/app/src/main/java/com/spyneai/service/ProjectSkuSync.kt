@@ -19,9 +19,6 @@ import java.util.*
 import kotlin.collections.HashMap
 import com.spyneai.base.network.Resource
 import com.spyneai.posthog.Events
-import com.spyneai.toDate
-import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 
 class ProjectSkuSync(
     val context: Context,
@@ -60,7 +57,7 @@ class ProjectSkuSync(
                     }
                 else {
                     Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
-                    listener.onConnectionLost("Create Project Stopped",SeverSyncTypes.CREATE)
+                    listener.onConnectionLost("Create Project Stopped",ServerSyncTypes.CREATE)
                     Log.d(TAG, "uploadParent: connection lost")
                 }
             }
@@ -83,7 +80,7 @@ class ProjectSkuSync(
                         }
                 )
                 Utilities.saveBool(context,AppConstants.PROJECT_SYNC_RUNNING,false)
-                listener.onConnectionLost("Create Project Stopped",SeverSyncTypes.CREATE)
+                listener.onConnectionLost("Create Project Stopped",ServerSyncTypes.CREATE)
                 break
             }else {
                 if (projectWithSku == null){
@@ -97,7 +94,7 @@ class ProjectSkuSync(
                     break
                 }else {
                     //in progress listener
-                    listener.inProgress("Creating project ${projectWithSku.project?.projectName} and its sku's",SeverSyncTypes.CREATE)
+                    listener.inProgress("Creating project ${projectWithSku.project?.projectName} and its sku's",ServerSyncTypes.CREATE)
 
                     val properties = HashMap<String,Any?>().apply {
                         put("project_id",projectWithSku.project?.uuid)
@@ -176,7 +173,7 @@ class ProjectSkuSync(
             //get pending projects count
             val count = shootDao.getPendingProjects()
 
-            listener.onCompleted("All Projects Created",SeverSyncTypes.CREATE,false)
+            listener.onCompleted("All Projects Created",ServerSyncTypes.CREATE,false)
             Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
 
 //            if (count > 0){

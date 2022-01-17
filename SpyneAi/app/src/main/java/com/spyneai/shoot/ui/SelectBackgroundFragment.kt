@@ -18,16 +18,13 @@ import com.spyneai.databinding.FragmentSelectBackgroundBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.service.SeverSyncTypes
+import com.spyneai.service.ServerSyncTypes
 import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.CarsBackgroundRes
-import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 
 
 class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBackgroundBinding>() {
@@ -429,7 +426,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 //start sync service
                 requireContext().startUploadingService(
                     SelectBackgroundFragment::class.java.simpleName,
-                    SeverSyncTypes.PROCESS
+                    ServerSyncTypes.PROCESS
                 )
 
                 viewModel.startTimer.value = true

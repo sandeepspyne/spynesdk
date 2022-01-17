@@ -26,9 +26,8 @@ import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.service.SeverSyncTypes
+import com.spyneai.service.ServerSyncTypes
 import com.spyneai.shoot.data.ProcessViewModel
-import com.spyneai.shoot.utils.log
 import com.spyneai.videorecording.model.TSVParams
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -434,7 +433,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         //start sync service
         requireContext().startUploadingService(
             RegularShootSummaryFragment::class.java.simpleName,
-            SeverSyncTypes.PROCESS
+            ServerSyncTypes.PROCESS
         )
     }
 

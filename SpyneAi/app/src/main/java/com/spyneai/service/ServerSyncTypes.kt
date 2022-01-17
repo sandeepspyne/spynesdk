@@ -1,6 +1,6 @@
 package com.spyneai.service
 
-enum class SeverSyncTypes {
+enum class ServerSyncTypes {
     CREATE,
     PROCESS,
     UPLOAD

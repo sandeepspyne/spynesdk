@@ -1,28 +1,21 @@
 package com.spyneai.shoot.ui.dialogs
 
-import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.google.android.material.snackbar.Snackbar
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
-import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
@@ -224,7 +217,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
         requireContext().startUploadingService(
             ConfirmReshootDialog::class.java.simpleName,
-            SeverSyncTypes.UPLOAD
+            ServerSyncTypes.UPLOAD
         )
     }
 

@@ -29,12 +29,11 @@ import com.spyneai.databinding.FragmentOverlayEcomBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.service.SeverSyncTypes
+import com.spyneai.service.ServerSyncTypes
 import com.spyneai.shoot.adapters.OverlaysAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.startUploadingService
 import kotlinx.android.synthetic.main.fragment_overlays.*
@@ -154,7 +153,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                        GlobalScope.launch(Dispatchers.Main) {
                            requireContext().startUploadingService(
                                OverlayEcomFragment::class.java.simpleName,
-                               SeverSyncTypes.CREATE
+                               ServerSyncTypes.CREATE
                            )
                        }
                    }

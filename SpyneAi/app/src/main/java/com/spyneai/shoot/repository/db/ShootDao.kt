@@ -359,7 +359,6 @@ interface ShootDao {
                 }
 
 
-
                 if (it.imagesCount > dbItem.imagesCount)
                     list.add(it)
             }

@@ -32,7 +32,6 @@ import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.posthog.Events
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -51,7 +50,6 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.service.*
-import com.spyneai.shoot.data.ShootLocalRepository
 
 
 var TAG = "Locale_Check"
@@ -374,7 +372,7 @@ fun View.loadSmartly(path : String,imageView : ImageView){
 
 fun getUuid() = UUID.randomUUID().toString().replace("-","")
 
-fun Context.startUploadingService(startedBy : String,syncTypes: SeverSyncTypes) {
+fun Context.startUploadingService(startedBy : String,syncTypes: ServerSyncTypes) {
     val prperties = HashMap<String,Any?>()
         .apply {
             put("email", Utilities.getPreference(this@startUploadingService, AppConstants.EMAIL_ID).toString())

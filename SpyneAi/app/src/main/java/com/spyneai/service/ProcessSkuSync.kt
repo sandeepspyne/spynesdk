@@ -14,16 +14,11 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ProcessRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.db.ShootDao
-import com.spyneai.shoot.repository.model.project.ProjectBody
 import com.spyneai.shoot.repository.model.sku.Sku
-import com.spyneai.toDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class ProcessSkuSync(
@@ -63,7 +58,7 @@ class ProcessSkuSync(
                     }
                 else {
                     Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
-                    listener.onConnectionLost("Process Sku Stopped",SeverSyncTypes.PROCESS)
+                    listener.onConnectionLost("Process Sku Stopped",ServerSyncTypes.PROCESS)
                     Log.d(TAG, "uploadParent: connection lost")
                 }
             }else{
@@ -89,7 +84,7 @@ class ProcessSkuSync(
                         }
                 )
                 Utilities.saveBool(context,AppConstants.PROCESS_SKU_RUNNING,false)
-                listener.onConnectionLost("Process Sku Stopped",SeverSyncTypes.CREATE)
+                listener.onConnectionLost("Process Sku Stopped",ServerSyncTypes.CREATE)
                 break
             }
             else {
@@ -122,7 +117,7 @@ class ProcessSkuSync(
                 }
 
                 //in progress listener
-                listener.inProgress("Processing Sku ${sku.skuName}",SeverSyncTypes.PROCESS)
+                listener.inProgress("Processing Sku ${sku.skuName}",ServerSyncTypes.PROCESS)
 
 
                 if (sku.totalFramesUpdated){
@@ -148,7 +143,7 @@ class ProcessSkuSync(
         }while (sku != null)
 
         if (!connectionLost){
-            listener.onCompleted("All Skus Background Id Updated",SeverSyncTypes.PROCESS,false)
+            listener.onCompleted("All Skus Background Id Updated",ServerSyncTypes.PROCESS,false)
             Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
             //get pending projects count
 //            val count = shootDao.getPendingSku()

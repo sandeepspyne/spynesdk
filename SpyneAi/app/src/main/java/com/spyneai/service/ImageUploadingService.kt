@@ -80,7 +80,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
                 val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
 
                 when(intent.getSerializableExtra(AppConstants.SYNC_TYPE)){
-                    SeverSyncTypes.CREATE -> {
+                    ServerSyncTypes.CREATE -> {
                         val prjSync = ProjectSkuSync(
                             this,
                             shootDao,
@@ -90,7 +90,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
                         prjSync.projectSyncParent("Image Uploading Service",serviceStartedBy)
                     }
 
-                    SeverSyncTypes.PROCESS -> {
+                    ServerSyncTypes.PROCESS -> {
                         val processSkuSync = ProcessSkuSync(
                             this,
                             shootDao,
@@ -100,7 +100,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
                         processSkuSync.processSkuParent("Image Uploading Service",serviceStartedBy)
                     }
 
-                    SeverSyncTypes.UPLOAD -> {
+                    ServerSyncTypes.UPLOAD -> {
                         val properties = java.util.HashMap<String, Any?>()
                             .apply {
                                 put("service_state", "Started")
@@ -239,19 +239,19 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
         uploadRunning = false
     }
 
-    override fun inProgress(title: String, type: SeverSyncTypes) {
+    override fun inProgress(title: String, type: ServerSyncTypes) {
         val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
         val finalContent = getString(R.string.innter_connection_label)+internet
         var notification = createNotification(title,finalContent, true)
 
         notificationManager.notify(notificationId, notification)
 
-        if (type == SeverSyncTypes.UPLOAD)
+        if (type == ServerSyncTypes.UPLOAD)
             uploadRunning = true
     }
 
     override fun onCompleted(title: String,
-                             type: SeverSyncTypes,
+                             type: ServerSyncTypes,
                              stopService: Boolean) {
 
         val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
@@ -260,7 +260,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
         notificationManager.notify(notificationId, notification)
 
-        if (type == SeverSyncTypes.UPLOAD)
+        if (type == ServerSyncTypes.UPLOAD)
             uploadRunning = false
 
         //update notification after five minutes
@@ -279,7 +279,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
 
 
-    override fun onConnectionLost(title: String, type: SeverSyncTypes) {
+    override fun onConnectionLost(title: String, type: ServerSyncTypes) {
         captureEvent(Events.INTERNET_DISCONNECTED,
             HashMap<String,Any?>().apply {
                 put("medium","Service")
@@ -291,7 +291,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
         notificationManager.notify(notificationId, notification)
 
-        if (type == SeverSyncTypes.UPLOAD)
+        if (type == ServerSyncTypes.UPLOAD)
             uploadRunning = false
     }
 
