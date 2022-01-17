@@ -126,6 +126,7 @@ class HomeDashboardFragment :
             lisners()
             welcomeHomeText()
             getCategories()
+            observeCategories()
         } else
             autoUpdates()
     }
@@ -297,6 +298,9 @@ class HomeDashboardFragment :
         viewModel.getCategories(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
         )
+    }
+
+    private fun observeCategories() {
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Resource.Success -> {
@@ -310,24 +314,24 @@ class HomeDashboardFragment :
 
 
                     filteredList.clear()
-                        if (categoriesList!!.size > 9){
-                            for (i in 0..7){
-                                filteredList.add(categoriesList!![i])
-                            }
-                            binding.tvCatViewall.visibility = View.VISIBLE
-
+                    if (categoriesList!!.size > 9){
+                        for (i in 0..7){
+                            filteredList.add(categoriesList!![i])
                         }
-                        else {
-                            filteredList = categoriesList as ArrayList<NewCategoriesResponse.Category>
-                            binding.tvCatViewall.visibility = View.GONE
+                        binding.tvCatViewall.visibility = View.VISIBLE
+
+                    }
+                    else {
+                        filteredList = categoriesList as ArrayList<NewCategoriesResponse.Category>
+                        binding.tvCatViewall.visibility = View.GONE
                     }
 
 
 
 
 
-                        categoriesAdapter = CategoriesDashboardAdapter(requireContext(),
-                            filteredList!!, object : CategoriesDashboardAdapter.BtnClickListener {
+                    categoriesAdapter = CategoriesDashboardAdapter(requireContext(),
+                        filteredList!!, object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
 
                                 Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_ID, it.value.data[position].prod_cat_id)
@@ -430,7 +434,7 @@ class HomeDashboardFragment :
 
                     val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(
                         requireContext(), 4)
-                        false
+                    false
 
                     binding.rvDashboardCategories.setLayoutManager(layoutManager)
                     binding.rvDashboardCategories.setAdapter(categoriesAdapter)
@@ -444,7 +448,7 @@ class HomeDashboardFragment :
                         Events.GET_CATEGORIES_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
-                    handleApiError(it)
+                    handleApiError(it) {getCategories()}
                 }
             }
         })
