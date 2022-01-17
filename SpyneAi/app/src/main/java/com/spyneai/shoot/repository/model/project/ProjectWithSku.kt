@@ -8,7 +8,7 @@ data class ProjectWithSku(
     @Embedded val project: Project?,
     @Relation(
         parentColumn = "uuid",
-        entityColumn = "project_uuid"
+        entityColumn = "projectUuid"
     )
     val skus: List<Sku>?
 )

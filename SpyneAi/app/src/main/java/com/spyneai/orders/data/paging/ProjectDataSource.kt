@@ -40,10 +40,10 @@ class ProjectDataSource(
                 )
 
                 val prevKey = if (page == DEFAULT_PAGE_INDEX) null else page - 1
-                val nextKey = if (response.isNullOrEmpty()) null else page + 1
+                val nextKey = if (response.data.isNullOrEmpty()) null else page + 1
 
                 appDatabase.withTransaction {
-                    val ss = appDatabase.getPagingDao().insertWithCheck(response)
+                    val ss = appDatabase.getPagingDao().insertWithCheck(response.data)
                     Log.d(TAG, "load: ${Gson().toJson(ss)}")
                 }
 

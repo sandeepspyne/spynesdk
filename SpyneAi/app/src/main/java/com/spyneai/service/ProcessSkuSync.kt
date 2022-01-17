@@ -49,39 +49,27 @@ class ProcessSkuSync(
 
         val handler = Handler(Looper.getMainLooper())
 
-        if (context.isInternetActive())
-            GlobalScope.launch(Dispatchers.Default) {
-                Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, true)
-                context.captureEvent(Events.PROCESS_SKU_STARTED,HashMap())
-                processSku()
+        handler.postDelayed({
+            if (Utilities.getBool(context, AppConstants.PROCESS_SKU_PARENT_TRIGGERED, true)
+                &&
+                !Utilities.getBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
+            ) {
+                if (context.isInternetActive())
+                    GlobalScope.launch(Dispatchers.Default) {
+                        Log.d(TAG, "uploadParent: start")
+                         Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, true)
+                        context.captureEvent(Events.PROCESS_SKU_STARTED,HashMap())
+                        processSku()
+                    }
+                else {
+                    Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
+                    listener.onConnectionLost("Process Sku Stopped",SeverSyncTypes.PROCESS)
+                    Log.d(TAG, "uploadParent: connection lost")
+                }
+            }else{
+                Log.d(TAG, "processSkuParent: running")
             }
-        else {
-            Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
-            listener.onConnectionLost("Process Sku Stopped",SeverSyncTypes.PROCESS)
-            Log.d(TAG, "uploadParent: connection lost")
-        }
-
-//        handler.postDelayed({
-//            if (Utilities.getBool(context, AppConstants.PROCESS_SKU_PARENT_TRIGGERED, true)
-//                &&
-//                !Utilities.getBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
-//            ) {
-//                if (context.isInternetActive())
-//                    GlobalScope.launch(Dispatchers.Default) {
-//                        Log.d(TAG, "uploadParent: start")
-//                         Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, true)
-//                        context.captureEvent(Events.PROCESS_SKU_STARTED,HashMap())
-//                        processSku()
-//                    }
-//                else {
-//                    Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
-//                    listener.onConnectionLost("Process Sku Stopped",SeverSyncTypes.PROCESS)
-//                    Log.d(TAG, "uploadParent: connection lost")
-//                }
-//            }else{
-//                Log.d(TAG, "processSkuParent: running")
-//            }
-//        }, getRandomNumberInRange().toLong())
+        }, getRandomNumberInRange().toLong())
     }
 
     private suspend fun  processSku(){

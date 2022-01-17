@@ -1,6 +1,7 @@
 package com.spyneai.base.network
 
 import com.spyneai.BaseApplication
+import com.spyneai.draft.data.PagedSkuRes
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.paging.ProjectPagedRes
@@ -36,7 +37,7 @@ interface ProjectApi {
         @Query("count") count: Int = 50,
         @Query("sortBy") sortBy: String = "DESC",
         @Query("auth_key") authKey: String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString(),
-    ) : ArrayList<Sku>
+    ) : PagedSkuRes
 
 
 }
