@@ -6,49 +6,59 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.spyneai.BaseApplication
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.service.Actions
-import com.spyneai.service.ImageUploadingService
-import com.spyneai.service.getServiceState
-import com.spyneai.service.log
+import com.spyneai.service.*
 import com.spyneai.shoot.data.ImageLocalRepository
+import com.spyneai.shoot.data.ImagesRepoV2
+import com.spyneai.startUploadingService
 
 
 class InternetWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        val shootLocalRepository = ImageLocalRepository()
-        if (shootLocalRepository.getOldestImage("0").itemId != null
-            || shootLocalRepository.getOldestImage("-1").itemId != null){
-            if (!appContext.isMyServiceRunning(ImageUploadingService::class.java)){
+        val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
+        val shootLocalRepository = ImagesRepoV2(shootDao)
+        if (shootLocalRepository.getOldestImage() != null
+        ) {
+            if (!appContext.isMyServiceRunning(ImageUploadingService::class.java))
                 Utilities.saveBool(appContext, AppConstants.UPLOADING_RUNNING, false)
 
-                capture(Events.SERVICE_STARTED,"Started")
-                var action = Actions.START
-                if (getServiceState(appContext) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-                    return Result.success()
+            appContext.startUploadingService(
+                MainDashboardActivity::class.java.simpleName,
+                ServerSyncTypes.UPLOAD
+            )
+        }
 
-                val serviceIntent = Intent(appContext, ImageUploadingService::class.java)
-                serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, InternetWorker::class.simpleName)
-                serviceIntent.action = action.name
+        val pendingProjects = shootDao.getPendingProjects()
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    log("Starting the service in >=26 Mode")
-                    ContextCompat.startForegroundService(appContext, serviceIntent)
-                    return Result.success()
-                } else {
-                    log("Starting the service in < 26 Mode")
-                    appContext.startService(serviceIntent)
-                }
-            }else {
-                capture(Events.SERVICE_STARTED,"Running")
-            }
+        if (pendingProjects > 0){
+            if (!appContext.isMyServiceRunning(ImageUploadingService::class.java))
+                Utilities.saveBool(appContext, AppConstants.PROJECT_SYNC_RUNNING, false)
+
+            appContext.startUploadingService(
+                MainDashboardActivity::class.java.simpleName,
+                ServerSyncTypes.CREATE
+            )
+        }
+
+        val pendingSkus = shootDao.getPendingSku()
+
+        if (pendingSkus > 0){
+            if (!appContext.isMyServiceRunning(ImageUploadingService::class.java))
+                Utilities.saveBool(appContext, AppConstants.PROCESS_SKU_RUNNING, false)
+
+            appContext.startUploadingService(
+                MainDashboardActivity::class.java.simpleName,
+                ServerSyncTypes.PROCESS
+            )
         }
 
         return Result.success()
