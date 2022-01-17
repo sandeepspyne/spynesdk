@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.ExperimentalPagingApi
 import androidx.work.*
 import com.spyneai.*
 import com.spyneai.R
@@ -43,6 +44,7 @@ class MainDashboardActivity : AppCompatActivity() {
     private var viewModel: DashboardViewModel? = null
     private var TAG = "MainDashboardActivity"
 
+    @ExperimentalPagingApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardMainBinding.inflate(layoutInflater)

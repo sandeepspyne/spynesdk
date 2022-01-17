@@ -16,6 +16,6 @@ interface VideoDao {
 //    @Update
 //    fun update(videoDetails: VideoDetails): Long
 //
-//    @Query("select * from videodetails where uuid= :uuid")
-//    fun getVideo(uuid: String) : VideoDetails
+//    @Query("select * from videodetails where itemId= :id")
+//    fun getVideo(id: Long) : VideoDetails
 }

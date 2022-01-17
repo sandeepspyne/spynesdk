@@ -103,6 +103,9 @@ interface ShootDao {
     @Query("select * from sku")
     fun getAllSKus() : List<Sku>
 
+    @Query("select * from project")
+    fun getAllProjects() : List<Project>
+
     @Update
     fun updateSku(sku: Sku): Int
 
@@ -243,7 +246,7 @@ interface ShootDao {
     @Transaction
     fun updateBackground(map: HashMap<String,Any>){
         val p  = updateProjectStatus(
-            map["projectUuid"].toString())
+            map["project_uuid"].toString())
 
         Log.d(AppConstants.SHOOT_DAO_TAG, "updateBackground: $p")
         val s = updateSkuBackground(
@@ -415,6 +418,9 @@ interface ShootDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllImages(imageList: List<Image>) : List<Long>
+
+    @Query("select * from project where projectName = :projectName ")
+    suspend fun getProjectByName(projectName: String) : Project
 
 }
 

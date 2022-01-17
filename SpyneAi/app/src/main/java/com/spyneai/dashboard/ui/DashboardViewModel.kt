@@ -5,7 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.spyneai.BaseApplication
+import com.spyneai.base.network.ProjectApiClient
 import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.repository.model.CheckInOutRes
 import com.spyneai.dashboard.repository.model.GetGCPUrlRes
 import com.spyneai.dashboard.repository.model.LocationsRes
@@ -13,11 +19,14 @@ import com.spyneai.dashboard.repository.model.VersionStatusRes
 import com.spyneai.dashboard.repository.DashboardRepository
 import com.spyneai.dashboard.repository.model.category.DynamicLayout
 import com.spyneai.dashboard.response.NewCategoriesResponse
+import com.spyneai.orders.data.paging.PagedRepository
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
+import com.spyneai.shoot.repository.model.project.Project
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -119,6 +128,16 @@ class DashboardViewModel() : ViewModel() {
                 }
             }
         }
+    }
+
+    @ExperimentalPagingApi
+    fun getAllProjects(status: String): Flow<PagingData<Project>> {
+        return PagedRepository(
+            ProjectApiClient().getClient(),
+            AppDatabase.getInstance(BaseApplication.getContext()),
+            status
+        ).getSearchResultStream()
+            .cachedIn(viewModelScope)
     }
 
     fun getOngoingSKUs(
