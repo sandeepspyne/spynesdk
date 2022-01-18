@@ -7,6 +7,7 @@ import com.spyneai.needs.AppConstants
 
 @Entity
 data class Image(
+    @SerializedName("local_id")
     @PrimaryKey(autoGenerate = false)
     var uuid: String = "",
     val enterprise_id: String? = null,

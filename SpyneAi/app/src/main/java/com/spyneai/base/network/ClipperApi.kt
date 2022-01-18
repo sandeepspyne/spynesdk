@@ -57,6 +57,7 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v4/image/upload")
     suspend fun getPreSignedUrl(
+        @Field("local_id") localId: String,
         @Field("project_id") project_id: String?,
         @Field("sku_id") sku_id: String?,
         @Field("image_category") image_category: String?,

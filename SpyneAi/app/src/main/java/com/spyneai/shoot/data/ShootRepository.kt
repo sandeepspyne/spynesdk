@@ -8,6 +8,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.http.Field
 
 
 class ShootRepository : BaseRepository() {
@@ -51,6 +52,7 @@ class ShootRepository : BaseRepository() {
         image : Image
     ) = safeApiCall {
         clipperApi.getPreSignedUrl(
+           image.uuid,
             image.projectId,
             image.skuId,
             image.image_category,
