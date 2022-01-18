@@ -311,6 +311,9 @@ interface ShootDao {
     @Query("select * from image where uuid = :uuid")
     fun getImage(uuid: String) : Image
 
+    @Query("select * from image where imageId = :imageId")
+    fun getImageWithImageId(imageId: String?) : Image
+
     @Query("select * from image where skuUuid = :skuUuid and name = :imageName")
     fun getImage(skuUuid: String,imageName: String) : Image
 
@@ -380,37 +383,37 @@ interface ShootDao {
         val list = ArrayList<Image>()
 
         response.forEach {
-            if (it.uuid ==  null){
-                it.uuid = getUuid()
-            }
 
-            if(it.overlayId == null)
-                it.overlayId = "1234"
-
-            if(it.output_image_hres_url == null)
-                it.output_image_hres_url = ""
-
-            if(it.output_image_lres_url == null)
-                it.output_image_lres_url = ""
-
-            if(it.output_image_lres_wm_url == null)
-                it.output_image_lres_wm_url = ""
-
-            it.skuUuid = skuUuid
-            it.path = it.input_image_lres_url
-
-            if (it.status == "Done" || it.status == "Yet to Start" || it.status == "Failed"){
-                it.isMarkedDone = true
-                it.isUploaded = true
-            }
-
-            val dbItem = getImage(it.uuid)
+            val dbItem = getImageWithImageId(it.imageId)
 
             if (dbItem == null){
+                if (it.uuid ==  null){
+                    it.uuid = getUuid()
+                }
+
+                if(it.overlayId == null)
+                    it.overlayId = "1234"
+
+                if(it.output_image_hres_url == null)
+                    it.output_image_hres_url = ""
+
+                if(it.output_image_lres_url == null)
+                    it.output_image_lres_url = ""
+
+                if(it.output_image_lres_wm_url == null)
+                    it.output_image_lres_wm_url = ""
+
+                it.skuUuid = skuUuid
+                it.path = it.input_image_lres_url
+
+                if (it.status == "Done" || it.status == "Yet to Start" || it.status == "Failed"){
+                    it.isMarkedDone = true
+                    it.isUploaded = true
+                }
+
                 it.preSignedUrl = AppConstants.DEFAULT_PRESIGNED_URL
                 list.add(it)
             }
-
         }
 
         insertAllImages(list)
