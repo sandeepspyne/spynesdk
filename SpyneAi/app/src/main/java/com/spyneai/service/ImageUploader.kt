@@ -113,7 +113,7 @@ class ImageUploader(
                         }
                 )
                 this@ImageUploader.isActive = false
-                val text = if (image == null) "Image uploading paused" else "Image uploading paused at ${image.image_category} ${image.sequence}"
+                val text = if (image == null) "Image uploading paused" else "Image uploading paused at ${image.skuName?.uppercase()} (${image.image_category}-${image.sequence})"
                 listener.onConnectionLost(text,ServerSyncTypes.UPLOAD)
                 break
             }
@@ -157,7 +157,7 @@ class ImageUploader(
                     imageProperties
                 )
 
-                listener.inProgress("Uploading ${image.image_category} ${image.sequence}",ServerSyncTypes.UPLOAD)
+                listener.inProgress("Uploading ${image.skuName?.uppercase()} (${image.image_category}-${image.sequence})",ServerSyncTypes.UPLOAD)
                 this@ImageUploader.isActive = true
 
                 if (retryCount > 4) {
