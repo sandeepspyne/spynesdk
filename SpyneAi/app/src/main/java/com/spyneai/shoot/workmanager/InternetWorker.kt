@@ -28,8 +28,8 @@ class InternetWorker(private val appContext: Context, workerParams: WorkerParame
         val shootLocalRepository = ImagesRepoV2(shootDao)
         if (shootLocalRepository.getOldestImage() != null
         ) {
-            if (!appContext.isMyServiceRunning(ImageUploadingService::class.java))
-                Utilities.saveBool(appContext, AppConstants.UPLOADING_RUNNING, false)
+//            if (!appContext.isMyServiceRunning(ImageUploadingService::class.java))
+//                Utilities.saveBool(appContext, AppConstants.UPLOADING_RUNNING, false)
 
             appContext.startUploadingService(
                 MainDashboardActivity::class.java.simpleName,

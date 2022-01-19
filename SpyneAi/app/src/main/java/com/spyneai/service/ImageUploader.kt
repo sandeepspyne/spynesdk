@@ -8,9 +8,11 @@ import android.media.ExifInterface
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.room.Room
 import com.google.gson.Gson
 import com.spyneai.*
 import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -34,17 +36,42 @@ class ImageUploader(
     var lastIdentifier: String = "0",
     var imageType: String = AppConstants.REGULAR,
     var retryCount: Int = 0,
-    var connectionLost: Boolean = false
+    var connectionLost: Boolean = false,
+    var isActive: Boolean = false
 ) {
+
+    companion object{
+        @Volatile
+        private var INSTANCE: ImageUploader? = null
+
+        fun getInstance(context: Context,listener: Listener,): ImageUploader {
+            synchronized(this) {
+                var instance = ImageUploader.INSTANCE
+
+                if (instance == null) {
+                    instance = ImageUploader(
+                        context,
+                        ImagesRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).shootDao()),
+                        ShootRepository(),
+                        listener
+                    )
+
+                    INSTANCE = instance
+                }
+                return instance
+            }
+        }
+    }
+
     val TAG = "ImageUploader"
-    val job = SupervisorJob()
+    private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
     fun uploadParent(type : String,startedBy : String?) {
         context.captureEvent("UPLOAD PARENT TRIGGERED",HashMap<String,Any?>().apply {
             put("type",type)
             put("service_started_by",startedBy)
-            put("upload_running",Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false))
+            put("upload_running",isActive)
         })
 
         //update triggered value
@@ -53,19 +80,15 @@ class ImageUploader(
         val handler = Handler(Looper.getMainLooper())
 
         handler.postDelayed({
-            if (Utilities.getBool(context, AppConstants.UPLOAD_TRIGGERED, true)
-                &&
-                !Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false)
-            ) {
+            if (Utilities.getBool(context, AppConstants.UPLOAD_TRIGGERED, true) && !isActive) {
                 if (context.isInternetActive())
                     scope.launch {
-                        Log.d(TAG, "uploadParent: start")
-                        Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, true)
+                        this@ImageUploader.isActive = true
                         context.captureEvent("START UPLOADING CALLED",HashMap())
                         startUploading()
                     }
                 else {
-                    Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+                    this@ImageUploader.isActive = false
                     listener.onConnectionLost()
                     Log.d(TAG, "uploadParent: connection lost")
                 }
@@ -88,32 +111,12 @@ class ImageUploader(
                             }.toString())
                         }
                 )
-                Utilities.saveBool(context,AppConstants.UPLOADING_RUNNING,false)
+                this@ImageUploader.isActive = false
                 listener.onConnectionLost()
                 break
             }
 
             var image = localRepository.getOldestImage()
-
-            Log.d(TAG, "startUploading: "+Gson().toJson(image))
-
-//            if (image.uuid == null) {
-//                imageType = AppConstants.SKIPPED
-//                image = localRepository.getOldestImage()
-//                skipFlag = -2
-//            }
-
-//            if (image.uuid == null && imageType == AppConstants.SKIPPED) {
-//                //make second time skipped images elligible for upload
-//                val count = localRepository.updateSkipedImages()
-//                val markDoneSkippedCount = localRepository.updateMarkDoneSkipedImages()
-//
-//                Log.d(TAG, "name: count"+count+" "+markDoneSkippedCount)
-//
-//                //check if we don"t have any new image clicked while uploading skipped images
-//                if (count > 0 || markDoneSkippedCount > 0)
-//                    image = localRepository.getOldestImage()
-//            }
 
             if (image == null){
                 context.captureEvent(
@@ -154,6 +157,7 @@ class ImageUploader(
                 )
 
                 listener.inProgress(image)
+                this@ImageUploader.isActive = true
 
                 if (retryCount > 4) {
                     val skip = localRepository.skipImage(
@@ -346,8 +350,7 @@ class ImageUploader(
         if (!connectionLost){
             deleteTempFiles(File(outputDirectory))
             listener.onUploaded()
-            Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
-            job.cancel()
+            this@ImageUploader.isActive = false
         }
     }
 

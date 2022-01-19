@@ -380,7 +380,7 @@ fun Context.startUploadingService(startedBy : String,syncTypes: ServerSyncTypes)
         }
 
 //    if (!this?.isMyServiceRunning(ImageUploadingService::class.java)){
-        Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
+       // Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
 
         var action = Actions.START
         if (getServiceState(this) == ServiceState.STOPPED && action == Actions.STOP)

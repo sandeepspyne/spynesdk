@@ -27,7 +27,7 @@ class ExplicitConnectionReceiver : BroadcastReceiver() {
                         }
 
                     if (!context?.isMyServiceRunning(ImageUploadingService::class.java)){
-                        Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+                        //Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
 
                         var action = Actions.START
                         if (getServiceState(context) == ServiceState.STOPPED && action == Actions.STOP)

@@ -355,8 +355,8 @@ class MainDashboardActivity : AppCompatActivity() {
             val shootLocalRepository = ImagesRepoV2(shootDao)
             if (shootLocalRepository.getOldestImage() != null
             ) {
-                if (!isMyServiceRunning(ImageUploadingService::class.java))
-                    Utilities.saveBool(this@MainDashboardActivity, AppConstants.UPLOADING_RUNNING, false)
+//                if (!isMyServiceRunning(ImageUploadingService::class.java))
+//                    Utilities.saveBool(this@MainDashboardActivity, AppConstants.UPLOADING_RUNNING, false)
 
                 startUploadingService(
                     MainDashboardActivity::class.java.simpleName,

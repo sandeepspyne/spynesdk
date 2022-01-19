@@ -27,7 +27,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
     lateinit var channel: NotificationChannel
     lateinit var builder: Notification.Builder
     private var receiver: InternetConnectionReceiver? = null
-    var uploadRunning = false
     private var imageUploader : ImageUploader? = null
     private var notificationId = 0
     val notificationChannelId = "PROCESSING SERVICE CHANNEL"
@@ -186,9 +185,9 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
             stopForeground(false)
             stopSelf()
 
-            Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
+            //Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
             //cancel all jobs started by service
-            imageUploader?.job?.cancel()
+
 
         } catch (e: Exception) {
         }
@@ -205,12 +204,9 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
         var notification = createNotification(title,content, true)
 
         notificationManager.notify(notificationId, notification)
-       uploadRunning = true
     }
 
     override fun onUploaded() {
-        uploadRunning = false
-
         var title = getString(R.string.image_uploaded)
         if (currentImage != null){
             val category = if (currentImage?.image_category == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.image_category
@@ -236,7 +232,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
     }
 
     override fun onUploadFail(task: Image) {
-        uploadRunning = false
     }
 
     override fun inProgress(title: String, type: ServerSyncTypes) {
@@ -246,8 +241,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
         notificationManager.notify(notificationId, notification)
 
-        if (type == ServerSyncTypes.UPLOAD)
-            uploadRunning = true
+//        if (type == ServerSyncTypes.UPLOAD)
     }
 
     override fun onCompleted(title: String,
@@ -260,8 +254,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
         notificationManager.notify(notificationId, notification)
 
-        if (type == ServerSyncTypes.UPLOAD)
-            uploadRunning = false
+//        if (type == ServerSyncTypes.UPLOAD)
+
 
         //update notification after five minutes
         if (allDataSynced()){
@@ -291,13 +285,11 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
         notificationManager.notify(notificationId, notification)
 
-        if (type == ServerSyncTypes.UPLOAD)
-            uploadRunning = false
+//        if (type == ServerSyncTypes.UPLOAD)
+//            uploadRunning = false
     }
 
     override fun onConnectionLost() {
-        uploadRunning = false
-
         captureEvent(Events.INTERNET_DISCONNECTED,
             HashMap<String,Any?>().apply {
                 put("medium","Service")
@@ -330,8 +322,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
                 //if any image pending in upload
                 val shootLocalRepository = ImageLocalRepository()
                 if ((shootLocalRepository.getOldestImage("0").itemId != null
-                            || shootLocalRepository.getOldestImage("-1").itemId != null)
-                    && !uploadRunning){
+                            || shootLocalRepository.getOldestImage("-1").itemId != null)){
                     // we have pending images, resume upload
                     resumeUpload("onReceive")
                 }
@@ -348,16 +339,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
     }
 
     private fun resumeUpload(type : String) {
-        Log.d(TAG, "resumeUpload: "+type)
-        uploadRunning = true
-
-        if (imageUploader == null)
-            imageUploader = ImageUploader(this,
-                ImagesRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).shootDao()),
-                ShootRepository(),
-                this
-            )
-
+        imageUploader = ImageUploader.getInstance(this,this)
         imageUploader?.connectionLost = false
         imageUploader?.uploadParent(type,serviceStartedBy)
     }
