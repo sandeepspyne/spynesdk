@@ -338,7 +338,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
     private fun processSku(gotoHome: Boolean) {
         GlobalScope.launch(Dispatchers.IO) {
-            val s  = viewModel.updateBackground()
+            viewModel.updateBackground()
 
             GlobalScope.launch(Dispatchers.Main) {
                 Utilities.hideProgressDialog()
@@ -350,8 +350,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                             this.put("sku_id", viewModel.sku?.uuid!!)
                             this.put("background_id", backgroundSelect)
                         }
-
-
                 )
 
                 //start sync service

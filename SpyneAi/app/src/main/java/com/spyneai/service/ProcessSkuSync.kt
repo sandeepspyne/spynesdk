@@ -272,20 +272,42 @@ class ProcessSkuSync(
 
         //val additionalData = JSONObject(sku.additionalData)
 
-        val response = if (sku.categoryId == AppConstants.FOOD_AND_BEV_CATEGORY_ID)
-            ProcessRepository().processSku(
-                Utilities.getPreference(context,AppConstants.AUTH_KEY)!!,
-                sku.skuId!!,
-                sku.backgroundId!!,
-                sku.isThreeSixty,
-                false,
-                false,
-                false)
-        else
-            ProcessRepository().skuProcessStateWithBackgroundId(
-                auth_key = Utilities.getPreference(context,AppConstants.AUTH_KEY).toString(),
-                sku.projectId!!,
-                sku.backgroundId.toInt())
+        val response = when(sku.categoryId){
+            AppConstants.CARS_CATEGORY_ID,
+            AppConstants.BIKES_CATEGORY_ID-> {
+                ProcessRepository().processSku(
+                    Utilities.getPreference(context,AppConstants.AUTH_KEY)!!,
+                    sku.skuId!!,
+                    sku.backgroundId!!,
+                    sku.isThreeSixty,
+                    false,
+                    false,
+                    false)
+            }
+
+            AppConstants.FOOTWEAR_CATEGORY_ID -> {
+                ShootRepository().skuProcessState(
+                    auth_key = Utilities.getPreference(context,AppConstants.AUTH_KEY).toString(),
+                    sku.projectId!!,)
+            }
+
+            AppConstants.FOOD_AND_BEV_CATEGORY_ID -> {
+                ProcessRepository().skuProcessStateWithBackgroundId(
+                    auth_key = Utilities.getPreference(context,AppConstants.AUTH_KEY).toString(),
+                    sku.projectId!!,
+                    sku.backgroundId.toInt())
+            }
+
+            else -> {
+                ShootRepository().skuProcessStateWithShadowOption(
+                    auth_key = Utilities.getPreference(context,AppConstants.AUTH_KEY).toString(),
+                    sku.projectId!!,
+                    sku.backgroundId.toInt(),
+                    false.toString())
+            }
+        }
+
+
 
         context.captureEvent(
             Events.PROCESS_SKU_INTIATED,

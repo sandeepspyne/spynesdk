@@ -6,19 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.spyneai.R
+import com.spyneai.*
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentProjectDetailBinding
-import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.ServerSyncTypes
 import com.spyneai.shoot.adapters.ProjectDetailAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.repository.model.project.ProjectWithSkuAndImages
+import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -151,38 +151,6 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
             }
         }
 
-//        viewModel.skuProcessStateResponse.observe(viewLifecycleOwner, {
-//            when (it) {
-//                is Resource.Success -> {
-//                    Utilities.hideProgressDialog()
-//                    requireContext().gotoHome()
-//                }
-//
-//                is Resource.Failure -> {
-//                    Utilities.hideProgressDialog()
-//                    handleApiError(it) {
-//                        processWithoutBackgroundId()
-//                    }
-//                }
-//            }
-//        })
-
-//        viewModel.skuProcessStateWithBgResponse.observe(viewLifecycleOwner, {
-//            when (it) {
-//                is Resource.Success -> {
-//                    Utilities.hideProgressDialog()
-//                    requireContext().gotoHome()
-//                }
-//
-//                is Resource.Failure -> {
-//                    Utilities.hideProgressDialog()
-//                    handleApiError(it) {
-//                        processWithBackgroundId()
-//                    }
-//                }
-//            }
-//        })
-
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
         }
@@ -190,51 +158,60 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
     private fun processWithoutBackgroundId() {
         Utilities.showProgressDialog(requireContext())
-        viewModel.skuProcessState(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.projectId.value.toString()
-        )
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.updateProjectStatus()
+
+            GlobalScope.launch(Dispatchers.Main) {
+
+                Utilities.hideProgressDialog()
+
+                //start sync service
+                requireContext().startUploadingService(
+                    SelectBackgroundFragment::class.java.simpleName,
+                    ServerSyncTypes.PROCESS
+                )
+
+                requireContext().captureEvent(
+                    Events.PROCESS,
+                    HashMap<String, Any?>()
+                        .apply {
+                            this.put("sku_id", viewModel.sku?.uuid!!)
+                            this.put("background_id", "none")
+                        }
+                )
+
+                requireContext().gotoHome()
+            }
+        }
     }
 
-    private fun processWithBackgroundId() {
-        Utilities.showProgressDialog(requireContext())
-        viewModel.skuProcessStateWithBackgroundid(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.projectId.value.toString(),
-            5000
-        )
-    }
 
     private fun processWithShadowOption() {
-        Utilities.showProgressDialog(requireContext())
-        viewModel.skuProcessStateWithShadowOption(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.projectId.value.toString(),
-            5000,
-            shadow
-        )
+       GlobalScope.launch(Dispatchers.IO) {
+           viewModel.updateBackground(5000)
 
+           GlobalScope.launch(Dispatchers.Main) {
 
-        viewModel.skuProcessStateWithShadowResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-                    requireContext().gotoHome()
-                }
+               Utilities.hideProgressDialog()
 
-                is Resource.Failure -> {
-                    log("create project id failed")
-                    requireContext().captureFailureEvent(
-                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, HashMap<String,Any?>(),
-                        it.errorMessage!!
-                    )
+               //start sync service
+               requireContext().startUploadingService(
+                   SelectBackgroundFragment::class.java.simpleName,
+                   ServerSyncTypes.PROCESS
+               )
 
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { processWithShadowOption() }
-                }
-            }
-        })
+               requireContext().captureEvent(
+                   Events.PROCESS,
+                   HashMap<String, Any?>()
+                       .apply {
+                           this.put("sku_id", viewModel.sku?.uuid!!)
+                           this.put("background_id", 5000)
+                       }
+               )
 
+               requireContext().gotoHome()
+           }
+       }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -307,25 +284,6 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 //                }
 //            }
 //        })
-    }
-
-    fun repeatRefreshData() {
-        try {
-            viewModel.getProjectDetail(
-                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-                viewModel.projectId.value.toString()
-            )
-            runnable = Runnable {
-                if (refreshData)
-                    repeatRefreshData()
-            }
-            if (runnable != null)
-                handler.postDelayed(runnable!!, 15000)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     override fun onPause() {

@@ -41,11 +41,14 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
         }
 
         binding.btYes.setOnClickListener {
-            viewModel.updateProjectStatus()
-            viewModel.showProjectDetail.value = true
-            dismiss()
+           GlobalScope.launch(Dispatchers.IO) {
+               viewModel.updateProjectStatus()
 
-            log("end project dialog dismiss- Yes")
+               GlobalScope.launch(Dispatchers.Main) {
+                   viewModel.showProjectDetail.value = true
+                   dismiss()
+               }
+           }
         }
 
         binding.ivCloseDialog.setOnClickListener {

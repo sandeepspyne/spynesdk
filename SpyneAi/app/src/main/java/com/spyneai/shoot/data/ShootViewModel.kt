@@ -85,15 +85,8 @@ class ShootViewModel : ViewModel() {
     val getProjectNameResponse: LiveData<Resource<GetProjectNameResponse>>
         get() = _getProjectNameResponse
 
-    private val _projectDetailResponse: MutableLiveData<Resource<ProjectDetailResponse>> =
-        MutableLiveData()
-    val projectDetailResponse: LiveData<Resource<ProjectDetailResponse>>
-        get() = _projectDetailResponse
 
-    private val _skuProcessStateResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
-        MutableLiveData()
-    val skuProcessStateResponse: LiveData<Resource<SkuProcessStateResponse>>
-        get() = _skuProcessStateResponse
+
 
     private val _updateTotalFramesRes: MutableLiveData<Resource<UpdateTotalFramesRes>> =
         MutableLiveData()
@@ -176,17 +169,6 @@ class ShootViewModel : ViewModel() {
     var reshootSequence = 0
     var updateSelectItem: MutableLiveData<Boolean> = MutableLiveData()
 
-
-    private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
-        MutableLiveData()
-    val skuProcessStateWithBgResponse: LiveData<Resource<SkuProcessStateResponse>>
-        get() = _skuProcessStateWithBgResponse
-
-
-    private val _skuProcessStateWithShadowResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
-        MutableLiveData()
-    val skuProcessStateWithShadowResponse: LiveData<Resource<SkuProcessStateResponse>>
-        get() = _skuProcessStateWithShadowResponse
 
     private val _reshootOverlaysRes: MutableLiveData<Resource<ReshootOverlaysRes>> =
         MutableLiveData()
@@ -406,16 +388,7 @@ class ShootViewModel : ViewModel() {
             .enqueue(overlayPreloadWorkRequest)
     }
 
-    fun getProjectDetail(authKey: String, projectId: String) = viewModelScope.launch {
-        _projectDetailResponse.value = Resource.Loading
-        _projectDetailResponse.value = repository.getProjectDetail(authKey, projectId)
-    }
 
-    fun updateTotalFrames(skuId: String, totalFrames: String, authKey: String) =
-        viewModelScope.launch {
-            _updateTotalFramesRes.value = Resource.Loading
-            _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
-        }
 
     fun getSelectedAngles(appName: String): Int {
         return if (exterirorAngles.value == null) {
@@ -464,28 +437,6 @@ class ShootViewModel : ViewModel() {
         }
     }
 
-    fun skuProcessState(
-        auth_key: String, project_id: String
-    ) = viewModelScope.launch {
-        _skuProcessStateResponse.value = Resource.Loading
-        _skuProcessStateResponse.value = repository.skuProcessState(auth_key, project_id)
-    }
-
-    fun skuProcessStateWithBackgroundid(
-        auth_key: String, project_id: String, background_id: Int
-    ) = viewModelScope.launch {
-        _skuProcessStateWithBgResponse.value = Resource.Loading
-        _skuProcessStateWithBgResponse.value =
-            repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
-    }
-
-    fun skuProcessStateWithShadowOption(
-        auth_key: String, project_id: String, background_id: Int, shadow: String
-    ) = viewModelScope.launch {
-        _skuProcessStateWithShadowResponse.value = Resource.Loading
-        _skuProcessStateWithShadowResponse.value =
-            repository.skuProcessStateWithShadowOption(auth_key, project_id, background_id, shadow)
-    }
 
     fun updateVideoSku(
         skuId: String,
@@ -519,9 +470,7 @@ class ShootViewModel : ViewModel() {
 
     fun getImagesbySkuId(skuId: String) = imageRepositoryV2.getImagesBySkuId(skuId)
 
-    fun updateProjectStatus() = viewModelScope.launch(Dispatchers.IO) {
-        localRepository.updateProjectToOngoing(project?.uuid!!)
-    }
+    fun updateProjectStatus() = localRepository.updateProjectToOngoing(project?.uuid!!)
 
 
     fun updateFootwearSubcategory(
@@ -893,6 +842,15 @@ class ShootViewModel : ViewModel() {
     }
 
     suspend fun updateTotalFrames() =  localRepository.getSkusByProjectId(project?.uuid!!)
+
+    suspend fun updateBackground(backgroundId: Int,bgName: String = "",updatedCount: Int = 0) = localRepository.updateBackground(HashMap<String,Any>()
+        .apply {
+            put("project_uuid", sku!!.projectUuid!!)
+            put("sku_uuid", sku!!.uuid!!)
+            put("bg_id", backgroundId)
+            put("bg_name", bgName!!)
+            put("total_frames", updatedCount)
+        })
 
     fun getProjectSkus() = localRepository.getSkusByProjectId(project?.uuid!!)
 
