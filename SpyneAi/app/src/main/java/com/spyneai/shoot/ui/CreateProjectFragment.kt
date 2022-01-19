@@ -28,10 +28,7 @@ class CreateProjectFragment : BaseFragment<ShootViewModel, FragmentCreateProject
 
         if (requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
             if (viewModel.projectId.value == null){
-                if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
-                    getProjectName()
-                else
-                    initProjectDialog(true)
+                initProjectDialog(true)
             }
             else {
                 if (viewModel.fromDrafts){
@@ -78,41 +75,41 @@ class CreateProjectFragment : BaseFragment<ShootViewModel, FragmentCreateProject
         CreateSkuEcomDialog().show(requireFragmentManager(), "CreateSkuEcomDialog")
     }
 
-    private fun getProjectName(){
-
-        viewModel.getProjectName(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-
-        viewModel.getProjectNameResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-
-                    Utilities.hideProgressDialog()
-
-                    viewModel.dafault_project.value = it.value.data.dafault_project
-                    viewModel.dafault_sku.value = it.value.data.dafault_sku
-                    initProjectDialog(true)
-                    log("project and SKU dialog shown")
-                }
-
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    log("get project name failed")
-                    requireContext().captureFailureEvent(
-                        Events.CREATE_PROJECT_FAILED, HashMap<String,Any?>(),
-                        it.errorMessage!!
-                    )
-
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { getProjectName()}
-                }
-            }
-        })
-
-    }
+//    private fun getProjectName(){
+//
+//        viewModel.getProjectName(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+//
+//        viewModel.getProjectNameResponse.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Resource.Success -> {
+//
+//                    Utilities.hideProgressDialog()
+//
+//                    viewModel.dafault_project.value = it.value.data.dafault_project
+//                    viewModel.dafault_sku.value = it.value.data.dafault_sku
+//                    initProjectDialog(true)
+//                    log("project and SKU dialog shown")
+//                }
+//
+//                is Resource.Loading -> {
+//                    Utilities.showProgressDialog(requireContext())
+//                }
+//
+//                is Resource.Failure -> {
+//                    Utilities.hideProgressDialog()
+//                    log("get project name failed")
+//                    requireContext().captureFailureEvent(
+//                        Events.CREATE_PROJECT_FAILED, HashMap<String,Any?>(),
+//                        it.errorMessage!!
+//                    )
+//
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it) { getProjectName()}
+//                }
+//            }
+//        })
+//
+//    }
 
     override fun getViewModel() = ShootViewModel::class.java
 

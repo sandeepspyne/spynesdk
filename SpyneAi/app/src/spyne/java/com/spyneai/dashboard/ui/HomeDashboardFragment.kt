@@ -141,7 +141,8 @@ class HomeDashboardFragment :
                 false
             )
 
-        binding.rvCompletedShoots.adapter = completedPagedAdapter.withLoadStateFooter(LoaderStateAdapter { completedPagedAdapter.retry() })
+        binding.rvCompletedShoots.adapter =
+            completedPagedAdapter.withLoadStateFooter(LoaderStateAdapter { completedPagedAdapter.retry() })
 
         binding.tvCatViewall.setOnClickListener {
             if (binding.tvCatViewall.text == "View All") {
@@ -212,11 +213,11 @@ class HomeDashboardFragment :
         lifecycleScope.launch {
             viewModel.getAllProjects("ongoing")
                 .distinctUntilChanged().collectLatest {
-                binding.shimmerOngoing.stopShimmer()
-                binding.shimmerOngoing.visibility = View.GONE
-                binding.rvOngoingShoots.visibility = View.VISIBLE
-                adapter.submitData(it)
-            }
+                    binding.shimmerOngoing.stopShimmer()
+                    binding.shimmerOngoing.visibility = View.GONE
+                    binding.rvOngoingShoots.visibility = View.VISIBLE
+                    adapter.submitData(it)
+                }
         }
 
 //        viewModel.getProjects(
@@ -403,8 +404,7 @@ class HomeDashboardFragment :
                             override fun onBtnClick(position: Int) {
 
                                 Utilities.savePrefrence(
-                                    requireContext(),
-                                    AppConstants.CATEGORY_ID,
+                                    requireContext(), AppConstants.CATEGORY_ID,
                                     it.value.data[position].prod_cat_id
                                 )
 
@@ -414,94 +414,38 @@ class HomeDashboardFragment :
                                 description = it.value.data[position].description
                                 colorCode = it.value.data[position].color_code
 
-                                when (catId) {
-                                    AppConstants.CARS_CATEGORY_ID -> {
-                                        val intent =
-                                            Intent(requireContext(), StartShootActivity::class.java)
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_NAME,
-                                            displayName
+                                if (it.value.data[position].active == 1) {
+                                    val intent = when (catId) {
+                                        AppConstants.CARS_CATEGORY_ID -> Intent(
+                                            requireContext(),
+                                            StartShootActivity::class.java
                                         )
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_ID,
-                                            catId
+                                        AppConstants.BIKES_CATEGORY_ID -> Intent(
+                                            requireContext(),
+                                            ShootActivity::class.java
                                         )
-                                        intent.putExtra(
-                                            AppConstants.IMAGE_URL,
-                                            displayThumbnail
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.DESCRIPTION,
-                                            description
-                                        )
-                                        intent.putExtra(AppConstants.COLOR, colorCode)
-                                        startActivity(intent)
-                                    }
-                                    AppConstants.BIKES_CATEGORY_ID -> {
-                                        val intent =
-                                            Intent(requireContext(), ShootActivity::class.java)
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_NAME,
-                                            displayName
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_ID,
-                                            catId
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.IMAGE_URL,
-                                            displayThumbnail
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.DESCRIPTION,
-                                            description
-                                        )
-                                        intent.putExtra(AppConstants.COLOR, colorCode)
-                                        startActivity(intent)
-                                    }
-                                    AppConstants.ECOM_CATEGORY_ID,
-                                    AppConstants.FOOTWEAR_CATEGORY_ID,
-                                    AppConstants.FOOD_AND_BEV_CATEGORY_ID,
-                                    AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID,
-                                    AppConstants.ACCESSORIES_CATEGORY_ID,
-                                    AppConstants.WOMENS_FASHION_CATEGORY_ID,
-                                    AppConstants.MENS_FASHION_CATEGORY_ID,
-                                    AppConstants.CAPS_CATEGORY_ID,
-                                    AppConstants.FASHION_CATEGORY_ID,
-                                    AppConstants.PHOTO_BOX_CATEGORY_ID -> {
-                                        val intent = Intent(
+                                        else -> Intent(
                                             requireContext(),
                                             ShootPortraitActivity::class.java
                                         )
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_NAME,
-                                            displayName
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_ID,
-                                            catId
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.IMAGE_URL,
-                                            displayThumbnail
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.DESCRIPTION,
-                                            description
-                                        )
-                                        intent.putExtra(AppConstants.COLOR, colorCode)
+                                    }
+
+                                    intent.apply {
+                                        putExtra(AppConstants.CATEGORY_NAME, displayName)
+                                        putExtra(AppConstants.CATEGORY_ID, catId)
+                                        putExtra(AppConstants.IMAGE_URL, displayThumbnail)
+                                        putExtra(AppConstants.DESCRIPTION, description)
+                                        putExtra(AppConstants.COLOR, colorCode)
                                         startActivity(intent)
                                     }
 
-                                    else -> {
-                                        Toast.makeText(
-                                            requireContext(),
-                                            "Coming Soon !",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Coming Soon !",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
-
                             }
 
                         })
