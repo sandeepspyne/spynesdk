@@ -19,11 +19,14 @@ import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.ServerSyncTypes
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.log
+import com.spyneai.startUploadingService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -80,8 +83,8 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
             categoryId = viewModel.categoryDetails.value?.categoryId,
             categoryName = viewModel.categoryDetails.value?.categoryName,
             subcategoryName = viewModel.subCategory.value?.sub_cat_name,
-            subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id,
-            initialFrames = viewModel.exterirorAngles.value
+            subcategoryId = if (viewModel.subCategory.value?.prod_sub_cat_id == null) "subcategoryId" else viewModel.subCategory.value?.prod_sub_cat_id,
+            initialFrames = if (viewModel.exterirorAngles.value == null) 0 else viewModel.exterirorAngles.value
         )
 
         viewModel.sku = sku
@@ -103,6 +106,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
             }
             else -> {
 //                            viewModel.showLeveler.value = true
+                sku.isSelectAble = true
                 viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
                 viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
             }
@@ -111,8 +115,19 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
         //add sku to local database
         GlobalScope.launch {
             viewModel.insertSku()
+
+            //start sync service
+            GlobalScope.launch(Dispatchers.Main) {
+                if (sku.isSelectAble){
+                    requireContext().startUploadingService(
+                        ProjectTagDialog::class.java.simpleName,
+                        ServerSyncTypes.CREATE
+                    )
+                }
+
+                dismiss()
+            }
         }
-        dismiss()
     }
 
 
