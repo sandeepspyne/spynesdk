@@ -40,9 +40,6 @@ class InternetWorker(private val appContext: Context, workerParams: WorkerParame
         val pendingProjects = shootDao.getPendingProjects()
 
         if (pendingProjects > 0){
-            if (!appContext.isMyServiceRunning(ImageUploadingService::class.java))
-                Utilities.saveBool(appContext, AppConstants.PROJECT_SYNC_RUNNING, false)
-
             appContext.startUploadingService(
                 MainDashboardActivity::class.java.simpleName,
                 ServerSyncTypes.CREATE
@@ -52,9 +49,6 @@ class InternetWorker(private val appContext: Context, workerParams: WorkerParame
         val pendingSkus = shootDao.getPendingSku()
 
         if (pendingSkus > 0){
-            if (!appContext.isMyServiceRunning(ImageUploadingService::class.java))
-                Utilities.saveBool(appContext, AppConstants.PROCESS_SKU_RUNNING, false)
-
             appContext.startUploadingService(
                 MainDashboardActivity::class.java.simpleName,
                 ServerSyncTypes.PROCESS

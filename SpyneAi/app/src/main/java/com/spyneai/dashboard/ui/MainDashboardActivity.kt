@@ -367,9 +367,6 @@ class MainDashboardActivity : AppCompatActivity() {
             val pendingProjects = shootDao.getPendingProjects()
 
             if (pendingProjects > 0){
-                if (!isMyServiceRunning(ImageUploadingService::class.java))
-                    Utilities.saveBool(this@MainDashboardActivity, AppConstants.PROJECT_SYNC_RUNNING, false)
-
                 startUploadingService(
                     MainDashboardActivity::class.java.simpleName,
                     ServerSyncTypes.CREATE
@@ -379,9 +376,6 @@ class MainDashboardActivity : AppCompatActivity() {
             val pendingSkus = shootDao.getPendingSku()
 
             if (pendingSkus > 0){
-                if (!isMyServiceRunning(ImageUploadingService::class.java))
-                    Utilities.saveBool(this@MainDashboardActivity, AppConstants.PROCESS_SKU_RUNNING, false)
-
                 startUploadingService(
                     MainDashboardActivity::class.java.simpleName,
                     ServerSyncTypes.PROCESS
