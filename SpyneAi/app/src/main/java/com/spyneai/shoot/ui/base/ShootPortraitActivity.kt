@@ -253,12 +253,12 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.fromDrafts = true
         shootViewModel.showVin.value = true
         shootViewModel.isProjectCreated.value = true
-        shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)!!
+        //shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)!!
 
         GlobalScope.launch(Dispatchers.IO) {
             shootViewModel.setProjectAndSkuData(
-                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                intent.getStringExtra(AppConstants.SKU_ID)!!
+                intent.getStringExtra(AppConstants.PROJECT_UUIID)!!,
+                intent.getStringExtra(AppConstants.SKU_UUID)!!
             )
 
             GlobalScope.launch(Dispatchers.Main) {
