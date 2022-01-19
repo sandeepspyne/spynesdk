@@ -22,8 +22,11 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
+import com.spyneai.service.ServerSyncTypes
 import com.spyneai.service.getServiceState
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
+import com.spyneai.startUploadingService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -148,26 +151,13 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
             viewModel.
             insertImage(viewModel.shootData.value!!)
         }
+
+        requireContext().startUploadingService(
+            ConfirmReshootPortraitDialog::class.java.simpleName,
+            ServerSyncTypes.UPLOAD
+        )
     }
 
-    private fun startService() {
-        var action = Actions.START
-        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-            return
-
-        val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
-        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmReshootPortraitDialog::class.simpleName)
-        serviceIntent.action = action.name
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            com.spyneai.service.log("Starting the service in >=26 Mode")
-            ContextCompat.startForegroundService(requireContext(), serviceIntent)
-            return
-        } else {
-            com.spyneai.service.log("Starting the service in < 26 Mode")
-            requireActivity().startService(serviceIntent)
-        }
-    }
 
     private fun setOverlay(view: View, overlay : String) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :

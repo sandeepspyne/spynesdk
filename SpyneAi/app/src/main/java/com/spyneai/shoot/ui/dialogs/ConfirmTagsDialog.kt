@@ -30,11 +30,10 @@ import com.spyneai.databinding.ItemTagsSpinnerBinding
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
-import com.spyneai.service.Actions
-import com.spyneai.service.ImageUploadingService
-import com.spyneai.service.getServiceState
-import com.spyneai.service.log
+import com.spyneai.service.*
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
+import com.spyneai.startUploadingService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -321,6 +320,11 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             viewModel.
             insertImage(viewModel.shootData.value!!)
         }
+
+        requireContext().startUploadingService(
+            ConfirmTagsDialog::class.java.simpleName,
+            ServerSyncTypes.UPLOAD
+        )
     }
 
     private fun getMetaValue(): String {
@@ -373,24 +377,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         return ""
     }
 
-    private fun startService() {
-        var action = Actions.START
-        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-            return
 
-        val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
-        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmTagsDialog::class.simpleName)
-        serviceIntent.action = action.name
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            log("Starting the service in >=26 Mode")
-            ContextCompat.startForegroundService(requireContext(), serviceIntent)
-            return
-        } else {
-            log("Starting the service in < 26 Mode")
-            requireActivity().startService(serviceIntent)
-        }
-    }
 
     fun updateTotalImages() {
         viewModel.updateTotalImages(viewModel.sku?.skuId!!)
