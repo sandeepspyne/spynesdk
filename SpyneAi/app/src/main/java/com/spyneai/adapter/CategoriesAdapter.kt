@@ -79,7 +79,7 @@ public class CategoriesAdapter(
 
         Glide.with(context).load(
                 AppConstants.BASE_IMAGE_URL +
-                        categoriesResponseList[position].display_thumbnail.toString()
+                        categoriesResponseList[position].display_thumbnail
         ).into(viewHolder.imgCategory)
 
         val colors = intArrayOf(Color.parseColor(categoriesResponseList[position].color_code),

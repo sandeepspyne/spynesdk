@@ -83,7 +83,7 @@ public class CategoriesDashboardAdapter(
 
         Glide.with(context).load(
                 AppConstants.BASE_IMAGE_URL +
-                        categoriesResponseList[position].display_thumbnail.toString()
+                        categoriesResponseList[position].display_thumbnail
         ).into(viewHolder.imgCategory)
 
        // viewHolder.imgCategory.setBackgroundColor(Color.parseColor(categoriesResponseList[position].colorCode))

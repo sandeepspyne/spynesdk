@@ -7,15 +7,26 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesAdapter
+import com.spyneai.adapter.CategoriesDashboardAdapter
+import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewCategoriesResponse
+import com.spyneai.dashboard.ui.DashboardViewModel
+import com.spyneai.dashboard.ui.base.ViewModelFactory
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
@@ -25,6 +36,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CategoriesActivity : AppCompatActivity(){
+    private var viewModel: DashboardViewModel? = null
     lateinit var categoriesResponseList : ArrayList<NewCategoriesResponse.Category>
     lateinit var categoriesAdapter : CategoriesAdapter
     lateinit var rv_categories : RecyclerView
@@ -37,17 +49,13 @@ class CategoriesActivity : AppCompatActivity(){
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+        viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
+
         setPreferences()
         setListeners()
         setRecycler()
-
-        if (Utilities.isNetworkAvailable(applicationContext))
-            fetchCategories()
-        else
-            Toast.makeText(this,
-                    "Please check your internet connection",
-                    Toast.LENGTH_SHORT).show()
-
+        fetchCategories()
+        observeCategories()
     }
 
     private fun setPreferences() {
@@ -70,6 +78,7 @@ class CategoriesActivity : AppCompatActivity(){
     private fun setRecycler() {
         rv_categories = findViewById(R.id.rv_categories)
         categoriesResponseList = ArrayList()
+
         categoriesAdapter = CategoriesAdapter(this, categoriesResponseList,
                 object : CategoriesAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
@@ -178,39 +187,29 @@ class CategoriesActivity : AppCompatActivity(){
         Utilities.showProgressDialog(this)
         categoriesResponseList.clear()
 
-        val request = RetrofitClients.buildService(APiService::class.java)
-        val call = request.getCategories(Utilities.getPreference(this,AppConstants.AUTH_KEY).toString())
+        viewModel?.getCategories(
+            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString()
+        )
+    }
 
-        call?.enqueue(object : Callback<NewCategoriesResponse> {
-            override fun onResponse(call: Call<NewCategoriesResponse>,
-                                    response: Response<NewCategoriesResponse>) {
-                Utilities.hideProgressDialog()
-                if (response.isSuccessful){
-                    if (response.isSuccessful) {
+    private fun observeCategories() {
+        viewModel!!.categoriesResponse.observe(this, Observer {
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    categoriesResponseList.addAll(it.value.data)
 
-                        var categoriesResponse = response.body()
-
-                        if (categoriesResponse?.status == 200 && categoriesResponse.data.isNotEmpty()){
-                            categoriesResponseList.addAll(categoriesResponse.data)
-
-                            categoriesAdapter.notifyDataSetChanged()
-                        }else{
-                            Toast.makeText(
-                                this@CategoriesActivity,
-                                categoriesResponse?.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                    }
+                    categoriesAdapter.notifyDataSetChanged()
                 }
-            }
-            override fun onFailure(call: Call<NewCategoriesResponse>, t: Throwable) {
-                Log.e("ok", "no way")
-                Utilities.hideProgressDialog()
-                Toast.makeText(this@CategoriesActivity,
-                        "Server not responding!!!",
-                        Toast.LENGTH_SHORT).show()
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    captureFailureEvent(
+                        Events.GET_CATEGORIES_FAILED, HashMap<String, Any?>(),
+                        it.errorMessage!!
+                    )
+                    handleApiError(it) { fetchCategories() }
+                }
             }
         })
     }
