@@ -194,12 +194,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             AppConstants.CARS24,
             AppConstants.CARS24_INDIA -> {
                 //process image call
-                processSku()
+                processSku(false)
             }
             AppConstants.SWIGGY -> {
 //                processFoodImage()
 //                Utilities.showProgressDialog(requireContext())
-                processSku()
+                processSku(true)
             }
             AppConstants.SPYNE_AI -> {
                 if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
@@ -208,14 +208,14 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 //                    processFoodImage()
 //                    Utilities.showProgressDialog(requireContext())
                     viewModel.interiorMiscShootsCount = viewModel.sku?.imagesCount!!
-                    processSku()
+                    processSku(true)
                 } else {
                     if (binding.cb360.isChecked) {
                         viewModel.backgroundSelect = backgroundSelect
                         viewModel.addRegularShootSummaryFragment.value = true
                     } else {
                         //process image call
-                        processSku()
+                        processSku(false)
                     }
                 }
             }
@@ -225,43 +225,11 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     viewModel.addRegularShootSummaryFragment.value = true
                 } else {
                     //process image call
-                    processSku()
+                    processSku(false)
                 }
             }
         }
 
-    }
-
-    private fun processFoodImage() {
-        binding.shimmer.startShimmer()
-
-        viewModel.skuProcessStateWithBackgroundid(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            arguments?.getString(AppConstants.PROJECT_ID)!!, backgroundSelect.toInt()
-        )
-    }
-
-    private fun observeFoodProcess() {
-        viewModel.skuProcessStateWithBgResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-
-                    Utilities.hideProgressDialog()
-                    requireContext().gotoHome()
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    binding.shimmer.stopShimmer()
-                    requireContext().captureFailureEvent(
-                        Events.GET_BACKGROUND_FAILED, HashMap<String, Any?>(),
-                        it.errorMessage!!
-                    )
-                    handleApiError(it) { processFoodImage() }
-                }
-            }
-        })
     }
 
     private fun getBackground() {
@@ -368,7 +336,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
 
 
-    private fun processSku() {
+    private fun processSku(gotoHome: Boolean) {
         GlobalScope.launch(Dispatchers.IO) {
             val s  = viewModel.updateBackground()
 
@@ -392,59 +360,15 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     ServerSyncTypes.PROCESS
                 )
 
-                viewModel.startTimer.value = true
+                if (gotoHome)
+                    requireContext().gotoHome()
+                else
+                    viewModel.startTimer.value = true
             }
         }
-
-
-
     }
 
 
-    private fun observeProcessSku() {
-        viewModel.processSkuRes.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    //update processed state
-                    viewModel.updateIsProcessed(
-                        viewModel.sku!!.projectId!!,
-                        viewModel.sku!!.skuId!!
-                    )
-
-                    Utilities.hideProgressDialog()
-
-                    requireContext().captureEvent(
-                        Events.PROCESS,
-                        HashMap<String, Any?>()
-                            .apply {
-                                this.put("sku_id", viewModel.sku?.skuId!!)
-                                this.put("background_id", backgroundSelect)
-                                this.put("response", Gson().toJson(it).toString())
-                            }
-
-
-                    )
-
-                    Log.d(TAG, "observeProcessSku: ")
-                    viewModel.startTimer.value = true
-                }
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-
-                    requireContext().captureFailureEvent(
-                        Events.PROCESS_FAILED,
-                        HashMap<String, Any?>().apply {
-                            this.put("sku_id", viewModel.sku?.skuId!!)
-                            this.put("throwable", it.throwable)
-                        },
-                        it.errorMessage!!
-                    )
-
-                    handleApiError(it) { processSku() }
-                }
-            }
-        })
-    }
 
     override fun getViewModel() = ProcessViewModel::class.java
 
