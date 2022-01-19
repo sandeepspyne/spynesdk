@@ -46,6 +46,15 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         if (viewModel.categoryId == null) {
             arguments?.let {
                 viewModel.categoryId = it.getString(AppConstants.CATEGORY_ID)
+                val projectUuid = it.getString(AppConstants.PROJECT_UUIID)!!
+                val skuUUid = it.getString(AppConstants.SKU_UUID)!!
+
+                GlobalScope.launch(Dispatchers.IO) {
+                    viewModel.setProjectAndSkuData(
+                        projectUuid,
+                        skuUUid
+                    )
+                }
             }
         }
 
@@ -198,6 +207,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 ) {
 //                    processFoodImage()
 //                    Utilities.showProgressDialog(requireContext())
+                    viewModel.interiorMiscShootsCount = viewModel.sku?.imagesCount!!
                     processSku()
                 } else {
                     if (binding.cb360.isChecked) {
@@ -354,56 +364,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
     private fun updateTotalFrames() {
         processRequest()
-//        Utilities.showProgressDialog(requireContext())
-//        val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
-//
-//        Log.d(TAG, "updateTotalFrames: " + viewModel.exteriorAngles.value)
-//
-//
-//        viewModel.updateCarTotalFrames(
-//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-//            viewModel.sku?.skuId!!,
-//            totalFrames.toString()
-//        )
     }
 
-    private fun observeTotalFrameUpdate() {
-        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
 
-                    val properties = HashMap<String, Any?>()
-                    properties.apply {
-                        this["sku_id"] = viewModel.sku?.skuId!!
-                        this["total_frames"] =
-                            viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
-                    }
-
-                    requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED, properties)
-                    processRequest()
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-
-                    val properties = HashMap<String, Any?>()
-                    properties.apply {
-                        this["sku_id"] = viewModel.sku?.skuId!!
-                        this["total_frames"] =
-                            viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
-                    }
-
-                    requireContext().captureFailureEvent(
-                        Events.TOTAL_FRAMES_UPDATE_FAILED, properties,
-                        it.errorMessage!!
-                    )
-
-                    handleApiError(it) { updateTotalFrames() }
-                }
-            }
-        })
-    }
 
     private fun processSku() {
         GlobalScope.launch(Dispatchers.IO) {

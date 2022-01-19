@@ -185,7 +185,8 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.showFoodBackground.observe(this, {
             if (it) {
                 val bundle = Bundle()
-                bundle.putString(AppConstants.PROJECT_ID,shootViewModel.sku?.projectId)
+                bundle.putString(AppConstants.SKU_UUID,shootViewModel.sku?.uuid)
+                bundle.putString(AppConstants.PROJECT_UUIID,shootViewModel.sku?.projectUuid)
                 bundle.putString(AppConstants.CATEGORY_ID, shootViewModel.categoryDetails?.value!!.categoryId)
                 selectBackgroundFragment.arguments = bundle
 

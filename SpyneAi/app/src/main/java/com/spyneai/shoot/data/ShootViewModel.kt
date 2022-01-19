@@ -66,7 +66,7 @@ class ShootViewModel : ViewModel() {
     val end: MutableLiveData<Long> = MutableLiveData()
 
     val totalSkuCaptured: MutableLiveData<String> = MutableLiveData()
-    val totalImageCaptured: MutableLiveData<String> = MutableLiveData()
+    val totalImageCaptured: MutableLiveData<Int> = MutableLiveData()
     val show360InteriorDialog: MutableLiveData<Boolean> = MutableLiveData()
     val interior360Dialog: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -519,7 +519,7 @@ class ShootViewModel : ViewModel() {
 
     fun getImagesbySkuId(skuId: String) = imageRepositoryV2.getImagesBySkuId(skuId)
 
-    fun updateProjectStatus() = viewModelScope.launch {
+    fun updateProjectStatus() = viewModelScope.launch(Dispatchers.IO) {
         localRepository.updateProjectToOngoing(project?.uuid!!)
     }
 
@@ -891,6 +891,10 @@ class ShootViewModel : ViewModel() {
             }
         }
     }
+
+    suspend fun updateTotalFrames() =  localRepository.getSkusByProjectId(project?.uuid!!)
+
+    fun getProjectSkus() = localRepository.getSkusByProjectId(project?.uuid!!)
 
     var gifDialogShown = false
     var createProjectDialogShown = false

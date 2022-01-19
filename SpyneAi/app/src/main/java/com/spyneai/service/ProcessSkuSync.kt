@@ -17,6 +17,7 @@ import com.spyneai.shoot.data.ProcessRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.db.ShootDao
 import com.spyneai.shoot.repository.model.sku.Sku
+import io.sentry.protocol.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -271,14 +272,20 @@ class ProcessSkuSync(
 
         //val additionalData = JSONObject(sku.additionalData)
 
-        val response = ProcessRepository().processSku(
-            Utilities.getPreference(context,AppConstants.AUTH_KEY)!!,
-            sku.skuId!!,
-            sku.backgroundId!!,
-            sku.isThreeSixty,
-            false,
-           false,
-            false)
+        val response = if (sku.categoryId == AppConstants.FOOD_AND_BEV_CATEGORY_ID)
+            ProcessRepository().processSku(
+                Utilities.getPreference(context,AppConstants.AUTH_KEY)!!,
+                sku.skuId!!,
+                sku.backgroundId!!,
+                sku.isThreeSixty,
+                false,
+                false,
+                false)
+        else
+            ProcessRepository().skuProcessStateWithBackgroundId(
+                auth_key = Utilities.getPreference(context,AppConstants.AUTH_KEY).toString(),
+                sku.projectId!!,
+                sku.backgroundId.toInt())
 
         context.captureEvent(
             Events.PROCESS_SKU_INTIATED,

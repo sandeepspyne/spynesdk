@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.shoot.data.model.ProjectDetailResponse
+import com.spyneai.shoot.repository.model.image.Image
 
 class ProjectChildAdapter(
     val context: Context,
-    var projectList: ArrayList<ProjectDetailResponse.Images>,
-    val totalImages: Int
+    var projectList: ArrayList<Image>
 )
     : RecyclerView.Adapter<ProjectChildAdapter.ViewHolder>() {
 
@@ -34,7 +34,7 @@ class ProjectChildAdapter(
 
         try {
             Glide.with(context)
-                .load(projectList[position].input_lres)
+                .load(projectList[position].path)
                 .error(R.mipmap.defaults)
                 .into(viewHolder.ivSkuImages)
         }catch (e: Exception){
@@ -43,7 +43,7 @@ class ProjectChildAdapter(
     }
 
     // Return the size of your data set (invoked by the layout manager)
-    override fun getItemCount() = if (totalImages == null) 0 else totalImages
+    override fun getItemCount() = if (projectList == null) 0 else projectList.size
 
 
 }

@@ -12,6 +12,9 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBinding>() {
@@ -32,33 +35,6 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
             }
         }
 
-//        viewModel.getProjectDetail(
-//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-//            viewModel.projectId.value.toString()
-//        )
-//
-//        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
-//            when (it) {
-//                is Resource.Success -> {
-//
-//                    binding.pbEndProject.visibility = View.GONE
-//                    binding.btYes.isEnabled = true
-//
-//                    binding.tvProjectName.text = it.value.data.project_name
-//                    binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
-//                    binding.tvTotalImageCaptured.text = it.value.data.total_images.toString()
-//
-//                }
-//                is Resource.Loading -> {
-//
-//                }
-//                is Resource.Failure -> {
-//                    handleApiError(it)
-//                }
-//            }
-//        })
-
-
         binding.btNo.setOnClickListener {
             dismiss()
             log("end project dialog dismiss- NO")
@@ -68,6 +44,7 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
             viewModel.updateProjectStatus()
             viewModel.showProjectDetail.value = true
             dismiss()
+
             log("end project dialog dismiss- Yes")
         }
 

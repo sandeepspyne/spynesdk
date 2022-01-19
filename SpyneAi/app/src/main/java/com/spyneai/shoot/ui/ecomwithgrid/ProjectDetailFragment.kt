@@ -18,7 +18,11 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.ProjectDetailAdapter
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.repository.model.project.ProjectWithSkuAndImages
 import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetailBinding>() {
 
@@ -143,49 +147,41 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                             processWithoutBackgroundId()
                         }
                     }
-                    log(
-                        "auth key- " + Utilities.getPreference(
-                            requireContext(),
-                            AppConstants.AUTH_KEY
-                        ).toString()
-                    )
-                    log("project id- " + viewModel.projectId.value)
-                    log("skuProcessState called")
                 }
             }
         }
 
-        viewModel.skuProcessStateResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-                    requireContext().gotoHome()
-                }
+//        viewModel.skuProcessStateResponse.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Resource.Success -> {
+//                    Utilities.hideProgressDialog()
+//                    requireContext().gotoHome()
+//                }
+//
+//                is Resource.Failure -> {
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it) {
+//                        processWithoutBackgroundId()
+//                    }
+//                }
+//            }
+//        })
 
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) {
-                        processWithoutBackgroundId()
-                    }
-                }
-            }
-        })
-
-        viewModel.skuProcessStateWithBgResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-                    requireContext().gotoHome()
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) {
-                        processWithBackgroundId()
-                    }
-                }
-            }
-        })
+//        viewModel.skuProcessStateWithBgResponse.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Resource.Success -> {
+//                    Utilities.hideProgressDialog()
+//                    requireContext().gotoHome()
+//                }
+//
+//                is Resource.Failure -> {
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it) {
+//                        processWithBackgroundId()
+//                    }
+//                }
+//            }
+//        })
 
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
@@ -243,39 +239,74 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        repeatRefreshData()
-        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
 
-                    it.value.data.sku
+        binding.tvTotalSkuCaptured.text = viewModel.project?.skuCount.toString()
+        binding.tvTotalImageCaptured.text = viewModel.project?.imagesCount.toString()
 
-                    binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
-                    binding.tvTotalImageCaptured.text = it.value.data.total_images.toString()
+        val dataList = ArrayList<ProjectWithSkuAndImages>()
 
-                    projectDetailAdapter = ProjectDetailAdapter(
-                        requireContext(),
-                        it.value.data.sku
-                    )
+       GlobalScope.launch(Dispatchers.IO) {
+           val list = viewModel.getProjectSkus()
 
-                    binding.rvParentProjects.apply {
-                        this?.layoutManager =
-                            LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                false
-                            )
-                        this?.adapter = projectDetailAdapter
-                    }
-                }
+           list.forEach {
+               dataList.add(
+                   ProjectWithSkuAndImages(
+                       it,
+                       viewModel.getImagesbySkuId(it.uuid)
+                   )
+               )
+           }
 
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    handleApiError(it)
-                }
-            }
-        })
+           GlobalScope.launch(Dispatchers.Main) {
+               projectDetailAdapter = ProjectDetailAdapter(
+                   requireContext(),
+                   dataList
+               )
+
+               binding.rvParentProjects.apply {
+                   this?.layoutManager =
+                       LinearLayoutManager(
+                           requireContext(),
+                           LinearLayoutManager.VERTICAL,
+                           false
+                       )
+                   this?.adapter = projectDetailAdapter
+               }
+           }
+       }
+
+
+
+
+//        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Resource.Success -> {
+//                    Utilities.hideProgressDialog()
+//
+//                    it.value.data.sku
+//
+//                    projectDetailAdapter = ProjectDetailAdapter(
+//                        requireContext(),
+//                        it.value.data.sku
+//                    )
+//
+//                    binding.rvParentProjects.apply {
+//                        this?.layoutManager =
+//                            LinearLayoutManager(
+//                                requireContext(),
+//                                LinearLayoutManager.VERTICAL,
+//                                false
+//                            )
+//                        this?.adapter = projectDetailAdapter
+//                    }
+//                }
+//
+//                is Resource.Failure -> {
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it)
+//                }
+//            }
+//        })
     }
 
     fun repeatRefreshData() {

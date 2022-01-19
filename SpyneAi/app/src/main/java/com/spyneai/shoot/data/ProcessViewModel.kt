@@ -14,6 +14,7 @@ import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.UpdateTotalFramesRes
+import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.ProjectStateUpdateWorker
@@ -31,6 +32,7 @@ class ProcessViewModel : ViewModel() {
     val exteriorAngles: MutableLiveData<Int> = MutableLiveData()
 
     var sku: Sku? = null
+    var project: Project? = null
     val startTimer: MutableLiveData<Boolean> = MutableLiveData()
     val processSku: MutableLiveData<Boolean> = MutableLiveData()
     val skuQueued: MutableLiveData<Boolean> = MutableLiveData()
@@ -194,6 +196,11 @@ class ProcessViewModel : ViewModel() {
         _skuProcessStateWithBgResponse.value = Resource.Loading
         _skuProcessStateWithBgResponse.value =
             repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
+    }
+
+    suspend fun setProjectAndSkuData(projectUuid: String, skuUuid: String) {
+        project = localRepository.getProject(projectUuid)
+        sku = localRepository.getSkuById(skuUuid)
     }
 
     fun updateProjectState(authKey: String, projectId: String) {

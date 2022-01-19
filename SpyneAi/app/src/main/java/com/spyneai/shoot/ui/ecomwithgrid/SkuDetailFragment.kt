@@ -49,42 +49,17 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         }
 
         GlobalScope.launch(Dispatchers.IO) {
-            val project = viewModel.getProject(viewModel.projectId.value!!)
+            val project = viewModel.getProject(viewModel.project?.uuid!!)
             viewModel.project = project
 
             GlobalScope.launch(Dispatchers.Main) {
                 viewModel.totalSkuCaptured.value = project.skuCount.toString()
-                viewModel.totalImageCaptured.value = project.imagesCount.toString()
+                viewModel.totalImageCaptured.value = project.imagesCount
 
                 binding.tvTotalSkuCaptured.text = project.skuCount.toString()
             }
         }
-//        viewModel.getProjectDetail(
-//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-//            viewModel.projectId.value!!
-//        )
 
-//        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
-//            when (it) {
-//                is Resource.Success -> {
-//                    Utilities.hideProgressDialog()
-//                    viewModel.totalSkuCaptured.value = it.value.data.total_sku.toString()
-//                    viewModel.totalImageCaptured.value = it.value.data.total_images.toString()
-//
-//                    binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
-//                }
-//
-//
-//                is Resource.Loading -> {
-//
-//                }
-//                is Resource.Failure -> {
-//                    Utilities.hideProgressDialog()
-//                    handleApiError(it)
-//                }
-//            }
-//        })
-//
 //        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
 //            when (it) {
 //                is Resource.Success -> {
@@ -263,33 +238,39 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     }
 
     private fun nextSku() {
-        viewModel.shootList.value?.clear()
-        val intent = Intent(activity, ShootPortraitActivity::class.java)
-        intent.putExtra("project_id", viewModel.projectId.value)
-        // intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+        GlobalScope.launch {
+            viewModel.updateTotalFrames()
 
-        intent.putExtra(
-            AppConstants.CATEGORY_NAME,
-            viewModel.categoryDetails.value?.categoryName
-        )
-        intent.putExtra(
-            AppConstants.CATEGORY_ID,
-            viewModel.categoryDetails.value?.categoryId
-        )
+            GlobalScope.launch(Dispatchers.Main) {
+                viewModel.shootList.value?.clear()
+                val intent = Intent(activity, ShootPortraitActivity::class.java)
+                intent.putExtra("project_id", viewModel.projectId.value)
+                // intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
 
-        if (viewModel.fromDrafts) {
-            intent.putExtra(
-                AppConstants.SKU_COUNT,
-                requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT, 0).plus(1)
-            )
-            intent.putExtra(
-                "skuNumber",
-                requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT, 0).plus(1)
-            )
-        } else
-            intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+                intent.putExtra(
+                    AppConstants.CATEGORY_NAME,
+                    viewModel.categoryDetails.value?.categoryName
+                )
+                intent.putExtra(
+                    AppConstants.CATEGORY_ID,
+                    viewModel.categoryDetails.value?.categoryId
+                )
 
-        startActivity(intent)
+                if (viewModel.fromDrafts) {
+                    intent.putExtra(
+                        AppConstants.SKU_COUNT,
+                        requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT, 0).plus(1)
+                    )
+                    intent.putExtra(
+                        "skuNumber",
+                        requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT, 0).plus(1)
+                    )
+                } else
+                    intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+
+                startActivity(intent)
+            }
+        }
     }
 
 

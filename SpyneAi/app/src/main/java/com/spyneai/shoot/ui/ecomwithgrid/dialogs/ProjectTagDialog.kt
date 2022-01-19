@@ -358,6 +358,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             uuid = getUuid(),
             projectUuid = project.uuid,
             categoryId = project.categoryId,
+            subcategoryId = "subcategoryId",
             categoryName = project.categoryName,
             skuName = removeWhiteSpace(binding.etSkuName.text.toString()),
             initialFrames = 0

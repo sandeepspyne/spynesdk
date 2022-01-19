@@ -11,13 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.spyneai.R
 import com.spyneai.shoot.data.model.ProjectDetailResponse
+import com.spyneai.shoot.repository.model.image.Image
+import com.spyneai.shoot.repository.model.project.ProjectWithSkuAndImages
 
 
 lateinit var projectChildAdapter: ProjectChildAdapter
 
 class ProjectDetailAdapter(
     val context: Context,
-    var projectList: List<ProjectDetailResponse.Sku>,
+    var projectList: List<ProjectWithSkuAndImages>,
 ) : RecyclerView.Adapter<ProjectDetailAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -36,7 +38,7 @@ class ProjectDetailAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        viewHolder.tvSkuName.text = projectList[position].sku_name
+        viewHolder.tvSkuName.text = projectList[position].skus.skuName
 
         val mScrollTouchListener: OnItemTouchListener = object : OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
@@ -53,9 +55,7 @@ class ProjectDetailAdapter(
 
         projectChildAdapter = ProjectChildAdapter(
             context,
-            projectList[position].images as ArrayList<ProjectDetailResponse.Images>,
-            projectList[position].total_images
-
+            projectList[position].images as ArrayList<Image>
         )
 
         viewHolder.rvChildProject.apply {
