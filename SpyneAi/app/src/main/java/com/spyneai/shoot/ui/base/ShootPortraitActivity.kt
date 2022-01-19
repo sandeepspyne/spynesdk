@@ -83,7 +83,13 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.skuNumber.value = 1
         try {
             shootViewModel.skuNumber.value = intent.getIntExtra("skuNumber", 1)
-            shootViewModel.projectId.value = intent.getStringExtra("project_id")
+            val uuid = intent.getStringExtra(AppConstants.PROJECT_UUIID)
+
+            uuid?.let {
+                GlobalScope.launch(Dispatchers.IO) {
+                    shootViewModel.project = shootViewModel.getProject(it)
+                }
+            }
         } catch (e: Exception) {
         }
 

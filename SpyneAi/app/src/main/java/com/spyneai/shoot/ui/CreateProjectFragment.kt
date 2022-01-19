@@ -27,7 +27,7 @@ class CreateProjectFragment : BaseFragment<ShootViewModel, FragmentCreateProject
         super.onViewCreated(view, savedInstanceState)
 
         if (requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (viewModel.projectId.value == null){
+            if (viewModel.project == null){
                 initProjectDialog(true)
             }
             else {

@@ -178,6 +178,7 @@ class ProjectSkuSync(
                                 projectData = ProjectBody.ProjectData(
                                     projectName = project.projectName!!,
                                     localId = project.uuid,
+                                    projectId = project.projectId,
                                     categoryId = project.categoryId!!,
                                     dynamicLayout = ProjectBody.ProjectData.DynamicLayout(project.dynamicLayout),
                                     locationData = ProjectBody.ProjectData.LocationData(project.locationData)

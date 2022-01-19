@@ -239,12 +239,13 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
     private fun nextSku() {
         GlobalScope.launch {
-            viewModel.updateTotalFrames()
+            viewModel.updateTotalFrames(totalSkuImages)
 
             GlobalScope.launch(Dispatchers.Main) {
                 viewModel.shootList.value?.clear()
                 val intent = Intent(activity, ShootPortraitActivity::class.java)
-                intent.putExtra("project_id", viewModel.projectId.value)
+                intent.putExtra(AppConstants.PROJECT_UUIID, viewModel.project?.uuid)
+               // intent.putExtra("project_id", viewModel.projectId.value)
                 // intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
 
                 intent.putExtra(

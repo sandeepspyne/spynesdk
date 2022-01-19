@@ -34,17 +34,6 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
 
         dialog?.setCancelable(false)
 
-        viewModel.project = Project(
-            getUuid(),
-            projectId =  viewModel.projectId.value!!
-        )
-
-        val sku = Sku(
-            uuid = viewModel.projectId.value!!
-        )
-
-        viewModel.sku = sku
-
         binding.ivBarCode.setOnClickListener {
             val options = ScanOptions()
             options.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES)
@@ -59,7 +48,6 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
             requireActivity().onBackPressed()
         }
 
-        getProjectName()
 
         binding.btnProceed.setOnClickListener {
             when {
@@ -72,7 +60,6 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                 }
                 else -> {
                     createSku(
-                        viewModel.projectId.value.toString(),
                         removeWhiteSpace(binding.etSkuName.text.toString())
                     )
                 }
@@ -80,54 +67,22 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
         }
     }
 
-    private fun getProjectName() {
-        viewModel.getProjectName(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
-        )
-
-        viewModel.getProjectNameResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-
-                    viewModel.dafault_project.value = viewModel.projectId.value
-                    viewModel.dafault_sku.value = it.value.data.dafault_sku
-                    binding.etSkuName.setText(it.value.data.dafault_sku)
-                }
-
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    log("get project name failed")
-                    requireContext().captureFailureEvent(
-                        Events.CREATE_PROJECT_FAILED, HashMap<String, Any?>(),
-                        it.errorMessage!!
-                    )
-
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { getProjectName() }
-                }
-            }
-        })
-
-    }
-
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
 
-    private fun createSku(projectId: String, skuName: String) {
-        val sku = viewModel.sku?.apply {
-            categoryId = viewModel.categoryDetails.value?.categoryId
-            categoryName = viewModel.categoryDetails.value?.categoryName
-            this.skuName = skuName
-            subcategoryName = viewModel.subCategory.value?.sub_cat_name
-            subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
+    private fun createSku(skuName: String) {
+        val sku = Sku(
+            uuid = getUuid(),
+            skuName = skuName,
+            projectUuid = viewModel.project?.uuid,
+            projectId = viewModel.project?.projectId,
+            categoryId = viewModel.categoryDetails.value?.categoryId,
+            categoryName = viewModel.categoryDetails.value?.categoryName,
+            subcategoryName = viewModel.subCategory.value?.sub_cat_name,
+            subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id,
             initialFrames = viewModel.exterirorAngles.value
-        }
+        )
 
         viewModel.sku = sku
 

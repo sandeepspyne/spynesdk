@@ -21,6 +21,8 @@ data class ProjectBody(
         var dynamicLayout: DynamicLayout? = null,
         @SerializedName("local_id")
         val localId: String,
+        @SerializedName("project_id")
+        val projectId: String?,
         @SerializedName("location_data")
         var locationData: LocationData? = null,
         @SerializedName("project_name")
