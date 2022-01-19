@@ -307,7 +307,8 @@ class MainDashboardActivity : AppCompatActivity() {
                 (this, AppConstants.CANCEL_ALL_WROKERS)
         )
         cancelAllWorkers()
-        startUploadService()
+        //startUploadService()
+        checkPendingDataSync()
         startVideoUploadService()
        // checkFolderUpload()
     }
@@ -355,8 +356,6 @@ class MainDashboardActivity : AppCompatActivity() {
             val shootLocalRepository = ImagesRepoV2(shootDao)
             if (shootLocalRepository.getOldestImage() != null
             ) {
-//                if (!isMyServiceRunning(ImageUploadingService::class.java))
-//                    Utilities.saveBool(this@MainDashboardActivity, AppConstants.UPLOADING_RUNNING, false)
 
                 startUploadingService(
                     MainDashboardActivity::class.java.simpleName,

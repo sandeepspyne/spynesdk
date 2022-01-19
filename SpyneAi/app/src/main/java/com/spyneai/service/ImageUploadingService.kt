@@ -18,6 +18,9 @@ import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.model.image.Image
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class ImageUploadingService : Service(),DataSyncListener {
@@ -28,6 +31,8 @@ class ImageUploadingService : Service(),DataSyncListener {
     lateinit var builder: Notification.Builder
     private var receiver: InternetConnectionReceiver? = null
     private var imageUploader : ImageUploader? = null
+    private var prjSync: ProjectSkuSync? = null
+    private var processSkuSync: ProcessSkuSync? = null
     private var notificationId = 0
     val notificationChannelId = "PROCESSING SERVICE CHANNEL"
     var currentImage : Image? = null
@@ -76,20 +81,14 @@ class ImageUploadingService : Service(),DataSyncListener {
         when (action) {
             Actions.START.name -> {
                 this.serviceStartedBy = intent.getStringExtra(AppConstants.SERVICE_STARTED_BY)
-                val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
 
                 when(intent.getSerializableExtra(AppConstants.SYNC_TYPE)){
                     ServerSyncTypes.CREATE -> {
-                        val prjSync = ProjectSkuSync.getInstance(this,this)
-
-                        prjSync.projectSyncParent("Image Uploading Service",serviceStartedBy)
+                        startProjectSync("onStartCommand")
                     }
 
                     ServerSyncTypes.PROCESS -> {
-                        val processSkuSync = ProcessSkuSync.getInstance(
-                            this, this)
-
-                        processSkuSync.processSkuParent("Image Uploading Service",serviceStartedBy)
+                        startProcessSync("onStartCommand")
                     }
 
                     ServerSyncTypes.UPLOAD -> {
@@ -110,6 +109,8 @@ class ImageUploadingService : Service(),DataSyncListener {
 
         return START_STICKY
     }
+
+
 
     private fun fetchDataAndStartService() {
         createOngoingNotificaiton()
@@ -200,18 +201,13 @@ class ImageUploadingService : Service(),DataSyncListener {
 //        if (type == ServerSyncTypes.UPLOAD)
     }
 
-    override fun onCompleted(title: String,
-                             type: ServerSyncTypes,
-                             stopService: Boolean) {
+    override fun onCompleted(title: String, type: ServerSyncTypes) {
 
         val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
         val content = getString(R.string.innter_connection_label)+internet
         var notification = createNotification(title,content, true)
 
         notificationManager.notify(notificationId, notification)
-
-//        if (type == ServerSyncTypes.UPLOAD)
-
 
         //update notification after five minutes
         if (allDataSynced()){
@@ -239,16 +235,12 @@ class ImageUploadingService : Service(),DataSyncListener {
         var notification = createNotification(title,content, true)
 
         notificationManager.notify(notificationId, notification)
-
-//        if (type == ServerSyncTypes.UPLOAD)
-//            uploadRunning = false
     }
 
     inner class InternetConnectionReceiver : BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
 
             val isConnected = context?.isInternetActive()
-            Log.d(TAG, "onReceive: "+isConnected)
 
             if (isConnected == true){
                 //push event of internet connected
@@ -257,13 +249,33 @@ class ImageUploadingService : Service(),DataSyncListener {
                     HashMap<String,Any?>().apply {
                         put("medium","Service")
                     })
-                //if any image pending in upload
-                val shootLocalRepository = ImageLocalRepository()
-                if ((shootLocalRepository.getOldestImage("0").itemId != null
-                            || shootLocalRepository.getOldestImage("-1").itemId != null)){
-                    // we have pending images, resume upload
-                    resumeUpload("onReceive")
-                }
+
+                prjSync?.connectionLost = false
+                processSkuSync?.connectionLost = false
+                imageUploader?.connectionLost = false
+
+               GlobalScope.launch(Dispatchers.IO) {
+                   val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
+                   val shootLocalRepository = ImagesRepoV2(shootDao)
+                   if (shootLocalRepository.getOldestImage() != null
+                   ) {
+
+                       resumeUpload("onReceive")
+                   }
+
+                   val pendingProjects = shootDao.getPendingProjects()
+
+                   if (pendingProjects > 0){
+                       startProjectSync("onReceive")
+                   }
+
+                   val pendingSkus = shootDao.getPendingSku()
+
+                   if (pendingSkus > 0){
+                       startProcessSync("onReceive")
+                   }
+               }
+
             }else {
                 //push event of internet not connected
                 captureEvent(Events.INTERNET_DISCONNECTED,
@@ -271,6 +283,8 @@ class ImageUploadingService : Service(),DataSyncListener {
                         put("medium","Service")
                     })
 
+                prjSync?.connectionLost = true
+                processSkuSync?.connectionLost = true
                 imageUploader?.connectionLost = true
             }
         }
@@ -278,8 +292,21 @@ class ImageUploadingService : Service(),DataSyncListener {
 
     private fun resumeUpload(type : String) {
         imageUploader = ImageUploader.getInstance(this,this)
-        imageUploader?.connectionLost = false
         imageUploader?.uploadParent(type,serviceStartedBy)
+    }
+
+    private fun startProjectSync(type: String) {
+        prjSync = ProjectSkuSync.getInstance(this,this)
+
+        prjSync?.projectSyncParent(type,serviceStartedBy)
+    }
+
+
+    private fun startProcessSync(type: String) {
+        processSkuSync = ProcessSkuSync.getInstance(
+            this, this)
+
+        processSkuSync?.processSkuParent(type,serviceStartedBy)
     }
 
 }

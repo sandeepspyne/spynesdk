@@ -200,7 +200,7 @@ class ProjectSkuSync(
             //get pending projects count
             val count = shootDao.getPendingProjects()
 
-            listener.onCompleted("All Projects Created",ServerSyncTypes.CREATE,false)
+            listener.onCompleted("All Projects Created",ServerSyncTypes.CREATE)
             isActive = false
 
 //            if (count > 0){

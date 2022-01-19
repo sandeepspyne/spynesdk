@@ -50,6 +50,7 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.service.*
+import com.spyneai.shoot.data.ImagesRepoV2
 
 
 var TAG = "Locale_Check"
@@ -379,9 +380,6 @@ fun Context.startUploadingService(startedBy : String,syncTypes: ServerSyncTypes)
             put("medium","Explicit Broadcast")
         }
 
-//    if (!this?.isMyServiceRunning(ImageUploadingService::class.java)){
-       // Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
-
         var action = Actions.START
         if (getServiceState(this) == ServiceState.STOPPED && action == Actions.STOP)
             return
@@ -402,11 +400,39 @@ fun Context.startUploadingService(startedBy : String,syncTypes: ServerSyncTypes)
 
         prperties.put("state","Started")
         this.captureEvent(Events.SERVICE_STARTED,prperties)
-//    }else {
-//        prperties.put("state","Running")
-//        this.captureEvent(Events.SERVICE_STARTED,prperties)
-//    }
+}
 
+fun Context.checkPendingDataSync() {
+    GlobalScope.launch(Dispatchers.IO) {
+        val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
+        val shootLocalRepository = ImagesRepoV2(shootDao)
+        if (shootLocalRepository.getOldestImage() != null
+        ) {
+
+            startUploadingService(
+                MainDashboardActivity::class.java.simpleName,
+                ServerSyncTypes.UPLOAD
+            )
+        }
+
+        val pendingProjects = shootDao.getPendingProjects()
+
+        if (pendingProjects > 0){
+            startUploadingService(
+                MainDashboardActivity::class.java.simpleName,
+                ServerSyncTypes.CREATE
+            )
+        }
+
+        val pendingSkus = shootDao.getPendingSku()
+
+        if (pendingSkus > 0){
+            startUploadingService(
+                MainDashboardActivity::class.java.simpleName,
+                ServerSyncTypes.PROCESS
+            )
+        }
+    }
 }
 
 fun Long.toDateFormat() : String{

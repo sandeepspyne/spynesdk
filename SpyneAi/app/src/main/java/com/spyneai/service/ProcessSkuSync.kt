@@ -167,7 +167,7 @@ class ProcessSkuSync(
         }while (sku != null)
 
         if (!connectionLost){
-            listener.onCompleted("All Skus Background Id Updated",ServerSyncTypes.PROCESS,false)
+            listener.onCompleted("All Skus Background Id Updated",ServerSyncTypes.PROCESS)
             isActive = false
             //get pending projects count
 //            val count = shootDao.getPendingSku()

@@ -350,7 +350,7 @@ class ImageUploader(
         //upload images clicked while service uploading skipped images
         if (!connectionLost){
             deleteTempFiles(File(outputDirectory))
-            listener.onCompleted("All images uploaded",ServerSyncTypes.UPLOAD,true)
+            listener.onCompleted("All images uploaded",ServerSyncTypes.UPLOAD)
             this@ImageUploader.isActive = false
         }
     }
