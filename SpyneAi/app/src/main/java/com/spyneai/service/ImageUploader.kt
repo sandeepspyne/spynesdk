@@ -32,7 +32,7 @@ class ImageUploader(
     val context: Context,
     val localRepository: ImagesRepoV2,
     val shootRepository: ShootRepository,
-    var listener: Listener,
+    var listener: DataSyncListener,
     var lastIdentifier: String = "0",
     var imageType: String = AppConstants.REGULAR,
     var retryCount: Int = 0,
@@ -44,7 +44,7 @@ class ImageUploader(
         @Volatile
         private var INSTANCE: ImageUploader? = null
 
-        fun getInstance(context: Context,listener: Listener,): ImageUploader {
+        fun getInstance(context: Context,listener: DataSyncListener): ImageUploader {
             synchronized(this) {
                 var instance = ImageUploader.INSTANCE
 
@@ -89,8 +89,7 @@ class ImageUploader(
                     }
                 else {
                     this@ImageUploader.isActive = false
-                    listener.onConnectionLost()
-                    Log.d(TAG, "uploadParent: connection lost")
+                    listener.onConnectionLost("Image uploading paused",ServerSyncTypes.UPLOAD)
                 }
             }
         }, getRandomNumberInRange().toLong())
@@ -99,6 +98,8 @@ class ImageUploader(
     suspend fun startUploading() {
         do {
             lastIdentifier = getUniqueIdentifier()
+
+            var image = localRepository.getOldestImage()
 
             if (connectionLost){
                 context.captureEvent(
@@ -112,11 +113,11 @@ class ImageUploader(
                         }
                 )
                 this@ImageUploader.isActive = false
-                listener.onConnectionLost()
+                val text = if (image == null) "Image uploading paused" else "Image uploading paused at ${image.image_category} ${image.sequence}"
+                listener.onConnectionLost(text,ServerSyncTypes.UPLOAD)
                 break
             }
 
-            var image = localRepository.getOldestImage()
 
             if (image == null){
                 context.captureEvent(
@@ -156,7 +157,7 @@ class ImageUploader(
                     imageProperties
                 )
 
-                listener.inProgress(image)
+                listener.inProgress("Uploading ${image.image_category} ${image.sequence}",ServerSyncTypes.UPLOAD)
                 this@ImageUploader.isActive = true
 
                 if (retryCount > 4) {
@@ -349,7 +350,7 @@ class ImageUploader(
         //upload images clicked while service uploading skipped images
         if (!connectionLost){
             deleteTempFiles(File(outputDirectory))
-            listener.onUploaded()
+            listener.onCompleted("All images uploaded",ServerSyncTypes.UPLOAD,true)
             this@ImageUploader.isActive = false
         }
     }
@@ -623,12 +624,6 @@ class ImageUploader(
 
     val outputDirectory = "/storage/emulated/0/DCIM/Spynetemp/"
 
-    interface Listener {
-        fun inProgress(task: Image)
-        fun onUploaded()
-        fun onUploadFail(task: Image)
-        fun onConnectionLost()
-    }
 
     private fun getRandomNumberInRange(): Int {
         val r = Random()

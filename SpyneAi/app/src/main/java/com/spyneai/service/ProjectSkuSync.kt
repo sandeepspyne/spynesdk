@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.google.gson.Gson
+import com.spyneai.BaseApplication
 import com.spyneai.captureEvent
 import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
@@ -18,24 +19,49 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.HashMap
 import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.data.ImagesRepoV2
 
 class ProjectSkuSync(
     val context: Context,
     val shootDao: ShootDao,
     val listener: DataSyncListener,
     var retryCount: Int = 0,
-    var connectionLost: Boolean = false
+    var connectionLost: Boolean = false,
+    var isActive: Boolean = false
 ) {
 
     val TAG = "ProjectSkuSync"
+
+    companion object{
+        @Volatile
+        private var INSTANCE: ProjectSkuSync? = null
+
+        fun getInstance(context: Context,listener: DataSyncListener): ProjectSkuSync {
+            synchronized(this) {
+                var instance = INSTANCE
+
+                if (instance == null) {
+                    instance = ProjectSkuSync(
+                        context,
+                        AppDatabase.getInstance(BaseApplication.getContext()).shootDao(),
+                        listener
+                    )
+
+                    INSTANCE = instance
+                }
+                return instance
+            }
+        }
+    }
 
     fun projectSyncParent(type : String, startedBy : String?) {
         Log.d(TAG, "projectSyncParent: ")
         context.captureEvent(Events.PROJECT_SYNC_TRIGGERED,HashMap<String,Any?>().apply {
             put("type",type)
             put("service_started_by",startedBy)
-            put("upload_running", Utilities.getBool(context, AppConstants.PROJECT_SYNC_RUNNING, false))
+            put("upload_running", isActive)
         })
 
         //update triggered value
@@ -46,17 +72,17 @@ class ProjectSkuSync(
         handler.postDelayed({
             if (Utilities.getBool(context, AppConstants.PROJECT_SYNC_TRIGGERED, true)
                 &&
-                !Utilities.getBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
+                !isActive
             ) {
                 if (context.isInternetActive())
                     GlobalScope.launch(Dispatchers.Default) {
                         Log.d(TAG, "uploadParent: start")
-                        Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, true)
+                        isActive = true
                         context.captureEvent(Events.PROJECT_SYNC_STARTED,HashMap())
                         startProjectSync()
                     }
                 else {
-                    Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
+                    isActive = false
                     listener.onConnectionLost("Create Project Stopped",ServerSyncTypes.CREATE)
                     Log.d(TAG, "uploadParent: connection lost")
                 }
@@ -79,7 +105,7 @@ class ProjectSkuSync(
                             put("project_remaining",count)
                         }
                 )
-                Utilities.saveBool(context,AppConstants.PROJECT_SYNC_RUNNING,false)
+                isActive = false
                 listener.onConnectionLost("Create Project Stopped",ServerSyncTypes.CREATE)
                 break
             }else {
@@ -95,6 +121,7 @@ class ProjectSkuSync(
                 }else {
                     //in progress listener
                     listener.inProgress("Creating project ${projectWithSku.project?.projectName} and its sku's",ServerSyncTypes.CREATE)
+                    isActive = true
 
                     val properties = HashMap<String,Any?>().apply {
                         put("project_id",projectWithSku.project?.uuid)
@@ -174,7 +201,7 @@ class ProjectSkuSync(
             val count = shootDao.getPendingProjects()
 
             listener.onCompleted("All Projects Created",ServerSyncTypes.CREATE,false)
-            Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
+            isActive = false
 
 //            if (count > 0){
 //                val project = shootDao.getOldestProject()

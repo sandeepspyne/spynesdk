@@ -20,7 +20,7 @@ import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.model.image.Image
 
 
-class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener {
+class ImageUploadingService : Service(),DataSyncListener {
 
     private var wakeLock: PowerManager.WakeLock? = null
     lateinit var notificationManager: NotificationManager
@@ -80,21 +80,14 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
                 when(intent.getSerializableExtra(AppConstants.SYNC_TYPE)){
                     ServerSyncTypes.CREATE -> {
-                        val prjSync = ProjectSkuSync(
-                            this,
-                            shootDao,
-                            this
-                        )
+                        val prjSync = ProjectSkuSync.getInstance(this,this)
 
                         prjSync.projectSyncParent("Image Uploading Service",serviceStartedBy)
                     }
 
                     ServerSyncTypes.PROCESS -> {
-                        val processSkuSync = ProcessSkuSync(
-                            this,
-                            shootDao,
-                            this
-                        )
+                        val processSkuSync = ProcessSkuSync.getInstance(
+                            this, this)
 
                         processSkuSync.processSkuParent("Image Uploading Service",serviceStartedBy)
                     }
@@ -195,44 +188,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
         setServiceState(this, ServiceState.STOPPED)
     }
 
-    override fun inProgress(task: Image) {
-        currentImage = task
-        val category = if (task.image_category == "Focus Shoot") getString(R.string.miscellanous) else task.image_category
-        val title = getString(R.string.upload)+task.skuName+"("+category+"-"+task.sequence+")"
-        val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
-        val content = getString(R.string.innter_connection_label)+internet
-        var notification = createNotification(title,content, true)
 
-        notificationManager.notify(notificationId, notification)
-    }
-
-    override fun onUploaded() {
-        var title = getString(R.string.image_uploaded)
-        if (currentImage != null){
-            val category = if (currentImage?.image_category == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.image_category
-            title = getString(R.string.last_uploaded)+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
-        }
-
-        val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
-        val content = getString(R.string.innter_connection_label)+internet
-        var notification = createNotification(title,content, true)
-
-        notificationManager.notify(notificationId, notification)
-
-        //update notification after five minutes
-        Handler(Looper.getMainLooper()).postDelayed({
-            val title = getString(R.string.all_uploaded)
-            val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
-            val content = getString(R.string.innter_connection_label)+internet
-            var notification = createNotification(title,content, false)
-
-            notificationManager.notify(notificationId, notification)
-            stopService()
-        },180000)
-    }
-
-    override fun onUploadFail(task: Image) {
-    }
 
     override fun inProgress(title: String, type: ServerSyncTypes) {
         val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
@@ -272,7 +228,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
     }
 
 
-
     override fun onConnectionLost(title: String, type: ServerSyncTypes) {
         captureEvent(Events.INTERNET_DISCONNECTED,
             HashMap<String,Any?>().apply {
@@ -287,23 +242,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener,DataSyncListener
 
 //        if (type == ServerSyncTypes.UPLOAD)
 //            uploadRunning = false
-    }
-
-    override fun onConnectionLost() {
-        captureEvent(Events.INTERNET_DISCONNECTED,
-            HashMap<String,Any?>().apply {
-                put("medium","Service")
-            })
-
-        val title = if (currentImage == null) getString(R.string.uploading_paused)
-        else {
-            val category = if (currentImage?.image_category == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.image_category
-            getString(R.string.uploading_paused_on)+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
-        }
-        val content = getString(R.string.internet_connection)
-        var notification = createNotification(title,content, true)
-
-        notificationManager.notify(notificationId, notification)
     }
 
     inner class InternetConnectionReceiver : BroadcastReceiver(){

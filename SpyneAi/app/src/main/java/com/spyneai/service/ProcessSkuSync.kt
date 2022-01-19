@@ -5,7 +5,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.google.gson.Gson
+import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.captureEvent
 import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
@@ -26,17 +28,39 @@ class ProcessSkuSync(
     val shootDao: ShootDao,
     val listener: DataSyncListener,
     var retryCount: Int = 0,
-    var connectionLost: Boolean = false
+    var connectionLost: Boolean = false,
+    var isActive: Boolean = false
 ) {
 
     val TAG = "ProcessSkuSync"
+    companion object{
+        @Volatile
+        private var INSTANCE: ProcessSkuSync? = null
+
+        fun getInstance(context: Context,listener: DataSyncListener): ProcessSkuSync {
+            synchronized(this) {
+                var instance = INSTANCE
+
+                if (instance == null) {
+                    instance = ProcessSkuSync(
+                        context,
+                        AppDatabase.getInstance(BaseApplication.getContext()).shootDao(),
+                        listener
+                    )
+
+                    INSTANCE = instance
+                }
+                return instance
+            }
+        }
+    }
 
     fun processSkuParent(type : String,startedBy : String?) {
         Log.d(TAG, "processSkuParent: ")
         context.captureEvent(Events.PROCESS_SKU_PARENT_TRIGGERED,HashMap<String,Any?>().apply {
             put("type",type)
             put("service_started_by",startedBy)
-            put("upload_running", Utilities.getBool(context, AppConstants.PROCESS_SKU_RUNNING, false))
+            put("upload_running", isActive)
         })
 
         //update triggered value
@@ -47,17 +71,16 @@ class ProcessSkuSync(
         handler.postDelayed({
             if (Utilities.getBool(context, AppConstants.PROCESS_SKU_PARENT_TRIGGERED, true)
                 &&
-                !Utilities.getBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
+                !isActive
             ) {
                 if (context.isInternetActive())
                     GlobalScope.launch(Dispatchers.Default) {
-                        Log.d(TAG, "uploadParent: start")
-                         Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, true)
+                         isActive = true
                         context.captureEvent(Events.PROCESS_SKU_STARTED,HashMap())
                         processSku()
                     }
                 else {
-                    Utilities.saveBool(context, AppConstants.PROCESS_SKU_RUNNING, false)
+                   isActive = false
                     listener.onConnectionLost("Process Sku Stopped",ServerSyncTypes.PROCESS)
                     Log.d(TAG, "uploadParent: connection lost")
                 }
@@ -83,7 +106,7 @@ class ProcessSkuSync(
                             put("sku_remaining",count)
                         }
                 )
-                Utilities.saveBool(context,AppConstants.PROCESS_SKU_RUNNING,false)
+                isActive = false
                 listener.onConnectionLost("Process Sku Stopped",ServerSyncTypes.CREATE)
                 break
             }
@@ -118,6 +141,7 @@ class ProcessSkuSync(
 
                 //in progress listener
                 listener.inProgress("Processing Sku ${sku.skuName}",ServerSyncTypes.PROCESS)
+                isActive = true
 
 
                 if (sku.totalFramesUpdated){
@@ -144,7 +168,7 @@ class ProcessSkuSync(
 
         if (!connectionLost){
             listener.onCompleted("All Skus Background Id Updated",ServerSyncTypes.PROCESS,false)
-            Utilities.saveBool(context, AppConstants.PROJECT_SYNC_RUNNING, false)
+            isActive = false
             //get pending projects count
 //            val count = shootDao.getPendingSku()
 //
