@@ -23,7 +23,7 @@ class TrimActivity : AppCompatActivity() {
 
         threeSixtyViewModel = ViewModelProvider(this, ViewModelFactory()).get(ThreeSixtyViewModel::class.java)
 
-        threeSixtyViewModel.videoDetails.apply {
+        threeSixtyViewModel.videoDetails?.apply {
             categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
             videoPath = intent.getStringExtra("src_path")

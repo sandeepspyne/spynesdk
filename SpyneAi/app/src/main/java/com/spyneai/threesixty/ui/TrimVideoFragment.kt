@@ -113,7 +113,7 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
         val intent = requireActivity().intent
         viewModel.fromDrafts = true
 
-        viewModel.videoDetails.apply {
+        viewModel.videoDetails?.apply {
             projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
             skuName = intent.getStringExtra(AppConstants.SKU_NAME)
             skuId = intent.getStringExtra(AppConstants.SKU_ID)
@@ -148,7 +148,7 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
 
     private fun setDataInView() {
         try {
-            uri = Uri.parse(viewModel.videoDetails.videoPath)
+            uri = Uri.parse(viewModel.videoDetails?.videoPath)
 
             totalDuration = requireContext().getVideoDuration(uri)
             imagePlayPause!!.setOnClickListener { v: View? -> onVideoClicked() }
@@ -260,10 +260,10 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
                 //LogMessage.v("sourcePath::$uri")
                 videoPlayer!!.playWhenReady = false
 
-                genVideoUsingMuxer(viewModel.videoDetails.videoPath!!,outputPath,lastMinValue,lastMaxValue,false,true)
+                genVideoUsingMuxer(viewModel.videoDetails?.videoPath!!,outputPath,lastMinValue,lastMaxValue,false,true)
             }else{
                 //do not trim send original video
-                startNextActivity(viewModel.videoDetails.videoPath!!)
+                startNextActivity(viewModel.videoDetails?.videoPath!!)
             }
 
         } else Toast.makeText(
@@ -292,7 +292,7 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
     }
 
     private fun startNextActivity(path: String) {
-        viewModel.videoDetails.videoPath = path
+        viewModel.videoDetails?.videoPath = path
 
         //update video path
         viewModel.updateVideoPath()

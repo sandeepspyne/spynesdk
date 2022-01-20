@@ -13,7 +13,11 @@ import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.data.model.CarsBackgroundRes
+import com.spyneai.shoot.data.model.CreateProjectRes
+import com.spyneai.shoot.data.model.CreateSkuRes
+import com.spyneai.shoot.repository.model.project.Project
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.threesixty.data.model.VideoDetails
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import kotlinx.coroutines.launch
@@ -24,7 +28,10 @@ class ThreeSixtyViewModel : ViewModel() {
     private val repository = ShootRepository()
     private val threeSixtyRepository = ThreeSixtyRepository()
     private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
-    private val videoRepository = VideoLocalRepository()
+    private val videoRepository = VideoLocalRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).videoDao())
+
+    var sku: com.spyneai.shoot.repository.model.sku.Sku? = null
+    var project: com.spyneai.shoot.repository.model.project.Project? = null
 
     var fromDrafts  = false
     val isDemoClicked: MutableLiveData<Boolean> = MutableLiveData()
@@ -32,7 +39,7 @@ class ThreeSixtyViewModel : ViewModel() {
     val title : MutableLiveData<String> = MutableLiveData()
     var processingStarted : MutableLiveData<Boolean> = MutableLiveData()
 
-    val videoDetails = VideoDetails()
+    var videoDetails : VideoDetails? = null
 
     val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
 
@@ -68,29 +75,8 @@ class ThreeSixtyViewModel : ViewModel() {
     val reduceCreditResponse: LiveData<Resource<ReduceCreditResponse>>
         get() = _reduceCreditResponse
 
-    fun createProject(
-        authKey: String, projectName: String, prodCatId: String
-    ) = viewModelScope.launch {
-        _createProjectRes.value = Resource.Loading
-        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId)
-    }
 
-    fun createSku(
-        authKey: String, projectId: String, prodCatId: String, prodSubCatId: String,
-        skuName: String
-    ) = viewModelScope.launch {
-        _createSkuRes.value = Resource.Loading
-        _createSkuRes.value = repository.createSku(
-            authKey,
-            projectId,
-            prodCatId,
-            prodSubCatId,
-            skuName,
-            videoDetails.frames,
-            0,
-            1
-        )
-    }
+
 
     fun getBackgroundGifCars(
         category: String
@@ -104,7 +90,7 @@ class ThreeSixtyViewModel : ViewModel() {
         authKey: String
     ) = viewModelScope.launch {
         _process360Res.value = Resource.Loading
-        _process360Res.value = threeSixtyRepository.process360(authKey,videoDetails)
+        _process360Res.value = threeSixtyRepository.process360(authKey,videoDetails!!)
     }
 
     fun getUserCredits(
@@ -133,12 +119,13 @@ class ThreeSixtyViewModel : ViewModel() {
         _downloadHDRes.value = threeSixtyRepository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
     }
 
-    fun insertProject(project: Project) {
-        localRepository.insertProject(project)
+    fun insertProject() {
+        localRepository.insertProject(project!!)
     }
 
-    fun insertSku(sku: Sku) {
-        localRepository.insertSku(sku)
+    suspend fun insertSku() {
+        localRepository.insertSku(sku!!,project!!)
+        videoRepository.insertVideo(videoDetails!!)
     }
 
     fun updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
@@ -148,10 +135,10 @@ class ThreeSixtyViewModel : ViewModel() {
     }
 
     fun updateVideoPath() {
-        videoRepository.addVideoPath(videoDetails.skuId!!,videoDetails.videoPath!!)
+        videoRepository.updateVideo(videoDetails!!)
     }
 
     fun updateVideoBackgroundId() {
-        videoRepository.addBackgroundId(videoDetails.skuId!!,videoDetails.backgroundId!!)
+        videoRepository.updateVideo(videoDetails!!)
     }
 }

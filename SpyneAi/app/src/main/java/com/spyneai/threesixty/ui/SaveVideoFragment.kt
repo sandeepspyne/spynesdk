@@ -144,7 +144,7 @@ class SaveVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentSaveVideoBind
         try {
             //uri = Uri.parse(intent.data.toString())
 
-            uri = Uri.parse(viewModel.videoDetails.videoPath)
+            uri = Uri.parse(viewModel.videoDetails?.videoPath)
 
             //  LogMessage.v("VideoUri:: $uri")
             totalDuration = getDuration(requireActivity(), uri)

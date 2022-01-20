@@ -190,7 +190,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                 )
 
                 if (isSensorAvaliable) {
-                    binding.flLevelIndicator.start(viewModel.videoDetails.categoryName)
+                    binding.flLevelIndicator.start(viewModel.videoDetails?.categoryName!!)
                 }
 
 
@@ -409,7 +409,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
             }
         } else {
             File(outputDirectory).mkdirs()
-            val file = File("$outputDirectory/${viewModel.videoDetails.skuName+"_"+viewModel.videoDetails.skuId+"_"+System.currentTimeMillis()}.mp4")
+            val file = File("$outputDirectory/${viewModel.videoDetails?.skuName+"_"+viewModel.videoDetails?.skuUuid+"_"+System.currentTimeMillis()}.mp4")
 
             VideoCapture.OutputFileOptions.Builder(file)
         }.build()
@@ -571,12 +571,14 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                 )
 
                 trimIntent.putExtra("src_path", videoPath)
-                trimIntent.putExtra("sku_id", viewModel.videoDetails.skuId)
-                trimIntent.putExtra("sku_name", viewModel.videoDetails.skuName)
-                trimIntent.putExtra("project_id", viewModel.videoDetails.projectId)
-                trimIntent.putExtra(AppConstants.CATEGORY_NAME, viewModel.videoDetails.categoryName)
-                trimIntent.putExtra(AppConstants.CATEGORY_ID, viewModel.videoDetails.categoryId)
-                trimIntent.putExtra("frames", viewModel.videoDetails.frames)
+                trimIntent.putExtra(AppConstants.SKU_UUID, viewModel.videoDetails?.skuUuid)
+                trimIntent.putExtra("sku_id", viewModel.videoDetails?.skuId)
+                trimIntent.putExtra("sku_name", viewModel.videoDetails?.skuName)
+                trimIntent.putExtra(AppConstants.PROJECT_UUIID, viewModel.videoDetails?.projectUuid)
+                trimIntent.putExtra("project_id", viewModel.videoDetails?.projectId)
+                trimIntent.putExtra(AppConstants.CATEGORY_NAME, viewModel.videoDetails?.categoryName)
+                trimIntent.putExtra(AppConstants.CATEGORY_ID, viewModel.videoDetails?.categoryId)
+                trimIntent.putExtra("frames", viewModel.videoDetails?.frames)
                 trimIntent.putExtra("shoot_mode", intent?.getIntExtra("shoot_mode", 0))
 
                 startActivity(trimIntent)

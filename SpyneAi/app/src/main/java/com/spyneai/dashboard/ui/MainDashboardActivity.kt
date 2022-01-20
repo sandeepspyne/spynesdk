@@ -135,10 +135,6 @@ class MainDashboardActivity : AppCompatActivity() {
                 continueShoot()
             }
         })
-
-        GlobalScope.launch(Dispatchers.IO) {
-            val shootDao = AppDatabase.getInstance(this@MainDashboardActivity).shootDao()
-        }
     }
 
 
@@ -309,78 +305,7 @@ class MainDashboardActivity : AppCompatActivity() {
         cancelAllWorkers()
         //startUploadService()
         checkPendingDataSync()
-        startVideoUploadService()
        // checkFolderUpload()
-    }
-
-    private fun startVideoUploadService() {
-        val shootLocalRepository = VideoLocalRepository()
-        if (shootLocalRepository.getOldestVideo("0").itemId != null
-            || shootLocalRepository.getOldestVideo("-1").itemId != null
-        ) {
-
-            var action = Actions.START
-            if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-                return
-
-            val serviceIntent = Intent(this, VideoUploadService::class.java)
-            serviceIntent.action = action.name
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                log("Starting the service in >=26 Mode")
-                ContextCompat.startForegroundService(this, serviceIntent)
-                return
-            } else {
-                log("Starting the service in < 26 Mode")
-                startService(serviceIntent)
-            }
-
-            val properties = HashMap<String,Any?>()
-                .apply {
-                    put("service_state", "Started")
-                    put(
-                        "email",
-                        Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
-                            .toString()
-                    )
-                    put("medium", "Main Actity")
-                }
-
-            captureEvent(Events.VIDEO_SERVICE_STARTED, properties)
-        }
-    }
-
-    private fun startUploadService() {
-        GlobalScope.launch(Dispatchers.IO) {
-            val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
-            val shootLocalRepository = ImagesRepoV2(shootDao)
-            if (shootLocalRepository.getOldestImage() != null
-            ) {
-
-                startUploadingService(
-                    MainDashboardActivity::class.java.simpleName,
-                    ServerSyncTypes.UPLOAD
-                )
-            }
-
-            val pendingProjects = shootDao.getPendingProjects()
-
-            if (pendingProjects > 0){
-                startUploadingService(
-                    MainDashboardActivity::class.java.simpleName,
-                    ServerSyncTypes.CREATE
-                )
-            }
-
-            val pendingSkus = shootDao.getPendingSku()
-
-            if (pendingSkus > 0){
-                startUploadingService(
-                    MainDashboardActivity::class.java.simpleName,
-                    ServerSyncTypes.PROCESS
-                )
-            }
-        }
     }
 
     private fun cancelAllWorkers() {

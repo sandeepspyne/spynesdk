@@ -64,10 +64,10 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                    intent.apply {
                        putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
                        putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
-                       putExtra(AppConstants.PROJECT_ID, viewModel.videoDetails.projectId)
-                       putExtra(AppConstants.SKU_ID, viewModel.videoDetails.skuId)
-                       putExtra(AppConstants.SKU_NAME, viewModel.videoDetails.skuName)
-                       putExtra(AppConstants.TOTAL_FRAME, viewModel.videoDetails.frames)
+                       putExtra(AppConstants.PROJECT_ID, viewModel.videoDetails?.projectId)
+                       putExtra(AppConstants.SKU_ID, viewModel.videoDetails?.skuId)
+                       putExtra(AppConstants.SKU_NAME, viewModel.videoDetails?.skuName)
+                       putExtra(AppConstants.TOTAL_FRAME, viewModel.videoDetails?.frames)
                        putExtra(AppConstants.FROM_VIDEO, true)
                    }
 
@@ -81,7 +81,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
         binding.btnContinue.setOnClickListener {
 
             //set background id
-            viewModel.videoDetails.backgroundId = backgroundSelect
+            viewModel.videoDetails?.backgroundId = backgroundSelect
 
             Navigation.findNavController(binding.btnContinue)
                 .navigate(R.id.action_threeSixtyBackgroundFragment_to_threeSixtyShootSummaryFragment)
@@ -92,7 +92,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
 
     fun getBackgorund() {
-        viewModel.getBackgroundGifCars(viewModel.videoDetails.categoryName)
+        viewModel.getBackgroundGifCars(viewModel.videoDetails?.categoryName!!)
     }
 
     private fun initSelectBackground() {
@@ -116,7 +116,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
 
-                    viewModel.videoDetails.sample360 = response.data[0].gifUrl
+                    viewModel.videoDetails?.sample360 = response.data[0].gifUrl
 
                     backgroundSelect = response.data[0].imageId.toString()
 
@@ -149,7 +149,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                     backgroundSelect = carBackgroundGifList[position].imageId.toString()
                     carbackgroundsAdapter.notifyDataSetChanged()
 
-                    viewModel.videoDetails.sample360 = carBackgroundGifList[position].gifUrl
+                    viewModel.videoDetails?.sample360 = carBackgroundGifList[position].gifUrl
 
                     Glide.with(requireContext()) // replace with 'this' if it's in activity
                         .load(carBackgroundGifList[position].gifUrl)

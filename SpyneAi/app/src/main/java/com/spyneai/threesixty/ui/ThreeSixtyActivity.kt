@@ -34,8 +34,8 @@ class ThreeSixtyActivity : AppCompatActivity() {
         if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
             setUpDrafts()
 
-        threeSixtyViewModel.videoDetails.apply {
-            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+        threeSixtyViewModel.videoDetails?.apply {
+            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)!!
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
             frames =  intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
         }
@@ -50,7 +50,7 @@ class ThreeSixtyActivity : AppCompatActivity() {
     private fun setUpDrafts() {
         threeSixtyViewModel.fromDrafts = true
 
-        threeSixtyViewModel.videoDetails.apply {
+        threeSixtyViewModel.videoDetails?.apply {
             projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
             skuName = intent.getStringExtra(AppConstants.SKU_NAME)
             skuId = intent.getStringExtra(AppConstants.SKU_ID)

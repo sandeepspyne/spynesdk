@@ -1,15 +1,24 @@
 package com.spyneai.threesixty.data
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import com.google.gson.Gson
 import com.spyneai.*
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
 import com.spyneai.interfaces.GcpClient
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.model.Image
+import com.spyneai.service.DataSyncListener
+import com.spyneai.service.ImageUploader
+import com.spyneai.shoot.data.ImagesRepoV2
+import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.threesixty.data.model.PreSignedVideoBody
 import com.spyneai.threesixty.data.model.VideoDetails
 import kotlinx.coroutines.Dispatchers
@@ -18,297 +27,412 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.BufferedOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.util.*
 import kotlin.collections.HashMap
 
 
 class VideoUploader(val context: Context,
-                    val localRepository : VideoLocalRepository,
+                    val localRepository : VideoLocalRepoV2,
                     val threeSixtyRepository: ThreeSixtyRepository,
                     var listener: Listener,
-                    var lastIdentifier : String = "0") {
+                    var lastIdentifier : String = "0",
+                    var videoType: String = AppConstants.REGULAR,
+                    var retryCount: Int = 0,
+                    var connectionLost: Boolean = false,
+                    var isActive: Boolean = false
+) {
 
+    companion object{
+        @Volatile
+        private var INSTANCE: VideoUploader? = null
 
-    fun start() {
-        selectLastImageAndUpload(AppConstants.REGULAR,0)
+        fun getInstance(context: Context,listener: Listener): VideoUploader {
+            synchronized(this) {
+                var instance = INSTANCE
+
+                if (instance == null) {
+                    instance = VideoUploader(
+                        context,
+                        VideoLocalRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).videoDao()),
+                        ThreeSixtyRepository(),
+                        listener
+                    )
+
+                    INSTANCE = instance
+                }
+                return instance
+            }
+        }
     }
 
-    private fun selectLastImageAndUpload(imageType : String,retryCount : Int) {
-        if (context.isInternetActive()){
-            GlobalScope.launch(Dispatchers.Default) {
+    fun uploadParent(type : String,startedBy : String?) {
+        context.captureEvent(Events.VIDEO_UPLOAD_PARENT_TRIGGERED,HashMap<String,Any?>().apply {
+            put("type",type)
+            put("service_started_by",startedBy)
+            put("upload_running",isActive)
+        })
 
-                lastIdentifier = if (retryCount == 0) getUniqueIdentifier() else lastIdentifier
-//                var skipFlag = -1
-//                val video = if (imageType == AppConstants.REGULAR){
-//                    localRepository.getOldestVideo()
-//                } else{
-//                    skipFlag = -2
-//                    localRepository.getOldestSkippedVideo()
-//                }
+        //update triggered value
+        Utilities.saveBool(context, AppConstants.VIDEO_UPLOAD_TRIGGERED, true)
 
-                var skipFlag = -1
-                val video = if (imageType == AppConstants.REGULAR){
-                    localRepository.getOldestVideo("0")
-                } else{
-                    skipFlag = -2
-                    localRepository.getOldestVideo("-1")
-                }
+        val handler = Handler(Looper.getMainLooper())
 
-
-                if (video.itemId != null){
-                    lastIdentifier = video.projectId+"_"+video.skuId
-
-                    val imageProperties = HashMap<String,Any?>()
-                        .apply {
-                            put("iteration_id",lastIdentifier)
-                            put("retry_count",retryCount)
-                            put("video_id",video.videoId)
-                            put("video_local",video.itemId)
-                            put("project_id",video.projectId)
-                            put("sku_id",video.skuId)
-                            put("sku_name",video.skuName)
-                            put("upload_status",video.isUploaded)
-                            put("make_done_status",video.isStatusUpdate)
-                            put("pre_url",video.preSignedUrl)
-                            put("video_path",video.videoPath)
-                            put("upload_type",imageType)
-                        }
-
-                    context.captureEvent(
-                        Events.VIDEO_SELECTED,
-                        imageProperties)
-
-                    //uploading enqueued
-                    listener.inProgress(video)
-
-                    if (retryCount > 4) {
-                        if (video.isUploaded != 1)
-                            localRepository.skipVideo(video.itemId!!,skipFlag)
-
-                        startNextUpload(video,false,imageType)
-
-                        captureEvent(Events.MAX_RETRY,video,false,"Video upload limit reached")
-                        return@launch
+        handler.postDelayed({
+            if (Utilities.getBool(context, AppConstants.VIDEO_UPLOAD_TRIGGERED, true)
+                &&
+                !isActive
+            ) {
+                if (context.isInternetActive())
+                    GlobalScope.launch(Dispatchers.Default) {
+                        Log.d(TAG, "uploadParent: start")
+                        isActive = true
+                        context.captureEvent("START VIDEO UPLOADING CALLED",HashMap())
+                        startUploading()
                     }
-
-
-                    if (video.isUploaded == 0 || video.isUploaded == -1){
-                        context.captureEvent(
-                            Events.VIDEO_NOT_UPLOADED,
-                            imageProperties
-                        )
-
-                        if (video.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL){
-                            context.captureEvent(
-                                Events.VIDEO_UPLOADING_TO_GCP_INITIATED,
-                                imageProperties
-                            )
-
-                            uploadVideoToGcp(video,imageType,retryCount)
-                        }else {
-                            //upload video
-                            val response = threeSixtyRepository.getVideoPreSignedUrl(
-                                PreSignedVideoBody(
-                                    Utilities.getPreference(context,AppConstants.AUTH_KEY).toString(),
-                                    video.projectId!!,
-                                    video.skuId!!,
-                                    video.categoryName,
-                                    AppConstants.CARS_CATEGORY_ID,
-                                    AppConstants.CARS_CATEGORY_ID,
-                                    video.frames,
-                                    File(video.videoPath).name,
-                                    video.backgroundId.toString()
-                                )
-                            )
-
-                            when(response){
-                                is Resource.Success -> {
-                                    video.preSignedUrl = response.value.data.presignedUrl
-                                    video.videoId = response.value.data.videoId
-
-                                    captureEvent(Events.GOT_PRESIGNED_VIDEO_URL,video,true,null)
-
-                                    val count = localRepository.addPreSignedUrl(video)
-                                    val updatedVideo = localRepository.getVideo(video.itemId!!)
-
-                                    captureEvent(
-                                        Events.IS_VIDEO_PRESIGNED_URL_UPDATED,
-                                        updatedVideo,
-                                        true,
-                                        null,
-                                        count
-                                    )
-
-                                    uploadVideoToGcp(video,imageType,retryCount)
-
-                                }
-
-                                is Resource.Failure -> {
-                                    if(response.errorMessage == null){
-                                        captureEvent(Events.GET_PRESIGNED_VIDEO_URL_FAILED,video,false,response.errorCode.toString()+": Http exception from server")
-                                    }else {
-                                        captureEvent(Events.GET_PRESIGNED_VIDEO_URL_FAILED,video,false,response.errorCode.toString()+": "+response.errorMessage)
-                                    }
-
-                                    selectLastImageAndUpload(imageType,retryCount+1)
-                                }
-                            }
-                        }
-                    }else{
-                        //set sku status to uploaded
-                        setStatusUploaed(video,imageType,retryCount)
-                    }
-                }else{
-                    if (imageType == AppConstants.REGULAR){
-                        //start skipped images worker
-                        selectLastImageAndUpload(AppConstants.SKIPPED,0)
-                    }else{
-                        //make second time skipped images elligible for upload
-                        val count = localRepository.updateSkippedVideos()
-
-                        //check if we don"t have any new image clicked while uploading skipped images
-                        if (localRepository.getOldestVideo("0").itemId == null){
-                            if (count > 0){
-                                //upload double skipped images if we don't have any new image
-                                selectLastImageAndUpload(AppConstants.SKIPPED,0)
-                            }
-                            else
-                                listener.onUploaded(video)
-                        } else{
-                            //upload images clicked while service uploading skipped images
-                            selectLastImageAndUpload(AppConstants.REGULAR,0)
-                        }
-                    }
+                else {
+                    isActive = false
+                    listener.onConnectionLost()
+                    Log.d(TAG, "uploadParent: connection lost")
                 }
             }
-        }else {
-            listener.onConnectionLost()
-        }
+        }, getRandomNumberInRange().toLong())
     }
 
-    private fun onVideoUploaded(video: VideoDetails,imageType: String,retryCount : Int) {
-        captureEvent(Events.VIDEO_UPLOADED_TO_GCP,video,true,null)
-        GlobalScope.launch(Dispatchers.Default) {
-            setStatusUploaed(video,imageType,retryCount)
-        }
-    }
+    private suspend fun startUploading() {
+        do {
+            lastIdentifier = getUniqueIdentifier()
+
+            val remaingData = HashMap<String,Any?>()
+                .apply {
+                    put("remaining_videos", JSONObject().apply {
+                        put("upload_remaining",localRepository.totalRemainingUpload())
+                        put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                    }.toString())
+                }
 
 
-    private fun onVideoUploadFailed(imageType: String,retryCount: Int,video: VideoDetails,error: String?) {
-        captureEvent(Events.VIDEO_UPLOAD_TO_GCP_FAILED,video,false,error)
+            if (connectionLost){
+                context.captureEvent(
+                    Events.VIDEO_CONNECTION_BREAK,
+                    remaingData
+                )
+               isActive = false
+                listener.onConnectionLost()
+                break
+            }
 
-        GlobalScope.launch(Dispatchers.Default) {
-            selectLastImageAndUpload(imageType,retryCount+1)
-        }
-    }
+            var video = localRepository.getOldestVideo()
 
 
-    private suspend fun setStatusUploaed(video: VideoDetails,imageType: String,retryCount : Int) {
-        val response = threeSixtyRepository.setStatusUploaded(video.videoId!!)
 
-        when(response){
-            is Resource.Success -> {
-                captureEvent(Events.MARKED_VIDEO_UPLOADED,video,true,null)
+            if (video == null){
+                context.captureEvent(
+                    Events.ALL_VIDEO_UPLOADED_BREAK,
+                    HashMap<String,Any?>()
+                        .apply {
+                            put("remaining_videos", JSONObject().apply {
+                                put("upload_remaining",localRepository.totalRemainingUpload())
+                                put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                            }.toString())
+                        }
+                )
+                break
+            }else {
+                lastIdentifier = video.skuName+ "_" + video.skuId
 
-                val count = localRepository.markStatusUploaded(video)
-                val updatedImage = localRepository.getVideo(video.itemId!!)
+                val videoProperties = HashMap<String, Any?>()
+                    .apply {
+                        put("sku_id", video.skuId)
+                        put("iteration_id", lastIdentifier)
+                        put("retry_count", retryCount)
+                        put("upload_type", videoType)
+                        put("data", Gson().toJson(video))
+                        put("remaining_videos",JSONObject().apply {
+                            put("upload_remaining",localRepository.totalRemainingUpload())
+                            put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+//                            put("remaining_above", localRepository.getRemainingAbove(video.itemId!!))
+//                            put("remaining_above_skipped", localRepository.getRemainingAboveSkipped(video.itemId!!))
+//                            put("remaining_below", localRepository.getRemainingBelow(video.itemId!!))
+//                            put("remaining_below_skipped", localRepository.getRemainingBelowSkipped(video.itemId!!))
+                        }.toString())
 
-                captureEvent(
-                    Events.IS_VIDEO_MARK_DONE_STATUS_UPDATED,
-                    updatedImage,
-                    true,
-                    null,
-                    count
+                    }
+
+                context.captureEvent(
+                    Events.VIDEO_SELECTED,
+                    videoProperties
                 )
 
-                selectLastImageAndUpload(imageType,0)
-            }
+                listener.inProgress(video)
+                isActive = true
 
-            is Resource.Failure -> {
-                if(response.errorMessage == null){
-                    captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": Http exception from server")
-                }else {
-                    captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": "+response.errorMessage)
+                if (retryCount > 4) {
+                    val dbStatus =  localRepository.skipVideo(
+                        video.uuid,
+                        video.toProcessAT.plus( video.retryCount * AppConstants.RETRY_DELAY_TIME)
+                    )
+
+                    captureEvent(
+                        Events.VIDEO_MAX_RETRY,
+                        video,
+                        false,
+                        "video upload limit reached",
+                        dbStatus
+                    )
+                    retryCount = 0
+                    continue
                 }
 
-                selectLastImageAndUpload(imageType,retryCount+1)
+                if (!video.isUploaded) {
+                    if (video.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL) {
+                        val videoUploaded = uploadvideo(video)
+
+                        if (!videoUploaded)
+                            continue
+
+                        markDoneVideo(video)
+
+                        continue
+                    } else {
+                        val gotPresigned = getPresigned(video)
+
+                        if (!gotPresigned)
+                            continue
+
+                        val videoUploaded = uploadvideo(video)
+
+                        if (!videoUploaded)
+                            continue
+
+                        val videoMarkedDone = markDoneVideo(video)
+                        continue
+                    }
+                } else {
+                    if (video.videoId == null) {
+                        captureEvent(
+                            Events.VIDEO_ID_NULL,
+                            video,
+                            true,
+                            null
+                        )
+                        video.isUploaded = true
+                        video.isMarkedDone = true
+                        localRepository.updateVideo(video)
+                        retryCount = 0
+                        continue
+                    } else {
+                        val videoMarkedDone = markDoneVideo(video)
+                        if (videoMarkedDone)
+                            retryCount = 0
+
+                        continue
+
+                    }
+                }
             }
+        }while (video != null)
+
+        if (!connectionLost){
+            listener.onUploaded()
+            isActive = false
         }
     }
 
-    private fun startNextUpload(itemId: VideoDetails,uploaded : Boolean,imageType : String) {
-        //remove uploaded item from database
-        if (uploaded)
-            localRepository.markUploaded(itemId)
+    private suspend fun getPresigned(video: VideoDetails): Boolean {
+        //upload video
+        val response = threeSixtyRepository.getVideoPreSignedUrl(
+            PreSignedVideoBody(
+                Utilities.getPreference(context,AppConstants.AUTH_KEY).toString(),
+                video.projectId!!,
+                video.skuId!!,
+                video.categoryName,
+                AppConstants.CARS_CATEGORY_ID,
+                AppConstants.CARS_CATEGORY_ID,
+                video.frames,
+                File(video.videoPath).name,
+                video.backgroundId.toString()
+            )
+        )
 
-        selectLastImageAndUpload(imageType,0)
+        captureEvent(
+            Events.GET_VIDEO_PRESIGNED_CALL_INITIATED, video, true, null,
+            retryCount = retryCount
+        )
+
+        when (response) {
+            is Resource.Failure -> {
+                captureEvent(
+                    Events.GET_VIDEO_PRESIGNED_FAILED,
+                    video,
+                    false,
+                    getErrorMessage(response),
+                    response = Gson().toJson(response).toString(),
+                    retryCount = retryCount,
+                    throwable = response.throwable
+                )
+
+                retryCount++
+                return false
+            }
+        }
+
+        val imagePreSignedRes = (response as Resource.Success).value
+
+        video.preSignedUrl = imagePreSignedRes.data.presignedUrl
+        video.videoId = imagePreSignedRes.data.videoId
+
+        captureEvent(
+            Events.GOT_VIDEO_PRESIGNED_VIDEO_URL, video,
+            true,
+            null,
+            response = Gson().toJson(response.value).toString(),
+            retryCount = retryCount
+        )
+
+        val count = localRepository.updateVideo(video)
+
+        captureEvent(
+            Events.IS_VIDEO_PRESIGNED_URL_UPDATED,
+            localRepository.getVideo(video.uuid),
+            true,
+            null,
+            count,
+            retryCount = retryCount
+        )
+
+        return true
     }
 
-    private fun uploadVideoToGcp(video: VideoDetails, imageType : String, retryCount : Int) {
-        // create RequestBody instance from file
-        // create RequestBody instance from file
+    private suspend fun uploadvideo(video: VideoDetails): Boolean {
         val requestFile =
             File(video.videoPath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
 
-        //upload video with presigned url
-        val request = GcpClient.buildService(ClipperApi::class.java)
-
-        val call = request.uploadVideo(
-            "application/octet-stream",
+        val uploadResponse = threeSixtyRepository.uploadVideoToGcp(
             video.preSignedUrl!!,
             requestFile
         )
 
-        call.enqueue(object : Callback<ResponseBody>{
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.d("VideoUploader", "onResponse: "+response.code())
-                if (response.isSuccessful){
-                    val count = localRepository.markUploaded(video)
-                    val updatedImage = localRepository.getVideo(video.itemId!!)
-
-                    captureEvent(
-                        Events.IS_MARK_VIDEO_GCP_UPLOADED_UPDATED,
-                        updatedImage,
-                        true,
-                        null,
-                        count
-                    )
-
-                    onVideoUploaded(
-                        video,
-                        imageType,
-                        retryCount
-                    )
-                }else {
-                    onVideoUploadFailed(
-                        imageType,
-                        retryCount,
-                        video,
-                        response.errorBody().toString()
-                    )
-                }
+        val imageProperties = HashMap<String, Any?>()
+            .apply {
+                put("sku_id", video.skuId)
+                put("iteration_id", lastIdentifier)
+                put("upload_type", videoType)
+                put("retry_count", retryCount)
+                put("data", Gson().toJson(video))
             }
 
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.d("VideoUploader", "onFailure: "+t.message)
-                onVideoUploadFailed(
-                    imageType,
-                    retryCount,
+        context.captureEvent(
+            Events.VIDEO_UPLOADING_TO_GCP_INITIATED,
+            imageProperties
+        )
+
+        when (uploadResponse) {
+            is Resource.Failure -> {
+                captureEvent(
+                    Events.VIDEO_UPLOAD_TO_GCP_FAILED,
                     video,
-                    t.message
+                    false,
+                    getErrorMessage(uploadResponse),
+                    response = Gson().toJson(uploadResponse).toString(),
+                    retryCount = retryCount,
+                    throwable = uploadResponse.throwable
                 )
+                retryCount++
+                return false
             }
+        }
 
-        })
+        captureEvent(
+            Events.VIDEO_UPLOADED_TO_GCP,
+            video,
+            true,
+            null,
+            response = Gson().toJson(uploadResponse).toString(),
+            retryCount = retryCount
+        )
+
+        video.isUploaded = true
+        val markUploadCount = localRepository.updateVideo(video)
+
+        captureEvent(
+            Events.IS_VIDEO_GCP_UPLOADED_UPDATED,
+            localRepository.getVideo(video.uuid),
+            true,
+            null,
+            markUploadCount,
+            retryCount = retryCount
+        )
+
+        return true
     }
 
+    private suspend fun markDoneVideo(video: VideoDetails): Boolean {
+        val markUploadResponse = threeSixtyRepository.setStatusUploaded(video.videoId!!)
 
-    private fun captureEvent(eventName : String, video : VideoDetails, isSuccess : Boolean,
-                             error: String?,dbUpdateStatus: Int = 0) {
+        captureEvent(
+            Events.VIDEO_MARK_DONE_CALL_INITIATED,
+            video, true,
+            null,
+            retryCount = retryCount
+        )
+
+        when (markUploadResponse) {
+            is Resource.Failure -> {
+                captureEvent(
+                    Events.MARK_VIDEO_UPLOADED_FAILED,
+                    video,
+                    false,
+                    getErrorMessage(markUploadResponse),
+                    response = Gson().toJson(markUploadResponse).toString(),
+                    retryCount = retryCount,
+                    throwable = markUploadResponse.throwable
+                )
+                retryCount++
+                return false
+            }
+        }
+
+        captureEvent(
+            Events.VIDEO_MARKED_UPLOADED, video, true,
+            null,
+            response = Gson().toJson(markUploadResponse).toString()
+        )
+
+        video.isMarkedDone = true
+        val count = localRepository.updateVideo(video)
+
+        captureEvent(
+            Events.IS_VIDEO_MARK_DONE_STATUS_UPDATED,
+            localRepository.getVideo(video.uuid),
+            true,
+            null,
+            count,
+            retryCount = retryCount
+        )
+        retryCount = 0
+        return true
+    }
+
+    private fun getErrorMessage(response: Resource.Failure): String {
+        return if (response.errorMessage == null) response.errorCode.toString() + ": Http exception from server" else response.errorCode.toString() + ": " + response.errorMessage
+    }
+
+    private fun captureEvent(eventName : String,
+                             video : VideoDetails,
+                             isSuccess : Boolean,
+                             error: String?,
+                             dbUpdateStatus: Int = 0,
+                             response: String? = null,
+                             retryCount: Int = 0,
+                             throwable: String? = null) {
         val properties = HashMap<String,Any?>()
         properties.apply {
             this["sku_id"] = video.skuId
@@ -316,17 +440,20 @@ class VideoUploader(val context: Context,
             this["project_id"] = video.projectId
             this["video_id"] = video.videoId
             this["pre_signed_url"] = video.preSignedUrl
-            put("video_local_id",video.itemId)
+            put("video_local_id",video.uuid)
             put("iteration_id",lastIdentifier)
             put("frames",video.frames)
             put("project_id",video.projectId)
             put("sku_id",video.skuId)
             put("sku_name",video.skuName)
             put("upload_status",video.isUploaded)
-            put("make_done_status",video.isStatusUpdate)
+            put("make_done_status",video.isMarkedDone)
             put("video_path",video.videoPath)
-            put("image_type",video.categoryName)
+            put("video_type",video.categoryName)
             put("db_update_status",dbUpdateStatus)
+            put("response",response)
+            put("retry_count",retryCount)
+            put("throwable",throwable)
         }
 
         if (isSuccess) {
@@ -342,11 +469,9 @@ class VideoUploader(val context: Context,
     }
 
 
-    interface Listener {
-        fun inProgress(task: VideoDetails)
-        fun onUploaded(task: VideoDetails)
-        fun onUploadFail(task: VideoDetails)
-        fun onConnectionLost()
+    private fun getRandomNumberInRange(): Int {
+        val r = Random()
+        return r.nextInt(100 - 10 + 1) + 10
     }
 
     private fun getUniqueIdentifier(): String {
@@ -361,5 +486,10 @@ class VideoUploader(val context: Context,
         return salt.toString()
     }
 
-
+    interface Listener {
+        fun inProgress(task: VideoDetails)
+        fun onUploaded()
+        fun onUploadFail(task: VideoDetails)
+        fun onConnectionLost()
+    }
 }

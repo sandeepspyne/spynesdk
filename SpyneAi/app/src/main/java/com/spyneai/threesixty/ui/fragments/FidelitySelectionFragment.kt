@@ -40,10 +40,10 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
         var lastSelectedFrames = 24
         var newSelectedFrames = 24
 
-        if (viewModel.videoDetails.frames != 0){
+        if (viewModel.videoDetails?.frames != 0){
             updateFidelity = true
-            lastSelectedFrames = viewModel.videoDetails.frames
-            newSelectedFrames = viewModel.videoDetails.frames
+            lastSelectedFrames = viewModel.videoDetails?.frames!!
+            newSelectedFrames = viewModel.videoDetails?.frames!!
         }
 
         when(lastSelectedFrames){
@@ -71,7 +71,7 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
         }
 
         binding.btnProceed.setOnClickListener {
-            viewModel.videoDetails.frames = newSelectedFrames
+            viewModel.videoDetails?.frames = newSelectedFrames
 
             if (updateFidelity) {
                viewModel.isFramesUpdated.value = true
@@ -83,9 +83,9 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
 
                 Intent(requireContext(),ThreeSixtyActivity::class.java)
                     .apply {
-                        putExtra(AppConstants.CATEGORY_NAME,videoDetails.categoryName)
-                        putExtra(AppConstants.CATEGORY_ID,videoDetails.categoryId)
-                        putExtra(AppConstants.EXTERIOR_ANGLES,videoDetails.frames)
+                        putExtra(AppConstants.CATEGORY_NAME,videoDetails?.categoryName)
+                        putExtra(AppConstants.CATEGORY_ID,videoDetails?.categoryId)
+                        putExtra(AppConstants.EXTERIOR_ANGLES,videoDetails?.frames)
                         startActivity(this)
                     }
 

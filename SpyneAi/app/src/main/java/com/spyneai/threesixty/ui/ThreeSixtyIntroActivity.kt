@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityThreeSixtyIntroBinding
+import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.setLocale
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
+import com.spyneai.threesixty.data.model.VideoDetails
 
 class ThreeSixtyIntroActivity : AppCompatActivity() {
 
@@ -21,14 +23,18 @@ class ThreeSixtyIntroActivity : AppCompatActivity() {
 
         setLocale()
 
-        val threeSixtyViewModel = ViewModelProvider(this, ViewModelFactory()).get(
-            ThreeSixtyViewModel::class.java)
+        val threeSixtyViewModel = ViewModelProvider(this, ViewModelFactory()).get(ThreeSixtyViewModel::class.java)
+
+        val videoDetails = VideoDetails(
+            uuid = getUuid(),
+            projectUuid = getUuid(),
+            skuUuid = getUuid(),
+            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!,
+            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)!!
+        )
 
         //set category name and id
-        threeSixtyViewModel.videoDetails.apply {
-            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
-            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)!!
-        }
+        threeSixtyViewModel.videoDetails = videoDetails
 
         threeSixtyViewModel.title.observe(this,{
             binding.tvTitle.text = it

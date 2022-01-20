@@ -7,15 +7,24 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.*
+import android.util.Log
+import com.spyneai.BaseApplication
 import com.spyneai.R
+import com.spyneai.base.room.AppDatabase
+import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isInternetActive
-import com.spyneai.service.Actions
-import com.spyneai.service.ServiceState
-import com.spyneai.service.log
-import com.spyneai.service.setServiceState
+import com.spyneai.needs.AppConstants
+import com.spyneai.posthog.Events
+import com.spyneai.service.*
+import com.spyneai.shoot.data.ImageLocalRepository
+import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.utils.logUpload
 import com.spyneai.threesixty.data.model.VideoDetails
+import io.sentry.protocol.App
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class VideoUploadService : Service(), VideoUploader.Listener {
     private var wakeLock: PowerManager.WakeLock? = null
@@ -23,12 +32,11 @@ class VideoUploadService : Service(), VideoUploader.Listener {
     lateinit var channel: NotificationChannel
     lateinit var builder: Notification.Builder
     private var receiver: VideoConnectionReceiver? = null
-    var uploadRunning = false
-    var isConnected = false
-    private var imageUploader : VideoUploader? = null
+    private var videoUploader : VideoUploader? = null
     private var notificationId = 0
     val notificationChannelId = "PROCESSING SERVICE CHANNEL"
     var currentVideo : VideoDetails? = null
+    var serviceStartedBy : String? = null
 
     override fun onDestroy() {
         super.onDestroy()
@@ -71,8 +79,19 @@ class VideoUploadService : Service(), VideoUploader.Listener {
 
         when (action) {
             Actions.START.name -> {
-                if (!uploadRunning)
-                    resumeUpload("onStartCommand")
+                this.serviceStartedBy = intent.getStringExtra(AppConstants.SERVICE_STARTED_BY)
+                when(intent.getSerializableExtra(AppConstants.SYNC_TYPE)){
+                    ServerSyncTypes.UPLOAD -> {
+                        val properties = java.util.HashMap<String, Any?>()
+                            .apply {
+                                put("service_state", "Started")
+                                put("medium", "Image Uploading Service")
+                            }
+
+                        captureEvent(Events.SERVICE_STARTED, properties)
+                        resumeUpload("onStartCommand")
+                    }
+                }
             }
             Actions.STOP.name -> stopService()
             else -> error("No action in the received intent")
@@ -149,6 +168,14 @@ class VideoUploadService : Service(), VideoUploader.Listener {
 
             stopForeground(false)
             stopSelf()
+
+            val properties = java.util.HashMap<String, Any?>()
+                .apply {
+                    put("service_state", "Stopped")
+                    put("medium", "Image Uploading Service")
+                }
+
+            captureEvent(Events.VIDEO_SERVICE_STOPPED, properties)
         } catch (e: Exception) {
             log("Service stopped without being started: ${e.message}")
         }
@@ -167,11 +194,9 @@ class VideoUploadService : Service(), VideoUploader.Listener {
 
         logUpload("inProgress "+notificationId)
         notificationManager.notify(notificationId, notification)
-        uploadRunning = true
     }
 
-    override fun onUploaded(task: VideoDetails) {
-        uploadRunning = false
+    override fun onUploaded() {
 
         var title = "Video Uploaded"
         if (currentVideo != null){
@@ -200,12 +225,10 @@ class VideoUploadService : Service(), VideoUploader.Listener {
     }
 
     override fun onUploadFail(task: VideoDetails) {
-        uploadRunning = false
     }
 
     override fun onConnectionLost() {
         logUpload("onConnectionLost")
-        uploadRunning = false
 
         val title = if (currentVideo == null) "Uploading Paused"
         else {
@@ -224,35 +247,56 @@ class VideoUploadService : Service(), VideoUploader.Listener {
 
             val isConnected = context?.isInternetActive()
 
-            logUpload("Connection changed "+isConnected)
-
             if (isConnected == true){
-                //if any image pending in upload
-                val image = VideoLocalRepository().getOldestVideo("0")
+                //push event of internet connected
+                captureEvent(
+                    Events.INTERNET_CONNECTED,
+                    HashMap<String,Any?>().apply {
+                        put("medium","Service")
+                    })
 
-                if (image.itemId != null && !uploadRunning){
-                    uploadRunning = true
-                    logUpload(image.itemId.toString()+" "+uploadRunning)
-                    // we have pending images, resume upload
-                    resumeUpload("onReceive")
+                videoUploader?.connectionLost = false
+
+                GlobalScope.launch(Dispatchers.IO) {
+                    val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
+                    val shootLocalRepository = ImagesRepoV2(shootDao)
+                    if (shootLocalRepository.getOldestImage() != null)
+                        resumeUpload("onReceive")
+
                 }
+            }else {
+                //push event of internet not connected
+                captureEvent(Events.INTERNET_DISCONNECTED,
+                    HashMap<String,Any?>().apply {
+                        put("medium","Service")
+                    })
+
+                videoUploader?.connectionLost = true
             }
         }
     }
 
     private fun resumeUpload(type : String) {
-        logUpload("RESUME UPLOAD "+type)
+        videoUploader = VideoUploader.getInstance(this,this)
+        videoUploader?.uploadParent(type,serviceStartedBy)
 
-        uploadRunning = true
-
-        if (imageUploader == null)
-            imageUploader = VideoUploader(this,
-                VideoLocalRepository(),
-                ThreeSixtyRepository(),
-                this
-            )
-
-        imageUploader!!.start()
+//        logUpload("RESUME UPLOAD "+type)
+//
+//        uploadRunning = true
+//
+//        if (videoUploader == null)
+//            videoUploader = VideoUploader(this,
+//                VideoLocalRepoV2(AppDatabase.getInstance(this).videoDao()),
+//                ThreeSixtyRepository(),
+//                this
+//            )
+//
+//        videoUploader?.connectionLost = false
+//        videoUploader?.serviceStopped = false
+//        videoUploader!!.uploadParent(
+//            type,
+//            startedBy = serviceStartedBy
+//        )
     }
 
 }

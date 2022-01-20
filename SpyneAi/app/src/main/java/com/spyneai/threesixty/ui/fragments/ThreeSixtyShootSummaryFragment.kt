@@ -35,12 +35,12 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         observeCredits()
 
         Glide.with(requireContext()) // replace with 'this' if it's in activity
-            .load(viewModel.videoDetails.sample360)
+            .load(viewModel.videoDetails?.sample360)
             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
             .into(binding.imageViewGif)
 
-        binding.tvTotalCost.text = viewModel.videoDetails.frames.toString() + " Credits"
-        binding.tvSelectedFrames.text = viewModel.videoDetails.frames.toString() + " Frames"
+        binding.tvTotalCost.text = viewModel.videoDetails?.frames.toString() + " Credits"
+        binding.tvSelectedFrames.text = viewModel.videoDetails?.frames.toString() + " Frames"
 
         binding.tvChangeFidelity.setOnClickListener {
             Navigation.findNavController(binding.tvChangeFidelity)
@@ -69,8 +69,8 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
         viewModel.isFramesUpdated.observe(viewLifecycleOwner,{
             if (it) {
-                binding.tvTotalCost.text = viewModel.videoDetails.frames.toString() + " Credits"
-                binding.tvSelectedFrames.text = viewModel.videoDetails.frames.toString() + " Frames"
+                binding.tvTotalCost.text = viewModel.videoDetails?.frames.toString() + " Credits"
+                binding.tvSelectedFrames.text = viewModel.videoDetails?.frames.toString() + " Frames"
             }
         })
     }
@@ -86,8 +86,8 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
         viewModel.reduceCredit(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.videoDetails.frames.toString(),
-            viewModel.videoDetails.skuId.toString()
+            viewModel.videoDetails?.frames.toString(),
+            viewModel.videoDetails?.skuId.toString()
         )
     }
 
@@ -113,7 +113,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
         viewModel.updateDownloadStatus(
             Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
-            viewModel.videoDetails.skuId!!,
+            viewModel.videoDetails?.skuId!!,
             WhiteLabelConstants.ENTERPRISE_ID,
             true
         )
@@ -143,7 +143,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
                     availableCredits = it.value.data.credit_available
                     binding.tvAvailableCredits.text = "$availableCredits Credits"
 
-                    if (availableCredits >= viewModel.videoDetails.frames)
+                    if (availableCredits >= viewModel.videoDetails?.frames!!)
                         binding.btnProceed.isEnabled = true
                 }
 
@@ -173,7 +173,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
                 when(it) {
                     is Resource.Success -> {
                         //update project status
-                        viewModel.updateProjectStatus(viewModel.videoDetails.projectId!!)
+                        viewModel.updateProjectStatus(viewModel.videoDetails?.projectId!!)
 
                         Utilities.hideProgressDialog()
                         Navigation.findNavController(binding.btnProceed)
@@ -225,7 +225,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
             when(it) {
                 is Resource.Success -> {
                     //update project status
-                    viewModel.updateProjectStatus(viewModel.videoDetails.projectId!!)
+                    viewModel.updateProjectStatus(viewModel.videoDetails?.projectId!!)
 
                     Utilities.hideProgressDialog()
                     Navigation.findNavController(binding.btnProceed)

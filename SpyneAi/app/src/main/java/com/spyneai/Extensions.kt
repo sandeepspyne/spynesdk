@@ -51,6 +51,9 @@ import androidx.core.content.ContextCompat
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.service.*
 import com.spyneai.shoot.data.ImagesRepoV2
+import com.spyneai.threesixty.data.VideoLocalRepoV2
+import com.spyneai.threesixty.data.VideoLocalRepository
+import com.spyneai.threesixty.data.VideoUploadService
 
 
 var TAG = "Locale_Check"
@@ -402,17 +405,60 @@ fun Context.startUploadingService(startedBy : String,syncTypes: ServerSyncTypes)
         this.captureEvent(Events.SERVICE_STARTED,prperties)
 }
 
+fun Context.startVideoUploadService() {
+    var action = Actions.START
+    if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+        return
+
+    val serviceIntent = Intent(this, VideoUploadService::class.java)
+    serviceIntent.action = action.name
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        log("Starting the service in >=26 Mode")
+        ContextCompat.startForegroundService(this, serviceIntent)
+        return
+    } else {
+        log("Starting the service in < 26 Mode")
+        startService(serviceIntent)
+    }
+
+    val properties = java.util.HashMap<String, Any?>()
+        .apply {
+            put("service_state", "Started")
+//            put(
+//                "email",
+//                Utilities.getPreference(this, AppConstants.EMAIL_ID)
+//                    .toString()
+//            )
+            put("medium", "Main Actity")
+        }
+
+    captureEvent(Events.VIDEO_SERVICE_STARTED, properties)
+}
+
 fun Context.checkPendingDataSync() {
     GlobalScope.launch(Dispatchers.IO) {
-        val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
-        val shootLocalRepository = ImagesRepoV2(shootDao)
-        if (shootLocalRepository.getOldestImage() != null
+        val db = AppDatabase.getInstance(BaseApplication.getContext())
+        val shootDao = db.shootDao()
+        val videoDao = db.videoDao()
+
+        if (ImagesRepoV2(shootDao).getOldestImage() != null
         ) {
 
             startUploadingService(
                 MainDashboardActivity::class.java.simpleName,
                 ServerSyncTypes.UPLOAD
             )
+        }
+
+        if (VideoLocalRepoV2(videoDao).getOldestVideo() != null
+        ) {
+
+            startVideoUploadService()
+//            startVideoUploadService(
+//                MainDashboardActivity::class.java.simpleName,
+//                ServerSyncTypes.UPLOAD
+//            )
         }
 
         val pendingProjects = shootDao.getPendingProjects()

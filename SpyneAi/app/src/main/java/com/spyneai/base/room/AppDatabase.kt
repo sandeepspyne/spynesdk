@@ -17,23 +17,27 @@ import com.spyneai.shoot.repository.db.ShootDao
 import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
+import com.spyneai.threesixty.data.VideoDao
 import com.spyneai.threesixty.data.model.VideoDetails
 
-@Database(entities = [User::class,
-    NewCategoriesResponse.Category::class,
-    NewSubCatResponse.Subcategory::class,
-    NewSubCatResponse.Interior::class,
-    NewSubCatResponse.Miscellaneous::class,
-    NewSubCatResponse.Tags.ExteriorTags::class,
-    NewSubCatResponse.Tags.InteriorTags::class,
-    NewSubCatResponse.Tags.FocusShoot::class,
-    OverlaysResponse.Overlays::class,
-    CarsBackgroundRes.Background::class,
-    Project::class,
-    Sku::class,
-    Image::class],
+@Database(
+    entities = [User::class,
+        NewCategoriesResponse.Category::class,
+        NewSubCatResponse.Subcategory::class,
+        NewSubCatResponse.Interior::class,
+        NewSubCatResponse.Miscellaneous::class,
+        NewSubCatResponse.Tags.ExteriorTags::class,
+        NewSubCatResponse.Tags.InteriorTags::class,
+        NewSubCatResponse.Tags.FocusShoot::class,
+        OverlaysResponse.Overlays::class,
+        CarsBackgroundRes.Background::class,
+        Project::class,
+        Sku::class,
+        Image::class,
+        VideoDetails::class],
     version = 1,
-    exportSchema = false)
+    exportSchema = false
+)
 @TypeConverters(StringListConvertor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
@@ -41,6 +45,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun shootDao(): ShootDao
 
     abstract fun getPagingDao(): PagingDao
+
+    abstract fun videoDao(): VideoDao
 
     companion object {
 

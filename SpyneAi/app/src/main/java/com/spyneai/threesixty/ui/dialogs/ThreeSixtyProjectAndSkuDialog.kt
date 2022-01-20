@@ -1,6 +1,7 @@
 package com.spyneai.threesixty.ui.dialogs
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogCreateProjectAndSkuBinding
+import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -18,18 +20,21 @@ import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.data.model.VideoDetails
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, DialogCreateProjectAndSkuBinding>() {
 
     private var projectId = ""
     private var prod_sub_cat_id = ""
     private var sku = ""
+    private var TAG = "ThreeSixtyProjectAndSkuDialog"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.setCancelable(false)
-
 
         binding.btnSubmit.setOnClickListener {
             if (binding.etVinNumber.text.toString().isEmpty()) {
@@ -53,145 +58,186 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
             }
         }
 
-        observeCreateProject()
-        observeSku()
+        //observeCreateProject()
+        //observeSku()
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
 
     private fun createProject(projectName : String,skuName : String) {
-        this.sku = skuName
-        Utilities.showProgressDialog(requireContext())
 
-        viewModel.createProject(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            projectName,
-            viewModel.videoDetails.categoryId!!)
-    }
+        viewModel.videoDetails?.let {
+            val project = com.spyneai.shoot.repository.model.project.Project(
+                uuid = it.uuid,
+                categoryId = it.categoryId,
+                categoryName = it.categoryName,
+                projectName = projectName
+            )
 
-    private fun observeCreateProject() {
-        viewModel.createProjectRes.observe(viewLifecycleOwner,{
-            when(it){
-                is Resource.Success -> {
-                    requireContext().captureEvent(
-                        Events.CREATE_360_PROJECT,
-                        HashMap<String,Any?>()
-                            .apply {
-                               this.put("project_name",removeWhiteSpace(binding.etVinNumber.text.toString()))
-                            }
-                            )
+            viewModel.project = project
+        }
 
-                    viewModel.videoDetails.apply {
-                        projectId = it.value.project_id
-                        this.skuName = sku
-                    }
 
-                    val project = Project()
-                    project.projectName = removeWhiteSpace(binding.etVinNumber.text.toString())
-                    project.createdOn = System.currentTimeMillis()
-                    project.categoryId = viewModel.videoDetails.categoryId
-                    project.categoryName = viewModel.videoDetails.categoryName
-                    project.projectId = it.value.project_id
+        //update shoot session
+        Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,viewModel.videoDetails?.uuid)
 
-                    viewModel.insertProject(project)
+        if (viewModel.sku == null){
 
-                    createSku(it.value.project_id,viewModel.videoDetails.type,false)
-                }
+            viewModel.videoDetails?.let {
+                it.type = "360_exterior"
+                val sku = com.spyneai.shoot.repository.model.sku.Sku(
+                    uuid = it.skuUuid,
+                    projectUuid = it.projectUuid,
+                    categoryId = it.categoryId,
+                    categoryName = it.categoryName,
+                    skuName = skuName,
+                    subcategoryName = it.subCategory,
+                    subcategoryId = it.subCategory,
+                    threeSixtyFrames = it.frames,
+                    initialFrames = it.frames,
+                    totalFrames = it.frames
+                )
 
-                is Resource.Failure -> {
-                    requireContext().captureFailureEvent(
-                        Events.CREATE_360_PROJECT_FAILED, HashMap<String,Any?>(),
-                        it.errorMessage!!
-                    )
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { createProject(
-                        removeWhiteSpace(binding.etVinNumber.text.toString()),
-                        removeWhiteSpace(binding.etVinNumber.text.toString())
-                    )}
-                }
+                viewModel.sku = sku
             }
-        })
-    }
 
-    private fun createSku(projectId: String, prod_sub_cat_id : String,showDialog : Boolean) {
-        if (showDialog)
-            Utilities.showProgressDialog(requireContext())
+            GlobalScope.launch(Dispatchers.IO) {
+                val id = viewModel.insertProject()
+                Log.d(TAG, "createProject: $id")
+                viewModel.insertSku()
 
-        this.projectId = projectId
-        this.prod_sub_cat_id = prod_sub_cat_id
-
-        viewModel.createSku(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-            projectId,
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-            viewModel.videoDetails.skuName.toString()
-        )
-    }
-
-    private fun observeSku() {
-        viewModel.createSkuRes.observe(viewLifecycleOwner,{
-            when(it) {
-                is Resource.Success -> {
-                    requireContext().captureEvent(
-                        Events.CREATE_360_SKU,
-                        HashMap<String,Any?>()
-                            .apply {
-                                this.put("sku_name",viewModel.videoDetails.skuName.toString())
-                                this.put("project_id",projectId)
-                                this.put("prod_sub_cat_id",prod_sub_cat_id)
-                            }
-                    )
-
-                    Utilities.hideProgressDialog()
-
-                    viewModel.videoDetails.apply {
-                        skuId = it.value.sku_id
-                    }
-
-                    val sku = Sku()
-                    sku?.skuId = it.value.sku_id
-                    sku?.skuName = viewModel.videoDetails.skuName
-                    sku?.projectId = projectId
-                    sku?.createdOn = System.currentTimeMillis()
-                    sku?.totalImages = viewModel.videoDetails.frames
-                    sku?.categoryName = viewModel.videoDetails.categoryName
-                    sku?.categoryId = viewModel.videoDetails.categoryId
-                    sku?.subcategoryName = viewModel.videoDetails.categoryId!!
-                    sku?.subcategoryId = viewModel.videoDetails.categoryId!!
-                    sku?.threeSixtyFrames = viewModel.videoDetails.frames
-
-                    //add sku to local database
-                    viewModel.insertSku(sku!!)
-
-                    val video = VideoDetails()
-                    video?.projectId = projectId
-                    video?.skuName = viewModel.videoDetails.skuName
-                    video?.skuId = it.value.sku_id
-                    video?.type = "360_exterior"
-                    video?.categoryName = viewModel.videoDetails.categoryName
-                    video?.categoryId = viewModel.videoDetails.categoryId
-                    video?.subCategory = viewModel.videoDetails.categoryId!!
-                    video?.frames = viewModel.videoDetails.frames
-
-                    viewModel.insertVideo(video)
-
+                GlobalScope.launch(Dispatchers.Main) {
                     //notify project created
                     viewModel.isProjectCreated.value = true
                     dismiss()
                 }
-
-                is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.CREATE_360_SKU_FAILED, HashMap<String,Any?>(),
-                        it.errorMessage!!
-                    )
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) {createSku(projectId,prod_sub_cat_id,true)}
-                }
             }
-        })
+        }
     }
+
+//    private fun observeCreateProject() {
+//        viewModel.createProjectRes.observe(viewLifecycleOwner,{
+//            when(it){
+//                is Resource.Success -> {
+//                    requireContext().captureEvent(
+//                        Events.CREATE_360_PROJECT,
+//                        HashMap<String,Any?>()
+//                            .apply {
+//                               this.put("project_name",removeWhiteSpace(binding.etVinNumber.text.toString()))
+//                            }
+//                            )
+//
+//                    viewModel.videoDetails.apply {
+//                        projectId = it.value.project_id
+//                        this.skuName = sku
+//                    }
+//
+//                    val project = Project()
+//                    project.projectName = removeWhiteSpace(binding.etVinNumber.text.toString())
+//                    project.createdOn = System.currentTimeMillis()
+//                    project.categoryId = viewModel.videoDetails.categoryId
+//                    project.categoryName = viewModel.videoDetails.categoryName
+//                    project.projectId = it.value.project_id
+//
+//                    viewModel.insertProject(project)
+//
+//                    createSku(it.value.project_id,viewModel.videoDetails.type,false)
+//                }
+//
+//                is Resource.Failure -> {
+//                    requireContext().captureFailureEvent(
+//                        Events.CREATE_360_PROJECT_FAILED, HashMap<String,Any?>(),
+//                        it.errorMessage!!
+//                    )
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it) { createProject(
+//                        removeWhiteSpace(binding.etVinNumber.text.toString()),
+//                        removeWhiteSpace(binding.etVinNumber.text.toString())
+//                    )}
+//                }
+//            }
+//        })
+//    }
+//
+//    private fun createSku(projectId: String, prod_sub_cat_id : String,showDialog : Boolean) {
+//        if (showDialog)
+//            Utilities.showProgressDialog(requireContext())
+//
+//        this.projectId = projectId
+//        this.prod_sub_cat_id = prod_sub_cat_id
+//
+//        viewModel.createSku(
+//            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+//            projectId,
+//            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
+//            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
+//            viewModel.videoDetails.skuName.toString()
+//        )
+//    }
+//
+//    private fun observeSku() {
+//        viewModel.createSkuRes.observe(viewLifecycleOwner,{
+//            when(it) {
+//                is Resource.Success -> {
+//                    requireContext().captureEvent(
+//                        Events.CREATE_360_SKU,
+//                        HashMap<String,Any?>()
+//                            .apply {
+//                                this.put("sku_name",viewModel.videoDetails.skuName.toString())
+//                                this.put("project_id",projectId)
+//                                this.put("prod_sub_cat_id",prod_sub_cat_id)
+//                            }
+//                    )
+//
+//                    Utilities.hideProgressDialog()
+//
+//                    viewModel.videoDetails.apply {
+//                        skuId = it.value.sku_id
+//                    }
+//
+//                    val sku = Sku()
+//                    sku?.skuId = it.value.sku_id
+//                    sku?.skuName = viewModel.videoDetails.skuName
+//                    sku?.projectId = projectId
+//                    sku?.createdOn = System.currentTimeMillis()
+//                    sku?.totalImages = viewModel.videoDetails.frames
+//                    sku?.categoryName = viewModel.videoDetails.categoryName
+//                    sku?.categoryId = viewModel.videoDetails.categoryId
+//                    sku?.subcategoryName = viewModel.videoDetails.categoryId!!
+//                    sku?.subcategoryId = viewModel.videoDetails.categoryId!!
+//                    sku?.threeSixtyFrames = viewModel.videoDetails.frames
+//
+//                    //add sku to local database
+//                    viewModel.insertSku(sku!!)
+//
+//                    val video = VideoDetails()
+//                    video?.projectId = projectId
+//                    video?.skuName = viewModel.videoDetails.skuName
+//                    video?.skuId = it.value.sku_id
+//                    video?.type = "360_exterior"
+//                    video?.categoryName = viewModel.videoDetails.categoryName
+//                    video?.categoryId = viewModel.videoDetails.categoryId
+//                    video?.subCategory = viewModel.videoDetails.categoryId!!
+//                    video?.frames = viewModel.videoDetails.frames
+//
+//                    viewModel.insertVideo(video)
+//
+//                    //notify project created
+//                    viewModel.isProjectCreated.value = true
+//                    dismiss()
+//                }
+//
+//                is Resource.Failure -> {
+//                    requireContext().captureFailureEvent(Events.CREATE_360_SKU_FAILED, HashMap<String,Any?>(),
+//                        it.errorMessage!!
+//                    )
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it) {createSku(projectId,prod_sub_cat_id,true)}
+//                }
+//            }
+//        })
+//    }
 
     override fun getViewModel() = ThreeSixtyViewModel::class.java
 

@@ -74,7 +74,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         viewModel.project = project
 
         //update shoot session
-        Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
+        Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.uuid)
 
         if (viewModel.sku == null){
             val sku = Sku(

@@ -46,8 +46,6 @@ class StartShootActivity : AppCompatActivity(){
         }
 
 
-
-
         binding.flShootNow.setOnClickListener{
 
                 val intent = Intent(this, ShootActivity::class.java)
@@ -69,7 +67,7 @@ class StartShootActivity : AppCompatActivity(){
         binding.tvExplore.setOnClickListener {
             Intent(this,ThreeSixtyIntroActivity::class.java)
                 .apply {
-                    putExtra(AppConstants.CATEGORY_ID,"cat_d8R14zUNE")
+                    putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
                     putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
                     startActivity(this)
                 }
