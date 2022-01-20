@@ -55,6 +55,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                    llOr.visibility = View.VISIBLE
                    flShootNow.visibility = View.VISIBLE
                }
+
                binding.flShootNow.setOnClickListener{
 
                    startService()
@@ -117,8 +118,10 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                         .into(binding.imageViewGif)
 
                     viewModel.videoDetails?.sample360 = response.data[0].gifUrl
+                    viewModel.videoDetails?.backgroundId = response.data[0].imageId
+                    viewModel.videoDetails?.bgName = response.data[0].bgName
 
-                    backgroundSelect = response.data[0].imageId.toString()
+                    backgroundSelect = response.data[0].imageId
 
                     for (i in 0..response.data.size-1)
                         (carBackgroundGifList).add(response.data[i])
@@ -150,6 +153,8 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                     carbackgroundsAdapter.notifyDataSetChanged()
 
                     viewModel.videoDetails?.sample360 = carBackgroundGifList[position].gifUrl
+                    viewModel.videoDetails?.backgroundId = carBackgroundGifList[position].imageId
+                    viewModel.videoDetails?.bgName = carBackgroundGifList[position].bgName
 
                     Glide.with(requireContext()) // replace with 'this' if it's in activity
                         .load(carBackgroundGifList[position].gifUrl)

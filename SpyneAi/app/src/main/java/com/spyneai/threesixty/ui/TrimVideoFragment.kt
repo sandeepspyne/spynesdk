@@ -34,6 +34,9 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.videorecording.TrimmerUtils
 import com.spyneai.videorecording.listener.SeekListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.nio.ByteBuffer
@@ -295,7 +298,7 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
         viewModel.videoDetails?.videoPath = path
 
         //update video path
-        viewModel.updateVideoPath()
+        GlobalScope.launch(Dispatchers.IO) { viewModel.updateVideoPath() }
 
         Navigation.findNavController(binding.btnConfirm)
             .navigate(R.id.action_trimVideoFragment_to_threeSixtyBackgroundFragment)

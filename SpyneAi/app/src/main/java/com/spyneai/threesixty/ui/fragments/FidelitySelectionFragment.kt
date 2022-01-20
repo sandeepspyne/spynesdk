@@ -13,7 +13,8 @@ import com.spyneai.setLocale
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.ui.ThreeSixtyActivity
 
-class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFidelitySelectionBinding>() {
+class FidelitySelectionFragment :
+    BaseFragment<ThreeSixtyViewModel, FragmentFidelitySelectionBinding>() {
 
     var updateFidelity = false
 
@@ -29,24 +30,28 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
     }
 
 
-
-
-
     private fun setUpFramesSelection() {
         var frame = getString(R.string.frames)
-        
-        val npFrames =  arrayOf("8 "+frame, "12 "+frame, "16 "+frame, "24 "+frame, "36 "+frame, "72 "+frame)
+
+        val npFrames = arrayOf(
+            "8 " + frame,
+            "12 " + frame,
+            "16 " + frame,
+            "24 " + frame,
+            "36 " + frame,
+            "72 " + frame
+        )
 
         var lastSelectedFrames = 24
         var newSelectedFrames = 24
 
-        if (viewModel.videoDetails?.frames != 0){
+        if (viewModel.videoDetails?.frames != 0) {
             updateFidelity = true
             lastSelectedFrames = viewModel.videoDetails?.frames!!
             newSelectedFrames = viewModel.videoDetails?.frames!!
         }
 
-        when(lastSelectedFrames){
+        when (lastSelectedFrames) {
             8 -> binding.npFrames.minValue = 0
             12 -> binding.npFrames.minValue = 1
             16 -> binding.npFrames.minValue = 2
@@ -60,7 +65,7 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
         binding.npFrames.displayedValues = npFrames
 
         binding.npFrames.setOnValueChangedListener { _, _, newVal ->
-            when(npFrames[newVal]) {
+            when (npFrames[newVal]) {
                 "8 $frame" -> newSelectedFrames = 8
                 "12 $frame" -> newSelectedFrames = 12
                 "16 $frame" -> newSelectedFrames = 16
@@ -74,18 +79,19 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
             viewModel.videoDetails?.frames = newSelectedFrames
 
             if (updateFidelity) {
-               viewModel.isFramesUpdated.value = true
-               requireActivity().onBackPressed()
+                viewModel.isFramesUpdated.value = true
+                requireActivity().onBackPressed()
 
                 viewModel.title.value = "Shoot Summary"
-            }else{
-                val videoDetails = viewModel.videoDetails
+            } else {
+                //update video details
+                viewModel.updateVideoDetails()
 
-                Intent(requireContext(),ThreeSixtyActivity::class.java)
+                Intent(requireContext(), ThreeSixtyActivity::class.java)
                     .apply {
-                        putExtra(AppConstants.CATEGORY_NAME,videoDetails?.categoryName)
-                        putExtra(AppConstants.CATEGORY_ID,videoDetails?.categoryId)
-                        putExtra(AppConstants.EXTERIOR_ANGLES,videoDetails?.frames)
+                        putExtra(AppConstants.VIDEO_UUID, viewModel.videoDetails?.uuid)
+                        //putExtra(AppConstants.CATEGORY_ID,videoDetails?.categoryId)
+                        //putExtra(AppConstants.EXTERIOR_ANGLES,videoDetails?.frames)
                         startActivity(this)
                     }
 
@@ -99,5 +105,5 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ) = FragmentFidelitySelectionBinding.inflate(inflater,container,false)
+    ) = FragmentFidelitySelectionBinding.inflate(inflater, container, false)
 }

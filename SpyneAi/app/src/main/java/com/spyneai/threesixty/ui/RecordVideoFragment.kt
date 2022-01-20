@@ -570,29 +570,31 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                     TrimActivity::class.java
                 )
 
-                trimIntent.putExtra("src_path", videoPath)
-                trimIntent.putExtra(AppConstants.SKU_UUID, viewModel.videoDetails?.skuUuid)
-                trimIntent.putExtra("sku_id", viewModel.videoDetails?.skuId)
-                trimIntent.putExtra("sku_name", viewModel.videoDetails?.skuName)
-                trimIntent.putExtra(AppConstants.PROJECT_UUIID, viewModel.videoDetails?.projectUuid)
-                trimIntent.putExtra("project_id", viewModel.videoDetails?.projectId)
-                trimIntent.putExtra(AppConstants.CATEGORY_NAME, viewModel.videoDetails?.categoryName)
-                trimIntent.putExtra(AppConstants.CATEGORY_ID, viewModel.videoDetails?.categoryId)
-                trimIntent.putExtra("frames", viewModel.videoDetails?.frames)
-                trimIntent.putExtra("shoot_mode", intent?.getIntExtra("shoot_mode", 0))
+                viewModel.videoDetails?.videoPath = videoPath
+                viewModel.updateVideoDetails()
+
+                //trimIntent.putExtra("src_path", videoPath)
+                trimIntent.putExtra(AppConstants.VIDEO_UUID, viewModel.videoDetails?.uuid)
+//                trimIntent.putExtra(AppConstants.SKU_UUID, viewModel.videoDetails?.skuUuid)
+//                trimIntent.putExtra("sku_id", viewModel.videoDetails?.skuId)
+//                trimIntent.putExtra("sku_name", viewModel.videoDetails?.skuName)
+//                trimIntent.putExtra(AppConstants.PROJECT_UUIID, viewModel.videoDetails?.projectUuid)
+//                trimIntent.putExtra("project_id", viewModel.videoDetails?.projectId)
+//                trimIntent.putExtra(AppConstants.CATEGORY_NAME, viewModel.videoDetails?.categoryName)
+//                trimIntent.putExtra(AppConstants.CATEGORY_ID, viewModel.videoDetails?.categoryId)
+//                trimIntent.putExtra("frames", viewModel.videoDetails?.frames)
+//                trimIntent.putExtra("shoot_mode", intent?.getIntExtra("shoot_mode", 0))
 
                 startActivity(trimIntent)
 
                 binding.tvStart.text = "Start"
                 binding.btnRecordVideo.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.bg_record_button_enabled
-                    )
+                    ContextCompat.getDrawable(requireContext(),
+                        R.drawable.bg_record_button_enabled)
                 )
+
                 isRecording = !isRecording
             }catch (e : Exception){
-
             }
         }else {
             VideoDurationDialog().show(requireActivity().supportFragmentManager,"VideoDurationDialog")

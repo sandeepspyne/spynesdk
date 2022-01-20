@@ -1,12 +1,12 @@
 package com.spyneai.needs
 
 
-
 object AppConstants {
 
-   // val VIDEO_VIDEO_UPLOADING_RUNNING = "VIDEO_VIDEO_UPLOADING_RUNNING"
+    // val VIDEO_VIDEO_UPLOADING_RUNNING = "VIDEO_VIDEO_UPLOADING_RUNNING"
     //val VIDEO_UPLOADING_RUNNING= "VIDEO_UPLOADING_RUNNING"
     val VIDEO_UPLOAD_TRIGGERED = "VIDEO_UPLOAD_TRIGGERED"
+    val VIDEO_UUID = "VIDEO_UUID"
 
     val SYNC_TYPE = "SYNC_TYPE"
 
@@ -20,11 +20,10 @@ object AppConstants {
     val FLIPKART_ENTERPRISE_ID: String = "EVV1XVY4R"
     val KARVI_ENTERPRISE_ID: String = "DaD1JC1Fp"
     val BASE_URL: String = "http://35.240.170.119/api/"
-    val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
-    val SETTING_STATUS_GYRO: String="STATUS_SETTING_GYRO"
-    val SETTING_STATUS_GRID: String="STATUS_SETTING_GRID"
-    val SETTING_STATUS_OVERLAY: String="STATUS_SETTING_OVERLAY"
-
+    val STATUS_PROJECT_NAME: String = "STATUS_PROJECT_NAME"
+    val SETTING_STATUS_GYRO: String = "STATUS_SETTING_GYRO"
+    val SETTING_STATUS_GRID: String = "STATUS_SETTING_GRID"
+    val SETTING_STATUS_OVERLAY: String = "STATUS_SETTING_OVERLAY"
 
 
     val CLOCKED_IN: String = "CLOCKED_IN"
@@ -59,11 +58,11 @@ object AppConstants {
     val LIST_IMAGE_NAME = "LIST_IMAGE_NAME"
     val tokenId: String = "tokenId"
     val CREDITS_MESSAGE = "CREDITS_MESSAGE"
-    val AUTH_KEY ="AUTH_KEY"
-    val IS_DOWNLOADED_BEFORE =  "IS_DOWNLOADED_BEFORE"
+    val AUTH_KEY = "AUTH_KEY"
+    val IS_DOWNLOADED_BEFORE = "IS_DOWNLOADED_BEFORE"
     val CREDIT_REMAINING = "credit_remaining"
     val EXPOSURES: String = "exposures"
-    val WINDOWS : String = "windows"
+    val WINDOWS: String = "windows"
     val BG_ID: String = "bg_id"
     val EMAIL_ID: String = "email_id"
     val GIF_LIST: String = "gif_list"
@@ -97,13 +96,13 @@ object AppConstants {
     val CHANNEL_LIST: String = "channel_list"
     val MY_LIST: String = "my_list"
     val MY_LISTS: String = "my_lists"
-    val FROM: String ="from"
+    val FROM: String = "from"
     val LANGUAGE: String = "language"
     val COLOR: String = "color"
     val DESCRIPTION: String = "description"
     val ONBOARD: String = "onboard"
     val MAIN_IMAGE: String = "main_image"
-    val POSITION: String =  "position"
+    val POSITION: String = "position"
     val FRAME_IMAGE: String = "frame_image"
     val FRAME: String = "frame"
     val TOTAL_FRAME: String = "total_frame"
@@ -115,7 +114,8 @@ object AppConstants {
     val IMAGE_TYPE: String = "image_type"
     val IMAGE_URL: String = "image_url"
     val SHOOT_ID: String = "shopot_id"
-    val CATEGORY_NAME: String =  "category_name"
+    val CATEGORY_NAME: String = "category_name"
+
     //const val BASE_IMAGE_URL = "https://spyne-cliq.s3.ap-south-1.amazonaws.com/"
     const val BASE_IMAGE_URL = "https://storage.googleapis.com/spyne-cliq/"
 
@@ -125,10 +125,10 @@ object AppConstants {
     val LOGO_FILE = "logo_file"
     val RAW_IMAGE_FILE = "raw_image_file"
     val phone: String = "number"
-    val TOKEN_ID : String = "tokenId"
-    val otp : String = "otp"
+    val TOKEN_ID: String = "tokenId"
+    val otp: String = "otp"
 
-    val highQualityCount : String = "highQualityCount"
+    val highQualityCount: String = "highQualityCount"
     val backgroundNumber = "backgroundNumber"
     val MARKETPLACE_ID = "marketplace_id"
     val BACKGROUND_COLOUR = "background_colour"
@@ -150,25 +150,22 @@ object AppConstants {
     val CORNER_POSITION: String = "corner_position"
 
 
-    val  USER_NAME: String = "userName"
-    val  USER_EMAIL: String = "userEmail"
+    val USER_NAME: String = "userName"
+    val USER_EMAIL: String = "userEmail"
 
-    val  VIDEO_URL: String = "videoUrl"
+    val VIDEO_URL: String = "videoUrl"
 
-    val  IS_NEW_USER: String = "isNewUser"
-
-
-
+    val IS_NEW_USER: String = "isNewUser"
 
 
     //drafts constants
-    val  FROM_DRAFTS: String = "fromDrafts"
-    val  PROJECT_UUIID: String = "project_uuid"
-    val  PROJECT_ID: String = "project_id"
-    val  PROJECT_NAME: String = "projectName"
-    val  SKU_CREATED: String = "skuCreated"
-    val  EXTERIOR_ANGLES: String = "exteriorAngles"
-    val SUB_CAT_NAME : String = "SUB_CAT_NAME"
+    val FROM_DRAFTS: String = "fromDrafts"
+    val PROJECT_UUIID: String = "project_uuid"
+    val PROJECT_ID: String = "project_id"
+    val PROJECT_NAME: String = "projectName"
+    val SKU_CREATED: String = "skuCreated"
+    val EXTERIOR_ANGLES: String = "exteriorAngles"
+    val SUB_CAT_NAME: String = "SUB_CAT_NAME"
     val RESUME_EXTERIOR = "RESUME_EXTERIOR"
     val EXTERIOR_SIZE = "EXTERIOR_SIZE"
     val MISC_SIZE = "MISC_SIZE"
@@ -183,11 +180,11 @@ object AppConstants {
     //app names
     val KARVI = "Karvi Studio"
     val CARS24_INDIA = "Cars24 (B2C) Cataloging"
-    val CARS24= "Cars 24 Cataloging"
-    val SWEEP= "Sweep.ei"
-    val TRUSTED_CARS= "Trusted Cars"
-    val TRAVO_PHOTOS= "Travo Photos"
-    val YALLA_MOTOS= "Yalla Motors"
+    val CARS24 = "Cars 24 Cataloging"
+    val SWEEP = "Sweep.ei"
+    val TRUSTED_CARS = "Trusted Cars"
+    val TRAVO_PHOTOS = "Travo Photos"
+    val YALLA_MOTOS = "Yalla Motors"
     val OLA_CABS = "Ola Cabs"
     val AUTO_FOTO = "AutoFotoApp"
     val SELL_ANY_CAR = "Sell any Car"
@@ -223,11 +220,12 @@ object AppConstants {
 
     val VIDEO_PATH = "VIDEO_PATH"
 
-    val MINIMUM_VIDEO_DURATION = 30
+    val MINIMUM_VIDEO_DURATION = 2
     val DEFAULT_PRESIGNED_URL = "DEFAULT_PRESIGNED_URL"
 
     val UPLOAD_TRIGGERED = "UPLOAD_TRIGGERED"
-   // val UPLOADING_RUNNING = "UPLOADING_RUNNING"
+
+    // val UPLOADING_RUNNING = "UPLOADING_RUNNING"
     val IMAGE_ID_NULL = "IMAGE ID NULL"
     val CONNECTION_BREAK = "CONNECTION BREAK"
     val ALL_UPLOADED_BREAK = "ALL UPLOADED BREAK"
@@ -241,17 +239,17 @@ object AppConstants {
     //val PROCESS_SKU_RUNNING = "PROCESS_SKU_RUNNING"
     val PROCESS_SKU_PARENT_TRIGGERED = "PROCESS_SKU_PARENT_TRIGGERED"
 
-    val imageCatNameMap = HashMap<String,String>().apply {
-        put(ECOM_CATEGORY_ID,"Ecom")
-        put(FOOTWEAR_CATEGORY_ID,"Footwear")
-        put(FOOD_AND_BEV_CATEGORY_ID,"Food")
-        put(PHOTO_BOX_CATEGORY_ID,"Ecom")
-        put(HEALTH_AND_BEAUTY_CATEGORY_ID,"Ecom")
-        put(ACCESSORIES_CATEGORY_ID,"Ecom")
-        put(WOMENS_FASHION_CATEGORY_ID,"Ecom")
-        put(MENS_FASHION_CATEGORY_ID,"Ecom")
-        put(CAPS_CATEGORY_ID,"Ecom")
-        put(FASHION_CATEGORY_ID,"Ecom")
+    val imageCatNameMap = HashMap<String, String>().apply {
+        put(ECOM_CATEGORY_ID, "Ecom")
+        put(FOOTWEAR_CATEGORY_ID, "Footwear")
+        put(FOOD_AND_BEV_CATEGORY_ID, "Food")
+        put(PHOTO_BOX_CATEGORY_ID, "Ecom")
+        put(HEALTH_AND_BEAUTY_CATEGORY_ID, "Ecom")
+        put(ACCESSORIES_CATEGORY_ID, "Ecom")
+        put(WOMENS_FASHION_CATEGORY_ID, "Ecom")
+        put(MENS_FASHION_CATEGORY_ID, "Ecom")
+        put(CAPS_CATEGORY_ID, "Ecom")
+        put(FASHION_CATEGORY_ID, "Ecom")
     }
 
 }

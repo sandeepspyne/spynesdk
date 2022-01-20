@@ -135,6 +135,10 @@ class MainDashboardActivity : AppCompatActivity() {
                 continueShoot()
             }
         })
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val s = AppDatabase.getInstance(BaseApplication.getContext()).getPagingDao()
+        }
     }
 
 
@@ -304,7 +308,7 @@ class MainDashboardActivity : AppCompatActivity() {
         )
         cancelAllWorkers()
         //startUploadService()
-        checkPendingDataSync()
+        //checkPendingDataSync()
        // checkFolderUpload()
     }
 

@@ -47,21 +47,6 @@ class ThreeSixtyIntroFragment : BaseFragment<ThreeSixtyViewModel,Fragment360Intr
         }
     }
 
-//    private fun setupTabLayout() {
-//
-//        binding.viewPager.apply {
-//            adapter = ThreeSixtySampleAdapter(requireActivity())
-//        }
-//
-//        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-//            when(position) {
-//                0 -> tab.text = "Hatchback"
-//                1 -> tab.text = "SUV"
-//                2 -> tab.text = "Sedan"
-//            }
-//        }.attach()
-//    }
-
     override fun getViewModel() = ThreeSixtyViewModel::class.java
 
     override fun getFragmentBinding(

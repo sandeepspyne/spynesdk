@@ -36,6 +36,9 @@ class ThreeSixtyIntroActivity : AppCompatActivity() {
         //set category name and id
         threeSixtyViewModel.videoDetails = videoDetails
 
+        //insert video details
+        threeSixtyViewModel.insertVideo(videoDetails)
+
         threeSixtyViewModel.title.observe(this,{
             binding.tvTitle.text = it
         })

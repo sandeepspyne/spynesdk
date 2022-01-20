@@ -19,20 +19,21 @@ import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.service.Actions
+import com.spyneai.service.ServerSyncTypes
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
+import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
+import com.spyneai.startUploadingService
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.data.VideoUploadService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragment360ShotSummaryBinding>() {
 
-    private var availableCredits = 0
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        getUserCredits()
-        observeCredits()
 
         Glide.with(requireContext()) // replace with 'this' if it's in activity
             .load(viewModel.videoDetails?.sample360)
@@ -41,6 +42,10 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
         binding.tvTotalCost.text = viewModel.videoDetails?.frames.toString() + " Credits"
         binding.tvSelectedFrames.text = viewModel.videoDetails?.frames.toString() + " Frames"
+
+        binding.tvAvailableCredits.visibility = View.GONE
+
+        binding.btnProceed.isEnabled = true
 
         binding.tvChangeFidelity.setOnClickListener {
             Navigation.findNavController(binding.tvChangeFidelity)
@@ -61,11 +66,8 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
         binding.btnProceed.setOnClickListener {
             //process image call
-           reduceCredits(true)
+            uploadWithService()
         }
-
-        observeReduceCredits()
-        observepaidStatus()
 
         viewModel.isFramesUpdated.observe(viewLifecycleOwner,{
             if (it) {
@@ -75,136 +77,33 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         })
     }
 
+    private fun uploadWithService(){
+        //update video background id
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.updateBackground(0)
+            viewModel.updateVideoDetails()
 
-    private fun getUserCredits() {
-        viewModel.getUserCredits(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-    }
+            GlobalScope.launch(Dispatchers.Main) {
+                //start process sync service
 
-    private fun reduceCredits(showLoader : Boolean) {
-        if (showLoader)
-        Utilities.showProgressDialog(requireContext())
+                requireContext().startUploadingService(
+                    ThreeSixtyShootSummaryFragment::class.java.simpleName,
+                    ServerSyncTypes.PROCESS
+                )
 
-        viewModel.reduceCredit(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.videoDetails?.frames.toString(),
-            viewModel.videoDetails?.skuId.toString()
-        )
-    }
+                //startService()
 
-    private fun observeReduceCredits() {
-        viewModel.reduceCreditResponse.observe(viewLifecycleOwner,{
-            when(it) {
-                is Resource.Success -> {
-                    updatePaidStatus(false)
-                }
+                Navigation.findNavController(binding.btnProceed)
+                    .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
 
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { reduceCredits(true) }
-                }
+                viewModel.title.value = "Processing Started"
+                viewModel.processingStarted.value = true
             }
-        })
-    }
 
-    private fun updatePaidStatus(showLoader : Boolean) {
-        if (showLoader)
-            Utilities.showProgressDialog(requireContext())
-
-
-        viewModel.updateDownloadStatus(
-            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
-            viewModel.videoDetails?.skuId!!,
-            WhiteLabelConstants.ENTERPRISE_ID,
-            true
-        )
-    }
-
-    private fun observepaidStatus() {
-        viewModel.downloadHDRes.observe(viewLifecycleOwner,{
-            when(it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-                    processSku(false)
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { updatePaidStatus(true) }
-                }
-            }
-        })
-    }
-
-    private fun observeCredits() {
-        viewModel.userCreditsRes.observe(viewLifecycleOwner,{
-            when(it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-                    availableCredits = it.value.data.credit_available
-                    binding.tvAvailableCredits.text = "$availableCredits Credits"
-
-                    if (availableCredits >= viewModel.videoDetails?.frames!!)
-                        binding.btnProceed.isEnabled = true
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { getUserCredits() }
-                }
-
-                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
-            }
-        })
-    }
-
-    private fun processSku(showLoader : Boolean) {
-
-        when(getString(R.string.app_name)){
-            AppConstants.OLA_CABS -> {
-                uploadWithService()
-            }else -> {
-            if (showLoader)
-                Utilities.showProgressDialog(requireContext())
-
-                viewModel.process360(
-                    Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-
-                viewModel.process360Res.observe(viewLifecycleOwner,{
-                when(it) {
-                    is Resource.Success -> {
-                        //update project status
-                        viewModel.updateProjectStatus(viewModel.videoDetails?.projectId!!)
-
-                        Utilities.hideProgressDialog()
-                        Navigation.findNavController(binding.btnProceed)
-                            .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
-
-                        viewModel.title.value = "Processing Started"
-                        viewModel.processingStarted.value = true
-                    }
-                    is Resource.Failure -> {
-                        Utilities.hideProgressDialog()
-                        handleApiError(it) {processSku(true)}
-                    }
-                }
-            })
-            }
         }
 
 
-    }
 
-    private fun uploadWithService(){
-        //update video background id
-        viewModel.updateVideoBackgroundId()
-
-        startService()
-
-        Navigation.findNavController(binding.btnProceed)
-            .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
-
-        viewModel.title.value = "Processing Started"
-        viewModel.processingStarted.value = true
 //        viewModel.updateVideoBackgroundId()
 //
 //        startService()
@@ -218,28 +117,28 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 //        if (showLoader)
 //            Utilities.showProgressDialog(requireContext())
 
-        viewModel.process360(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-
-        viewModel.process360Res.observe(viewLifecycleOwner,{
-            when(it) {
-                is Resource.Success -> {
-                    //update project status
-                    viewModel.updateProjectStatus(viewModel.videoDetails?.projectId!!)
-
-                    Utilities.hideProgressDialog()
-                    Navigation.findNavController(binding.btnProceed)
-                        .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
-
-                    viewModel.title.value = "Processing Started"
-                    viewModel.processingStarted.value = true
-                }
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) {processSku(true)}
-                }
-            }
-        })
+//        viewModel.process360(
+//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+//
+//        viewModel.process360Res.observe(viewLifecycleOwner,{
+//            when(it) {
+//                is Resource.Success -> {
+//                    //update project status
+//                    viewModel.updateProjectStatus(viewModel.videoDetails?.projectId!!)
+//
+//                    Utilities.hideProgressDialog()
+//                    Navigation.findNavController(binding.btnProceed)
+//                        .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
+//
+//                    viewModel.title.value = "Processing Started"
+//                    viewModel.processingStarted.value = true
+//                }
+//                is Resource.Failure -> {
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it) {processSku(true)}
+//                }
+//            }
+//        })
     }
 
     private fun startService() {

@@ -5,19 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.spyneai.R
+import com.spyneai.*
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogCreateProjectAndSkuBinding
-import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.ServerSyncTypes
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.data.model.VideoDetails
 import kotlinx.coroutines.Dispatchers
@@ -69,7 +68,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
 
         viewModel.videoDetails?.let {
             val project = com.spyneai.shoot.repository.model.project.Project(
-                uuid = it.uuid,
+                uuid = it.projectUuid,
                 categoryId = it.categoryId,
                 categoryName = it.categoryName,
                 projectName = projectName
@@ -77,7 +76,6 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
 
             viewModel.project = project
         }
-
 
         //update shoot session
         Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,viewModel.videoDetails?.uuid)
@@ -93,10 +91,11 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                     categoryName = it.categoryName,
                     skuName = skuName,
                     subcategoryName = it.subCategory,
-                    subcategoryId = it.subCategory,
+                    subcategoryId = it.type,
                     threeSixtyFrames = it.frames,
                     initialFrames = it.frames,
-                    totalFrames = it.frames
+                    totalFrames = it.frames,
+                    isSelectAble = true
                 )
 
                 viewModel.sku = sku
@@ -106,6 +105,12 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                 val id = viewModel.insertProject()
                 Log.d(TAG, "createProject: $id")
                 viewModel.insertSku()
+
+                //start sku service sync service
+                requireContext().startUploadingService(
+                    ThreeSixtyProjectAndSkuDialog::class.java.simpleName,
+                    ServerSyncTypes.CREATE
+                )
 
                 GlobalScope.launch(Dispatchers.Main) {
                     //notify project created

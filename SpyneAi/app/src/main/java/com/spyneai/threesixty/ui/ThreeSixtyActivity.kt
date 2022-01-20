@@ -34,11 +34,13 @@ class ThreeSixtyActivity : AppCompatActivity() {
         if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
             setUpDrafts()
 
-        threeSixtyViewModel.videoDetails?.apply {
-            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)!!
-            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
-            frames =  intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
-        }
+        threeSixtyViewModel.setVideoDatils(intent.getStringExtra(AppConstants.VIDEO_UUID)!!)
+
+//        threeSixtyViewModel.videoDetails?.apply {
+//            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)!!
+//            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+//            frames =  intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+//        }
 
         supportFragmentManager.beginTransaction()
             .add(binding.flContainer.id,RecordVideoFragment())

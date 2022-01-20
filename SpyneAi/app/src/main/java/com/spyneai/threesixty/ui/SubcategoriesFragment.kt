@@ -17,7 +17,7 @@ class SubcategoriesFragment : BaseFragment<ThreeSixtyViewModel,FragmentSubcatego
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-       if (!viewModel.fromDrafts && viewModel.videoDetails?.projectUuid == null)
+       if (!viewModel.fromDrafts)
            initShootHint()
     }
 

@@ -23,16 +23,18 @@ class TrimActivity : AppCompatActivity() {
 
         threeSixtyViewModel = ViewModelProvider(this, ViewModelFactory()).get(ThreeSixtyViewModel::class.java)
 
-        threeSixtyViewModel.videoDetails?.apply {
-            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
-            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
-            videoPath = intent.getStringExtra("src_path")
-            skuId = intent.getStringExtra("sku_id")
-            skuName = intent.getStringExtra("sku_name")
-            projectId = intent.getStringExtra("project_id")
-            frames = intent.getIntExtra("frames",0)
-            shootMode = intent.getIntExtra("shoot_mode",0)
-        }
+        threeSixtyViewModel.setVideoDatils(intent.getStringExtra(AppConstants.VIDEO_UUID)!!)
+
+//        threeSixtyViewModel.videoDetails?.apply {
+//            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+//            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+//            videoPath = intent.getStringExtra("src_path")
+//            skuId = intent.getStringExtra("sku_id")
+//            skuName = intent.getStringExtra("sku_name")
+//            projectId = intent.getStringExtra("project_id")
+//            frames = intent.getIntExtra("frames",0)
+//            shootMode = intent.getIntExtra("shoot_mode",0)
+//        }
 
         threeSixtyViewModel.title.observe(this,{
             binding.tvTitle.text = it

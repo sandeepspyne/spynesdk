@@ -20,6 +20,8 @@ import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.threesixty.data.model.VideoDetails
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 
@@ -82,7 +84,41 @@ class ThreeSixtyViewModel : ViewModel() {
         category: String
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-        _carGifRes.value = threeSixtyRepository.getBackgroundGifCars(category)
+        GlobalScope.launch(Dispatchers.IO) {
+            val backgroundList = localRepository.getBackgrounds(category)
+
+            if (!backgroundList.isNullOrEmpty()){
+                GlobalScope.launch(Dispatchers.Main) {
+                    _carGifRes.value = Resource.Success(
+                        CarsBackgroundRes(
+                            backgroundList,
+                            "Fetched backgrounds successfully",
+                            200
+                        )
+                    )
+                }
+            }else {
+                val response =threeSixtyRepository.getBackgroundGifCars(category)
+
+                if (response is Resource.Success){
+                    //insert overlays
+                    val bgList = response.value.data
+
+                    bgList.forEach {
+                        it.category = category
+                    }
+                    localRepository.insertBackgrounds(bgList)
+
+                    GlobalScope.launch(Dispatchers.Main) {
+                        _carGifRes.value = response
+                    }
+                }else {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        _carGifRes.value = response
+                    }
+                }
+            }
+        }
     }
 
 
@@ -125,20 +161,36 @@ class ThreeSixtyViewModel : ViewModel() {
 
     suspend fun insertSku() {
         localRepository.insertSku(sku!!,project!!)
-        videoRepository.insertVideo(videoDetails!!)
+        videoRepository.updateVideo(videoDetails!!)
     }
 
-    fun updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
 
     fun insertVideo(video: VideoDetails) {
-            videoRepository.insertVideo(video)
+           viewModelScope.launch(Dispatchers.IO){
+               videoRepository.insertVideo(video)
+           }
     }
 
     fun updateVideoPath() {
         videoRepository.updateVideo(videoDetails!!)
     }
 
-    fun updateVideoBackgroundId() {
+    fun updateVideoDetails() = viewModelScope.launch(Dispatchers.IO) {
         videoRepository.updateVideo(videoDetails!!)
+    }
+
+    suspend fun updateBackground(totalFrames: Int) = localRepository.updateBackground(HashMap<String,Any>()
+        .apply {
+            put("project_uuid", videoDetails!!.projectUuid!!)
+            put("sku_uuid", videoDetails!!.skuUuid!!)
+            put("bg_id", videoDetails?.backgroundId?.toInt()!!)
+            put("bg_name", videoDetails?.bgName.toString())
+            put("total_frames", 0)
+        })
+
+    fun setVideoDatils(uuid : String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            videoDetails = videoRepository.getVideo(uuid)
+        }
     }
 }

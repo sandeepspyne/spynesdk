@@ -52,8 +52,9 @@ class TrimView : ConstraintLayout, View.OnTouchListener {
         defStyleAttr
     ) {
 
-        val layoutView = LayoutInflater.from(context).inflate(R.layout.view_trim, this, true)
-        layout = ViewTrimBinding.bind(layoutView)
+        layout = ViewTrimBinding.inflate(LayoutInflater.from(context), this, true)
+        //val layoutView = LayoutInflater.from(context).inflate(R.layout.view_trim, this, true)
+        //layout = ViewTrimBinding.bind(layoutView)
 
         Log.d(TAG, "view created")
 
