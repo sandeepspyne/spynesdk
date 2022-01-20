@@ -29,55 +29,57 @@ class ThreeSixtyViewModel : ViewModel() {
 
     private val repository = ShootRepository()
     private val threeSixtyRepository = ThreeSixtyRepository()
-    private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
-    private val videoRepository = VideoLocalRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).videoDao())
+    private val localRepository =
+        ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
+    private val videoRepository =
+        VideoLocalRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).videoDao())
 
     var sku: com.spyneai.shoot.repository.model.sku.Sku? = null
     var project: com.spyneai.shoot.repository.model.project.Project? = null
 
-    var fromDrafts  = false
+    var fromDrafts = false
     val isDemoClicked: MutableLiveData<Boolean> = MutableLiveData()
     val isFramesUpdated: MutableLiveData<Boolean> = MutableLiveData()
-    val title : MutableLiveData<String> = MutableLiveData()
-    var processingStarted : MutableLiveData<Boolean> = MutableLiveData()
+    val title: MutableLiveData<String> = MutableLiveData()
+    var processingStarted: MutableLiveData<Boolean> = MutableLiveData()
 
-    var videoDetails : VideoDetails? = null
+    var videoDetails: VideoDetails? = null
 
-    val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
+    val isProjectCreated: MutableLiveData<Boolean> = MutableLiveData()
 
-    val enableRecording :  MutableLiveData<Boolean> = MutableLiveData()
-    val shootDimensions : MutableLiveData<ShootDimensions> = MutableLiveData()
+    val enableRecording: MutableLiveData<Boolean> = MutableLiveData()
+    val shootDimensions: MutableLiveData<ShootDimensions> = MutableLiveData()
 
-    private val _createProjectRes : MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
+    private val _createProjectRes: MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
     val createProjectRes: LiveData<Resource<CreateProjectRes>>
         get() = _createProjectRes
 
-    private val _createSkuRes : MutableLiveData<Resource<CreateSkuRes>> = MutableLiveData()
+    private val _createSkuRes: MutableLiveData<Resource<CreateSkuRes>> = MutableLiveData()
     val createSkuRes: LiveData<Resource<CreateSkuRes>>
         get() = _createSkuRes
 
-    private val _carGifRes : MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
+    private val _carGifRes: MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
     val carGifRes: LiveData<Resource<CarsBackgroundRes>>
         get() = _carGifRes
 
 
-    private val _process360Res : MutableLiveData<Resource<ProcessThreeSixtyRes>> = MutableLiveData()
+    private val _process360Res: MutableLiveData<Resource<ProcessThreeSixtyRes>> = MutableLiveData()
     val process360Res: LiveData<Resource<ProcessThreeSixtyRes>>
         get() = _process360Res
 
-    private val _userCreditsRes : MutableLiveData<Resource<CreditDetailsResponse>> = MutableLiveData()
+    private val _userCreditsRes: MutableLiveData<Resource<CreditDetailsResponse>> =
+        MutableLiveData()
     val userCreditsRes: LiveData<Resource<CreditDetailsResponse>>
         get() = _userCreditsRes
 
-    private val _downloadHDRes : MutableLiveData<Resource<DownloadHDRes>> = MutableLiveData()
+    private val _downloadHDRes: MutableLiveData<Resource<DownloadHDRes>> = MutableLiveData()
     val downloadHDRes: LiveData<Resource<DownloadHDRes>>
         get() = _downloadHDRes
 
-    private val _reduceCreditResponse : MutableLiveData<Resource<ReduceCreditResponse>> = MutableLiveData()
+    private val _reduceCreditResponse: MutableLiveData<Resource<ReduceCreditResponse>> =
+        MutableLiveData()
     val reduceCreditResponse: LiveData<Resource<ReduceCreditResponse>>
         get() = _reduceCreditResponse
-
-
 
 
     fun getBackgroundGifCars(
@@ -87,7 +89,7 @@ class ThreeSixtyViewModel : ViewModel() {
         GlobalScope.launch(Dispatchers.IO) {
             val backgroundList = localRepository.getBackgrounds(category)
 
-            if (!backgroundList.isNullOrEmpty()){
+            if (!backgroundList.isNullOrEmpty()) {
                 GlobalScope.launch(Dispatchers.Main) {
                     _carGifRes.value = Resource.Success(
                         CarsBackgroundRes(
@@ -97,10 +99,10 @@ class ThreeSixtyViewModel : ViewModel() {
                         )
                     )
                 }
-            }else {
-                val response =threeSixtyRepository.getBackgroundGifCars(category)
+            } else {
+                val response = threeSixtyRepository.getBackgroundGifCars(category)
 
-                if (response is Resource.Success){
+                if (response is Resource.Success) {
                     //insert overlays
                     val bgList = response.value.data
 
@@ -112,7 +114,7 @@ class ThreeSixtyViewModel : ViewModel() {
                     GlobalScope.launch(Dispatchers.Main) {
                         _carGifRes.value = response
                     }
-                }else {
+                } else {
                     GlobalScope.launch(Dispatchers.Main) {
                         _carGifRes.value = response
                     }
@@ -126,33 +128,34 @@ class ThreeSixtyViewModel : ViewModel() {
         authKey: String
     ) = viewModelScope.launch {
         _process360Res.value = Resource.Loading
-        _process360Res.value = threeSixtyRepository.process360(authKey,videoDetails!!)
+        _process360Res.value = threeSixtyRepository.process360(authKey, videoDetails!!)
     }
 
     fun getUserCredits(
-        userId : String
+        userId: String
     ) = viewModelScope.launch {
         _userCreditsRes.value = Resource.Loading
         _userCreditsRes.value = threeSixtyRepository.getUserCredits(userId)
     }
 
     fun reduceCredit(
-        userId : String,
-        creditReduce:String,
+        userId: String,
+        creditReduce: String,
         skuId: String
     ) = viewModelScope.launch {
         _reduceCreditResponse.value = Resource.Loading
-        _reduceCreditResponse.value = threeSixtyRepository.reduceCredit(userId,creditReduce,skuId)
+        _reduceCreditResponse.value = threeSixtyRepository.reduceCredit(userId, creditReduce, skuId)
     }
 
     fun updateDownloadStatus(
-        userId : String,
+        userId: String,
         skuId: String,
         enterpriseId: String,
         downloadHd: Boolean
     ) = viewModelScope.launch {
         _downloadHDRes.value = Resource.Loading
-        _downloadHDRes.value = threeSixtyRepository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
+        _downloadHDRes.value =
+            threeSixtyRepository.updateDownloadStatus(userId, skuId, enterpriseId, downloadHd)
     }
 
     fun insertProject() {
@@ -160,35 +163,44 @@ class ThreeSixtyViewModel : ViewModel() {
     }
 
     suspend fun insertSku() {
-        localRepository.insertSku(sku!!,project!!)
+        localRepository.insertSku(sku!!, project!!)
         videoRepository.updateVideo(videoDetails!!)
     }
 
 
     fun insertVideo(video: VideoDetails) {
-           viewModelScope.launch(Dispatchers.IO){
-               videoRepository.insertVideo(video)
-           }
+        viewModelScope.launch(Dispatchers.IO) {
+            videoRepository.insertVideo(video)
+        }
     }
 
     fun updateVideoPath() {
-        videoRepository.updateVideo(videoDetails!!)
+        videoDetails?.let {
+            videoRepository.updateVideoPath(it.uuid,it.videoPath!!)
+        }
     }
 
     fun updateVideoDetails() = viewModelScope.launch(Dispatchers.IO) {
         videoRepository.updateVideo(videoDetails!!)
     }
 
-    suspend fun updateBackground(totalFrames: Int) = localRepository.updateBackground(HashMap<String,Any>()
-        .apply {
-            put("project_uuid", videoDetails!!.projectUuid!!)
-            put("sku_uuid", videoDetails!!.skuUuid!!)
-            put("bg_id", videoDetails?.backgroundId?.toInt()!!)
-            put("bg_name", videoDetails?.bgName.toString())
-            put("total_frames", 0)
-        })
+    fun updateVideoBackground() {
+        videoDetails?.let {
+            videoRepository.updateVideoBackground(it.uuid,it.backgroundId!!,it.bgName)
+        }
+    }
 
-    fun setVideoDatils(uuid : String) {
+    suspend fun updateBackground(totalFrames: Int) =
+        localRepository.updateBackground(HashMap<String, Any>()
+            .apply {
+                put("project_uuid", videoDetails!!.projectUuid!!)
+                put("sku_uuid", videoDetails!!.skuUuid!!)
+                put("bg_id", videoDetails?.backgroundId?.toInt()!!)
+                put("bg_name", videoDetails?.bgName.toString())
+                put("total_frames", 0)
+            })
+
+    fun setVideoDatils(uuid: String) {
         viewModelScope.launch(Dispatchers.IO) {
             videoDetails = videoRepository.getVideo(uuid)
         }

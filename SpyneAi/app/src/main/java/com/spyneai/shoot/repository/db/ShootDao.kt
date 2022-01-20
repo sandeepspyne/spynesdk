@@ -115,6 +115,9 @@ interface ShootDao {
     @Query("update image set skuId = :skuId, projectId = :projectId where skuUuid = :skuUuid")
     fun updateImageIds(skuUuid: String,skuId: String,projectId: String): Int
 
+    @Query("update videodetails set projectId =:projectId, skuId = :skuId where skuUuid = :skuUuid ")
+    fun updateVideoSkuAndProjectIds(projectId: String,skuId: String,skuUuid: String) : Int
+
     @Transaction
     fun updateSkuAndImageIds(projectId: String,skuUuid: String,skuId: String){
         updateSKuServerId(skuUuid,skuId,projectId)
@@ -297,7 +300,7 @@ interface ShootDao {
     @Query("select Count(*) from image where isUploaded = :isUploaded and isMarkedDone = :isMarkedDone")
     fun totalRemainingUpload(isUploaded: Boolean = false,isMarkedDone : Boolean = false) : Int
 
-    @Query("select * from image where skuId NOT NUll and projectId NOT NULL and isUploaded = :isUploaded or isMarkedDone = :isMarkedDone and toProcessAt <= :currentTime limit 1")
+    @Query("select * from image where skuId NOT NUll and projectId NOT NULL and (isUploaded = :isUploaded or isMarkedDone = :isMarkedDone) and toProcessAt <= :currentTime limit 1")
     fun getOldestImage(isUploaded: Boolean = false,isMarkedDone : Boolean = false,currentTime: Long = System.currentTimeMillis()) : Image
 
     @Query("update image set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid")

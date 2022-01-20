@@ -411,6 +411,7 @@ fun Context.startVideoUploadService() {
         return
 
     val serviceIntent = Intent(this, VideoUploadService::class.java)
+    serviceIntent.putExtra(AppConstants.SYNC_TYPE,ServerSyncTypes.UPLOAD)
     serviceIntent.action = action.name
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

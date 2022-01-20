@@ -17,6 +17,7 @@ import com.spyneai.shoot.data.ProcessRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.db.ShootDao
 import com.spyneai.shoot.repository.model.sku.Sku
+import com.spyneai.startVideoUploadService
 import io.sentry.protocol.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -345,6 +346,12 @@ class ProcessSkuSync(
                 put("db_count",updateCount)
             }
         )
+
+        sku.subcategoryId?.let {
+            if (it == "360_exterior"){
+                context.startVideoUploadService()
+            }
+        }
         retryCount = 0
         return true
     }

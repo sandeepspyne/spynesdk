@@ -124,7 +124,7 @@ class VideoUploader(val context: Context,
                     Events.VIDEO_CONNECTION_BREAK,
                     remaingData
                 )
-               isActive = false
+                isActive = false
                 listener.onConnectionLost()
                 break
             }
@@ -132,6 +132,7 @@ class VideoUploader(val context: Context,
             var video = localRepository.getOldestVideo()
 
 
+            val s = ""
 
             if (video == null){
                 context.captureEvent(
@@ -192,7 +193,7 @@ class VideoUploader(val context: Context,
                 }
 
                 if (!video.isUploaded) {
-                    if (video.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL) {
+                    if (video.preSignedUrl != null) {
                         val videoUploaded = uploadvideo(video)
 
                         if (!videoUploaded)

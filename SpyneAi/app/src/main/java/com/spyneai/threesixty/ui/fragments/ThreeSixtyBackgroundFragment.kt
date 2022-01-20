@@ -29,6 +29,7 @@ import com.spyneai.service.log
 import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.startVideoUploadService
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.data.VideoUploadService
 import okhttp3.MultipartBody
@@ -58,7 +59,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
                binding.flShootNow.setOnClickListener{
 
-                   startService()
+                   requireContext().startVideoUploadService()
 
                    val intent = Intent(requireContext(), ShootActivity::class.java)
 
@@ -173,24 +174,6 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
         binding.rvBackgroundsCars.setLayoutManager(layoutManager)
         binding.rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
-    }
-
-    private fun startService() {
-        var action = Actions.START
-        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-            return
-
-        val serviceIntent = Intent(requireContext(), VideoUploadService::class.java)
-        serviceIntent.action = action.name
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            log("Starting the service in >=26 Mode")
-            ContextCompat.startForegroundService(requireContext(), serviceIntent)
-            return
-        } else {
-            log("Starting the service in < 26 Mode")
-            requireActivity().startService(serviceIntent)
-        }
     }
 
 

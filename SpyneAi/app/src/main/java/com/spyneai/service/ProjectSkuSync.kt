@@ -22,6 +22,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImagesRepoV2
+import com.spyneai.startVideoUploadService
 
 class ProjectSkuSync(
     val context: Context,
@@ -285,8 +286,16 @@ class ProjectSkuSync(
             }
         )
 
-        res.data.skusList.forEach {
-            shootDao.updateSkuAndImageIds(projectId,it.localId,it.skuId)
+        res.data.skusList.forEachIndexed { index, skus ->
+            shootDao.updateSkuAndImageIds(projectId,skus.localId,skus.skuId)
+
+            if (projectBody.skuData[index].prodSubCatId == "360_exterior"){
+                val s = shootDao.updateVideoSkuAndProjectIds(projectId,skus.skuId,skus.localId)
+                Log.d(TAG, "createProject: $s")
+            }
+
+
+
         }
 
         retryCount = 0

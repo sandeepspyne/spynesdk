@@ -44,6 +44,9 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.ui.dialogs.VideoDurationDialog
 import com.spyneai.toggleButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
@@ -571,7 +574,8 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                 )
 
                 viewModel.videoDetails?.videoPath = videoPath
-                viewModel.updateVideoDetails()
+                //update video path
+                GlobalScope.launch(Dispatchers.IO) { viewModel.updateVideoPath() }
 
                 //trimIntent.putExtra("src_path", videoPath)
                 trimIntent.putExtra(AppConstants.VIDEO_UUID, viewModel.videoDetails?.uuid)

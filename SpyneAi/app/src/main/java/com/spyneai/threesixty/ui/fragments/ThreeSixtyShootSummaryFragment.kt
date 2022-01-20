@@ -81,7 +81,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         //update video background id
         GlobalScope.launch(Dispatchers.IO) {
             viewModel.updateBackground(0)
-            viewModel.updateVideoDetails()
+            viewModel.updateVideoBackground()
 
             GlobalScope.launch(Dispatchers.Main) {
                 //start process sync service

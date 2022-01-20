@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.spyneai.threesixty.data.model.VideoDetails
+import retrofit2.http.GET
 import java.util.*
 
 @Dao
@@ -17,10 +18,16 @@ interface VideoDao {
     @Update
     fun update(videoDetails: VideoDetails): Int
 
+    @Query("select * from videodetails")
+    fun getAll(): List<VideoDetails>
+
+    @Query("update videodetails set videoPath = :path where uuid = :uuid ")
+    fun updateVideoPath(uuid: String,path: String)
+
     @Query("select * from videodetails where uuid= :id")
     fun getVideo(id: String) : VideoDetails
 
-    @Query("select * from videodetails where skuId NOT NUll and projectId NOT NULL and isUploaded = :isUploaded or isMarkedDone = :isMarkedDone and toProcessAt <= :currentTime limit 1")
+    @Query("select * from videodetails where skuId NOT NUll and projectId NOT NULL and (isUploaded = :isUploaded or isMarkedDone = :isMarkedDone) and toProcessAt <= :currentTime limit 1")
     fun getOldestVideo(isUploaded: Boolean = false,isMarkedDone : Boolean = false,currentTime: Long = System.currentTimeMillis()) : VideoDetails
 
     @Query("update videodetails set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid")
@@ -34,5 +41,8 @@ interface VideoDao {
 
     @Query("select Count(*) from videodetails where isUploaded = :isUploaded and isMarkedDone = :isMarkedDone")
     fun totalRemainingUpload(isUploaded: Boolean = false,isMarkedDone : Boolean = false) : Int
+
+    @Query("update videodetails set backgroundId = :backgroundId, bgName = :bgName where uuid = :uuid ")
+    fun updateVideoBackground(uuid: String, backgroundId: String, bgName: String?): Int
 
 }
