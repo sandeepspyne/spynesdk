@@ -365,8 +365,6 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         )
 
 
-        viewModel.isSubCategoryConfirmed.value = true
-        viewModel.isSkuCreated.value = true
         when(viewModel.categoryDetails.value?.categoryId){
             AppConstants.ECOM_CATEGORY_ID,
             AppConstants.FOOD_AND_BEV_CATEGORY_ID,
@@ -379,6 +377,8 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         }
 
         viewModel.sku = sku
+        viewModel.isSubCategoryConfirmed.value = true
+        viewModel.isSkuCreated.value = true
         viewModel.getSubCategories.value = true
 
         //add sku to local database

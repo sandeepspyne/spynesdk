@@ -19,6 +19,7 @@ class ImageDataSource(
     private val service: ClipperApi,
     val appDatabase: AppDatabase,
     val skuId: String?,
+    val projectUuid : String,
     val skuUuid : String,
 ) : PagingSource<Int, Image>() {
 
@@ -38,7 +39,7 @@ class ImageDataSource(
                 val nextKey = null
 
                 appDatabase.withTransaction {
-                    val ss = appDatabase.shootDao().insertImagesWithCheck(response.data as ArrayList<Image>,skuUuid)
+                    val ss = appDatabase.shootDao().insertImagesWithCheck(response.data as ArrayList<Image>,projectUuid,skuUuid)
                     Log.d(TAG, "load: ${Gson().toJson(ss)}")
                 }
 

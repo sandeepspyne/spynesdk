@@ -54,6 +54,8 @@ import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.threesixty.data.VideoLocalRepoV2
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
+import java.lang.reflect.InvocationTargetException
+import java.time.format.DateTimeFormatter
 
 
 var TAG = "Locale_Check"
@@ -511,10 +513,12 @@ fun Context.allDataSynced() : Boolean {
     return allDataSynced
 }
 
+
 fun getFormattedDate(date: String) : String {
     val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
     val formatter = SimpleDateFormat("dd-MM-yyyy")
-    return formatter.format(parser.parse(date))
+
+    return  formatter.format(parser.parse(date))
 }
 
 

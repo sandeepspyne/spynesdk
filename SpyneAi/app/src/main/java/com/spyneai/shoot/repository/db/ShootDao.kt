@@ -389,12 +389,15 @@ interface ShootDao {
 
 
     @Transaction
-    suspend fun insertImagesWithCheck(response: ArrayList<Image>,skuUuid: String){
+    suspend fun insertImagesWithCheck(response: ArrayList<Image>,projectUuid: String,skuUuid: String){
         val list = ArrayList<Image>()
 
         response.forEach {
 
-            val dbItem = getImageWithImageId(it.imageId)
+            var dbItem = getImageWithImageId(it.imageId)
+
+            if (dbItem == null && it.uuid != null)
+                dbItem = getImage(it.uuid)
 
             if (dbItem == null){
                 if (it.uuid ==  null){
@@ -413,6 +416,7 @@ interface ShootDao {
                 if(it.output_image_lres_wm_url == null)
                     it.output_image_lres_wm_url = ""
 
+                it.projectUuid = projectUuid
                 it.skuUuid = skuUuid
                 it.path = it.input_image_lres_url
 

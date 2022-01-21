@@ -50,7 +50,11 @@ class DashboardCompletedHolder(
 
     private fun showData(item: Project) {
         tvProject.text = item.projectName
-        tvDate.text = getFormattedDate(item.createdOn)
+        try {
+            tvDate.text = getFormattedDate(item.createdOn)
+        }catch (e : java.lang.Exception){
+
+        }
 
 
         try {

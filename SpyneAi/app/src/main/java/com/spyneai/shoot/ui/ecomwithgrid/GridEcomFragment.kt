@@ -2,10 +2,12 @@ package com.spyneai.shoot.ui.ecomwithgrid
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.spyneai.InfoDialog
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
@@ -24,7 +26,7 @@ import java.io.File
 class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(),
     OnItemClickListener, OnOverlaySelectionListener {
 
-
+    val TAG = "GridEcomFragment"
     var clickedAdapter : ClickedAdapter?=  null
     var position = 1
 
@@ -80,6 +82,7 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         // set sku name
         viewModel.isSkuCreated.observe(viewLifecycleOwner, {
             if (it) {
+                Log.d(TAG, "onViewCreated: "+Gson().toJson(viewModel.sku))
                 binding.tvSkuName?.text = viewModel.sku?.skuName
                 binding.tvSkuName.visibility = View.VISIBLE
                 viewModel.isSkuCreated.value = false

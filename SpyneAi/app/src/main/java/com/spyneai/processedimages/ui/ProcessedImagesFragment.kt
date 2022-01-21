@@ -756,6 +756,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
 
         viewModel.getImages(
             requireActivity().intent.getStringExtra(AppConstants.SKU_ID),
+            requireActivity().intent.getStringExtra(AppConstants.PROJECT_UUIID).toString(),
             requireActivity().intent.getStringExtra(AppConstants.SKU_UUID).toString()
         )
     }

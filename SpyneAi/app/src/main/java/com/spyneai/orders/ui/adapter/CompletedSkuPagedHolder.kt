@@ -92,7 +92,11 @@ class CompletedSkuPagedHolder(
         }
 
         tvSkuName.text = item.skuName
-        tvDate.text = getFormattedDate(item.createdOn)
+        try {
+            tvDate.text = getFormattedDate(item.createdOn)
+        }catch (e : java.lang.Exception){
+
+        }
 
         ivDownloadSKU.setOnClickListener {
             //delete sku images

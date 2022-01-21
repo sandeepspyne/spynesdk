@@ -53,7 +53,11 @@ class DraftSkuPagedHolder(
 
     private fun showData(item: Sku) {
         tvCategory.text = item.subcategoryName
-        tvDate.text = getFormattedDate(item.createdOn)
+        try {
+            tvDate.text = getFormattedDate(item.createdOn)
+        }catch (e : java.lang.Exception){
+
+        }
 
 
         if (item.thumbnail == null){

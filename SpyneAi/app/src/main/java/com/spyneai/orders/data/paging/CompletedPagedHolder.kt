@@ -129,7 +129,11 @@ class CompletedPagedHolder(
             e.printStackTrace()
         }
 
-        tvDate.text = getFormattedDate(item.createdOn)
+        try {
+            tvDate.text = getFormattedDate(item.createdOn)
+        }catch (e : java.lang.Exception){
+
+        }
         tvProjectName.text = item.projectName
         cvMain.setOnClickListener {
 

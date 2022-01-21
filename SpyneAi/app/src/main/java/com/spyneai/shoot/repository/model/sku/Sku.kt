@@ -40,7 +40,7 @@ class Sku(
     @SerializedName("display_image") var thumbnail: String? = null,
     @SerializedName("video_id") val videoId : String? = null,
     @SerializedName("video_url") val videoUrl : String? = null,
-    @SerializedName("created_on") var createdOn: String = Date(System.currentTimeMillis()).toString(),
+    @SerializedName("created_on") var createdOn: String = System.currentTimeMillis().toString(),
     @SerializedName("created_at") var createdAt: Long = System.currentTimeMillis(),
     @SerializedName("updated_at") var updatedAt: Long = System.currentTimeMillis(),
     @SerializedName("total_images_captured")

@@ -82,6 +82,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         lifecycleScope.launch {
             viewModel.getImages(
                 requireActivity().intent.getStringExtra(AppConstants.SKU_ID),
+                requireActivity().intent.getStringExtra(AppConstants.PROJECT_UUIID).toString(),
                 requireActivity().intent.getStringExtra(AppConstants.SKU_UUID).toString()
             )
         }

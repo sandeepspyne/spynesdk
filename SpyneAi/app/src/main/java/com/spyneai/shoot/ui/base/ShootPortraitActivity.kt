@@ -221,8 +221,10 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                 processIntent.apply {
                     this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra(AppConstants.CATEGORY_ID, categoryDetails.categoryId)
-                    this.putExtra("sku_id", shootViewModel.sku?.uuid)
-                    this.putExtra("project_id", shootViewModel.sku?.projectUuid)
+                    this.putExtra(AppConstants.SKU_UUID, shootViewModel.sku?.uuid)
+                    this.putExtra(AppConstants.PROJECT_UUIID, shootViewModel.sku?.projectUuid)
+//                    this.putExtra("sku_id", shootViewModel.sku?.uuid)
+//                    this.putExtra("project_id", shootViewModel.sku?.projectUuid)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku", shootViewModel.processSku)
                     this.putExtra(AppConstants.FROM_VIDEO, intent.getBooleanExtra(AppConstants.FROM_VIDEO, false))

@@ -64,7 +64,7 @@ class DraftViewModel : ViewModel() {
     }
 
 
-    fun getImages(skuId: String?, skuUuid: String) = viewModelScope.launch {
+    fun getImages(skuId: String?, projectUuid: String,skuUuid: String) = viewModelScope.launch {
         _imagesOfSkuRes.value = Resource.Loading
 
         if (skuId != null && BaseApplication.getContext().isInternetActive()) {
@@ -76,6 +76,7 @@ class DraftViewModel : ViewModel() {
                 appDatabase.withTransaction {
                     val ss = appDatabase.shootDao().insertImagesWithCheck(
                         response.value.data as ArrayList<Image>,
+                        projectUuid,
                         skuUuid)
 
                 }

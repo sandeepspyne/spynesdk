@@ -19,7 +19,7 @@ data class Image(
     var isSelected : Boolean = false,
     var imageClicked : Boolean = false,
     var imagePath : String? = null,
-    @SerializedName("project_uuid") val projectUuid: String? = null,
+    @SerializedName("project_uuid") var projectUuid: String? = null,
     @SerializedName("project_id") var projectId: String? = null,
     @SerializedName("sku_name") val skuName: String?,
     @SerializedName("sku_uuid") var skuUuid: String?,

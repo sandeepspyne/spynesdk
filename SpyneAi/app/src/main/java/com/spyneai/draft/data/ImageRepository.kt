@@ -14,6 +14,7 @@ class ImageRepository(
     private val service: ClipperApi,
     val appDatabase: AppDatabase,
     val skuId: String?,
+    val projectUuid : String,
     val skuUuid : String,
 ) {
 
@@ -23,7 +24,7 @@ class ImageRepository(
                 pageSize = DEFAULT_PAGE_SIZE,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { ImageDataSource(service,appDatabase,skuId,skuUuid) }
+            pagingSourceFactory = { ImageDataSource(service,appDatabase,skuId,projectUuid,skuUuid) }
         ).flow
     }
 
