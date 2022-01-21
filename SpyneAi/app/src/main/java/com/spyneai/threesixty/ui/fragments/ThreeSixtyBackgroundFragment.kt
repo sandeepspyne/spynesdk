@@ -50,7 +50,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
         initSelectBackground()
 
        when(getString(R.string.app_name)){
-           AppConstants.OLA_CABS -> {
+           AppConstants.OLA_CABS,AppConstants.SPYNE_AI -> {
                binding.apply {
                    tvContinueShoot.visibility = View.VISIBLE
                    llOr.visibility = View.VISIBLE
@@ -66,7 +66,9 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                    intent.apply {
                        putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
                        putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
+                       putExtra(AppConstants.PROJECT_UUIID, viewModel.videoDetails?.projectUuid)
                        putExtra(AppConstants.PROJECT_ID, viewModel.videoDetails?.projectId)
+                       putExtra(AppConstants.SKU_UUID, viewModel.videoDetails?.skuUuid)
                        putExtra(AppConstants.SKU_ID, viewModel.videoDetails?.skuId)
                        putExtra(AppConstants.SKU_NAME, viewModel.videoDetails?.skuName)
                        putExtra(AppConstants.TOTAL_FRAME, viewModel.videoDetails?.frames)

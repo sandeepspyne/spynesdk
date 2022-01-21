@@ -26,6 +26,9 @@ class ShootHintDialog : BaseDialogFragment<ShootViewModel, DialogShootHintBindin
 
         binding.btContinue.setOnClickListener {
             viewModel.showVin.value = true
+            if (viewModel.fromVideo)
+                viewModel.getSubCategories.value = true
+
             dismiss()
         }
     }

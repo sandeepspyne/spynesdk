@@ -47,6 +47,10 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         requireContext().setLocale()
         refreshText()
 
+        binding.tvCreditsAvailable.visibility = View.GONE
+
+        binding.tvGenerateGif.isEnabled = true
+
         //setup360View()
 
 //        getUserCredits()

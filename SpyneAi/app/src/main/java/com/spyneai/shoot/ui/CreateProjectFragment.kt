@@ -48,8 +48,14 @@ class CreateProjectFragment : BaseFragment<ShootViewModel, FragmentCreateProject
             })
 
             viewModel.showVin.observe(viewLifecycleOwner,{
-                if (!viewModel.createProjectDialogShown)
-                    initProjectDialog(false)
+                if (viewModel.fromVideo){
+                    if (!viewModel.createProjectDialogShown && viewModel.isProjectCreated.value == false)
+                        initProjectDialog(false)
+                }else {
+                    if (!viewModel.createProjectDialogShown)
+                        initProjectDialog(false)
+                }
+
             })
         }
     }

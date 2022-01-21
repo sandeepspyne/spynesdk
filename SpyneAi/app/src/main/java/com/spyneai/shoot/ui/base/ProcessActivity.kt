@@ -13,6 +13,9 @@ import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.RegularShootSummaryFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ProcessActivity : AppCompatActivity() {
 
@@ -29,15 +32,21 @@ class ProcessActivity : AppCompatActivity() {
 
         processViewModel.fromVideo = intent.getBooleanExtra(AppConstants.FROM_VIDEO,false)
 
-        processViewModel.sku = Sku(
-            uuid =  intent.getStringExtra("sku_id")!!,
-            projectUuid = intent.getStringExtra("project_id")
-        )
 
         processViewModel.exteriorAngles.value =  intent.getIntExtra("exterior_angles",0)
         processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)
         processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!
         processViewModel.categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+
+        val projectUuid = intent.getStringExtra(AppConstants.PROJECT_UUIID)!!
+        val skuUUid = intent.getStringExtra(AppConstants.SKU_UUID)!!
+
+        GlobalScope.launch(Dispatchers.IO) {
+            processViewModel.setProjectAndSkuData(
+                projectUuid,
+                skuUUid
+            )
+        }
 
 
         if (intent.getBooleanExtra("process_sku",true)){

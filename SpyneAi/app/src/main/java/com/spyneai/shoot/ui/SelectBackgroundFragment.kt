@@ -202,12 +202,14 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 processSku(true)
             }
             AppConstants.SPYNE_AI -> {
+                viewModel.interiorMiscShootsCount = viewModel.sku?.imagesCount!!
+
                 if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
                         .equals("Food & Beverages")
                 ) {
 //                    processFoodImage()
 //                    Utilities.showProgressDialog(requireContext())
-                    viewModel.interiorMiscShootsCount = viewModel.sku?.imagesCount!!
+
                     processSku(true)
                 } else {
                     if (binding.cb360.isChecked) {

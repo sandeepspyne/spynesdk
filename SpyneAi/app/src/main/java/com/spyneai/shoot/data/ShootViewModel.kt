@@ -843,14 +843,18 @@ class ShootViewModel : ViewModel() {
 
     suspend fun updateTotalFrames(totalFrames: Int) =  localRepository.updateSkuTotalFrames(sku?.uuid!!,totalFrames)
 
-    suspend fun updateBackground(backgroundId: Int,bgName: String = "",updatedCount: Int = 0) = localRepository.updateBackground(HashMap<String,Any>()
+    suspend fun updateBackground(backgroundId: Int,bgName: String = "") = localRepository.updateBackground(HashMap<String,Any>()
         .apply {
             put("project_uuid", sku!!.projectUuid!!)
             put("sku_uuid", sku!!.uuid!!)
             put("bg_id", backgroundId)
             put("bg_name", bgName!!)
-            put("total_frames", updatedCount)
+            put("total_frames", getTotalFrames())
         })
+
+    private fun getTotalFrames(): Int {
+        return if (fromVideo) sku?.threeSixtyFrames?.plus(sku?.imagesCount!!)!! else sku?.imagesCount!!
+    }
 
     fun getProjectSkus() = localRepository.getSkusByProjectId(project?.uuid!!)
 

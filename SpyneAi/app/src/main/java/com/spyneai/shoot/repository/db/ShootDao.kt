@@ -289,7 +289,7 @@ interface ShootDao {
     @Query("UPDATE project SET status = 'ongoing' WHERE uuid =:uuid ")
     fun updateProjectStatus(uuid: String) : Int
 
-    @Query("UPDATE sku SET backgroundName = :backgroundName, backgroundId= :backgroundId, totalFrames = totalFrames + :totalFrames  WHERE uuid =:uuid ")
+    @Query("UPDATE sku SET backgroundName = :backgroundName, backgroundId= :backgroundId, totalFrames = :totalFrames  WHERE uuid =:uuid ")
     fun updateSkuBackground(uuid: String,backgroundName: String,backgroundId: String,totalFrames : Int) : Int
 
     @Transaction

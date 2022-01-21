@@ -230,6 +230,10 @@ class ProcessViewModel : ViewModel() {
             put("sku_uuid", sku!!.uuid!!)
             put("bg_id", backgroundSelect!!)
             put("bg_name", bgName!!)
-            put("total_frames", interiorMiscShootsCount)
+            put("total_frames", getTotalFrames())
         })
+
+    private fun getTotalFrames(): Int {
+        return if (fromVideo) sku?.threeSixtyFrames?.plus(sku?.imagesCount!!)!! else sku?.imagesCount!!
+    }
 }

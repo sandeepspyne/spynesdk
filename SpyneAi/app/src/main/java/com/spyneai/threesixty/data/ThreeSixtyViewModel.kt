@@ -197,8 +197,12 @@ class ThreeSixtyViewModel : ViewModel() {
                 put("sku_uuid", videoDetails!!.skuUuid!!)
                 put("bg_id", videoDetails?.backgroundId?.toInt()!!)
                 put("bg_name", videoDetails?.bgName.toString())
-                put("total_frames", 0)
+                put("total_frames", getTotalFrames())
             })
+
+    private fun getTotalFrames(): Int {
+        return sku?.threeSixtyFrames?.plus(sku?.imagesCount!!)!!
+    }
 
     fun setVideoDatils(uuid: String) {
         viewModelScope.launch(Dispatchers.IO) {

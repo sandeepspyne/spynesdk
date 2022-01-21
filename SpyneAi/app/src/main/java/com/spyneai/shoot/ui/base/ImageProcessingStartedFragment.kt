@@ -49,18 +49,18 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
     override fun onResume() {
         super.onResume()
 
-        if (viewModel.categoryId == AppConstants.BIKES_CATEGORY_ID){
-            if (viewModel.interiorMiscShootsCount > 0){
-                observeTotalFrameUpdate()
-                updateTotalFrames()
-            }
-
-
-            viewModel.updateProjectState(
-                Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-                viewModel.sku?.projectId!!
-            )
-        }
+//        if (viewModel.categoryId == AppConstants.BIKES_CATEGORY_ID){
+//            if (viewModel.interiorMiscShootsCount > 0){
+//                observeTotalFrameUpdate()
+//                updateTotalFrames()
+//            }
+//
+//
+//            viewModel.updateProjectState(
+//                Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+//                viewModel.sku?.projectId!!
+//            )
+//        }
     }
 
     private fun observeTotalFrameUpdate() {
