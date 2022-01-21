@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.getFormattedDate
 import com.spyneai.orders.data.paging.OngoingPagedHolder
 import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.shoot.repository.model.project.Project
@@ -50,7 +51,7 @@ class DashboardOngoingPagedHolder(
 
     private fun showData(item: Project) {
         tvProject.text = item.projectName
-        tvDate.text = item.createdOn
+        tvDate.text = getFormattedDate(item.createdOn)
 
         try {
             if (item.imagesCount == 0) {

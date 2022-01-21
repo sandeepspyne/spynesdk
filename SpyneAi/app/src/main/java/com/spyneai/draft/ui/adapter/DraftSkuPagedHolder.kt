@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkuDetailsActivity
+import com.spyneai.getFormattedDate
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -52,7 +53,7 @@ class DraftSkuPagedHolder(
 
     private fun showData(item: Sku) {
         tvCategory.text = item.subcategoryName
-        tvDate.text = item.createdAt.toString()
+        tvDate.text = getFormattedDate(item.createdOn)
 
 
         if (item.thumbnail == null){

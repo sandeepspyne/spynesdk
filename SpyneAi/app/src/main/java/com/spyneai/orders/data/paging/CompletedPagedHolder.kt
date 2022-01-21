@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.getFormattedDate
 import com.spyneai.needs.AppConstants
 import com.spyneai.orders.ui.activity.CompletedPagedActivity
 import com.spyneai.orders.ui.activity.CompletedSkusActivity
@@ -128,7 +129,7 @@ class CompletedPagedHolder(
             e.printStackTrace()
         }
 
-        tvDate.text = item.createdAt.toString()
+        tvDate.text = getFormattedDate(item.createdOn)
         tvProjectName.text = item.projectName
         cvMain.setOnClickListener {
 

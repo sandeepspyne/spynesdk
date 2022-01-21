@@ -14,6 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftPagedSkuActivity
 import com.spyneai.draft.ui.DraftSkusActivity
+import com.spyneai.getFormattedDate
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -119,7 +120,7 @@ class DraftPagedHolder(
 
         tvProjectName.text = item.projectName
         tvSkus.text = item.skuCount.toString()
-        tvDate.text = item.createdOn
+        tvDate.text = getFormattedDate(item.createdOn)
         tvImages.text = item.imagesCount.toString()
 
         cvMain.setOnClickListener {

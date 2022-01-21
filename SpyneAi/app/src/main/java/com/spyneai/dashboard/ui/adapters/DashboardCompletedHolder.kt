@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.getFormattedDate
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
@@ -49,7 +50,7 @@ class DashboardCompletedHolder(
 
     private fun showData(item: Project) {
         tvProject.text = item.projectName
-        tvDate.text = item.createdOn
+        tvDate.text = getFormattedDate(item.createdOn)
 
 
         try {

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.getFormattedDate
 import com.spyneai.needs.AppConstants
 import com.spyneai.orders.ui.activity.OngoingSkusActivity
 import com.spyneai.shoot.repository.model.project.Project
@@ -119,7 +120,7 @@ class OngoingPagedHolder(
             item.processedCount.toString() + "/" + item.imagesCount.toString()
 
         tvProjectName.text = item.projectName
-        tvDate.text = item.createdOn
+        tvDate.text = getFormattedDate(item.createdOn)
 
         //need thumbnal
         try {

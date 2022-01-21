@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkuDetailsActivity
 import com.spyneai.draft.ui.adapter.DraftSkuPagedHolder
+import com.spyneai.getFormattedDate
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -91,7 +92,7 @@ class CompletedSkuPagedHolder(
         }
 
         tvSkuName.text = item.skuName
-        tvDate.text = item.createdAt.toString()
+        tvDate.text = getFormattedDate(item.createdOn)
 
         ivDownloadSKU.setOnClickListener {
             //delete sku images

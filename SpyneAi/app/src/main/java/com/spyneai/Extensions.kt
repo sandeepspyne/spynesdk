@@ -511,5 +511,11 @@ fun Context.allDataSynced() : Boolean {
     return allDataSynced
 }
 
+fun getFormattedDate(date: String) : String {
+    val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+    val formatter = SimpleDateFormat("dd-MM-yyyy")
+    return formatter.format(parser.parse(date))
+}
+
 
 
