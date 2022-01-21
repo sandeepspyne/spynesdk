@@ -37,7 +37,7 @@ interface ShootDao {
         insertFocusTags(focusTags)
     }
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun subcategories(list: List<NewSubCatResponse.Subcategory>)
 
     @Insert

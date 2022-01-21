@@ -93,12 +93,6 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         } catch (e: Exception) {
         }
 
-        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS, false))
-            setUpDraftsData()
-
-        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO, false))
-            setUpVideoShoot()
-
         val categoryDetails = CategoryDetails()
 
         categoryDetails.apply {
@@ -108,6 +102,14 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         }
 
         shootViewModel.categoryDetails.value = categoryDetails
+
+        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS, false))
+            setUpDraftsData()
+
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO, false))
+            setUpVideoShoot()
+
+
 
         cameraFragment = CameraFragment()
         gridEcomFragment = GridEcomFragment()
