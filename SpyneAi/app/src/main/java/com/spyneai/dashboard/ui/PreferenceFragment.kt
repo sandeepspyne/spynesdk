@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.location.Address
 import android.location.Geocoder
-import android.location.Location
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
@@ -28,12 +27,10 @@ import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.spyneai.*
 import com.spyneai.base.BaseFragment
-import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.data.model.LocationsRes
 import com.spyneai.databinding.FragmentPreferenceBinding
-import com.spyneai.interfaces.GcpClient
 import com.spyneai.logout.LogoutDialog
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -42,11 +39,7 @@ import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.shoot.utils.log
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.ResponseBody
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -60,8 +53,10 @@ import kotlin.math.sqrt
 import android.location.LocationManager
 import android.content.Context.LOCATION_SERVICE
 import android.content.DialogInterface
+import android.content.IntentSender
 import android.provider.Settings
-import android.widget.Toast as Toast
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.spyneai.R
 import com.spyneai.shoot.data.ShootRepository
@@ -70,45 +65,29 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
+import android.widget.Toast
 
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>() {
-
     val REQUEST_IMAGE_CAPTURE = 1
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
-
-    //    var languageList = arrayOf("English","Germany","Italy")
     var languageList = arrayListOf<String>()
     var locationList: ArrayList<String> = ArrayList()
     lateinit var spLanguageAdapter: ArrayAdapter<String>
     lateinit var spLocationAdapter: ArrayAdapter<String>
     lateinit var currentPhotoPath: String
     val location_data = JSONObject()
-
     var snackbar: Snackbar? = null
     var isActive = false
     var currentLat: Double? = 0.0
     var currentLong: Double? = 0.0
-
-    var locationManager : LocationManager? =null
-
+    var locationManager: LocationManager? = null
+    val LOCATION_SETTING_REQUEST = 999
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        locationManager = requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
-        if (!locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            OnGPS()
-        } else {
-            getLocationData()
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getLocationData()
 
         if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
             val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
@@ -117,21 +96,22 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             )
             params.setMargins(30, 30, 30, 260)
             params.gravity = Gravity.CENTER_HORIZONTAL;
-            binding.llLogout.setLayoutParams(params)
+            binding.llLogout.layoutParams = params
         }
 
-        //
-
-        if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID) == AppConstants.SPYNE_ENTERPRISE_ID){
+        if (Utilities.getPreference(
+                requireContext(),
+                AppConstants.ENTERPRISE_ID
+            ) == AppConstants.SPYNE_ENTERPRISE_ID
+        ) {
             binding.llAttendance.visibility = View.GONE
-        }else {
+        } else {
             locationList.add("Select Location")
             spLocationAdapter = ArrayAdapter<String>(
                 requireContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 locationList
             )
-
             //clockin Adapter
             binding.spSelectLocation.adapter = spLocationAdapter
             binding.spSelectLocation.setTitle("")
@@ -172,83 +152,100 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         binding.btnClockOut.enable(true)
                     }
                 }
-
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-
                 }
             })
 
             binding.btClockIn.setOnClickListener {
-                if (allPermissionsGranted()){
-                    onPermissionGranted()
+                locationManager =
+                    requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
+                if (!locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    onGPS()
                 } else {
-                    permissionRequest.launch(permissions.toTypedArray())
-                }
+                    if (allPermissionsGranted()) {
+                        onPermissionGranted()
+                    } else {
+                        permissionRequest.launch(permissions.toTypedArray())
+                    }
 
-                if(location_data.has("latitude")){
-                    requireContext().captureEvent(
-                    Events.GET_LOCATION_SUCCESS_CHECKIN,
-                    HashMap<String,Any?>().apply {
-                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                        put("location_data",location_data)
-                    })
-                    getDistanceFromLatLon(currentLat!!, currentLong!!, "checkin")
+                    if (location_data.has("latitude")) {
+                        requireContext().captureEvent(
+                            Events.GET_LOCATION_SUCCESS_CHECKIN,
+                            HashMap<String, Any?>().apply {
+                                put(
+                                    "user_id",
+                                    Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
+                                )
+                                put("location_data", location_data)
+                            })
 
-                }else{
-                    requireContext().captureEvent(
-                        Events.GET_LOCATION_FAIL_CHECKIN,
-                        HashMap<String,Any?>().apply {
-                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                            put("location_data",location_data)
-                            put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
-                        })
-                    showLocationSnackBar()
-
+                    } else {
+                        requireContext().captureEvent(
+                            Events.GET_LOCATION_FAIL_CHECKIN,
+                            HashMap<String, Any?>().apply {
+                                put(
+                                    "user_id",
+                                    Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
+                                )
+                                put("location_data", location_data)
+                                put("last_reboot_since", SystemClock.elapsedRealtime() / 60000)
+                            })
+                    }
                 }
             }
-
-
-
+            
             binding.btnClockOut.setOnClickListener {
-                viewModel.type = "checkout"
-                if(location_data.has("latitude")){
-                    getDistanceFromLatLon(currentLat!!, currentLong!!, "checkout")
-                    requireContext().captureEvent(
-                        Events.GET_LOCATION_SUCCESS_CHECKOUT,
-                        HashMap<String,Any?>().apply {
-                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                            put("location_data",location_data)
-                        })
+                locationManager =
+                    requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
+                if (!locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    onGPS()
+                } else {
 
-                }else{
-                    requireContext().captureEvent(
-                        Events.GET_LOCATION_FAIL_CHECKOUT,
-                        HashMap<String,Any?>().apply {
-                            put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                            put("location_data",location_data)
-                            put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
-                        })
-                    showLocationSnackBar()
+                    getLocationData("checkout")
+                    viewModel.type = "checkout"
+                    if (location_data.has("latitude")) {
+                        requireContext().captureEvent(
+                            Events.GET_LOCATION_SUCCESS_CHECKOUT,
+                            HashMap<String, Any?>().apply {
+                                put(
+                                    "user_id",
+                                    Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
+                                )
+                                put("location_data", location_data)
+                            })
 
+                    } else {
+                        requireContext().captureEvent(
+                            Events.GET_LOCATION_FAIL_CHECKOUT,
+                            HashMap<String, Any?>().apply {
+                                put(
+                                    "user_id",
+                                    Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
+                                )
+                                put("location_data", location_data)
+                                put("last_reboot_since", SystemClock.elapsedRealtime() / 60000)
+                            })
+
+                    }
                 }
             }
+
             if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
                 viewModel.siteImagePath =
-                    Utilities.getPreference(requireContext(), AppConstants.SITE_IMAGE_PATH).toString()
+                    Utilities.getPreference(requireContext(), AppConstants.SITE_IMAGE_PATH)
+                        .toString()
                 setCheckOut(false)
             } else {
                 setCheckIn(false)
             }
-
             observeUrlResponse()
             observeClockInOut()
-
             getLocations()
             observeLocation()
         }
 
-        languageList.clear()
 
+        languageList.clear()
         when (getString(R.string.app_name)) {
             AppConstants.AUTO_FOTO -> {
                 languageList.add("English")
@@ -327,7 +324,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 } else {
                     onLanguageSelected("IT")
                 }
-
                 refreshTexts()
             }
 
@@ -336,22 +332,29 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             }
         }
 
+
+
         binding.llLogout.setOnClickListener {
             LogoutDialog().show(requireActivity().supportFragmentManager, "LogoutDialog")
-
         }
 
 
     }
 
-    private fun OnGPS() {
+    private fun onGPS() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes",
-            DialogInterface.OnClickListener { dialog, which -> startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) })
-            .setNegativeButton("No",
-                DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
+        builder.setMessage("To Continue, Turn on device location or GPS, which uses Google's location service.")
+            .setCancelable(false).setPositiveButton("Turn On",
+            DialogInterface.OnClickListener { dialog, which ->
+                startActivityForResult(
+                    Intent(
+                        Settings.ACTION_LOCATION_SOURCE_SETTINGS
+                    ), LOCATION_SETTING_REQUEST
+                )
+            })
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()
+        alertDialog.setCancelable(false)
     }
 
     private fun observeLocation() {
@@ -368,7 +371,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         locationList.addAll(locationNameList)
                     }
                 }
-
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
                     log("get Manual Location fail")
@@ -376,7 +378,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         Events.GET_LOCATIONS_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
-
                     Utilities.hideProgressDialog()
                     handleApiError(it) { getLocations() }
                 }
@@ -384,54 +385,54 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         })
     }
 
-    fun getLocationData(){
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
-            try {
-                locationRequest = LocationRequest().apply {
-                    interval = TimeUnit.SECONDS.toMillis(1)
-                    fastestInterval = TimeUnit.SECONDS.toMillis(0)
-                    maxWaitTime = TimeUnit.MINUTES.toMillis(1)
-                    priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                }
-                locationCallback = object : LocationCallback() {
-                    override fun onLocationResult(locationResult: LocationResult?) {
-                        super.onLocationResult(locationResult)
-                        locationResult?.lastLocation?.let {
-                           // currentLocation = locationByGps
-                            currentLat = it?.latitude
-                            currentLat = it?.longitude
-                        }
-                    }
-                }
 
-                fusedLocationClient.lastLocation
-                    .addOnSuccessListener { location: Location? ->
-                        if (location != null) {
-                            currentLat = location.latitude
-                            currentLong = location.longitude
-                        }
-                    }
-                val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                val addresses: List<Address> =
-                    geocoder.getFromLocation(currentLat!!, currentLong!!, 1)
-                val postalCode = addresses[0].postalCode
-                val cityName = addresses[0].locality
-                val countryName = addresses[0].countryName
-                location_data.put("city", cityName)
-                location_data.put("country", countryName)
-                location_data.put("latitude", currentLat)
-                location_data.put("longitude", currentLong)
-                location_data.put("postalCode", postalCode)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
+    fun getLocationData(status: String) {
+        val locationRequest = LocationRequest()
+        locationRequest.interval = 500
+        locationRequest.fastestInterval = 500
+        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
         }
-    }
+        Utilities.showProgressDialog(requireContext())
+        LocationServices.getFusedLocationProviderClient(requireContext())
+            .requestLocationUpdates(locationRequest, object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    super.onLocationResult(locationResult)
 
+                    if (locationResult != null && locationResult.locations.size > 0) {
+                        LocationServices.getFusedLocationProviderClient(requireContext().applicationContext)
+                            .removeLocationUpdates(this)
+                        val latestlocIndex = locationResult.locations.size - 1
+                        currentLat = locationResult.locations[latestlocIndex].latitude
+                        currentLong = locationResult.locations[latestlocIndex].longitude
+                        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                        val addresses: List<Address> =
+                            geocoder.getFromLocation(currentLat!!, currentLong!!, 1)
+                        val postalCode = addresses[0].postalCode
+                        val cityName = addresses[0].locality
+                        val countryName = addresses[0].countryName
+                        location_data.put("city", cityName)
+                        location_data.put("country", countryName)
+                        location_data.put("latitude", currentLat)
+                        location_data.put("longitude", currentLong)
+                        location_data.put("postalCode", postalCode)
+                        Utilities.hideProgressDialog()
+
+                        getDistanceFromLatLon(currentLat!!, currentLong!!, status)
+
+
+                    }
+                }
+            }, Looper.getMainLooper())
+    }
 
 
     // calculate distance bw lat lon
@@ -447,9 +448,13 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         var d = R * c * 1000 // Distance in m
 
         if (d > getSelectedItem()?.thresholdDistanceInMeters!!) {
-            if (lat1 == 0.0 || lon1 == 0.0){
-                Toast.makeText(requireContext(),"Unable to detect your location, please try after some time!",Toast.LENGTH_LONG).show()
-            }else {
+            if (lat1 == 0.0 || lon1 == 0.0) {
+                Toast.makeText(
+                    requireContext(),
+                    "Unable to detect your location, please try after some time!",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
                 InvalidLocationDialog().show(
                     requireActivity().supportFragmentManager,
                     "invalidLocationDialog"
@@ -463,11 +468,10 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 viewModel.fileUrl = ""
                 checkInOut()
             }
-
         }
     }
 
-    fun deg2rad(deg: Double): Double {
+    private fun deg2rad(deg: Double): Double {
         return deg * (Math.PI / 180)
     }
 
@@ -484,7 +488,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     }
                     setLastSession()
                 }
-
                 90f -> {
                     binding.ivDropDown.rotation = 0f
                     binding.apply {
@@ -492,6 +495,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     }
                 }
             }
+
         }
 
         if (hideClockOut) {
@@ -499,9 +503,9 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 cvClockIn.visibility = View.VISIBLE
                 cvClockOut.visibility = View.GONE
             }
-
             setLastSession()
         }
+
 
         viewModel.isStartAttendance.observe(viewLifecycleOwner, {
             if (it) {
@@ -513,7 +517,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     private fun setLastSession() {
         val millis = Utilities.getLong(requireContext(), AppConstants.SHOOTS_SESSION)
-
         binding.tvSession.text = "Your last session was " + millisecondsToHours(millis)
     }
 
@@ -544,7 +547,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         takePictureIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
                         takePictureIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
                         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-                        //resultLauncher.launch(takePictureIntent)
                     }
                 }
             }
@@ -557,45 +559,66 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         super.onActivityResult(requestCode, resultCode, data)
         viewModel.resultCode = resultCode
         val s = ""
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            GlobalScope.launch {
-                withContext(Dispatchers.Default){
-                    val file: File = File(currentPhotoPath)
-                    val length = file.length()
-                    val before: Long = length / 1024
-                    val compressedImageFile = Compressor.compress(requireContext(), file)
-                    val length2 = compressedImageFile.length()
-                    val after: Long = length2 / 1024
-                    Utilities.apply {
-                        savePrefrence(requireContext(), AppConstants.SITE_IMAGE_PATH, compressedImageFile.path)
-                        savePrefrence(requireContext(), AppConstants.SITE_CITY_NAME, getSelectedItem()?.locationName)
-                        saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
-                        saveLong(requireContext(), AppConstants.CLOCKED_IN_TIME, System.currentTimeMillis())
+        when (requestCode) {
+            REQUEST_IMAGE_CAPTURE -> when (resultCode) {
+                RESULT_OK -> {
+                    GlobalScope.launch {
+                        withContext(Dispatchers.Default) {
+                            val file: File = File(currentPhotoPath)
+                            val length = file.length()
+                            val before: Long = length / 1024
+                            val compressedImageFile = Compressor.compress(requireContext(), file)
+                            val length2 = compressedImageFile.length()
+                            val after: Long = length2 / 1024
+                            Utilities.apply {
+                                savePrefrence(
+                                    requireContext(),
+                                    AppConstants.SITE_IMAGE_PATH,
+                                    compressedImageFile.path
+                                )
+                                savePrefrence(
+                                    requireContext(),
+                                    AppConstants.SITE_CITY_NAME,
+                                    getSelectedItem()?.locationName
+                                )
+                                saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
+                                saveLong(
+                                    requireContext(),
+                                    AppConstants.CLOCKED_IN_TIME,
+                                    System.currentTimeMillis()
+                                )
+                            }
+                            viewModel.siteImagePath = compressedImageFile.path
+                        }
+                        withContext(Dispatchers.Main) {
+                            setCheckOut(true)
+                        }
                     }
-                    viewModel.siteImagePath = compressedImageFile.path
-                }
-                withContext(Dispatchers.Main){
-                    setCheckOut(true)
                 }
             }
 
+            LOCATION_SETTING_REQUEST -> when (resultCode) {
+                0 -> {
+                    if (!locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        onGPS()
+                    }
+                }
+                else -> {}
+            }
 
-        } else {
-            val s = ""
         }
+
     }
 
 
-
-    fun getSelectedItem(): LocationsRes.Data?
-    {
+    fun getSelectedItem(): LocationsRes.Data? {
         val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
 
-        return if (viewModel.type == "checkin"){
+        return if (viewModel.type == "checkin") {
             locations.firstOrNull {
                 it.locationName == binding.spSelectLocation.selectedItem.toString()
             }
-        }else{
+        } else {
             locations.firstOrNull {
                 it.locationName == binding.spLocationOut.selectedItem.toString()
             }
@@ -670,7 +693,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 is Resource.Success -> {
                     //upload to gcp
                     viewModel.fileUrl = it.value.data.fileUrl
-                    viewModel.preSignedUrl=it.value.data.presignedUrl
+                    viewModel.preSignedUrl = it.value.data.presignedUrl
                     GlobalScope.launch {
                         withContext(Dispatchers.Main) {
                             imageUpload(
@@ -678,7 +701,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                                 preSignedUrl = it.value.data.presignedUrl,
                                 fileUrl = it.value.data.fileUrl
                             )
-                        }}
+                        }
+                    }
                     viewModel._gcpUrlResponse.value = null
                 }
 
@@ -691,31 +715,37 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private suspend fun imageUpload(path: String, preSignedUrl: String, fileUrl: String) {
-        val requestFile = File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
-         val shootRepository = ShootRepository()
+        val requestFile =
+            File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+        val shootRepository = ShootRepository()
         val uploadResponse = shootRepository.uploadImageToGcp(preSignedUrl, requestFile)
         when (uploadResponse) {
             is Resource.Failure -> {
                 Utilities.hideProgressDialog()
                 requireContext().captureEvent(
                     Events.SITEIMAGE_UPLOADED_FAIL,
-                    HashMap<String,Any?>().apply {
-                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                        put("throwable",uploadResponse.throwable)
+                    HashMap<String, Any?>().apply {
+                        put(
+                            "user_id",
+                            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
+                        )
+                        put("throwable", uploadResponse.throwable)
                     })
                 showErrorSnackBar(path, preSignedUrl, fileUrl)
             }
-            is Resource.Success->{
+            is Resource.Success -> {
                 Utilities.hideProgressDialog()
                 checkInOut()
                 requireContext().captureEvent(
                     Events.SITEIMAGE_UPLOADED,
-                    HashMap<String,Any?>().apply {
-                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                        put("fileUrl",viewModel.fileUrl)
-                        put("response",uploadResponse)
+                    HashMap<String, Any?>().apply {
+                        put(
+                            "user_id",
+                            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
+                        )
+                        put("fileUrl", viewModel.fileUrl)
+                        put("response", uploadResponse)
                     })
-
             }
         }
     }
@@ -724,8 +754,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         viewModel.checkInOutRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    var eventName =   ""
-
+                    var eventName = ""
                     Utilities.hideProgressDialog()
                     if (viewModel.type == "checkin") {
                         eventName = Events.CHECKIN_SUCCESS
@@ -751,7 +780,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                             addAll(tempList)
                         }
                         spLocationAdapter.notifyDataSetChanged()
-
                         Toast.makeText(
                             requireContext(),
                             "Clocked out successfully...",
@@ -769,7 +797,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                             )
                             saveBool(requireContext(), AppConstants.CLOCKED_IN, false)
                         }
-
                         setCheckIn(true)
                     }
 
@@ -777,23 +804,36 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     requireContext()
                         .captureEvent(
                             eventName,
-                            HashMap<String,Any?>().apply {
-                                put("email_id",Utilities.getPreference(requireContext(),AppConstants.EMAIL_ID))
-                                put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                                put("response",it.value)
+                            HashMap<String, Any?>().apply {
+                                put(
+                                    "email_id",
+                                    Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID)
+                                )
+                                put(
+                                    "user_id",
+                                    Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
+                                )
+                                put("response", it.value)
                             })
                 }
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    val eventName = if (viewModel.type == "checkin") Events.CHECKIN_FAILURE else Events.CHECKOUT_FAILURE
+                    val eventName =
+                        if (viewModel.type == "checkin") Events.CHECKIN_FAILURE else Events.CHECKOUT_FAILURE
                     requireContext()
                         .captureEvent(
                             eventName,
-                            HashMap<String,Any?>().apply {
-                                put("email_id",Utilities.getPreference(requireContext(),AppConstants.EMAIL_ID))
-                                put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                                put("response",it.errorMessage)
+                            HashMap<String, Any?>().apply {
+                                put(
+                                    "email_id",
+                                    Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID)
+                                )
+                                put(
+                                    "user_id",
+                                    Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
+                                )
+                                put("response", it.errorMessage)
                             })
                     handleApiError(it) { checkInOut() }
                 }
@@ -810,23 +850,27 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             getSelectedItem()!!?.locationId,
             viewModel.fileUrl
         )
-        val eventName = if (viewModel.type == "checkin") Events.CHECKIN_CALL_INTIATED else Events.CHECKOUT_CALL_INTIATED
+        val eventName =
+            if (viewModel.type == "checkin") Events.CHECKIN_CALL_INTIATED else Events.CHECKOUT_CALL_INTIATED
 
         requireContext()
             .captureEvent(
                 eventName,
-                HashMap<String,Any?>().apply {
-                    put("type",viewModel.type)
-                    put("email_id",Utilities.getPreference(requireContext(),AppConstants.EMAIL_ID))
-                    put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                    put("location_data",location_data.toString())
-                    put("location_id",getSelectedItem()!!?.locationId)
-                    put("image_url",viewModel.fileUrl)
-                    put("internet_connection",requireContext().isInternetActive())
-                    put("gps",locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER))
-                    put("battery_level",requireContext().getBatteryLevel())
-                    put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
-                    put("is_power_save_mode",requireContext().getPowerSaveMode())
+                HashMap<String, Any?>().apply {
+                    put("type", viewModel.type)
+                    put(
+                        "email_id",
+                        Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID)
+                    )
+                    put("user_id", Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID))
+                    put("location_data", location_data.toString())
+                    put("location_id", getSelectedItem()!!?.locationId)
+                    put("image_url", viewModel.fileUrl)
+                    put("internet_connection", requireContext().isInternetActive())
+                    put("gps", locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                    put("battery_level", requireContext().getBatteryLevel())
+                    put("last_reboot_since", SystemClock.elapsedRealtime() / 60000)
+                    put("is_power_save_mode", requireContext().getPowerSaveMode())
                 }
             )
     }
@@ -845,39 +889,17 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                             preSignedUrl = viewModel.preSignedUrl,
                             fileUrl = viewModel.fileUrl
                         )
-                    }}
+                    }
+                }
                 requireContext().captureEvent(
                     Events.SITEIMAGE_UPLOAD_RETRY,
-                    HashMap<String,Any?>().apply {
-                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                        put("fileUrl",viewModel.fileUrl)
+                    HashMap<String, Any?>().apply {
+                        put(
+                            "user_id",
+                            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
+                        )
+                        put("fileUrl", viewModel.fileUrl)
                     })
-            }
-            .setActionTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.primary
-                )
-            )
-
-        snackbar?.show()
-    }
-    private fun showLocationSnackBar() {
-        snackbar = Snackbar.make(
-            binding.root,
-            "Unable to get Location",
-            Snackbar.LENGTH_INDEFINITE
-        )
-            .setAction("Retry") {
-                requireContext().captureEvent(
-                    Events.GET_LOCATION_RETRY,
-                    HashMap<String,Any?>().apply {
-                        put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
-                        put("location_data",location_data)
-                        put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
-                    })
-                getLocationData()
-
             }
             .setActionTextColor(
                 ContextCompat.getColor(
@@ -903,16 +925,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     override fun onPause() {
         Log.e("DEBUG", "OnPause of loginFragment")
         super.onPause()
-        val removeTask = fusedLocationClient.removeLocationUpdates(locationCallback)
-        removeTask.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Log.d(TAG, "Location Callback removed.")
-            } else {
-                Log.d(TAG, "Failed to remove Location Callback.")
-            }
-        }
     }
-
 
 
     override fun onResume() {
@@ -1007,7 +1020,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         if (getSelectedItem() == null) {
             Toast.makeText(requireContext(), "Please Select Location", Toast.LENGTH_LONG).show()
         } else {
-            getLocationData()
+            getLocationData("checkin")
         }
     }
 
