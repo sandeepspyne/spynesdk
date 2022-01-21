@@ -150,7 +150,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
         }
     }
 
-
     // The Folder location where all the files will be stored
     private val outputDirectory: String by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -162,7 +161,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
 
     //Declare PickiT
     var pickiT: PickiT? = null
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -273,10 +271,8 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
         )
     }
 
-
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
-
 
     /**
      * Unbinds all the lifecycles from CameraX, then creates new with new parameters

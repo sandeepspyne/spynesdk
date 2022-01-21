@@ -65,8 +65,7 @@ class CompletedSkuPagedHolder(
         else
             tvPaid.visibility = View.GONE
 
-        tvCategory.text = item.categoryName
-
+        tvCategory.text = if (item.subcategoryName.isNullOrEmpty()) item.categoryName else item.subcategoryName
 
         try {
             Glide.with(context) // replace with 'this' if it's in activity
@@ -92,11 +91,7 @@ class CompletedSkuPagedHolder(
         }
 
         tvSkuName.text = item.skuName
-        try {
-            tvDate.text = getFormattedDate(item.createdOn)
-        }catch (e : java.lang.Exception){
-
-        }
+        tvDate.text = getFormattedDate(item.createdAt)
 
         ivDownloadSKU.setOnClickListener {
             //delete sku images

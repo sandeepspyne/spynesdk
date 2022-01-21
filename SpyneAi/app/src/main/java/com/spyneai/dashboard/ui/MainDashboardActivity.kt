@@ -36,6 +36,8 @@ import com.spyneai.threesixty.data.VideoUploadService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -51,9 +53,6 @@ class MainDashboardActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
         setLocale()
-
-
-        Log.d(TAG, "onCreate: "+getInternetSpeed())
 
         if (intent.getBooleanExtra("show_ongoing", false)) {
             val intent = Intent(this, MyOrdersActivity::class.java)

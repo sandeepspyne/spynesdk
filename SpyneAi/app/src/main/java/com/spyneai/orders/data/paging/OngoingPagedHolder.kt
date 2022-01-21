@@ -120,11 +120,7 @@ class OngoingPagedHolder(
             item.processedCount.toString() + "/" + item.imagesCount.toString()
 
         tvProjectName.text = item.projectName
-        try {
-            tvDate.text = getFormattedDate(item.createdOn)
-        }catch (e : java.lang.Exception){
-
-        }
+        tvDate.text = getFormattedDate(item.createdAt)
         //need thumbnal
         try {
             if (item.skuCount == 0) {

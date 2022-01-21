@@ -120,11 +120,8 @@ class DraftPagedHolder(
 
         tvProjectName.text = item.projectName
         tvSkus.text = item.skuCount.toString()
-        try {
-            tvDate.text = getFormattedDate(item.createdOn)
-        }catch (e : java.lang.Exception){
-            val s = ""
-        }
+        tvDate.text = getFormattedDate(item.createdAt)
+
         tvImages.text = item.imagesCount.toString()
 
         cvMain.setOnClickListener {

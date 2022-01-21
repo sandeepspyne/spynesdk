@@ -51,11 +51,7 @@ class DashboardOngoingPagedHolder(
 
     private fun showData(item: Project) {
         tvProject.text = item.projectName
-        try {
-            tvDate.text = getFormattedDate(item.createdOn)
-        }catch (e : java.lang.Exception){
-
-        }
+        tvDate.text = getFormattedDate(item.createdAt)
 
         try {
             if (item.imagesCount == 0) {

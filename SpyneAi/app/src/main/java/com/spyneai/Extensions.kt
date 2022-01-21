@@ -55,6 +55,7 @@ import com.spyneai.threesixty.data.VideoLocalRepoV2
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
 import java.lang.reflect.InvocationTargetException
+import java.text.DateFormat
 import java.time.format.DateTimeFormatter
 
 
@@ -514,11 +515,17 @@ fun Context.allDataSynced() : Boolean {
 }
 
 
-fun getFormattedDate(date: String) : String {
-    val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-    val formatter = SimpleDateFormat("dd-MM-yyyy")
+fun getFormattedDate(time: Long) : String {
+    val formatter = SimpleDateFormat("dd-MM-yyyy hh:mm:ss")
 
-    return  formatter.format(parser.parse(date))
+    return  formatter.format(Date(time))
+}
+
+fun getTimeStamp(date: String) : Long {
+    val nd = date.substringBefore("T")+" "+date.substringAfter("T").substringBefore(".")
+    val formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+    val date = formatter.parse(nd) as Date
+    return date.time
 }
 
 

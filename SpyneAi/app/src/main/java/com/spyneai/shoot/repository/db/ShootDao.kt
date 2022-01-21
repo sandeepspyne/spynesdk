@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.room.*
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.getTimeStamp
 import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.CarsBackgroundRes
@@ -331,7 +332,7 @@ interface ShootDao {
     fun updateImage(image: Image): Int
 
 
-    @Query("SELECT * FROM sku where projectUuid = :projectUuid LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM sku where projectUuid = :projectUuid order by createdAt DESC LIMIT :limit OFFSET :offset")
     suspend fun getSkusWithLimitAndSkip(offset: Int,projectUuid: String,limit: Int = 50) : List<Sku>
 
     @Transaction
@@ -366,6 +367,7 @@ interface ShootDao {
                 if (it.backgroundId == null)
                     it.backgroundId = AppConstants.DEFAULT_BG_ID
 
+                it.createdAt = getTimeStamp(it.createdOn)
 
                 list.add(it)
             }else {
@@ -373,7 +375,6 @@ interface ShootDao {
                     it.backgroundId = dbItem.backgroundId
                     it.backgroundName = dbItem.backgroundName
                 }
-
 
                 if (it.imagesCount > dbItem.imagesCount)
                     list.add(it)

@@ -52,13 +52,8 @@ class DraftSkuPagedHolder(
     }
 
     private fun showData(item: Sku) {
-        tvCategory.text = item.subcategoryName
-        try {
-            tvDate.text = getFormattedDate(item.createdOn)
-        }catch (e : java.lang.Exception){
-
-        }
-
+        tvCategory.text = if (item.subcategoryName.isNullOrEmpty()) item.categoryName else item.subcategoryName
+        tvDate.text = getFormattedDate(item.createdAt)
 
         if (item.thumbnail == null){
             if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subcategoryId)) {
