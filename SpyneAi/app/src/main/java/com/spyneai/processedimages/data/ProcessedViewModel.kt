@@ -49,7 +49,7 @@ class ProcessedViewModel : ViewModel() {
 
             if (response is Resource.Success) {
                 appDatabase.withTransaction {
-                    val ss = appDatabase.shootDao().insertImagesWithCheck(
+                    val ss = appDatabase.imageDao().insertImagesWithCheck(
                         response.value.data as ArrayList<Image>,
                         projectUuid,
                         skuUuid)
@@ -57,7 +57,7 @@ class ProcessedViewModel : ViewModel() {
                 }
 
                 GlobalScope.launch(Dispatchers.IO) {
-                    val response = appDatabase.shootDao().getImagesBySkuId(
+                    val response = appDatabase.imageDao().getImagesBySkuId(
                         skuUuid = skuUuid
                     )
 
@@ -77,7 +77,7 @@ class ProcessedViewModel : ViewModel() {
             }
         } else {
             GlobalScope.launch(Dispatchers.IO) {
-                val response = appDatabase.shootDao().getImagesBySkuId(
+                val response = appDatabase.imageDao().getImagesBySkuId(
                     skuUuid = skuUuid
                 )
 

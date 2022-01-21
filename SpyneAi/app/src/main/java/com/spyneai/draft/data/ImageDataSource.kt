@@ -39,11 +39,11 @@ class ImageDataSource(
                 val nextKey = null
 
                 appDatabase.withTransaction {
-                    val ss = appDatabase.shootDao().insertImagesWithCheck(response.data as ArrayList<Image>,projectUuid,skuUuid)
+                    val ss = appDatabase.imageDao().insertImagesWithCheck(response.data as ArrayList<Image>,projectUuid,skuUuid)
                     Log.d(TAG, "load: ${Gson().toJson(ss)}")
                 }
 
-                val finalResponse = appDatabase.shootDao().getImagesBySkuId(
+                val finalResponse = appDatabase.imageDao().getImagesBySkuId(
                     skuUuid = skuUuid
                 )
 
@@ -53,7 +53,7 @@ class ImageDataSource(
                     nextKey = nextKey
                 )
             }else{
-                val response = appDatabase.shootDao().getImagesBySkuId(
+                val response = appDatabase.imageDao().getImagesBySkuId(
                     skuUuid = skuUuid
                 )
 

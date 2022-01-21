@@ -379,9 +379,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
 
 
-    fun updateTotalImages() {
-        viewModel.updateTotalImages(viewModel.sku?.skuId!!)
-    }
 
     private fun setOverlay(view: View, overlay: String) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :

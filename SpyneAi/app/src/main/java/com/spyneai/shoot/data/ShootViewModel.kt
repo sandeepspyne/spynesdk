@@ -30,9 +30,10 @@ import org.json.JSONObject
 class ShootViewModel : ViewModel() {
     private val TAG = "ShootViewModel"
     private val repository = ShootRepository()
-    private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
+    private val appDatabase = AppDatabase.getInstance(BaseApplication.getContext())
+    private val localRepository = ShootLocalRepository(appDatabase.shootDao(),appDatabase.projectDao(),appDatabase.skuDao())
    // private val imageRepository = ImageLocalRepository()
-    private val imageRepositoryV2 = ImagesRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
+    private val imageRepositoryV2 = ImagesRepoV2(appDatabase.imageDao())
 
     val showHint: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -451,9 +452,7 @@ class ShootViewModel : ViewModel() {
         localRepository.insertSku(sku!!,project!!)
     }
 
-    fun updateTotalImages(skuId: String) {
-        localRepository.updateTotalImageCount(skuId)
-    }
+
 
     suspend fun insertProject(): Long {
         return localRepository.insertProject(project!!)
@@ -464,9 +463,7 @@ class ShootViewModel : ViewModel() {
         localRepository.updateSubcategory(project!!,sku!!)
     }
 
-    fun updateSubcategoryId(subcategoryId: String, subcategoryName: String) {
-        localRepository.updateSubcategoryId(sku?.skuId!!, subcategoryId, subcategoryName)
-    }
+
 
     fun getImagesbySkuId(skuId: String) = imageRepositoryV2.getImagesBySkuId(skuId)
 

@@ -7,24 +7,25 @@ import com.spyneai.base.room.AppDatabase
 import com.spyneai.db.Images
 import com.spyneai.shoot.repository.db.ShootDao
 import com.spyneai.shoot.repository.model.image.Image
+import com.spyneai.shoot.repository.model.image.ImageDao
 
-class ImagesRepoV2(val shootDao: ShootDao) {
+class ImagesRepoV2(val imageDao: ImageDao) {
 
     fun isImageExist(skuUuid: String,imageName: String) : Boolean {
-        val image = shootDao.getImage(skuUuid,imageName)
+        val image = imageDao.getImage(skuUuid,imageName)
 
         return image != null
     }
 
-    fun updateImage(image: Image) = shootDao.updateImage(image)
+    fun updateImage(image: Image) = imageDao.updateImage(image)
 
-    fun getImagesBySkuId(uuid: String) = shootDao.getImagesBySkuId(uuid)
+    fun getImagesBySkuId(uuid: String) = imageDao.getImagesBySkuId(uuid)
 
-    fun getImagesPathBySkuId(uuid: String) = shootDao.getImagesPathBySkuId(uuid)
+    fun getImagesPathBySkuId(uuid: String) = imageDao.getImagesPathBySkuId(uuid)
 
-    fun totalRemainingUpload() = shootDao.totalRemainingUpload()
+    fun totalRemainingUpload() = imageDao.totalRemainingUpload()
 
-    fun totalRemainingMarkDone() = shootDao.totalRemainingUpload(true, isMarkedDone = false)
+    fun totalRemainingMarkDone() = imageDao.totalRemainingUpload(true, isMarkedDone = false)
 
     fun getRemainingAbove(uuid: String) = 0
 
@@ -34,17 +35,17 @@ class ImagesRepoV2(val shootDao: ShootDao) {
 
     fun getRemainingBelowSkipped(uuid: String) = 0
 
-    fun getOldestImage() = shootDao.getOldestImage()
+    fun getOldestImage() = imageDao.getOldestImage()
 
-    fun skipImage(uuid: String,toProcessAt: Long) = shootDao.skipImage(uuid,toProcessAt)
+    fun skipImage(uuid: String,toProcessAt: Long) = imageDao.skipImage(uuid,toProcessAt)
 
-    fun markDone(uuid: String) = shootDao.markDone(uuid)
+    fun markDone(uuid: String) = imageDao.markDone(uuid)
 
-    fun addPreSignedUrl(image: Image) = shootDao.addPreSignedUrl(image.uuid,image.preSignedUrl!!,image.imageId!!)
+    fun addPreSignedUrl(image: Image) = imageDao.addPreSignedUrl(image.uuid,image.preSignedUrl!!,image.imageId!!)
 
-    fun markUploaded(uuid: String) = shootDao.markUploaded(uuid)
+    fun markUploaded(uuid: String) = imageDao.markUploaded(uuid)
 
-    fun markStatusUploaded(uuid: String) = shootDao.markStatusUploaded(uuid)
+    fun markStatusUploaded(uuid: String) = imageDao.markStatusUploaded(uuid)
 
-    fun getImage(uuid: String): Image = shootDao.getImage(uuid)
+    fun getImage(uuid: String): Image = imageDao.getImage(uuid)
 }

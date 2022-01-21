@@ -51,7 +51,7 @@ class ImageUploader(
                 if (instance == null) {
                     instance = ImageUploader(
                         context,
-                        ImagesRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).shootDao()),
+                        ImagesRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).imageDao()),
                         ShootRepository(),
                         listener
                     )

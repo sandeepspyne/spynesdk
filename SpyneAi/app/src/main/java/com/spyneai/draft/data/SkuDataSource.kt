@@ -37,11 +37,11 @@ class SkuDataSource(
                 val nextKey = if (response.data.isNullOrEmpty()) null else page + 1
 
                 appDatabase.withTransaction {
-                    val ss = appDatabase.shootDao().insertSkuWithCheck(response.data,projectUuid,projectId)
+                    val ss = appDatabase.skuDao().insertSkuWithCheck(response.data,projectUuid,projectId)
                     Log.d(TAG, "load: ${Gson().toJson(ss)}")
                 }
 
-                val finalResponse = appDatabase.shootDao().getSkusWithLimitAndSkip(
+                val finalResponse = appDatabase.skuDao().getSkusWithLimitAndSkip(
                     offset = page.times(10),
                     projectUuid = projectUuid
                 )
@@ -52,7 +52,7 @@ class SkuDataSource(
                     nextKey = nextKey
                 )
             }else{
-                val response = appDatabase.shootDao().getSkusWithLimitAndSkip(
+                val response = appDatabase.skuDao().getSkusWithLimitAndSkip(
                     offset = page.times(10),
                     projectUuid = projectUuid
                 )

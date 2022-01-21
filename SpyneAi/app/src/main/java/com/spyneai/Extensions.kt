@@ -443,10 +443,11 @@ fun Context.startVideoUploadService() {
 fun Context.checkPendingDataSync() {
     GlobalScope.launch(Dispatchers.IO) {
         val db = AppDatabase.getInstance(BaseApplication.getContext())
+        val imageDao = db.imageDao()
         val shootDao = db.shootDao()
         val videoDao = db.videoDao()
 
-        if (ImagesRepoV2(shootDao).getOldestImage() != null
+        if (ImagesRepoV2(imageDao).getOldestImage() != null
         ) {
 
             startUploadingService(
@@ -465,7 +466,7 @@ fun Context.checkPendingDataSync() {
 //            )
         }
 
-        val pendingProjects = shootDao.getPendingProjects()
+        val pendingProjects = db.projectDao().getPendingProjects()
 
         if (pendingProjects > 0){
             startUploadingService(
@@ -474,7 +475,7 @@ fun Context.checkPendingDataSync() {
             )
         }
 
-        val pendingSkus = shootDao.getPendingSku()
+        val pendingSkus = db.skuDao().getPendingSku()
 
         if (pendingSkus > 0){
             startUploadingService(
@@ -495,18 +496,18 @@ fun Context.allDataSynced() : Boolean {
     var allDataSynced = true
 
     //check projects
-    val shootDao = AppDatabase.getInstance(this).shootDao()
+    val db = AppDatabase.getInstance(this)
 
-    val pendingProjects = shootDao.getPendingProjects()
+    val pendingProjects = db.projectDao().getPendingProjects()
     if (pendingProjects > 0)
         return false
 
-    val pendingSkus = shootDao.getPendingSku()
+    val pendingSkus = db.skuDao().getPendingSku()
 
     if (pendingSkus > 0)
         return false
 
-    val pendingImages = shootDao.totalRemainingUpload(isUploaded = false, isMarkedDone = false)
+    val pendingImages = db.imageDao().totalRemainingUpload(isUploaded = false, isMarkedDone = false)
 
     if (pendingImages > 0)
         return false

@@ -29,8 +29,9 @@ class ThreeSixtyViewModel : ViewModel() {
 
     private val repository = ShootRepository()
     private val threeSixtyRepository = ThreeSixtyRepository()
-    private val localRepository =
-        ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
+    private val db = AppDatabase.getInstance(BaseApplication.getContext())
+    private val localRepository = ShootLocalRepository(db.shootDao(),db.projectDao(),db.skuDao())
+
     private val videoRepository =
         VideoLocalRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).videoDao())
 

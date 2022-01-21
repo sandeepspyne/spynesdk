@@ -135,9 +135,6 @@ class MainDashboardActivity : AppCompatActivity() {
             }
         })
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val s = AppDatabase.getInstance(BaseApplication.getContext()).getPagingDao()
-        }
     }
 
 

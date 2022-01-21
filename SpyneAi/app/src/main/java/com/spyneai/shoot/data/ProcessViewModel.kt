@@ -26,7 +26,8 @@ import okhttp3.RequestBody
 class ProcessViewModel : ViewModel() {
 
     private val repository = ProcessRepository()
-    private val localRepository = ShootLocalRepository(AppDatabase.getInstance(BaseApplication.getContext()).shootDao())
+    private val db = AppDatabase.getInstance(BaseApplication.getContext())
+    private val localRepository = ShootLocalRepository(db.shootDao(),db.projectDao(),db.skuDao())
 
     var fromVideo = false
     val exteriorAngles: MutableLiveData<Int> = MutableLiveData()
@@ -130,19 +131,7 @@ class ProcessViewModel : ViewModel() {
 
     }
 
-    fun processSku(authKey: String, skuId: String, backgroundId: String, is360: Boolean,
-                   numberPlateBlur: Boolean,
-                   windowCorrection: Boolean,
-                   tintWindow: Boolean) =
-        viewModelScope.launch {
 
-            //queue process request
-            localRepository.queueProcessRequest(sku?.skuId!!, backgroundId, is360)
-
-            _processSkuRes.value = Resource.Loading
-            _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId,
-                is360,numberPlateBlur,windowCorrection,tintWindow)
-        }
 
 //    fun checkImagesUploadStatus(backgroundSelect: String) {
 //        if (localRepository.isImagesUploaded(sku?.skuId!!)) {
@@ -186,17 +175,8 @@ class ProcessViewModel : ViewModel() {
             repository.updateDownloadStatus(userId, skuId, enterpriseId, downloadHd)
     }
 
-    fun updateIsProcessed(projectId: String, skuId: String) {
-        localRepository.updateIsProcessed(projectId, skuId)
-    }
 
-    fun skuProcessStateWithBackgroundid(
-        auth_key: String, project_id: String, background_id: Int
-    ) = viewModelScope.launch {
-        _skuProcessStateWithBgResponse.value = Resource.Loading
-        _skuProcessStateWithBgResponse.value =
-            repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
-    }
+
 
     suspend fun setProjectAndSkuData(projectUuid: String, skuUuid: String) {
         project = localRepository.getProject(projectUuid)

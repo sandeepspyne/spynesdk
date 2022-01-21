@@ -11,7 +11,7 @@ import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.repository.db.ShootDao
+
 import com.spyneai.shoot.repository.model.project.ProjectBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,13 +21,11 @@ import kotlin.collections.HashMap
 import com.spyneai.base.network.Resource
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.ImagesRepoV2
-import com.spyneai.shoot.repository.model.sku.Sku
-import com.spyneai.startVideoUploadService
+
 
 class ProjectSkuSync(
     val context: Context,
-    val shootDao: ShootDao,
+    val db: AppDatabase,
     val listener: DataSyncListener,
     var retryCount: Int = 0,
     var connectionLost: Boolean = false,
@@ -47,7 +45,7 @@ class ProjectSkuSync(
                 if (instance == null) {
                     instance = ProjectSkuSync(
                         context,
-                        AppDatabase.getInstance(BaseApplication.getContext()).shootDao(),
+                        AppDatabase.getInstance(BaseApplication.getContext()),
                         listener
                     )
 
@@ -94,12 +92,12 @@ class ProjectSkuSync(
 
     suspend fun  startProjectSync(){
         do {
-            val projectWithSku = shootDao.getProjectWithSkus()
+            val projectWithSku = db.projectDao().getProjectWithSkus()
 
             Log.d(TAG, "startProjectSync: "+Gson().toJson(projectWithSku))
 
             if (connectionLost){
-                val count = shootDao.getPendingProjects()
+                val count = db.projectDao().getPendingProjects()
                 context.captureEvent(
                     Events.PROJECT_CONNECTION_BREAK,
                     HashMap<String,Any?>()
@@ -112,7 +110,7 @@ class ProjectSkuSync(
                 break
             }else {
                 if (projectWithSku == null){
-                    val count = shootDao.getPendingProjects()
+                    val count = db.projectDao().getPendingProjects()
                     context.captureEvent(
                         Events.ALL_PROJECTS_CREATED_BREAKS,
                         HashMap<String,Any?>().apply {
@@ -137,7 +135,7 @@ class ProjectSkuSync(
 
                     if (retryCount >4){
                         //skip project
-                        val skip = shootDao.skipProject(
+                        val skip = db.projectDao().skipProject(
                             projectWithSku.project?.uuid!!,
                             projectWithSku.project.toProcessAt.plus( projectWithSku.project.retryCount * AppConstants.RETRY_DELAY_TIME)
                         )
@@ -211,13 +209,13 @@ class ProjectSkuSync(
 
         if (!connectionLost){
             //get pending projects count
-            val count = shootDao.getPendingProjects()
+            val count = db.projectDao().getPendingProjects()
 
             listener.onCompleted("All Projects Created",ServerSyncTypes.CREATE)
             isActive = false
 
 //            if (count > 0){
-//                val project = shootDao.getOldestProject()
+//                val project = db.projectDao().getOldestProject()
 //                val scheduleTime = project.toProcessAt.minus(System.currentTimeMillis())
 //                if (scheduleTime > 0){
 //                    Log.d(TAG, "selectLastImageAndUpload: "+scheduleTime)
@@ -286,7 +284,7 @@ class ProjectSkuSync(
         )
 
         //update project
-        val update = shootDao.updateProjectServerId(projectBody.projectData.localId,projectId)
+        val update = db.projectDao().updateProjectServerId(projectBody.projectData.localId,projectId)
 
         context.captureEvent(
             Events.PROJECT_DB_UPDATE,
@@ -297,10 +295,10 @@ class ProjectSkuSync(
         )
 
         res.data.skusList.forEachIndexed { index, skus ->
-            shootDao.updateSkuAndImageIds(projectId,skus.localId,skus.skuId)
+            db.shootDao().updateSkuAndImageIds(projectId,skus.localId,skus.skuId)
 
             if (projectBody.skuData[index].prodSubCatId == "360_exterior"){
-                val s = shootDao.updateVideoSkuAndProjectIds(projectId,skus.skuId,skus.localId)
+                val s = db.shootDao().updateVideoSkuAndProjectIds(projectId,skus.skuId,skus.localId)
                 Log.d(TAG, "createProject: $s")
             }
         }
@@ -348,7 +346,7 @@ class ProjectSkuSync(
         )
 
         //update project
-        val update = shootDao.updateProjectAndSkuCreated(projecctUuid,sku.localId)
+        val update = db.shootDao().updateProjectAndSkuCreated(projecctUuid,sku.localId)
 
         context.captureEvent(
             Events.COMBO_SKU_DB_UPDATED,

@@ -258,7 +258,7 @@ class VideoUploadService : Service(), VideoUploader.Listener {
                 videoUploader?.connectionLost = false
 
                 GlobalScope.launch(Dispatchers.IO) {
-                    val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
+                    val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).imageDao()
                     val shootLocalRepository = ImagesRepoV2(shootDao)
                     if (shootLocalRepository.getOldestImage() != null)
                         resumeUpload("onReceive")

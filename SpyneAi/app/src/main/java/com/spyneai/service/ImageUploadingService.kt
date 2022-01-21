@@ -255,21 +255,21 @@ class ImageUploadingService : Service(),DataSyncListener {
                 imageUploader?.connectionLost = false
 
                GlobalScope.launch(Dispatchers.IO) {
-                   val shootDao = AppDatabase.getInstance(BaseApplication.getContext()).shootDao()
-                   val shootLocalRepository = ImagesRepoV2(shootDao)
+                   val db = AppDatabase.getInstance(BaseApplication.getContext())
+                   val shootLocalRepository = ImagesRepoV2(db.imageDao())
                    if (shootLocalRepository.getOldestImage() != null
                    ) {
 
                        resumeUpload("onReceive")
                    }
 
-                   val pendingProjects = shootDao.getPendingProjects()
+                   val pendingProjects = db.projectDao().getPendingProjects()
 
                    if (pendingProjects > 0){
                        startProjectSync("onReceive")
                    }
 
-                   val pendingSkus = shootDao.getPendingSku()
+                   val pendingSkus = db.skuDao().getPendingSku()
 
                    if (pendingSkus > 0){
                        startProcessSync("onReceive")

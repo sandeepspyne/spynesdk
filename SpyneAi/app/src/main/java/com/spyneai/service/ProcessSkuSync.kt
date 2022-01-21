@@ -17,6 +17,7 @@ import com.spyneai.shoot.data.ProcessRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.db.ShootDao
 import com.spyneai.shoot.repository.model.sku.Sku
+import com.spyneai.shoot.repository.model.sku.SkuDao
 import com.spyneai.startVideoUploadService
 import io.sentry.protocol.App
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,7 @@ import kotlin.collections.HashMap
 
 class ProcessSkuSync(
     val context: Context,
-    val shootDao: ShootDao,
+    val shootDao: SkuDao,
     val listener: DataSyncListener,
     var retryCount: Int = 0,
     var connectionLost: Boolean = false,
@@ -46,7 +47,7 @@ class ProcessSkuSync(
                 if (instance == null) {
                     instance = ProcessSkuSync(
                         context,
-                        AppDatabase.getInstance(BaseApplication.getContext()).shootDao(),
+                        AppDatabase.getInstance(BaseApplication.getContext()).skuDao(),
                         listener
                     )
 
