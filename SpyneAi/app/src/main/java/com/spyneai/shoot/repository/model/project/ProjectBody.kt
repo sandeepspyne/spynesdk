@@ -42,6 +42,8 @@ data class ProjectBody(
     }
 
     data class SkuData(
+        @SerializedName("sku_id")
+        val skuId: String?,
         @SerializedName("image_present")
         val imagePresent: Int,
         @SerializedName("initial_no")

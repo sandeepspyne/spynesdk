@@ -110,6 +110,22 @@ interface ShootDao {
     @Update
     fun updateSku(sku: Sku): Int
 
+    @Query("update sku set isCreated = :isCreated where uuid = :uuid")
+    fun updateSkuCreated(uuid: String,isCreated: Boolean = true): Int
+
+    @Query("update project set isCreated = :isCreated where uuid = :uuid")
+    fun updateProjectCreated(uuid: String,isCreated: Boolean = true): Int
+
+    @Transaction
+    fun updateProjectAndSkuCreated(projectUuid: String,skuUuid: String){
+        val p = updateProjectCreated(projectUuid)
+        Log.d(AppConstants.SHOOT_DAO_TAG, "updateProjectAndSkuCreated: $p")
+
+        val s = updateSkuCreated(skuUuid)
+
+        Log.d(AppConstants.SHOOT_DAO_TAG, "updateProjectAndSkuCreated: $s")
+    }
+
     @Query("update sku set skuId = :skuId,projectId = :projectId, isCreated = :isCreated where uuid = :uuid")
     fun updateSKuServerId(uuid: String,skuId: String,projectId: String,isCreated: Boolean = true): Int
 
@@ -163,6 +179,9 @@ interface ShootDao {
 
     @Query("UPDATE project SET skuCount = skuCount + 1, isCreated = :isCreated WHERE uuid =:uuid ")
     fun updateProjectSkuCount(uuid: String,isCreated: Boolean = false) : Int
+
+    @Query("UPDATE project SET isCreated = :isCreated WHERE uuid =:uuid ")
+    fun setProjectCreatedFalse(uuid: String,isCreated: Boolean = false) : Int
 
     @Query("Select * from project where uuid = :uuid")
     fun getProject(uuid: String) : Project
@@ -273,8 +292,20 @@ interface ShootDao {
     @Query("UPDATE sku SET backgroundName = :backgroundName, backgroundId= :backgroundId, totalFrames = totalFrames + :totalFrames  WHERE uuid =:uuid ")
     fun updateSkuBackground(uuid: String,backgroundName: String,backgroundId: String,totalFrames : Int) : Int
 
-    @Query("UPDATE sku SET subcategoryId = :subcategoryId,subcategoryName = :subcategoryName,initialFrames = :initialFrames, imagePresent = :imagePresent WHERE uuid =:uuid ")
-    fun updateVideoSkuLocally(uuid: String,subcategoryId: String,subcategoryName: String,initialFrames: Int,imagePresent: Int = 1) : Int
+    @Transaction
+    fun updateComboSkuAndProject(sku: Sku){
+        setProjectCreatedFalse(sku.projectUuid!!)
+
+        updateVideoSkuLocally(
+            uuid = sku.uuid,
+            subcategoryId = sku.subcategoryId!!,
+            subcategoryName = sku.subcategoryName!!,
+            initialFrames = sku.initialFrames!!
+        )
+    }
+
+    @Query("UPDATE sku SET subcategoryId = :subcategoryId,subcategoryName = :subcategoryName,initialFrames = :initialFrames, imagePresent = :imagePresent,isCreated = :isCreated WHERE uuid =:uuid ")
+    fun updateVideoSkuLocally(uuid: String,subcategoryId: String,subcategoryName: String,initialFrames: Int,imagePresent: Int = 1,isCreated: Boolean = false) : Int
 
     @Query("UPDATE sku SET totalFrames = totalFrames + :totalFrames  WHERE uuid =:uuid ")
     fun updateSkuTotalFrames(uuid: String,totalFrames : Int) : Int
@@ -354,8 +385,6 @@ interface ShootDao {
                 it.isProcessed = true
             }
 
-
-
             if (it.status == "In Progress"){
                 it.status = "ongoing"
                 it.isProcessed = true
@@ -390,7 +419,6 @@ interface ShootDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(skuList: List<Sku>) : List<Long>
-
 
     @Transaction
     suspend fun insertImagesWithCheck(response: ArrayList<Image>,projectUuid: String,skuUuid: String){

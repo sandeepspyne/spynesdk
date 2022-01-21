@@ -914,11 +914,6 @@ class ShootLocalRepository(val shootDao: ShootDao) {
 
     fun updateSkuTotalFrames(uuid: String,totalFrames: Int) = shootDao.updateSkuTotalFrames(uuid,totalFrames)
 
-    fun updateVideoSkuLocally(sku: com.spyneai.shoot.repository.model.sku.Sku) = shootDao.updateVideoSkuLocally(
-        uuid = sku.uuid,
-        subcategoryId = sku.subcategoryId!!,
-        subcategoryName = sku.subcategoryName!!,
-        initialFrames = sku.initialFrames!!
-    )
+    fun updateVideoSkuLocally(sku: com.spyneai.shoot.repository.model.sku.Sku) = shootDao.updateComboSkuAndProject(sku)
 
 }

@@ -22,6 +22,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImagesRepoV2
+import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.startVideoUploadService
 
 class ProjectSkuSync(
@@ -160,6 +161,7 @@ class ProjectSkuSync(
                                     if (!sku.isCreated && sku.isSelectAble){
                                         skuList.add(
                                             ProjectBody.SkuData(
+                                                skuId = sku.skuId,
                                                 localId = sku.uuid,
                                                 skuName = sku.skuName!!,
                                                 prodCatId = sku.categoryId!!,
@@ -189,7 +191,16 @@ class ProjectSkuSync(
                         }
                     }
 
-                    createProject(projectBody!!)
+                    projectBody?.let {
+                        if (it.skuData.isNotEmpty()){
+                            if (it.skuData[0].skuId != null && (it.skuData[0].imagePresent == 1 && it.skuData[0].videoPresent == 1)){
+                                //update combo sku
+                                updateComboShootSku(it.projectData.localId,it.skuData[0])
+                            }else {
+                                createProject(it)
+                            }
+                        }
+                    }
 
                     continue
                 }
@@ -260,7 +271,6 @@ class ProjectSkuSync(
             return false
         }
 
-
         val res = (response as Resource.Success).value
 
         Log.d(TAG, "createProject: "+Gson().toJson(res))
@@ -293,10 +303,60 @@ class ProjectSkuSync(
                 val s = shootDao.updateVideoSkuAndProjectIds(projectId,skus.skuId,skus.localId)
                 Log.d(TAG, "createProject: $s")
             }
-
-
-
         }
+
+        retryCount = 0
+        return true
+    }
+
+    private suspend fun updateComboShootSku(projecctUuid: String,sku: ProjectBody.SkuData): Boolean {
+        val response = ShootRepository().updateVideoSku(sku.skuId!!, sku.prodSubCatId!!, sku.initialNo)
+
+        val properties = HashMap<String,Any?>().apply {
+            put("sku_id",sku.skuId!!)
+            put("data",Gson().toJson(sku))
+        }
+
+        context.captureEvent(
+            Events.UPDATE_COMBO_SKU_INTIATED,
+            properties
+        )
+
+        if (response is Resource.Failure){
+            retryCount++
+            context.captureEvent(
+                Events.UPDATE_COMBO_SKU_FAILED,
+                properties.apply {
+                    put("sku_id",sku.skuId!!)
+                    put("response",response)
+                    put("throwable",response.throwable)
+                }
+            )
+            return false
+        }
+
+        val res = (response as Resource.Success).value
+
+        Log.d(TAG, "createProject: "+Gson().toJson(res))
+
+        context.captureEvent(
+            Events.COMBO_SKU_UPDATED,
+            properties.apply {
+                put("sku_id",sku.skuId!!)
+                put("response",res)
+            }
+        )
+
+        //update project
+        val update = shootDao.updateProjectAndSkuCreated(projecctUuid,sku.localId)
+
+        context.captureEvent(
+            Events.COMBO_SKU_DB_UPDATED,
+            properties.apply {
+                put("sku_id",sku.skuId!!)
+                put("db_update",update)
+            }
+        )
 
         retryCount = 0
         return true

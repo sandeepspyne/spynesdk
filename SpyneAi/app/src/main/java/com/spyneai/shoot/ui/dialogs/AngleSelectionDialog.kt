@@ -147,6 +147,11 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                 viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
                 viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
+                requireContext().startUploadingService(
+                    AngleSelectionDialog::class.java.simpleName,
+                    ServerSyncTypes.CREATE
+                )
+
                 dismiss()
             }
         }
