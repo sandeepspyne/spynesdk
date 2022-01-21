@@ -18,29 +18,5 @@ class RoomTestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_test)
 
-
-        GlobalScope.launch(Dispatchers.IO) {
-            val db = Room.databaseBuilder(
-                applicationContext,
-                AppDatabase::class.java, "spyne-db"
-            ).build()
-
-
-            val userDao = db.userDao()
-            userDao.insert(
-                User(0,
-                    "sandeep",
-                    "singh"
-                )
-            )
-            val users: List<User> = userDao.getAll()
-
-            users.forEach {
-                Log.d(TAG, "onCreate: "+it.firstName)
-                Log.d(TAG, "onCreate: "+it.lastName)
-                Log.d(TAG, "onCreate: "+it.uid)
-            }
-        }
-
     }
 }

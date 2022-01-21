@@ -10,12 +10,11 @@ import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.repository.DashboardDao
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.orders.data.paging.PagingDao
-import com.spyneai.orders.data.paging.ProjectPagedRes
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.repository.db.ShootDao
 import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.shoot.repository.model.project.Project
+import com.spyneai.shoot.repository.model.project.ProjectDao
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.threesixty.data.VideoDao
 import com.spyneai.threesixty.data.model.VideoDetails
@@ -40,13 +39,14 @@ import com.spyneai.threesixty.data.model.VideoDetails
 )
 @TypeConverters(StringListConvertor::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun userDao(): UserDao
     abstract fun dashboardDao(): DashboardDao
+
     abstract fun shootDao(): ShootDao
 
-    abstract fun getPagingDao(): PagingDao
+    abstract fun projectDao(): ProjectDao
 
     abstract fun videoDao(): VideoDao
+
 
     companion object {
 

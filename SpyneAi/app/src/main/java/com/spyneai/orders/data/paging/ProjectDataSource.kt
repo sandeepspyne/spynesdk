@@ -43,11 +43,11 @@ class ProjectDataSource(
                 val nextKey = if (response.data.isNullOrEmpty()) null else page + 1
 
                 appDatabase.withTransaction {
-                    val ss = appDatabase.getPagingDao().insertWithCheck(response.data)
+                    val ss = appDatabase.projectDao().insertWithCheck(response.data)
                     Log.d(TAG, "load: ${Gson().toJson(ss)}")
                 }
 
-                val finalResponse = appDatabase.getPagingDao().getProjectsWithLimitAndSkip(
+                val finalResponse = appDatabase.projectDao().getProjectsWithLimitAndSkip(
                     offset = page.times(10),
                     status = status
                 )
@@ -58,7 +58,7 @@ class ProjectDataSource(
                     nextKey = nextKey
                 )
             }else{
-                val response = appDatabase.getPagingDao().getProjectsWithLimitAndSkip(
+                val response = appDatabase.projectDao().getProjectsWithLimitAndSkip(
                     offset = page.times(10),
                     status = status
                 )
