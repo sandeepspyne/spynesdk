@@ -154,9 +154,9 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
     // The Folder location where all the files will be stored
     private val outputDirectory: String by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/Spyne360/"
+            "${Environment.DIRECTORY_DCIM}/Spyne360/${viewModel.project?.projectName}-${viewModel.sku?.projectUuid}/${viewModel.sku?.skuName}-${viewModel.sku?.uuid}/"
         } else {
-            "${requireActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne360/"
+            "${requireActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne360/${viewModel.project?.projectName}-${viewModel.sku?.projectUuid}/${viewModel.sku?.skuName}-${viewModel.sku?.uuid}/"
         }
     }
 
