@@ -273,6 +273,9 @@ interface ShootDao {
     @Query("UPDATE sku SET backgroundName = :backgroundName, backgroundId= :backgroundId, totalFrames = totalFrames + :totalFrames  WHERE uuid =:uuid ")
     fun updateSkuBackground(uuid: String,backgroundName: String,backgroundId: String,totalFrames : Int) : Int
 
+    @Query("UPDATE sku SET subcategoryId = :subcategoryId,subcategoryName = :subcategoryName,initialFrames = :initialFrames, imagePresent = :imagePresent WHERE uuid =:uuid ")
+    fun updateVideoSkuLocally(uuid: String,subcategoryId: String,subcategoryName: String,initialFrames: Int,imagePresent: Int = 1) : Int
+
     @Query("UPDATE sku SET totalFrames = totalFrames + :totalFrames  WHERE uuid =:uuid ")
     fun updateSkuTotalFrames(uuid: String,totalFrames : Int) : Int
 

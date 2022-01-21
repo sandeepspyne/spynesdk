@@ -223,6 +223,12 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
+        GlobalScope.launch(Dispatchers.IO) {
+            shootViewModel.setProjectAndSkuData(
+                intent.getStringExtra(AppConstants.PROJECT_UUIID)!!,
+                intent.getStringExtra(AppConstants.SKU_UUID)!!
+            )
+        }
 //        shootViewModel.project = Project(
 //            uuid =  intent.getStringExtra(AppConstants.PROJECT_ID)!!,
 //            categoryName = shootViewModel.categoryDetails.value?.categoryName!!,
@@ -230,15 +236,15 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 //        )
 
         //set sku data
-        val sku = Sku(
-            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            skuName = intent.getStringExtra(AppConstants.SKU_NAME)!!,
-            skuId = intent.getStringExtra(AppConstants.SKU_ID),
-            categoryName = shootViewModel.categoryDetails.value?.categoryName!!,
-            categoryId = shootViewModel.categoryDetails.value?.categoryId!!
-        )
-
-        shootViewModel.sku = sku
+//        val sku = Sku(
+//            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+//            skuName = intent.getStringExtra(AppConstants.SKU_NAME)!!,
+//            skuId = intent.getStringExtra(AppConstants.SKU_ID),
+//            categoryName = shootViewModel.categoryDetails.value?.categoryName!!,
+//            categoryId = shootViewModel.categoryDetails.value?.categoryId!!
+//        )
+//
+//        shootViewModel.sku = sku
     }
 
     private fun setUpDraftsData() {

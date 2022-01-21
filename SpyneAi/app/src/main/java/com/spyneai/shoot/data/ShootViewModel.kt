@@ -484,8 +484,8 @@ class ShootViewModel : ViewModel() {
         )
     }
 
-    fun updateVideoSkuLocally(sku: Sku) {
-        localRepository.updateVideoSkuLocally(sku)
+    fun updateVideoSkuLocally() {
+        localRepository.updateVideoSkuLocally(sku!!)
     }
 
 

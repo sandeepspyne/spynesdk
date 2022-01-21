@@ -91,11 +91,13 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                     categoryName = it.categoryName,
                     skuName = skuName,
                     subcategoryName = it.subCategory,
-                    subcategoryId = it.type,
+                    subcategoryId = it.categoryId,
                     threeSixtyFrames = it.frames,
                     initialFrames = it.frames,
                     totalFrames = it.frames,
-                    isSelectAble = true
+                    isSelectAble = true,
+                    imagePresent = 0,
+                    videoPresent = 1
                 )
 
                 viewModel.sku = sku

@@ -115,7 +115,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 
             if (viewModel.fromVideo) {
                 updateSku()
-                observerUpdateSku()
             } else {
                 createSku()
             }
@@ -129,71 +128,28 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
         binding.tvProceed.text = getString(R.string.proceed)
     }
 
-    private fun observerUpdateSku() {
-//        val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
-//
-//        viewModel.updateVideoSkuRes.observe(viewLifecycleOwner, {
-//            when (it) {
-//                is Resource.Success -> {
-//                    Utilities.hideProgressDialog()
-//
-//                    val items = HashMap<String, Any?>()
-//                    items.put("sku_name", viewModel.sku?.skuName.toString())
-//                    items.put("project_id", createProjectRes.project_id)
-//                    items.put("prod_sub_cat_id", viewModel.subCategory.value?.prod_sub_cat_id!!)
-//                    items.put("angles", viewModel.exterirorAngles.value!!)
-//
-//                    BaseApplication.getContext().captureEvent(
-//                        Events.CREATE_SKU,
-//                        items
-//                    )
-//
-//                    val sku = viewModel.sku
-//                    sku?.skuId = viewModel.sku?.skuId!!
-//                    sku?.projectId = createProjectRes.project_id
-////                    sku?.createdOn = System.currentTimeMillis()
-////                    sku?.totalImages = viewModel.exterirorAngles.value
-//                    sku?.categoryName = viewModel.categoryDetails.value?.categoryName
-//                    sku?.categoryId = viewModel.categoryDetails.value?.categoryId
-//                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
-//                    sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id!!
-//                   // sku?.exteriorAngles = viewModel.exterirorAngles.value
-//
-//                    viewModel.sku = sku
-//                    viewModel.isSubCategoryConfirmed.value = true
-//                    viewModel.isSkuCreated.value = true
-////                    viewModel.showLeveler.value = true
-//                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-//                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-//                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
-//
-//                    //update sku locally
-//                    //viewModel.updateVideoSkuLocally(sku!!)
-//                    dismiss()
-//                }
-//
-//
-//                is Resource.Failure -> {
-//                    viewModel.isCameraButtonClickable = true
-//                    BaseApplication.getContext().captureFailureEvent(
-//                        Events.CREATE_SKU_FAILED, HashMap<String, Any?>(),
-//                        it.errorMessage!!
-//                    )
-//                    Utilities.hideProgressDialog()
-//                    handleApiError(it) { updateSku() }
-//                }
-//            }
-//        })
-    }
 
     private fun updateSku() {
-        Utilities.showProgressDialog(requireContext())
+        viewModel.sku?.apply {
+            subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
+            subcategoryName = viewModel.subCategory.value?.sub_cat_name
+            initialFrames = viewModel.exterirorAngles.value
+        }
 
-        viewModel.updateVideoSku(
-            viewModel.sku?.skuId!!,
-            viewModel.subCategory.value?.prod_sub_cat_id!!,
-            viewModel.exterirorAngles.value!!
-        )
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.updateVideoSkuLocally()
+
+            GlobalScope.launch(Dispatchers.Main) {
+                viewModel.isSubCategoryConfirmed.value = true
+                viewModel.isSkuCreated.value = true
+//                    viewModel.showLeveler.value = true
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+
+                dismiss()
+            }
+        }
     }
 
     private fun createSku() {
