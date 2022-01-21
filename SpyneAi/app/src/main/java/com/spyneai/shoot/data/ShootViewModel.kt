@@ -841,7 +841,7 @@ class ShootViewModel : ViewModel() {
         }
     }
 
-    suspend fun updateTotalFrames(totalFrames: Int) =  localRepository.updateSkuTotalFrames(sku?.uuid!!,totalFrames)
+    suspend fun updateTotalFrames() =  localRepository.updateSkuTotalFrames(sku?.uuid!!,sku?.imagesCount!!)
 
     suspend fun updateBackground(backgroundId: Int,bgName: String = "") = localRepository.updateBackground(HashMap<String,Any>()
         .apply {

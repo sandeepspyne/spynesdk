@@ -38,6 +38,14 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         handler = Handler()
         binding.tvShadowOption.text = "Shadow is OFF"
 
+        //update sku
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.setProjectAndSkuData(
+                viewModel.project?.uuid!!,
+                viewModel.sku?.uuid!!
+            )
+        }
+
 //        binding.swiperefreshProject.setOnRefreshListener {
 //            repeatRefreshData()
 //            binding.swiperefreshProject.isRefreshing = false
@@ -158,8 +166,11 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
     private fun processWithoutBackgroundId() {
         Utilities.showProgressDialog(requireContext())
+
         GlobalScope.launch(Dispatchers.IO) {
-            viewModel.updateProjectStatus()
+            //viewModel.updateProjectStatus()
+
+            viewModel.updateBackground(5000)
 
             GlobalScope.launch(Dispatchers.Main) {
 

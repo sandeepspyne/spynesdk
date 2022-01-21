@@ -49,14 +49,17 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         }
 
         GlobalScope.launch(Dispatchers.IO) {
-            val project = viewModel.getProject(viewModel.project?.uuid!!)
-            viewModel.project = project
+            //update sku
+            viewModel.setProjectAndSkuData(
+                viewModel.project?.uuid!!,
+                viewModel.sku?.uuid!!
+            )
 
             GlobalScope.launch(Dispatchers.Main) {
-                viewModel.totalSkuCaptured.value = project.skuCount.toString()
-                viewModel.totalImageCaptured.value = project.imagesCount
+                viewModel.totalSkuCaptured.value = viewModel.project?.skuCount.toString()
+                viewModel.totalImageCaptured.value = viewModel.project?.imagesCount
 
-                binding.tvTotalSkuCaptured.text = project.skuCount.toString()
+                binding.tvTotalSkuCaptured.text = viewModel.project?.skuCount.toString()
             }
         }
 
@@ -238,8 +241,9 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     }
 
     private fun nextSku() {
+
         GlobalScope.launch {
-            viewModel.updateTotalFrames(totalSkuImages)
+            viewModel.updateTotalFrames()
 
             GlobalScope.launch(Dispatchers.Main) {
                 viewModel.shootList.value?.clear()

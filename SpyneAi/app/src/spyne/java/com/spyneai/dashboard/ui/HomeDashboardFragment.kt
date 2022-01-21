@@ -164,8 +164,8 @@ class HomeDashboardFragment :
 
         if (PACKAGE_NAME.equals("com.spyneai.debug")) {
             newUserCreditDialog()
-            getOngoingOrders()
-            getCompletedOrders()
+            //getOngoingOrders()
+            //getCompletedOrders()
             setSliderRecycler()
             showTutorialVideos()
             lisners()

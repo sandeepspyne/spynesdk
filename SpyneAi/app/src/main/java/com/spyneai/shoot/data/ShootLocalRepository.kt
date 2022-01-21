@@ -904,7 +904,11 @@ class ShootLocalRepository(val shootDao: ShootDao) {
         imageList: ArrayList<com.spyneai.shoot.repository.model.image.Image>
     ) = shootDao.saveProjectData(projectList, skuList, imageList)
 
-    fun updateBackground(map: HashMap<String, Any>) = shootDao.updateBackground(map)
+    fun updateBackground(map: HashMap<String, Any>) {
+        val list = shootDao.getDraftSkusByProjectId(map["project_uuid"].toString())
+
+        shootDao.updateBackground(map,list)
+    }
 
     fun updateProjectToOngoing(projectUuid: String) = shootDao.updateProjectStatus(projectUuid)
 

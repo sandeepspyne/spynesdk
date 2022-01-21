@@ -58,7 +58,6 @@ class ProcessSkuSync(
     }
 
     fun processSkuParent(type : String,startedBy : String?) {
-        Log.d(TAG, "processSkuParent: ")
         context.captureEvent(Events.PROCESS_SKU_PARENT_TRIGGERED,HashMap<String,Any?>().apply {
             put("type",type)
             put("service_started_by",startedBy)
@@ -79,7 +78,7 @@ class ProcessSkuSync(
                     GlobalScope.launch(Dispatchers.Default) {
                          isActive = true
                         context.captureEvent(Events.PROCESS_SKU_STARTED,HashMap())
-                        processSku()
+                        startSkuProcessing()
                     }
                 else {
                    isActive = false
@@ -92,12 +91,11 @@ class ProcessSkuSync(
         }, getRandomNumberInRange().toLong())
     }
 
-    private suspend fun  processSku(){
+    private suspend fun  startSkuProcessing(){
         do {
-            Log.d(TAG, "processSku: ")
             val sku = shootDao.getProcessAbleSku() ?: break
 
-            Log.d(TAG, "processSku: "+Gson().toJson(sku))
+            Log.d(TAG, "startSkuProcessing: "+Gson().toJson(sku))
             
             if (connectionLost){
                 val count = shootDao.getPendingSku()
@@ -334,7 +332,6 @@ class ProcessSkuSync(
             }
         )
 
-        Log.d(TAG, "processSku: ")
         //update sku processed
         sku.isProcessed = true
         val updateCount = shootDao.updateSku(sku)

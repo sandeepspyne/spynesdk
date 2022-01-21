@@ -159,6 +159,9 @@ interface ShootDao {
     @Query("SELECT * FROM sku where projectUuid = :projectUuid")
     fun getSkusByProjectId(projectUuid: String) : List<Sku>
 
+    @Query("SELECT * FROM sku where backgroundId = :backgroundId and projectUuid = :projectUuid")
+    fun getDraftSkusByProjectId(projectUuid: String,backgroundId: String = AppConstants.DEFAULT_BG_ID) : List<Sku>
+
     @Query("select * from image where skuUuid = :skuUuid")
     fun getImagesBySkuId(skuUuid: String): List<Image>
 
@@ -271,19 +274,23 @@ interface ShootDao {
     fun images()
 
     @Transaction
-    fun updateBackground(map: HashMap<String,Any>){
+    fun updateBackground(map: HashMap<String,Any>,list: List<Sku>){
         val p  = updateProjectStatus(
             map["project_uuid"].toString())
 
         Log.d(AppConstants.SHOOT_DAO_TAG, "updateBackground: $p")
-        val s = updateSkuBackground(
-            map["sku_uuid"].toString(),
-            map["bg_name"].toString(),
-            map["bg_id"].toString(),
-            map["total_frames"] as Int
-        )
 
-        Log.d(AppConstants.SHOOT_DAO_TAG, "updateBackground: $s")
+        list.forEach {
+            val s = updateSkuBackground(
+                it.uuid,
+                map["bg_name"].toString(),
+                map["bg_id"].toString(),
+                if (it.imagePresent == 1 && it.videoPresent == 1) it?.threeSixtyFrames?.plus(it?.imagesCount!!)!! else it?.imagesCount!!
+            )
+
+            Log.d(AppConstants.SHOOT_DAO_TAG, "updateBackground: $s")
+        }
+
     }
 
     @Query("UPDATE project SET status = 'ongoing' WHERE uuid =:uuid ")
