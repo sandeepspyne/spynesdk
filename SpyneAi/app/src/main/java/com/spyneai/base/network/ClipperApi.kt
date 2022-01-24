@@ -5,10 +5,7 @@ import com.spyneai.FilesDataRes
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
-import com.spyneai.dashboard.data.model.CheckInOutRes
-import com.spyneai.dashboard.data.model.GetGCPUrlRes
-import com.spyneai.dashboard.data.model.LocationsRes
-import com.spyneai.dashboard.data.model.VersionStatusRes
+import com.spyneai.dashboard.data.model.*
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse
@@ -381,9 +378,8 @@ interface ClipperApi {
     ) : GetGCPUrlRes
 
     @FormUrlEncoded
-    @POST("algo/attendence/checkin-out")
+    @POST("algo/attendence/check-in-out")
     suspend fun captureCheckInOut(
-        @Field("type") type : String,
         @Field("location") location : JSONObject,
         @Field("location_id") locationId: String,
         @Field("img_url") imageUrl : String = "",
@@ -409,6 +405,14 @@ interface ClipperApi {
         @Field("auth_key") authKey: String,
         @Field("data") skuId: String
     ) : FilesDataRes
+
+    @GET("algo/attendence/status")
+    suspend fun getAttendanceStatus(
+        @Query("user_id") userID: String =Utilities.getPreference(BaseApplication.getContext(),AppConstants.TOKEN_ID).toString(),
+        @Query("enterprise_id") enterpriseId: String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.ENTERPRISE_ID).toString()
+    ) : GetAttendanceStatusRes
+
+
 
 
 }

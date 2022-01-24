@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.data.model.CheckInOutRes
-import com.spyneai.dashboard.data.model.GetGCPUrlRes
-import com.spyneai.dashboard.data.model.LocationsRes
-import com.spyneai.dashboard.data.model.VersionStatusRes
+import com.spyneai.dashboard.data.model.*
 import com.spyneai.dashboard.data.repository.DashboardRepository
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.orders.data.response.CompletedSKUsResponse
@@ -50,6 +47,10 @@ class DashboardViewModel() : ViewModel() {
     var _checkInOutRes: MutableLiveData<Resource<CheckInOutRes>> = MutableLiveData()
     val checkInOutRes: LiveData<Resource<CheckInOutRes>>
         get() = _checkInOutRes
+
+    var _attendanceStatusRes: MutableLiveData<Resource<GetAttendanceStatusRes>> = MutableLiveData()
+    val attendanceStatusRes: LiveData<Resource<GetAttendanceStatusRes>>
+        get() = _attendanceStatusRes
 
     val isNewUser: MutableLiveData<Boolean> = MutableLiveData()
     val isStartAttendance: MutableLiveData<Boolean> = MutableLiveData()
@@ -126,13 +127,12 @@ class DashboardViewModel() : ViewModel() {
     }
 
     fun captureCheckInOut(
-        type : String,
         location : JSONObject,
         location_id : String,
         imageUrl : String = ""
     )= viewModelScope.launch {
         _checkInOutRes.value = Resource.Loading
-        _checkInOutRes.value = repository.captureCheckInOut(type,location,location_id,imageUrl)
+        _checkInOutRes.value = repository.captureCheckInOut(location,location_id,imageUrl)
     }
 
 
@@ -142,6 +142,11 @@ class DashboardViewModel() : ViewModel() {
         _locationResponse.value = repository.getLocations()
     }
 
+    fun getAttendanceStatus(
+    )= viewModelScope.launch {
+        _attendanceStatusRes.value = Resource.Loading
+        _attendanceStatusRes.value = repository.getAttendanceStatus()
+    }
 
 
 

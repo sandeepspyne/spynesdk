@@ -84,10 +84,14 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getAttendanceStatus()
+        observeStatusResponse()
 
         if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
             val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
@@ -516,6 +520,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun setLastSession() {
+
+
         val millis = Utilities.getLong(requireContext(), AppConstants.SHOOTS_SESSION)
         binding.tvSession.text = "Your last session was " + millisecondsToHours(millis)
     }
@@ -756,7 +762,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 is Resource.Success -> {
                     var eventName = ""
                     Utilities.hideProgressDialog()
-                    if (viewModel.type == "checkin") {
+                    if (it.value.data.checkout_time.isNullOrEmpty()) {
                         eventName = Events.CHECKIN_SUCCESS
                         Toast.makeText(
                             requireContext(),
@@ -845,7 +851,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         Utilities.showProgressDialog(requireContext())
 
         viewModel.captureCheckInOut(
-            viewModel.type,
             location_data,
             getSelectedItem()!!?.locationId,
             viewModel.fileUrl
@@ -1068,6 +1073,57 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         } else {
             "0$value"
         }
+    }
+
+    private fun getAttendanceStatus() {
+        Utilities.showProgressDialog(requireContext())
+        viewModel.getAttendanceStatus()
+    }
+
+
+
+
+
+    private fun observeStatusResponse() {
+        viewModel.attendanceStatusRes.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+
+                    val sdf = SimpleDateFormat("%Y-%m-%dT%H:%M:%S%z")
+                    val checkin_date = sdf.parse(it.value.data.checkin_time)
+                    val checkout_date=sdf.parse(it.value.data.checkout_time)
+
+                    val checkin_time:Long=checkin_date.time
+                    val checkout_time:Long=checkout_date.time
+
+
+
+
+                    Utilities.hideProgressDialog()
+                    if(it.value.data.user_id==Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)&&
+                        it.value.data.enterprise_id==Utilities.getPreference(requireContext(), AppConstants.ENTERPRISE_ID)&&
+                        it.value.data.location_out_id.isNullOrEmpty()){
+
+
+
+                        Utilities.apply {
+                            savePrefrence(requireContext(), AppConstants.SITE_IMAGE_PATH, it.value.data.checkin_image)
+                            savePrefrence(requireContext(), AppConstants.SITE_CITY_NAME, it.value.data.location_in_id)
+                            saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
+                            saveLong(requireContext(), AppConstants.CLOCKED_IN_TIME, checkin_time)
+                        }
+                    }else{
+                        Utilities.saveLong(requireContext(), AppConstants.SHOOTS_SESSION, checkout_time-checkin_time)
+
+                    }
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { getAttendanceStatus() }
+                }
+            }
+        })
     }
 }
 
