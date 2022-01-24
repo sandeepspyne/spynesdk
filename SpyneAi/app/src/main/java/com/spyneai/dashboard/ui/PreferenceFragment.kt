@@ -649,7 +649,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             AppConstants.CLOCKED_IN_TIME
         )
 
-        isActive = false
         upDateTimer(time)
 
         binding.apply {
@@ -1132,6 +1131,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
                             viewModel.siteImagePath = it.value.data.checkin_image
                             setCheckOut(false)
+
 
 
 //                            if (it.value.data.user_id == Utilities.getPreference(
