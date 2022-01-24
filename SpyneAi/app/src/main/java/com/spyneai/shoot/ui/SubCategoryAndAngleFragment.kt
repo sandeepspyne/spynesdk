@@ -159,7 +159,7 @@ class SubCategoryAndAngleFragment :
                             }
                         }
                     }
-                    AppConstants.KARVI, AppConstants.CARS24, AppConstants.CARS24_INDIA -> {
+                    AppConstants.KARVI,AppConstants.AUTO_FOTO, AppConstants.CARS24, AppConstants.CARS24_INDIA -> {
                         viewModel.exterirorAngles.value = 8
                         //create sku
                         if (viewModel.fromVideo) {

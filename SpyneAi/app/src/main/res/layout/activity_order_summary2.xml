@@ -221,6 +221,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/llTotalImages"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -264,6 +265,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/llTotalCost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -304,6 +306,7 @@
 
 
                 <RelativeLayout
+                    android:id="@+id/rlCreditAvailable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -313,11 +316,11 @@
                         android:id="@+id/tvCreditAvailable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@null"
                         android:fontFamily="@font/medium"
                         android:text="@string/credits_available"
-                        android:background="@null"
-                        android:textSize="@dimen/sp_16"
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_16" />
                     <TextView
                         android:id="@+id/tvTopUp"
                         android:layout_toRightOf="@+id/tvCreditAvailable"
