@@ -13,10 +13,6 @@ class Sku(
     @PrimaryKey(autoGenerate = false)
     @SerializedName("local_id")
     var uuid: String,
-    val isCreated: Boolean = false,
-    var isSelectAble: Boolean = false,
-    val toProcessAt: Long = System.currentTimeMillis(),
-    val retryCount: Int = 1,
     @SerializedName("sku_name")
     var skuName: String?= null,
     @SerializedName("category") var categoryName: String? = null,
@@ -49,5 +45,9 @@ class Sku(
     var processedImages: Int = 0,
     val imagePresent: Int = 1,
     val videoPresent: Int = 0,
-    var totalFramesUpdated: Boolean = false
+    var totalFramesUpdated: Boolean = false,
+    val isCreated: Boolean = false,
+    var isSelectAble: Boolean = false,
+    val toProcessAt: Long = System.currentTimeMillis(),
+    val retryCount: Int = 1,
 )

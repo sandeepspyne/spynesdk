@@ -11,9 +11,6 @@ data class Project(
     @PrimaryKey(autoGenerate = false)
     @SerializedName("local_id")
     var uuid: String,
-    var isCreated: Boolean = false,
-    val toProcessAt: Long = System.currentTimeMillis(),
-    val retryCount: Int = 1,
     @SerializedName("project_name") var projectName: String? = null,
     @SerializedName("category_id") val categoryId: String? = null,
     @SerializedName("category") val categoryName: String? = null,
@@ -28,6 +25,9 @@ data class Project(
     @SerializedName("total_images") var imagesCount: Int = 0,
     @SerializedName("processed_images") var processedCount: Int = 0,
     @SerializedName("thumbnail") var thumbnail: String? = null,
+    var isCreated: Boolean = false,
+    val toProcessAt: Long = System.currentTimeMillis(),
+    val retryCount: Int = 1,
     @SerializedName("created_on") var createdOn: String = System.currentTimeMillis().toString(),
     @SerializedName("created_at") var createdAt: Long = System.currentTimeMillis(),
     @SerializedName("updated_at") val updatedAt: Long = System.currentTimeMillis()
