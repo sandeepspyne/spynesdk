@@ -82,16 +82,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     var locationManager: LocationManager? = null
     val LOCATION_SETTING_REQUEST = 999
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getAttendanceStatus()
-        observeStatusResponse()
+
+        getLocations()
+        observeLocation()
 
         if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
             val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
@@ -156,6 +152,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         binding.btnClockOut.enable(true)
                     }
                 }
+
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
             })
@@ -197,7 +194,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     }
                 }
             }
-            
+
             binding.btnClockOut.setOnClickListener {
                 locationManager =
                     requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
@@ -234,18 +231,17 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 }
             }
 
-            if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
-                viewModel.siteImagePath =
-                    Utilities.getPreference(requireContext(), AppConstants.SITE_IMAGE_PATH)
-                        .toString()
-                setCheckOut(false)
-            } else {
-                setCheckIn(false)
-            }
+//            if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
+//                viewModel.siteImagePath =
+//                    Utilities.getPreference(requireContext(), AppConstants.SITE_IMAGE_PATH)
+//                        .toString()
+//                setCheckOut(false)
+//            } else {
+//                setCheckIn(false)
+//            }
+
             observeUrlResponse()
             observeClockInOut()
-            getLocations()
-            observeLocation()
         }
 
 
@@ -349,13 +345,13 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setMessage("To Continue, Turn on device location or GPS, which uses Google's location service.")
             .setCancelable(false).setPositiveButton("Turn On",
-            DialogInterface.OnClickListener { dialog, which ->
-                startActivityForResult(
-                    Intent(
-                        Settings.ACTION_LOCATION_SOURCE_SETTINGS
-                    ), LOCATION_SETTING_REQUEST
-                )
-            })
+                DialogInterface.OnClickListener { dialog, which ->
+                    startActivityForResult(
+                        Intent(
+                            Settings.ACTION_LOCATION_SOURCE_SETTINGS
+                        ), LOCATION_SETTING_REQUEST
+                    )
+                })
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()
         alertDialog.setCancelable(false)
@@ -366,6 +362,9 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
+
+                    getAttendanceStatus()
+                    observeStatusResponse()
                     val locationNameList = it.value.data.map { it -> it.locationName }
                         .toMutableList() as ArrayList<String>
 
@@ -406,6 +405,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             return
         }
         Utilities.showProgressDialog(requireContext())
+
         LocationServices.getFusedLocationProviderClient(requireContext())
             .requestLocationUpdates(locationRequest, object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
@@ -432,7 +432,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
                         getDistanceFromLatLon(currentLat!!, currentLong!!, status)
 
-
+                    } else {
+                        val s = ""
                     }
                 }
             }, Looper.getMainLooper())
@@ -452,18 +453,25 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         var d = R * c * 1000 // Distance in m
 
         if (d > getSelectedItem()?.thresholdDistanceInMeters!!) {
-            if (lat1 == 0.0 || lon1 == 0.0) {
-                Toast.makeText(
-                    requireContext(),
-                    "Unable to detect your location, please try after some time!",
-                    Toast.LENGTH_LONG
-                ).show()
-            } else {
-                InvalidLocationDialog().show(
-                    requireActivity().supportFragmentManager,
-                    "invalidLocationDialog"
-                )
+            if (type == "checkin")
+                ShootSiteDialog().show(requireActivity().supportFragmentManager, "ShootSiteDialog")
+            else {
+                viewModel.type = "checkout"
+                viewModel.fileUrl = ""
+                checkInOut()
             }
+//            if (lat1 == 0.0 || lon1 == 0.0) {
+//                Toast.makeText(
+//                    requireContext(),
+//                    "Unable to detect your location, please try after some time!",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//            } else {
+//                InvalidLocationDialog().show(
+//                    requireActivity().supportFragmentManager,
+//                    "invalidLocationDialog"
+//                )
+//            }
         } else {
             if (type == "checkin")
                 ShootSiteDialog().show(requireActivity().supportFragmentManager, "ShootSiteDialog")
@@ -520,8 +528,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun setLastSession() {
-
-
         val millis = Utilities.getLong(requireContext(), AppConstants.SHOOTS_SESSION)
         binding.tvSession.text = "Your last session was " + millisecondsToHours(millis)
     }
@@ -609,7 +615,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         onGPS()
                     }
                 }
-                else -> {}
+                else -> {
+                }
             }
 
         }
@@ -665,7 +672,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             cvClockIn.visibility = View.GONE
             cvClockOut.visibility = View.VISIBLE
             tvCityName.text =
-                " at " + Utilities.getPreference(requireContext(), AppConstants.SITE_CITY_NAME)
+                " at " + getLocationName(
+                    Utilities.getPreference(requireContext(), AppConstants.SITE_CITY_NAME)
+                        .toString()
+                )
+//            tvCityName.text =
+//                " at " + Utilities.getPreference(requireContext(), AppConstants.SITE_CITY_NAME)
             ivDropDown.rotation = 90f
             tvClockedTime.text = getString(R.string.clocked_in_for) + " " + millisecondsToTime(time)
             llAttendance.setOnClickListener(null)
@@ -678,6 +690,22 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         if (clockIn) {
             getGcpUrl()
         }
+    }
+
+    fun getLocationName(locationId: String): String? {
+        var name: String? = null
+
+        viewModel.locationsResponse.observe(viewLifecycleOwner, {
+            if (it is Resource.Success) {
+                it.value.data.forEach {
+                    if (it.locationId == locationId) {
+                        name = it.locationName
+                    }
+                }
+            }
+        })
+
+        return name
     }
 
     private fun upDateTimer(time: Long) {
@@ -1081,41 +1109,83 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
 
-
-
-
     private fun observeStatusResponse() {
         viewModel.attendanceStatusRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
 
-                    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                    val checkin_date = sdf.parse(it.value.data.checkin_time)
-                    val checkout_date=sdf.parse(it.value.data.checkout_time)
-
-                    val checkin_time:Long=checkin_date.time
-                    val checkout_time:Long=checkout_date.time
-
-
-
-
                     Utilities.hideProgressDialog()
-                    if(it.value.data.user_id==Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)&&
-                        it.value.data.enterprise_id==Utilities.getPreference(requireContext(), AppConstants.ENTERPRISE_ID)&&
-                        it.value.data.location_out_id.isNullOrEmpty()){
 
-
-
-                        Utilities.apply {
-                            savePrefrence(requireContext(), AppConstants.SITE_IMAGE_PATH, it.value.data.checkin_image)
-                            savePrefrence(requireContext(), AppConstants.SITE_CITY_NAME, it.value.data.location_in_id)
-                            saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
-                            saveLong(requireContext(), AppConstants.CLOCKED_IN_TIME, checkin_time)
+                    when {
+                        it.value.message == "Data not found" -> {
+                            Utilities.saveBool(requireContext(), AppConstants.CLOCKED_IN, false)
                         }
-                    }else{
-                        Utilities.saveLong(requireContext(), AppConstants.SHOOTS_SESSION, checkout_time-checkin_time)
 
+                        it.value.data.checkin_time != null && it.value.data.location_out_id == null -> {
+                            //user clocked in show checkout ui
+                            val sdf =
+                                SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH)
+                            val checkin_time: Long = sdf.parse(it.value.data.checkin_time).time
+
+                            Utilities.apply {
+                                savePrefrence(
+                                    requireContext(),
+                                    AppConstants.SITE_IMAGE_PATH,
+                                    it.value.data.checkin_image
+                                )
+                                savePrefrence(
+                                    requireContext(),
+                                    AppConstants.SITE_CITY_NAME,
+                                    it.value.data.location_in_id
+                                )
+                                saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
+                                saveLong(
+                                    requireContext(),
+                                    AppConstants.CLOCKED_IN_TIME,
+                                    checkin_time
+                                )
+                            }
+
+                            viewModel.siteImagePath = it.value.data.checkin_image
+                            setCheckOut(false)
+
+
+//                            if (it.value.data.user_id == Utilities.getPreference(
+//                                    requireContext(),
+//                                    AppConstants.TOKEN_ID
+//                                ) &&
+//                                it.value.data.enterprise_id == Utilities.getPreference(
+//                                    requireContext(),
+//                                    AppConstants.ENTERPRISE_ID
+//                                ) &&
+//                                it.value.data.location_out_id.isNullOrEmpty()
+//                            ) {
+//
+//                            } else {
+//                                Utilities.saveLong(
+//                                    requireContext(),
+//                                    AppConstants.SHOOTS_SESSION,
+//                                    checkout_time - checkin_time
+//                                )
+//
+//                            }
+                        }
+                        else -> {
+                            val sdf =
+                                SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH)
+                            val checkin_time: Long = sdf.parse(it.value.data.checkin_time).time
+                            val checkout_time: Long = sdf.parse(it.value.data.checkout_time).time
+
+                            Utilities.saveLong(
+                                requireContext(),
+                                AppConstants.SHOOTS_SESSION,
+                                checkout_time - checkin_time
+                            )
+                            setCheckIn(true)
+                            //user clocked out show check in ui
+                        }
                     }
+
                 }
 
                 is Resource.Failure -> {
