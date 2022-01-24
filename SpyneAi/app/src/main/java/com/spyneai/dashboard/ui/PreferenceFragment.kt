@@ -231,15 +231,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 }
             }
 
-//            if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
-//                viewModel.siteImagePath =
-//                    Utilities.getPreference(requireContext(), AppConstants.SITE_IMAGE_PATH)
-//                        .toString()
-//                setCheckOut(false)
-//            } else {
-//                setCheckIn(false)
-//            }
-
             observeUrlResponse()
             observeClockInOut()
         }
@@ -453,25 +444,18 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         var d = R * c * 1000 // Distance in m
 
         if (d > getSelectedItem()?.thresholdDistanceInMeters!!) {
-            if (type == "checkin")
-                ShootSiteDialog().show(requireActivity().supportFragmentManager, "ShootSiteDialog")
-            else {
-                viewModel.type = "checkout"
-                viewModel.fileUrl = ""
-                checkInOut()
+            if (lat1 == 0.0 || lon1 == 0.0) {
+                Toast.makeText(
+                    requireContext(),
+                    "Unable to detect your location, please try after some time!",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                InvalidLocationDialog().show(
+                    requireActivity().supportFragmentManager,
+                    "invalidLocationDialog"
+                )
             }
-//            if (lat1 == 0.0 || lon1 == 0.0) {
-//                Toast.makeText(
-//                    requireContext(),
-//                    "Unable to detect your location, please try after some time!",
-//                    Toast.LENGTH_LONG
-//                ).show()
-//            } else {
-//                InvalidLocationDialog().show(
-//                    requireActivity().supportFragmentManager,
-//                    "invalidLocationDialog"
-//                )
-//            }
         } else {
             if (type == "checkin")
                 ShootSiteDialog().show(requireActivity().supportFragmentManager, "ShootSiteDialog")
@@ -591,7 +575,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                                 savePrefrence(
                                     requireContext(),
                                     AppConstants.SITE_CITY_NAME,
-                                    getSelectedItem()?.locationName
+                                    getSelectedItem()?.locationId
                                 )
                                 saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
                                 saveLong(
