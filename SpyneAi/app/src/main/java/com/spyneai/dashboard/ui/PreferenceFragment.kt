@@ -649,6 +649,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             AppConstants.CLOCKED_IN_TIME
         )
 
+        isActive = true
         upDateTimer(time)
 
         binding.apply {
@@ -947,15 +948,15 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     override fun onResume() {
         super.onResume()
 
-        if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
-            isActive = true
-            upDateTimer(
-                System.currentTimeMillis() - Utilities.getLong(
-                    requireContext(),
-                    AppConstants.CLOCKED_IN_TIME
-                )
-            )
-        }
+//        if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
+//            isActive = true
+//            upDateTimer(
+//                System.currentTimeMillis() - Utilities.getLong(
+//                    requireContext(),
+//                    AppConstants.CLOCKED_IN_TIME
+//                )
+//            )
+//        }
     }
 
     override fun onStop() {
