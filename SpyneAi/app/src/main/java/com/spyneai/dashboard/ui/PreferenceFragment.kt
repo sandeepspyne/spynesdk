@@ -1089,7 +1089,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             when (it) {
                 is Resource.Success -> {
 
-                    val sdf = SimpleDateFormat("%Y-%m-%dT%H:%M:%S%z")
+                    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                     val checkin_date = sdf.parse(it.value.data.checkin_time)
                     val checkout_date=sdf.parse(it.value.data.checkout_time)
 
