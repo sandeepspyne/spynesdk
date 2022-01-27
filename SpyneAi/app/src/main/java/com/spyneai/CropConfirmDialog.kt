@@ -24,6 +24,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
+
 class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirmDialogBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -128,10 +129,9 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
                 insertImage(viewModel.shootData.value!!)
             }
 
-            startService()
-            dismiss()
         }
     }
+
 
 
     private fun startService() {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.tabs.TabLayoutMediator
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
@@ -12,10 +13,12 @@ import com.spyneai.databinding.FragmentMyOrdersBinding
 import com.spyneai.orders.ui.adapter.OrdersSlideAdapter
 import com.spyneai.setLocale
 
+@ExperimentalPagingApi
 class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBinding>() {
 
     private var TAG = "MyOrdersFragment"
     var tabId = 0
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,6 +37,7 @@ class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBindin
 
         setupTabLayout()
     }
+
 
     private fun setupTabLayout() {
 

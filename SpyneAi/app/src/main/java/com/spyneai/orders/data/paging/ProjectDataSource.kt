@@ -17,7 +17,7 @@ import com.spyneai.shoot.repository.model.project.Project
 import retrofit2.HttpException
 import java.io.IOException
 
-
+@ExperimentalPagingApi
 class ProjectDataSource(
     private val service: ProjectApi,
     val appDatabase: AppDatabase,
@@ -26,7 +26,7 @@ class ProjectDataSource(
 
     val TAG = "ProjectDataSource"
 
-    @ExperimentalPagingApi
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Project> {
         val page = params.key ?: DEFAULT_PAGE_INDEX
         Log.d(TAG, "load: "+page)

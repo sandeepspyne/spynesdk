@@ -10,12 +10,13 @@ import com.spyneai.orders.data.paging.PagedFragment
 import com.spyneai.orders.ui.fragment.CompletedProjectsFragment
 import com.spyneai.orders.ui.fragment.OngoingProjectsFragment
 
+@ExperimentalPagingApi
 class OrdersSlideAdapter (fa: FragmentActivity) : FragmentStateAdapter(fa) {
 
 
     override fun getItemCount(): Int = 3
 
-    @ExperimentalPagingApi
+
     override fun createFragment(position: Int): Fragment {
         return when(position) {
             0-> getFragment("draft")
@@ -24,7 +25,7 @@ class OrdersSlideAdapter (fa: FragmentActivity) : FragmentStateAdapter(fa) {
         }
     }
 
-    @ExperimentalPagingApi
+
     fun getFragment(status : String) = PagedFragment()
         .apply {
             arguments = Bundle().apply {

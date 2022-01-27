@@ -31,7 +31,7 @@ class DashboardPagedAdapter(
             oldItem == newItem
     }
 
-    @ExperimentalPagingApi
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         getItem(position)?.let {

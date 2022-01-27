@@ -88,6 +88,7 @@
         <entry key="app/src/main/res/layout/dialog_top_up.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_video_duration.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/end_project_dialog.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/footwear_dialog_suggestion.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/fragment_360_background.xml" value="0.18796296296296297" />
         <entry key="app/src/main/res/layout/fragment_angle_selection.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.1" />
@@ -104,6 +105,7 @@
         <entry key="app/src/main/res/layout/fragment_info_dialog.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/fragment_invalid_location_dialog.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/fragment_my_orders.xml" value="0.2916666666666667" />
+        <entry key="app/src/main/res/layout/fragment_invalid_location_dialog.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_projects.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_skus.xml" value="0.3098958333333333" />
@@ -127,6 +129,7 @@
         <entry key="app/src/main/res/layout/item_clicked.xml" value="0.22037037037037038" />
         <entry key="app/src/main/res/layout/item_completed_projects.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/item_completed_skus.xml" value="0.25277777777777777" />
+        <entry key="app/src/main/res/layout/item_draft_project.xml" value="0.38425925925925924" />
         <entry key="app/src/main/res/layout/item_draft_sku.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/item_exposure.xml" value="0.16574074074074074" />
         <entry key="app/src/main/res/layout/item_interior.xml" value="0.3098958333333333" />
@@ -161,6 +164,9 @@
         <entry key="app/src/main/res/layout/view_trim.xml" value="0.1" />
         <entry key="app/src/main/res/menu/dashboard_bottom_menu.xml" value="0.25277777777777777" />
         <entry key="app/src/sellanycar/res/drawable/app_ic_background.xml" value="0.24166666666666667" />
+        <entry key="app/src/spyne/res/layout/activity_dashboard_main.xml" value="0.3098958333333333" />
+        <entry key="app/src/spyne/res/menu/dashboard_bottom_menu.xml" value="0.16770833333333332" />
+        <entry key="app/src/spynephotographer/res/layout/activity_product.xml" value="0.24010416666666667" />
         <entry key="app/src/spyne/res/layout/home_dashboard_fragment.xml" value="0.2916666666666667" />
         <entry key="app/src/spynephotographer/res/layout/activity_product.xml" value="0.3098958333333333" />
         <entry key="app/src/spynephotographer/res/layout/fragment_pending.xml" value="0.29583333333333334" />
