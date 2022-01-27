@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
+            android:id="@+id/ll360interior"
             android:padding="@dimen/dp_20">
 
             <ImageView

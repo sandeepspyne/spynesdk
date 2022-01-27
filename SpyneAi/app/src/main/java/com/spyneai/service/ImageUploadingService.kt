@@ -292,7 +292,7 @@ class ImageUploadingService : Service(),DataSyncListener {
 
     private fun resumeUpload(type : String) {
         imageUploader = ImageUploader.getInstance(this,this)
-        //imageUploader?.uploadParent(type,serviceStartedBy)
+        imageUploader?.uploadParent(type,serviceStartedBy)
     }
 
     private fun startProjectSync(type: String) {

@@ -825,10 +825,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
     private fun addShootItem(capturedImage: String) {
-        Log.d(TAG, "addShootItem: " + filename)
-        end = System.currentTimeMillis()
-        val difference = (end - begin) / 1000.toFloat()
-        log("addShootIteamCalled- " + difference)
         viewModel.showConfirmReshootDialog.value = true
 
         if (viewModel.shootList.value == null) {
@@ -843,14 +839,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
         )
 
-        Log.d(TAG, "addShootItem: " + sequenceNumber)
         val debugData = JSONObject()
         debugData.put("roll", roll.roundToInt().unaryPlus())
         debugData.put("pitch", pitch.roundToInt().unaryPlus())
 
         val shootData = ShootData(
             capturedImage,
-            getUuid(),
+            viewModel.sku?.projectUuid!!,
             viewModel.sku?.uuid!!,
             viewModel.categoryDetails.value?.imageType!!,
             Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),

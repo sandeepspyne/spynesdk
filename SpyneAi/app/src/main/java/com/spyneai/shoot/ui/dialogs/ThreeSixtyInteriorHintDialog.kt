@@ -24,10 +24,6 @@ import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.Dialog360InteriorBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.service.Actions
-import com.spyneai.service.ImageUploadingService
-import com.spyneai.service.getServiceState
-import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +41,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.ScanWifiDialog
 import com.spyneai.logout.LogoutDialog
+import com.spyneai.service.*
+import com.spyneai.startUploadingService
 import com.thanosfisherman.wifiutils.WifiUtils
 
 
@@ -76,6 +74,7 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
     private fun showImage(filePath: String) {
         binding.apply {
             tvDescription.visibility = View.GONE
+            ll360interior.visibility = View.GONE
             ivSelectedImage.visibility = View.VISIBLE
             tvSkipShoot.visibility = View.VISIBLE
 
@@ -102,7 +101,6 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
         }
 
 
-
         binding.tvShoot.setOnClickListener {
             if (binding.tvShoot.text.toString() == "Shoot 360") {
                 imageName= viewModel.sku?.skuName!!+ "_"+ viewModel.sku?.uuid!!+"_360int_1.JPG"
@@ -123,15 +121,15 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
             else{
                 ScanWifiDialog().show(requireActivity().supportFragmentManager, "ScanWifiDialog")
             }
+            }else {
+                selectImageFromFiles()
             }
         }
 
 
         binding.tvUpload.setOnClickListener {
-            if (binding.tvUpload.text == "Select") {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "image/*"
-                startForResult.launch(intent)
+            if (binding.tvUpload.text == "Upload") {
+                selectImageFromFiles()
             }else {
                // viewModel.interior360Dialog.value = true
                 viewModel.threeSixtyInteriorSelected = true
@@ -156,21 +154,7 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                     viewModel.shootList.value?.size?.plus(1)
                 }
 
-                GlobalScope.launch(Dispatchers.IO) {
-                    viewModel.
-                    insertImage(ShootData(
-                        filePath,
-                        viewModel.sku?.projectId!!,
-                        viewModel.sku?.skuId!!,
-                        "360int",
-                        Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-                        0,
-                        sequenceNumber!!
-                    ))
-                }
-
-
-                startService()
+                insertImage(filePath)
 
                 dismiss()
 
@@ -179,25 +163,10 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
         }
     }
 
-
-
-    private fun startService() {
-        var action = Actions.START
-        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-            return
-
-        val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
-        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ThreeSixtyInteriorHintDialog::class.simpleName)
-        serviceIntent.action = action.name
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            log("Starting the service in >=26 Mode")
-            ContextCompat.startForegroundService(requireContext(), serviceIntent)
-            return
-        } else {
-            log("Starting the service in < 26 Mode")
-            requireActivity().startService(serviceIntent)
-        }
+    private fun selectImageFromFiles() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startForResult.launch(intent)
     }
 
 
@@ -247,23 +216,34 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                     viewModel.shootList.value?.size?.plus(1)
                 }
                 viewModel.threeSixtyInteriorSelected = true
-                viewLifecycleOwner.lifecycleScope.launch {
-                    viewModel.insertImage(ShootData(
-                        "/storage/emulated/0/DCIM/Spyne/"+viewModel.sku?.skuName!!+ "_"+
-                                viewModel.sku?.uuid!!+"_360int_1.JPG",
-                        viewModel.sku?.projectUuid!!,
-                        viewModel.sku?.uuid!!,
-                        "360int",
-                        Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-                        0,
-                        sequenceNumber!!
-                    ))
-                }
-                startService()
+
+                insertImage("/storage/emulated/0/DCIM/Spyne/"+viewModel.sku?.skuName!!+ "_"+
+                        viewModel.sku?.uuid!!+"_360int_1.JPG")
+
                 dismiss()
                 viewModel.selectBackground.value = true
             }
         }
+    }
+
+    private fun insertImage(path: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.
+            insertImage(ShootData(
+                path,
+                viewModel.sku?.projectUuid!!,
+                viewModel.sku?.uuid!!,
+                "360int",
+                Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+                0,
+                sequenceNumber!!
+            ))
+        }
+
+        requireContext().startUploadingService(
+            ThreeSixtyInteriorHintDialog::class.java.simpleName,
+            ServerSyncTypes.UPLOAD
+        )
     }
 
     override fun PickiTonCompleteListener(
