@@ -21,11 +21,13 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
         binding.btnYes.setOnClickListener {
 
             arguments?.let {
-                if (it.getString("image_type").toString().contains("Info")) {
-                    viewModel.categoryDetails.value?.imageType = it.getString("image_type").toString()
+                if (it.getString("name").toString().contains("Info")) {
+                    viewModel.categoryDetails.value?.imageType ="Info"
+                    viewModel.imageTypeInfo.value=true
                     viewModel.currentShoot = it.getInt("position")
                     viewModel.hideLeveler.value = true
                     viewModel.showLeveler.value = false
+                    viewModel.showGrid.value = false
 //                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
 //                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
 //                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive

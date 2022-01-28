@@ -315,6 +315,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             binding.llSetting.visibility = GONE
         }
 
+//        if(viewModel.categoryDetails.value?.categoryName=="E-Commerce"){
+//            viewModel.showGrid.value = true
+//        }
+
 
     }
 

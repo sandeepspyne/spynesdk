@@ -123,19 +123,19 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             != AppConstants.FLIPKART_ENTERPRISE_ID){
             if (binding.tvAddAngle.visibility == View.VISIBLE){
                 binding.ivAddAngle.setOnClickListener {
-                    if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
-                            "Food & Beverages"
-                        )
-                    )
+                    if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") ||
+                        viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages")||
+                        viewModel.categoryDetails.value?.categoryName.equals("Photo Box"))
+
                         viewModel.addMoreAngle.value = true
                 }
 
                 binding.tvAddAngle.setOnClickListener {
-                    if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
-                            "Food & Beverages"
-                        )
-                    )
-                        viewModel.addMoreAngle.value = true
+                    if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") ||
+                        viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages")||
+                        viewModel.categoryDetails.value?.categoryName.equals("Photo Box"))
+
+                            viewModel.addMoreAngle.value = true
                 }
             }
 

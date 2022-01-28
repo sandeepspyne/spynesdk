@@ -426,6 +426,8 @@ class ShootViewModel : ViewModel() {
             sku.value?.skuName?.uppercase() + "_" + sku.value?.skuId + "_" + filePrefix
         }
 
+
+
     }
 
     fun getSequenceNumber(exteriorSize: Int, interiorSize: Int, miscSize: Int): Int {
@@ -709,7 +711,7 @@ class ShootViewModel : ViewModel() {
                 isGridActive = Utilities.getBool(
                     BaseApplication.getContext(),
                     categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GRID
-                    ,false)
+                    ,true)
             }
         }
     }

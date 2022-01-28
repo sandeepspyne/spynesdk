@@ -32,6 +32,7 @@ class InfoDialog :  BaseDialogFragment<ShootViewModel, FragmentInfoDialogBinding
 //            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
             viewModel.categoryDetails.value?.imageType = "Info"
             viewModel.hideLeveler.value = true
+            viewModel.showGrid.value=false
             viewModel.imageTypeInfo.value=true
             viewModel.showLeveler.value = false
             dismiss()

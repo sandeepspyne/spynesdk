@@ -39,6 +39,7 @@ class SelectAnotherImagetypeDialog : BaseDialogFragment<ShootViewModel, Fragment
         binding.tvInfoShoot.setOnClickListener {
             viewModel.categoryDetails.value?.imageType = "Info"
             viewModel.hideLeveler.value = true
+            viewModel.showGrid.value = false
             viewModel.showLeveler.value = false
             viewModel.imageTypeInfo.value=true
 //            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
