@@ -48,7 +48,7 @@ class GyroView : FrameLayout {
         this.cateoryName = cateoryName
 
         this.cateoryName?.let {
-            if (cateoryName == "Footwear" || cateoryName == "E-Commerce")
+            if (cateoryName == "Footwear")
                 binding.tvLevelIndicator.visibility = View.GONE
             else
                 binding.flLevelIndicator.visibility = View.VISIBLE

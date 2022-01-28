@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.21574074074074073" />
+        <entry key="../../../../../layout/custom_preview.xml" value="0.2651282051282051" />
         <entry key="app/src/automoser/res/mipmap-anydpi-v26/app_ic.xml" value="0.1" />
         <entry key="app/src/automoser/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.1" />
         <entry key="app/src/flipkart/res/mipmap-anydpi-v26/app_ic.xml" value="0.2786458333333333" />
@@ -150,6 +151,7 @@
         <entry key="app/src/sellanycar/res/drawable/app_ic_background.xml" value="0.24166666666666667" />
         <entry key="app/src/spyne/res/layout/activity_dashboard_main.xml" value="0.3098958333333333" />
         <entry key="app/src/spyne/res/menu/dashboard_bottom_menu.xml" value="0.16770833333333332" />
+        <entry key="app/src/spynephotographer/res/layout/activity_product.xml" value="0.24010416666666667" />
         <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.25384615384615383" />
       </map>
     </option>
