@@ -24,13 +24,14 @@ class SelectAnotherImagetypeDialog : BaseDialogFragment<ShootViewModel, Fragment
 
         binding.tvProductShoot.setOnClickListener {
             viewModel.categoryDetails.value?.imageType = "Ecom"
-            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages")
-            )
+            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages"))
+            {
 //                viewModel.showLeveler.value = true
-            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
-            viewModel.addMoreAngle.value = true
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                viewModel.addMoreAngle.value = true
+            }
 
             dismiss()
         }

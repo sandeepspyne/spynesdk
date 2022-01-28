@@ -369,11 +369,12 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
             }
 
-            if (viewModel.categoryDetails.value?.imageType == "Exterior")
+            if (viewModel.categoryDetails.value?.imageType == "Exterior") {
                 viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
-            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+            }
         }
 
         if (getString(R.string.app_name) == AppConstants.KARVI){

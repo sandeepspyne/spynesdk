@@ -456,26 +456,29 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
             tvSkuName?.text = viewModel.sku.value?.skuName
 //            binding.imgOverlay.visibility = View.VISIBLE
-            if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
+            if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true) {
 //                binding.imgOverlay.visibility = View.INVISIBLE
                 viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+            }
 
 
-            if (viewModel.categoryDetails.value?.imageType == "Exterior")
+            if (viewModel.categoryDetails.value?.imageType == "Exterior") {
 //                viewModel.showLeveler.value = true
-            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+            }
 
         }
 
-        if (getString(R.string.app_name) == AppConstants.KARVI)
+        if (getString(R.string.app_name) == AppConstants.KARVI) {
 //            binding.imgOverlay.visibility = View.GONE
             viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-        viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+        }
 
         val intent = requireActivity().intent
 
@@ -489,16 +492,18 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
                 viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
-                if (getString(R.string.app_name) != AppConstants.KARVI)
+                if (getString(R.string.app_name) != AppConstants.KARVI) {
 //                    binding.imgOverlay.visibility = View.VISIBLE
-                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
-                if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                }
+                if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true) {
 //                    binding.imgOverlay.visibility = View.INVISIBLE
-                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                }
             }
             intent.getBooleanExtra(AppConstants.RESUME_INTERIOR, false) -> {
 //                binding.imgOverlay.visibility = View.GONE
