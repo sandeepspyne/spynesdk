@@ -18,6 +18,7 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
+import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -27,6 +28,13 @@ import org.json.JSONObject
 import java.io.*
 import java.util.*
 import kotlin.collections.HashMap
+import android.provider.MediaStore
+
+import android.content.ContentValues
+import android.os.Environment
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.resolution
+
 
 class ImageUploader(
     val context: Context,
@@ -416,11 +424,35 @@ class ImageUploader(
     }
 
     private suspend fun uploadImage(image: Image): Boolean {
-        val requestFile = File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+        val requestFile = File(image.imagePath)
+        val compressedImageFile = Compressor.compress(context, requestFile)
+
+
+        val filePath: String = compressedImageFile.path
+        val bitmap = BitmapFactory.decodeFile(filePath)
+
+
+        val compDirectory = "/storage/emulated/0/DCIM/Compressed/"
+        val myDir = File(compDirectory)
+        if (!myDir.exists()) {
+            myDir.mkdirs()
+        }
+        val generator = Random()
+        var n = 10000
+        n = generator.nextInt(n)
+        val file = File(myDir, System.currentTimeMillis().toString() + ".jpg")
+        if (file.exists()) file.delete()
+        try {
+            val out = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            out.close()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
 
         val uploadResponse = shootRepository.uploadImageToGcp(
             image.preSignedUrl!!,
-            requestFile)
+            compressedImageFile.asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull()))
 
         val imageProperties = HashMap<String, Any?>()
             .apply {
