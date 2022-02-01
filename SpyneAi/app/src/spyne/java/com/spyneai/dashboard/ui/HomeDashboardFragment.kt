@@ -459,16 +459,19 @@ class HomeDashboardFragment :
         if (Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString() != "") {
             binding.tvWelcomeHome.visibility = View.VISIBLE
             binding.viewWelcome.visibility = View.VISIBLE
-            binding.tvWelcomeHome.setText(
-                "Welcome " +
-                        Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString()
-            )
+
+            val user_name=Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString()
+            if(user_name.isNullOrEmpty()){
+                binding.tvWelcomeHome.text = "Welcome "
+            }else {
+                binding.tvWelcomeHome.text = "Welcome $user_name"}
+
             if (Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString().trim()
                     .equals("default")
             ) {
                 binding.tvWelcomeHome.visibility = View.VISIBLE
                 binding.viewWelcome.visibility = View.VISIBLE
-                binding.tvWelcomeHome.setText("Welcome Home")
+                binding.tvWelcomeHome.text = "Welcome Home"
             }
         }
     }

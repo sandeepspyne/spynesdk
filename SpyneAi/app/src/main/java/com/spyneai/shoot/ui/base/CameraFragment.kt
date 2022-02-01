@@ -459,14 +459,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             .also {
                                 it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                             }
-                    } else if(getString(R.string.app_name) == AppConstants.OLA_CABS){
+                    }
+                    else if(getString(R.string.app_name) == AppConstants.OLA_CABS){
                         Preview.Builder()
                             .setTargetResolution(ola_size)
                             .build()
                             .also {
                                 it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                             }
-                    }else{
+                    }
+                    else{
                         Preview.Builder()
                             .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                             .build()
@@ -510,13 +512,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             .setFlashMode(flashMode)
                             .setTargetResolution(size)
                             .build()
-                    } else  if(getString(R.string.app_name) == AppConstants.OLA_CABS){
+                    }
+                    else  if(getString(R.string.app_name) == AppConstants.OLA_CABS){
                         ImageCapture.Builder()
                             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                             .setFlashMode(flashMode)
                             .setTargetResolution(ola_size)
                             .build()
-                    }else{
+                    }
+                    else{
                         ImageCapture.Builder()
                             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                             .setFlashMode(flashMode)

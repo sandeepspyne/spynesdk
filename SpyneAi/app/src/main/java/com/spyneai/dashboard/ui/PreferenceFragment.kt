@@ -277,28 +277,19 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 binding.llProjectNameSwitch.visibility = View.GONE
         }
 
-        if (Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL).toString() != "") {
-
-            binding.tvUserName.setText(
-                Utilities.getPreference(
-                    requireContext(),
-                    AppConstants.USER_NAME
-                )
-            )
-//            binding.tvLoginAs.setTextText(Utilities.getPreference(requireContext(), AppConstants.USER_NAME))
-            binding.tvEmail.setText(
-                Utilities.getPreference(
-                    requireContext(),
-                    AppConstants.USER_EMAIL
-                )
-            )
-            binding.tvAppVersion.setText(
-                Utilities.getPreference(
-                    requireContext(),
-                    AppConstants.APP_VERSION
-                )
-            )
+        if (Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL).isNullOrEmpty()) {
+            binding.tvUserName.visibility = View.GONE
+        } else {
+            binding.tvUserName.visibility = View.VISIBLE
         }
+
+
+        binding.tvUserName.text = Utilities.getPreference(requireContext(), AppConstants.USER_NAME)
+//            binding.tvLoginAs.setTextText(Utilities.getPreference(requireContext(), AppConstants.USER_NAME))
+        binding.tvEmail.text = Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL)
+        binding.tvAppVersion.text =
+            Utilities.getPreference(requireContext(), AppConstants.APP_VERSION)
+
 
         binding.spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -1132,7 +1123,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
                             viewModel.siteImagePath = it.value.data.checkin_image
                             setCheckOut(false)
-
 
 
 //                            if (it.value.data.user_id == Utilities.getPreference(

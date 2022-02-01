@@ -408,8 +408,7 @@ interface ClipperApi {
 
     @GET("algo/attendence/status")
     suspend fun getAttendanceStatus(
-        @Query("user_id") userID: String =Utilities.getPreference(BaseApplication.getContext(),AppConstants.TOKEN_ID).toString(),
-        @Query("enterprise_id") enterpriseId: String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.ENTERPRISE_ID).toString()
+        @Query("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : GetAttendanceStatusRes
 
 
