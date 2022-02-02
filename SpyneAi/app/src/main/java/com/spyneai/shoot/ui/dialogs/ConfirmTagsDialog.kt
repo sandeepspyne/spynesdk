@@ -416,7 +416,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             for (notification in barNotifications) {
                 if (notification.id == id) {
                     notification.notification.extras?.let {
-                        content = it.getString("android.text")
+                        content = it.getString("android.title")
                     }
 
                 }
