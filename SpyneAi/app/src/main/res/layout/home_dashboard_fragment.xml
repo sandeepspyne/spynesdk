@@ -34,6 +34,7 @@
             <ImageView
                 android:layout_width="52dp"
                 android:layout_height="52dp"
+                android:visibility="gone"
                 android:src="@drawable/ic_wallet"
                 android:layout_gravity="right"
                 android:padding="10dp"

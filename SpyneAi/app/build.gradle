@@ -145,8 +145,8 @@ android {
         automoser {
             dimension 'version'
             applicationId "com.spyneai.automoser"
-            versionCode 18
-            versionName "2.8"
+            versionCode 19
+            versionName "2.9"
         }
 
         //ecom
