@@ -428,27 +428,27 @@ class ImageUploader(
         val compressedImageFile = Compressor.compress(context, requestFile)
 
 
-        val filePath: String = compressedImageFile.path
-        val bitmap = BitmapFactory.decodeFile(filePath)
-
-
-        val compDirectory = "/storage/emulated/0/DCIM/Compressed/"
-        val myDir = File(compDirectory)
-        if (!myDir.exists()) {
-            myDir.mkdirs()
-        }
-        val generator = Random()
-        var n = 10000
-        n = generator.nextInt(n)
-        val file = File(myDir, System.currentTimeMillis().toString() + ".jpg")
-        if (file.exists()) file.delete()
-        try {
-            val out = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-            out.close()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
+//        val filePath: String = compressedImageFile.path
+//        val bitmap = BitmapFactory.decodeFile(filePath)
+//
+//
+//        val compDirectory = "/storage/emulated/0/DCIM/Compressed/"
+//        val myDir = File(compDirectory)
+//        if (!myDir.exists()) {
+//            myDir.mkdirs()
+//        }
+//        val generator = Random()
+//        var n = 10000
+//        n = generator.nextInt(n)
+//        val file = File(myDir, System.currentTimeMillis().toString() + ".jpg")
+//        if (file.exists()) file.delete()
+//        try {
+//            val out = FileOutputStream(file)
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+//            out.close()
+//        } catch (e: java.lang.Exception) {
+//            e.printStackTrace()
+//        }
 
         val uploadResponse = shootRepository.uploadImageToGcp(
             image.preSignedUrl!!,
