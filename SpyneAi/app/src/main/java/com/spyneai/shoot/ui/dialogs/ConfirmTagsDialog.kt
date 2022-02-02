@@ -32,6 +32,7 @@ import com.spyneai.databinding.ItemTagNotesBinding
 import com.spyneai.databinding.ItemTagsSpinnerBinding
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
@@ -318,7 +319,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         else {
             val content = getNotificationText(100)
             content?.let {
-                if (it == getString(R.string.last_uploaded)){
+                if (it.contains("Uploaded")){
                     var action = Actions.STOP
                     val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
                     serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmTagsDialog::class.simpleName)
@@ -328,8 +329,11 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         ContextCompat.startForegroundService(requireContext(), serviceIntent)
                         return
                     } else {
-                        startService(serviceIntent)
+                        requireActivity().startService(serviceIntent)
                     }
+
+                    Utilities.saveBool(requireContext(), AppConstants.UPLOADING_RUNNING, false)
+
                     startService()
                 }
             }
