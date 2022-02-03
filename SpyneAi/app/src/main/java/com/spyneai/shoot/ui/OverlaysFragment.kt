@@ -365,15 +365,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
             if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true) {
                 viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
-                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showLeveler.value = false
+                viewModel.showOverlay.value = false
             }
 
             if (viewModel.categoryDetails.value?.imageType == "Exterior")
                 viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
-
-            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                 viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
         }
 
         if (getString(R.string.app_name) == AppConstants.KARVI){

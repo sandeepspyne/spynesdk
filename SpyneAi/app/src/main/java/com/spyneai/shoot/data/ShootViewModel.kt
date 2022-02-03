@@ -697,19 +697,32 @@ class ShootViewModel : ViewModel() {
                     ,true)
             }
         }else {
-            CameraSettings().apply {
-                isGryroActive = Utilities.getBool(
-                    BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GYRO
-                    ,true)
-                isOverlayActive = Utilities.getBool(
-                    BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_OVERLAY
-                    ,true)
-                isGridActive = Utilities.getBool(
-                    BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GRID
-                    ,false)
+            if(startInteriorShots.value == true || startMiscShots.value==true){
+                CameraSettings().apply {
+                    isGryroActive = false
+                    isOverlayActive = false
+                    isGridActive = Utilities.getBool(
+                        BaseApplication.getContext(),
+                        categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GRID
+                        ,true)
+                }
+
+            }else {
+                CameraSettings().apply {
+                    isGryroActive = Utilities.getBool(
+                        BaseApplication.getContext(),
+                        categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO, true
+                    )
+                    isOverlayActive = Utilities.getBool(
+                        BaseApplication.getContext(),
+                        categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY,
+                        true
+                    )
+                    isGridActive = Utilities.getBool(
+                        BaseApplication.getContext(),
+                        categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GRID, true
+                    )
+                }
             }
         }
     }
