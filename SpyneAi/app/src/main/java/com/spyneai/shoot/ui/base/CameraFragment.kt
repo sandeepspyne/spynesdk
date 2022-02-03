@@ -145,8 +145,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 binding.switchShowOverlay?.isClickable = false
                 binding.switchShowGyro?.isClickable = false
                 viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-                viewModel.showLeveler.value = false
-                viewModel.showOverlay.value = false
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                 binding.tvSkipShoot?.text = getString(R.string.miscshoots)
                 binding.llSkip?.visibility = View.VISIBLE
             }
@@ -165,8 +165,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 binding.switchShowOverlay?.isClickable = false
                 binding.switchShowGyro?.isClickable = false
                 viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-                viewModel.showLeveler.value = false
-                viewModel.showOverlay.value = false
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                 if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
                     binding.tvSkipShoot?.text = getString(R.string.three_sixty_int)
                 } else {
