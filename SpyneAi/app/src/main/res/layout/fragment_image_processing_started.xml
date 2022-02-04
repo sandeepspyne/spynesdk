@@ -84,12 +84,25 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/tvTitle"
                         android:layout_gravity="center"
-                        android:fontFamily="@font/bold"
+                        android:fontFamily="@font/poppins_medium"
                         android:gravity="center"
                         android:text="@string/your_360_shots"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp_20" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvMessage"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center"
+                        android:text="@string/connet_to_start_processing"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_14" />
 
                     <ImageView
                         android:layout_width="300dp"

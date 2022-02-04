@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.spyneai.R
+import com.spyneai.*
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
+import com.spyneai.dashboard.ui.visible
 import com.spyneai.databinding.FragmentImageProcessingStartedBinding
-import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -21,47 +19,41 @@ import com.spyneai.shoot.data.ProcessViewModel
 
 class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentImageProcessingStartedBinding>()  {
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        arguments?.let {
-            if (it.getString(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID){
-                if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
-                    Glide.with(this).asGif().load(R.raw.image_processing_started)
-                        .into(binding.ivProcessing)
-                }else {
+        if (requireContext().isInternetActive()){
+            arguments?.let {
+                if (it.getString(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID){
+                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
+                        Glide.with(this).asGif().load(R.raw.image_processing_started)
+                            .into(binding.ivProcessing)
+                    }else {
+                        Glide.with(this).load(R.drawable.app_logo)
+                            .into(binding.ivProcessing)
+                    }
+                }else{
                     Glide.with(this).load(R.drawable.app_logo)
                         .into(binding.ivProcessing)
                 }
-            }else{
-                Glide.with(this).load(R.drawable.app_logo)
-                    .into(binding.ivProcessing)
             }
+        }else {
+
+            binding.apply {
+                tvTitle.text = getString(R.string.images_saved)
+                tvMessage.visible(true)
+            }
+
+            Glide.with(this).load(R.drawable.app_logo)
+                .into(binding.ivProcessing)
         }
+
 
         binding.llHome.setOnClickListener {
             requireContext().gotoHome()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-//        if (viewModel.categoryId == AppConstants.BIKES_CATEGORY_ID){
-//            if (viewModel.interiorMiscShootsCount > 0){
-//                observeTotalFrameUpdate()
-//                updateTotalFrames()
-//            }
-//
-//
-//            viewModel.updateProjectState(
-//                Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-//                viewModel.sku?.projectId!!
-//            )
-//        }
-    }
 
     private fun observeTotalFrameUpdate() {
         viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
