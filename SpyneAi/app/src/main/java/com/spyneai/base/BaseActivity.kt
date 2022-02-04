@@ -33,30 +33,26 @@ import android.graphics.Color
 import android.os.Handler
 import androidx.core.os.postDelayed
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    //private lateinit var binding: ActivityBaseBinding
     private var receiver: InternetConnectionReceiver? = null
     val TAG = BaseActivity::class.simpleName
     var fisrtime = true
     var notifyChange = true
-    var lastNotified: Boolean? = null
     var handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //binding = ActivityBaseBinding.inflate(layoutInflater)
-        //setContentView(binding.root)
     }
 
     abstract fun onConnectionChange(isConnected: Boolean)
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart: ")
-
         receiver = InternetConnectionReceiver()
         val filter = IntentFilter()
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE")
@@ -77,8 +73,9 @@ abstract class BaseActivity : AppCompatActivity() {
                 context?.let {
                     if (notifyChange){
                         val isConnected = it.isInternetActive()
-                        if (lastNotified == null || lastNotified != isConnected){
-                            lastNotified = isConnected
+                        if (!Utilities.getBool(it,AppConstants.NOTOFIED_ONCE,false) || Utilities.getBool(it,AppConstants.LAST_NOTIFIED,false) != isConnected){
+                            Utilities.saveBool(it,AppConstants.NOTOFIED_ONCE,true)
+                            Utilities.saveBool(it,AppConstants.LAST_NOTIFIED,isConnected)
                             onConnectionChange(isConnected)
                             notifyChange = false
                             handler.removeCallbacksAndMessages(null)
