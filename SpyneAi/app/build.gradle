@@ -243,6 +243,12 @@ android {
             versionCode 1
             versionName "1.0"
         }
+        tekion {
+            dimension 'version'
+            applicationId "com.spyneai.tekion"
+            versionCode 1
+            versionName "1.0"
+        }
 
     }
     sourceSets {
