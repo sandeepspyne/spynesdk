@@ -1,6 +1,8 @@
 package com.spyneai.shoot.ui.dialogs
 
 import android.app.Dialog
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -15,6 +17,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
@@ -29,6 +32,7 @@ import com.spyneai.databinding.ItemTagNotesBinding
 import com.spyneai.databinding.ItemTagsSpinnerBinding
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
@@ -312,6 +316,29 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         if (!requireContext().isMyServiceRunning(ImageUploadingService::class.java))
             startService()
+        else {
+            val content = getNotificationText(100)
+            content?.let {
+                if (it.contains("Uploaded")){
+                    var action = Actions.STOP
+                    val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
+                    serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmTagsDialog::class.simpleName)
+                    serviceIntent.action = action.name
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        ContextCompat.startForegroundService(requireContext(), serviceIntent)
+                        return
+                    } else {
+                        requireActivity().startService(serviceIntent)
+                    }
+
+                    Utilities.saveBool(requireContext(), AppConstants.UPLOADING_RUNNING, false)
+
+                    startService()
+                }
+            }
+
+        }
     }
 
     private fun getMetaValue(): String {
@@ -380,6 +407,23 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             log("Starting the service in < 26 Mode")
             requireActivity().startService(serviceIntent)
         }
+    }
+    private fun getNotificationText(id: Int) : String? {
+        var content:String? = ""
+        val notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val barNotifications = notificationManager.activeNotifications
+            for (notification in barNotifications) {
+                if (notification.id == id) {
+                    notification.notification.extras?.let {
+                        content = it.getString("android.text")
+                    }
+
+                }
+            }
+        }
+
+        return content
     }
 
     fun updateTotalImages() {

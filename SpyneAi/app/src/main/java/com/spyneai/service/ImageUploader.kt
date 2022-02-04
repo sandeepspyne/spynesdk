@@ -427,7 +427,11 @@ class ImageUploader(
         val requestFile = File(image.imagePath)
         val compressedImageFile = Compressor.compress(context, requestFile)
 
+<<<<<<< HEAD
 //
+=======
+
+>>>>>>> dev_lalit_image_compressor
 //        val filePath: String = compressedImageFile.path
 //        val bitmap = BitmapFactory.decodeFile(filePath)
 //
