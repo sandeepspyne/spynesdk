@@ -9,7 +9,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.spyneai.BaseApplication
 import com.spyneai.R
+import com.spyneai.base.BaseActivity
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.base.ViewModelFactory
@@ -27,6 +29,7 @@ import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.utils.log
+import com.spyneai.showConnectionChangeView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
@@ -34,7 +37,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 
-class DraftSkusActivity : AppCompatActivity() {
+class DraftSkusActivity : BaseActivity() {
     private lateinit var binding: ActivityDraftSkusBinding
     lateinit var viewModel: DraftViewModel
     lateinit var skusAdapter: DraftSkusAdapter
@@ -161,6 +164,10 @@ class DraftSkusActivity : AppCompatActivity() {
 //            )
 //        }
 
+    }
+
+    override fun onConnectionChange(isConnected: Boolean) {
+        showConnectionChangeView(isConnected,binding.root)
     }
 
 //

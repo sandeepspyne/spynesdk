@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.spyneai.base.BaseActivity
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityCompletedSkusBinding
 import com.spyneai.databinding.ActivityDraftSkusBinding
@@ -16,6 +17,7 @@ import com.spyneai.draft.ui.adapter.SkuPagedAdapter
 import com.spyneai.needs.AppConstants
 import com.spyneai.orders.data.paging.LoaderStateAdapter
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
+import com.spyneai.showConnectionChangeView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
@@ -23,7 +25,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @ExperimentalPagingApi
-class CompletedPagedActivity : AppCompatActivity() {
+class CompletedPagedActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCompletedSkusBinding
 
@@ -67,6 +69,10 @@ class CompletedPagedActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             getSkus()
         }
+    }
+
+    override fun onConnectionChange(isConnected: Boolean) {
+        showConnectionChangeView(isConnected,binding.root)
     }
 
     @ExperimentalPagingApi
