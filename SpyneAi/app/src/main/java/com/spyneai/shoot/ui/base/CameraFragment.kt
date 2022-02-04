@@ -446,7 +446,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
             var size = Size(1024, 768)
-            var ola_size = Size(1920, 1080)
+            var automobile_resolution = Size(1920, 1080)
 
             // Preview
             val preview = when (viewModel.categoryDetails.value?.categoryId) {
@@ -470,7 +470,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 //                    }
                     else{
                         Preview.Builder()
-                            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                            .setTargetResolution(automobile_resolution)
                             .build()
                             .also {
                                 it.setSurfaceProvider(binding.viewFinder.surfaceProvider)

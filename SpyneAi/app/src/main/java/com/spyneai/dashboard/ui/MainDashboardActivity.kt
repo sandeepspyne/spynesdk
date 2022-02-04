@@ -364,7 +364,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 captureEvent("VIDEO UPLOADING SERVICE ALREADY RUNNING", properties)
                 val content = getNotificationText(102)
                 content?.let {
-                    if (it == "Video uploading in progress..."){
+                    if (it == "Video uploading in progress..." || it.contains("Uploaded")){
                         var action = Actions.STOP
                         val serviceIntent = Intent(this, VideoUploadService::class.java)
                         serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, MainDashboardActivity::class.java.simpleName)
@@ -429,7 +429,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
                 val content = getNotificationText(100)
                 content?.let {
-                    if (it == getString(R.string.image_uploading_in_progess)){
+                    if (it == getString(R.string.image_uploading_in_progess) || it.contains("Uploaded")){
                         var action = Actions.STOP
                         val serviceIntent = Intent(this, ImageUploadingService::class.java)
                         serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, MainDashboardActivity::class.java.simpleName)
