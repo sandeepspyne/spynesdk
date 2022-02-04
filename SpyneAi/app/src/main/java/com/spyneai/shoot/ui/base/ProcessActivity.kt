@@ -20,7 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ProcessActivity : BaseActivity() {
+class ProcessActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityProcessBinding
     lateinit var processViewModel : ProcessViewModel
@@ -89,9 +89,6 @@ class ProcessActivity : BaseActivity() {
         })
     }
 
-    override fun onConnectionChange(isConnected: Boolean) {
-        showConnectionChangeView(isConnected,binding.root)
-    }
 
     override fun onBackPressed() {
         if (processViewModel.isRegularShootSummaryActive) {

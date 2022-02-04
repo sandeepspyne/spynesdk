@@ -42,6 +42,7 @@ abstract class BaseActivity : AppCompatActivity() {
     val TAG = BaseActivity::class.simpleName
     var fisrtime = true
     var notifyChange = true
+    var lastNotified: Boolean? = null
     var handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,13 +76,17 @@ abstract class BaseActivity : AppCompatActivity() {
             if (!fisrtime){
                 context?.let {
                     if (notifyChange){
-                        onConnectionChange(it.isInternetActive())
-                        notifyChange = false
+                        val isConnected = it.isInternetActive()
+                        if (lastNotified == null || lastNotified != isConnected){
+                            lastNotified = isConnected
+                            onConnectionChange(isConnected)
+                            notifyChange = false
+                            handler.removeCallbacksAndMessages(null)
+                            handler.postDelayed({
+                                notifyChange = true
+                            },1000)
+                        }
 
-                        handler.removeCallbacksAndMessages(null)
-                        handler.postDelayed({
-                            notifyChange = true
-                        },1000)
                     }
                 }
             }else{
