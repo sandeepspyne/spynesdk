@@ -125,6 +125,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 startCamera()
         }, 300)
 
+
+        if(viewModel.getCameraSetting().isGridActive)
+            binding.switchShowGyro?.isChecked=true
+        if(viewModel.getCameraSetting().isOverlayActive)
+            binding.switchShowOverlay?.isChecked=true
+        if(viewModel.getCameraSetting().isGryroActive)
+            binding.switchShowGyro?.isChecked=true
+
+
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output direcrotory
         pickIt = PickiT(requireContext(), this, requireActivity())
@@ -274,28 +283,36 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             binding.switchShowGyro?.isChecked = viewModel.getCameraSetting().isGryroActive
 
             binding.switchShowGyro?.setOnCheckedChangeListener { _, isChecked ->
-                Utilities.saveBool(
-                    requireContext(),
-                    viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO,
-                    isChecked
-                )
+                if(viewModel.startInteriorShots.value!=true && viewModel.startMiscShots.value != true) {
+                    Utilities.saveBool(
+                        requireContext(),
+                        viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO,
+                        isChecked
+                    )
+                }
+
                 if (isChecked)
                     viewModel.showLeveler.value = isChecked
                 else viewModel.showLeveler.value = false
+
             }
 
             binding.switchShowOverlay?.isChecked = viewModel.getCameraSetting().isOverlayActive
 
             binding.switchShowOverlay?.setOnCheckedChangeListener { _, isChecked ->
-                Utilities.saveBool(
-                    requireContext(),
-                    viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY,
-                    isChecked
-                )
+                if(viewModel.startInteriorShots.value!=true && viewModel.startMiscShots.value != true) {
+                    Utilities.saveBool(
+                        requireContext(),
+                        viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY,
+                        isChecked
+                    )
+                }
+
                 if (isChecked)
                     viewModel.showOverlay.value = isChecked
                 else
                     viewModel.showOverlay.value = false
+
             }
 
             binding.switchShowGrid?.isChecked = viewModel.getCameraSetting().isGridActive

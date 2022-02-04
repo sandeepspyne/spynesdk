@@ -107,7 +107,16 @@ class OrderSummary2Activity : AppCompatActivity() {
                 .toString()
         )
 
+        if(getString(R.string.app_name)==AppConstants.AUTO_FOTO){
+            llTotalCost.visibility=View.GONE
+            llTotalImages.visibility=View.GONE
+            rlCreditAvailable.visibility=View.GONE
+            hdDownloaded=true
+        }
+
         tvDownloadHdImages.setOnClickListener {
+
+
 
             if (hdDownloaded){
                 startDownloadActivity()

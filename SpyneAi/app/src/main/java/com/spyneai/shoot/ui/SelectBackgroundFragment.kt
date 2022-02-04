@@ -42,6 +42,10 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if(getString(R.string.app_name)==AppConstants.AUTO_FOTO){
+            binding.tvGenerateGif.text = getString(R.string.generate_output)
+        }
+
         carBackgroundGifList = ArrayList()
 
         initSelectBackground()
@@ -191,7 +195,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             AppConstants.CARS24,
             AppConstants.CARS24_INDIA -> {
                 //process image call
-                processSku(showDialog)
+                processSku(showDialog,false)
             }
             AppConstants.SWIGGY -> {
 
@@ -207,20 +211,31 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 } else {
                     if (binding.cb360.isChecked) {
                         viewModel.backgroundSelect = backgroundSelect
-                        viewModel.addRegularShootSummaryFragment.value = true
                     } else {
                         //process image call
-                        processSku(showDialog)
+                        processSku(showDialog,false)
                     }
                 }
             }
+            AppConstants.AUTO_FOTO ->{
+                if (binding.cb360.visibility == View.VISIBLE && binding.cb360.isChecked) {
+
+                    viewModel.backgroundSelect = backgroundSelect
+                    processSku(showDialog,true)
+                } else {
+                    //process image call
+                    processSku(showDialog,false)
+                }
+
+            }
             else -> {
                 if (binding.cb360.visibility == View.VISIBLE && binding.cb360.isChecked) {
+
                     viewModel.backgroundSelect = backgroundSelect
                     viewModel.addRegularShootSummaryFragment.value = true
                 } else {
                     //process image call
-                    processSku(showDialog)
+                    processSku(showDialog,false)
                 }
             }
         }
@@ -432,7 +447,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         })
     }
 
-    private fun processSku(showDialog: Boolean) {
+    private fun processSku(showDialog: Boolean,is360:Boolean) {
         if (!viewModel.backgroundSelect.isNullOrEmpty()) {
             if (showDialog)
                 Utilities.showProgressDialog(requireContext())
@@ -500,7 +515,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         it.errorMessage!!
                     )
 
-                    handleApiError(it) { processSku(true) }
+                    handleApiError(it) { processSku(true,false) }
                 }
             }
         })
