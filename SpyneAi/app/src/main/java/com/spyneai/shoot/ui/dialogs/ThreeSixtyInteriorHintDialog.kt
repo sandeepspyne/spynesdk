@@ -26,6 +26,7 @@ import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.startUploadServiceWithCheck
 import kotlinx.coroutines.launch
 
 class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog360InteriorBinding>(),
@@ -132,31 +133,12 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                     ))
                 }
 
-                startService()
+                requireContext().startUploadServiceWithCheck()
 
                 dismiss()
 
                 viewModel.selectBackground.value = true
             }
-        }
-    }
-
-    private fun startService() {
-        var action = Actions.START
-        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-            return
-
-        val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
-        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ThreeSixtyInteriorHintDialog::class.simpleName)
-        serviceIntent.action = action.name
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            log("Starting the service in >=26 Mode")
-            ContextCompat.startForegroundService(requireContext(), serviceIntent)
-            return
-        } else {
-            log("Starting the service in < 26 Mode")
-            requireActivity().startService(serviceIntent)
         }
     }
 

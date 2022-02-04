@@ -22,15 +22,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.spyneai.R
+import com.spyneai.*
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.DialogConfirmTagsBinding
 import com.spyneai.databinding.ItemTagNotesBinding
 import com.spyneai.databinding.ItemTagsSpinnerBinding
-import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -314,31 +312,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             viewModel.insertImage(viewModel.shootData.value!!)
         }
 
-        if (!requireContext().isMyServiceRunning(ImageUploadingService::class.java))
-            startService()
-        else {
-            val content = getNotificationText(100)
-            content?.let {
-                if (it.contains("Uploaded")){
-                    var action = Actions.STOP
-                    val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
-                    serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmTagsDialog::class.simpleName)
-                    serviceIntent.action = action.name
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        ContextCompat.startForegroundService(requireContext(), serviceIntent)
-                        return
-                    } else {
-                        requireActivity().startService(serviceIntent)
-                    }
-
-                    Utilities.saveBool(requireContext(), AppConstants.UPLOADING_RUNNING, false)
-
-                    startService()
-                }
-            }
-
-        }
+        requireContext().startUploadServiceWithCheck()
     }
 
     private fun getMetaValue(): String {
@@ -390,41 +364,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         return ""
     }
 
-    private fun startService() {
-        var action = Actions.START
-        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-            return
 
-        val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
-        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmTagsDialog::class.simpleName)
-        serviceIntent.action = action.name
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            log("Starting the service in >=26 Mode")
-            ContextCompat.startForegroundService(requireContext(), serviceIntent)
-            return
-        } else {
-            log("Starting the service in < 26 Mode")
-            requireActivity().startService(serviceIntent)
-        }
-    }
-    private fun getNotificationText(id: Int) : String? {
-        var content:String? = ""
-        val notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val barNotifications = notificationManager.activeNotifications
-            for (notification in barNotifications) {
-                if (notification.id == id) {
-                    notification.notification.extras?.let {
-                        content = it.getString("android.text")
-                    }
-
-                }
-            }
-        }
-
-        return content
-    }
 
     fun updateTotalImages() {
         viewModel.updateTotalImages(viewModel.sku.value?.skuId!!)

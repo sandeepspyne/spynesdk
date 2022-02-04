@@ -80,7 +80,7 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
                 viewModel.insertImage(viewModel.shootData.value!!)
             }
 
-            startService()
+            requireContext().startUploadServiceWithCheck()
             viewModel.stopShoot.value = true
             dismiss()
         }
@@ -124,29 +124,12 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
                 viewModel.insertImage(viewModel.shootData.value!!)
             }
 
-            startService()
+            requireContext().startUploadServiceWithCheck()
             dismiss()
         }
     }
 
 
-    private fun startService() {
-        var action = Actions.START
-        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-            return
-
-        val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
-        serviceIntent.action = action.name
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            com.spyneai.service.log("Starting the service in >=26 Mode")
-            ContextCompat.startForegroundService(requireContext(), serviceIntent)
-            return
-        } else {
-            com.spyneai.service.log("Starting the service in < 26 Mode")
-            requireActivity().startService(serviceIntent)
-        }
-    }
 
     override fun onResume() {
         super.onResume()

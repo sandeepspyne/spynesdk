@@ -3,15 +3,10 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.media.ExifInterface
-import android.media.MediaActionSound
 import android.os.*
 import android.provider.MediaStore
 import android.text.Layout
@@ -45,9 +40,6 @@ import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.log
 import com.spyneai.shoot.utils.shoot
 import kotlinx.android.synthetic.main.activity_credit_plans.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.*
 import java.util.*
@@ -124,15 +116,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             if (activity != null)
                 startCamera()
         }, 300)
-
-
-        if(viewModel.getCameraSetting().isGridActive)
-            binding.switchShowGyro?.isChecked=true
-        if(viewModel.getCameraSetting().isOverlayActive)
-            binding.switchShowOverlay?.isChecked=true
-        if(viewModel.getCameraSetting().isGryroActive)
-            binding.switchShowGyro?.isChecked=true
-
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output direcrotory
@@ -463,7 +446,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
             var size = Size(1024, 768)
-            var ola_size = Size(1920, 1080)
+            var automobileResolution = Size(1920, 1080)
 
             // Preview
             val preview = when (viewModel.categoryDetails.value?.categoryId) {
@@ -477,17 +460,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                 it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                             }
                     }
-                    else if(getString(R.string.app_name) == AppConstants.OLA_CABS){
-                        Preview.Builder()
-                            .setTargetResolution(ola_size)
-                            .build()
-                            .also {
-                                it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-                            }
-                    }
                     else{
                         Preview.Builder()
-                            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                            .setTargetResolution(automobileResolution)
                             .build()
                             .also {
                                 it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -530,18 +505,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             .setTargetResolution(size)
                             .build()
                     }
-                    else  if(getString(R.string.app_name) == AppConstants.OLA_CABS){
-                        ImageCapture.Builder()
-                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                            .setFlashMode(flashMode)
-                            .setTargetResolution(ola_size)
-                            .build()
-                    }
                     else{
                         ImageCapture.Builder()
                             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                             .setFlashMode(flashMode)
-                            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                            .setTargetResolution(automobileResolution)
                             .build()
                     }
                 }

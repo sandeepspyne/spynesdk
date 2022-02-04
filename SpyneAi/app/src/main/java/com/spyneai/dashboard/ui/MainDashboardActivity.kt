@@ -155,23 +155,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
     }
 
-    private fun getNotificationText(id: Int) : String? {
-        var content:String? = ""
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val barNotifications = notificationManager.activeNotifications
-            for (notification in barNotifications) {
-                if (notification.id == id) {
-                    notification.notification.extras?.let {
-                        content = it.getString("android.text")
-                    }
 
-                }
-            }
-        }
-
-        return content
-    }
 
     private fun continueShoot() {
         when (getString(R.string.app_name)) {
@@ -370,9 +354,11 @@ class MainDashboardActivity : AppCompatActivity() {
                 startVideoService(properties)
             }else {
                 captureEvent("VIDEO UPLOADING SERVICE ALREADY RUNNING", properties)
-                val content = getNotificationText(102)
+                val content = getNotificationText(0,102)
+                val title = getNotificationText(1,102)
+
                 content?.let {
-                    if (it == "Video uploading in progress..."){
+                    if (it == "Video uploading in progress..." || title?.contains("Uploaded") == true){
                         var action = Actions.STOP
                         val serviceIntent = Intent(this, VideoUploadService::class.java)
                         serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, MainDashboardActivity::class.java.simpleName)
@@ -435,9 +421,10 @@ class MainDashboardActivity : AppCompatActivity() {
             }else {
                 captureEvent(Events.SERVICE_ALREADY_RUNNING, properties)
 
-                val content = getNotificationText(100)
+                val content = getNotificationText(0,100)
+                val title = getNotificationText(1,100)
                 content?.let {
-                    if (it == getString(R.string.image_uploading_in_progess)){
+                    if (it == getString(R.string.image_uploading_in_progess) || title?.contains("Uploaded") == true){
                         var action = Actions.STOP
                         val serviceIntent = Intent(this, ImageUploadingService::class.java)
                         serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, MainDashboardActivity::class.java.simpleName)
