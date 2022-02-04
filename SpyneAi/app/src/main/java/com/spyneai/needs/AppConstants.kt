@@ -200,6 +200,7 @@ object AppConstants {
     val AMAZON = "Amazon"
 
     val SPYNE_AI = "SpyneAI"
+    val SPYNE_AI_AUTOMOBILE = "SpyneAI Automobile"
 
     val REGULAR = "REGULAR"
     val SKIPPED = "SKIPPED"

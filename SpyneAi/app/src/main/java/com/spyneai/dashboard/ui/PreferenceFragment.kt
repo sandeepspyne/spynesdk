@@ -89,7 +89,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         getLocations()
         observeLocation()
 
-        if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
+        if (getString(R.string.app_name) == AppConstants.SPYNE_AI || getString(R.string.app_name) == AppConstants.SPYNE_AI_AUTOMOBILE ) {
             val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT

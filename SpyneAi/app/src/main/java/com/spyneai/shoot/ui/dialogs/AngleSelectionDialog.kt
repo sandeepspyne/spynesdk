@@ -33,7 +33,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
         val valuesShoots = when (getString(R.string.app_name)) {
             AppConstants.CARS24_INDIA, AppConstants.CARS24 -> arrayOf("5 " + angles)
             AppConstants.SELL_ANY_CAR -> arrayOf("4 " + angles, "36 " + angles)
-            AppConstants.SPYNE_AI -> {
+            AppConstants.SPYNE_AI, AppConstants.SPYNE_AI_AUTOMOBILE -> {
                 if (viewModel.categoryDetails.value?.categoryId == AppConstants.CARS_CATEGORY_ID) {
                     arrayOf(
                         "8 " + angles,
@@ -66,7 +66,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                     36 -> binding.npShoots.minValue = 1
                 }
             }
-            AppConstants.SPYNE_AI -> {
+            AppConstants.SPYNE_AI,AppConstants.SPYNE_AI_AUTOMOBILE -> {
                 if (viewModel.categoryDetails.value?.categoryId == AppConstants.BIKES_CATEGORY_ID){
                     when (viewModel.getSelectedAngles(getString(R.string.app_name))) {
                         4 -> binding.npShoots.minValue = 0

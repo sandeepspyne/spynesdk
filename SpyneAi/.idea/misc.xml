@@ -155,6 +155,10 @@
         <entry key="app/src/spyne/res/layout/activity_dashboard_main.xml" value="0.3098958333333333" />
         <entry key="app/src/spyne/res/layout/home_dashboard_fragment.xml" value="0.24166666666666667" />
         <entry key="app/src/spyne/res/menu/dashboard_bottom_menu.xml" value="0.16770833333333332" />
+        <entry key="app/src/spyneautomobile/res/layout/activity_dashboard_main.xml" value="0.3098958333333333" />
+        <entry key="app/src/spyneautomobile/res/layout/home_dashboard_fragment.xml" value="0.3098958333333333" />
+        <entry key="app/src/spyneautomobile/res/menu/dashboard_bottom_menu.xml" value="0.3098958333333333" />
+        <entry key="app/src/spyneautomobile/res/mipmap-anydpi-v26/app_ic.xml" value="0.2657407407407407" />
         <entry key="app/src/spynephotographer/res/layout/activity_product.xml" value="0.24010416666666667" />
         <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.25384615384615383" />
       </map>

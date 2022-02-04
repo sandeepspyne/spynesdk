@@ -306,7 +306,7 @@ class GyroView : FrameLayout {
                 }
             }
 
-            AppConstants.SPYNE_AI, AppConstants.SELL_ANY_CAR -> {
+            AppConstants.SPYNE_AI, AppConstants.SPYNE_AI_AUTOMOBILE, AppConstants.SELL_ANY_CAR -> {
                 cateoryName?.let {
                     when (it) {
                         "Automobiles", "Bikes" -> {

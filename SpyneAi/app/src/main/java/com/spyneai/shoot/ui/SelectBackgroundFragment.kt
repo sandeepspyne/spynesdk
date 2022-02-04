@@ -70,6 +70,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             AppConstants.CARS_CATEGORY_ID -> {
                 when(getString(R.string.app_name)) {
                     AppConstants.SPYNE_AI,
+                    AppConstants.SPYNE_AI_AUTOMOBILE,
                     AppConstants.ADLOID-> {
                         binding.cbWindowCorrection.visibility = View.GONE
                         binding.tvWindowReflection.visibility = View.GONE
@@ -127,7 +128,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.tvGenerateGif.text = getString(R.string.generate_output)
                 binding.tvSample.text = getString(R.string.sample_output)
             }
-            AppConstants.SPYNE_AI -> {
+            AppConstants.SPYNE_AI, AppConstants.SPYNE_AI_AUTOMOBILE -> {
                 when (viewModel.categoryId) {
                     AppConstants.FOOD_AND_BEV_CATEGORY_ID -> {
                         binding.cb360.visibility = View.GONE
@@ -197,7 +198,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 processFoodImage()
                 Utilities.showProgressDialog(requireContext())
             }
-            AppConstants.SPYNE_AI -> {
+            AppConstants.SPYNE_AI,AppConstants.SPYNE_AI_AUTOMOBILE -> {
                 if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
                         .equals("Food & Beverages")
                 ) {
@@ -271,7 +272,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                 viewModel.getBackgroundGifCars(category, authKey)
             }
-            AppConstants.SPYNE_AI -> {
+            AppConstants.SPYNE_AI,AppConstants.SPYNE_AI_AUTOMOBILE -> {
                 if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
                         .equals("Food & Beverages")
                 ) {

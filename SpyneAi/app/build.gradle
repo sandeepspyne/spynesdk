@@ -237,6 +237,12 @@ android {
             versionCode 1
             versionName "1.0"
         }
+        spyneautomobile {
+            dimension 'version'
+            applicationId "com.spyneai.spyneautomobile"
+            versionCode 1
+            versionName "1.0"
+        }
 
     }
     sourceSets {

@@ -87,7 +87,7 @@ class MyOngoingProjectAdapter(
                 || getProjectList[position].category.equals("Bikes")
             ){
                 when (context.getString(R.string.app_name)){
-                    AppConstants.SWIGGYINSTAMART,AppConstants.SPYNE_AI, AppConstants.FLIPKART_GROCERY, AppConstants.EBAY,AppConstants.UDAAN ->
+                    AppConstants.SWIGGYINSTAMART,AppConstants.SPYNE_AI,AppConstants.SPYNE_AI_AUTOMOBILE, AppConstants.FLIPKART_GROCERY, AppConstants.EBAY,AppConstants.UDAAN ->
                         holder.tvImageCount.visibility = View.VISIBLE
                     else ->
                         holder.tvImageCount.visibility = View.INVISIBLE

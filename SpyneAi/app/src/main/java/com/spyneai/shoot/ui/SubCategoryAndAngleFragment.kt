@@ -146,7 +146,7 @@ class SubCategoryAndAngleFragment :
                 viewModel.subCatName.value = data.sub_cat_name
 
                 when (getString(R.string.app_name)) {
-                    AppConstants.SPYNE_AI -> {
+                    AppConstants.SPYNE_AI, AppConstants.SPYNE_AI_AUTOMOBILE -> {
                         when (viewModel.categoryDetails.value?.categoryName) {
                             "Automobiles", "Bikes" -> {
                                 selectAngles()

@@ -28,7 +28,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
 
         arguments?.let {
             if (it.getString(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID){
-                if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
+                if (getString(R.string.app_name) == AppConstants.SPYNE_AI || getString(R.string.app_name) == AppConstants.SPYNE_AI_AUTOMOBILE){
                     Glide.with(this).asGif().load(R.raw.image_processing_started)
                         .into(binding.ivProcessing)
                 }else {

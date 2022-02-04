@@ -358,7 +358,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     "ConfirmReshootEcomDialog"
                 )
             }
-            AppConstants.SPYNE_AI->{
+            AppConstants.SPYNE_AI, AppConstants.SPYNE_AI_AUTOMOBILE->{
                 when(viewModel.categoryDetails.value?.categoryId){
                     AppConstants.FOOD_AND_BEV_CATEGORY_ID->{
                         ConfirmReshootEcomDialog().show(

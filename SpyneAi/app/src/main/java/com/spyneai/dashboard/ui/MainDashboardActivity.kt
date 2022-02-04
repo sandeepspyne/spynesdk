@@ -88,6 +88,11 @@ class MainDashboardActivity : AppCompatActivity() {
                     val intent = Intent(this, CategoriesActivity::class.java)
                     startActivity(intent)
                 }
+            } AppConstants.SPYNE_AI_AUTOMOBILE -> {
+                binding.fab.setOnClickListener {
+                    val intent = Intent(this, CategoriesActivity::class.java)
+                    startActivity(intent)
+                }
             }
             else -> {
                 binding.fab.visibility = View.GONE
@@ -111,7 +116,7 @@ class MainDashboardActivity : AppCompatActivity() {
 //                }
 
                 R.id.completedOrdersFragment -> {
-                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
+                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI || getString(R.string.app_name) == AppConstants.SPYNE_AI_AUTOMOBILE) {
                         intent.putExtra("TAB_ID", 0)
                         setCurrentFragment(myOrdersFragment)
                     } else {

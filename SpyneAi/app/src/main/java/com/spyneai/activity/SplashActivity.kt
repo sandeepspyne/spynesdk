@@ -40,7 +40,7 @@ class SplashActivity : AppCompatActivity() {
 
         when (getString(R.string.app_name)) {
 
-            AppConstants.SPYNE_AI, AppConstants.AUTO_FOTO ->{
+            AppConstants.SPYNE_AI_AUTOMOBILE,AppConstants.SPYNE_AI, AppConstants.AUTO_FOTO ->{
                 ivPowredBy.visibility = View.INVISIBLE
             } else -> {
             ivPowredBy.visibility = View.VISIBLE
@@ -93,6 +93,7 @@ class SplashActivity : AppCompatActivity() {
 
                 intent = when(getString(R.string.app_name)) {
                     AppConstants.SPYNE_AI->  Intent(this, OnboardingsActivity::class.java)
+                    AppConstants.SPYNE_AI_AUTOMOBILE->  Intent(this, OnboardingsActivity::class.java)
 
                     AppConstants.AUTO_FOTO -> Intent(this, SelectLanguageActivity::class.java)
 
