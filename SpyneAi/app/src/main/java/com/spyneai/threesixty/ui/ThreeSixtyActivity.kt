@@ -46,7 +46,6 @@ class ThreeSixtyActivity : AppCompatActivity() {
             .add(binding.flContainer.id,RecordVideoFragment())
             .add(binding.flContainer.id,SubcategoriesFragment())
             .commit()
-
     }
 
     private fun setUpDrafts() {

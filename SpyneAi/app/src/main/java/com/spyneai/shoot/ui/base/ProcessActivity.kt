@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
+import com.spyneai.base.BaseActivity
 import com.spyneai.dashboard.ui.base.ViewModelFactory
+import com.spyneai.databinding.ActivityProcessBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.ProcessViewModel
@@ -13,18 +15,20 @@ import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.ui.RegularShootSummaryFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
+import com.spyneai.showConnectionChangeView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ProcessActivity : AppCompatActivity() {
+class ProcessActivity : BaseActivity() {
 
-    val TAG = "ProcessActivity"
+    lateinit var binding: ActivityProcessBinding
     lateinit var processViewModel : ProcessViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_process)
+        binding = ActivityProcessBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setLocale()
 
@@ -83,6 +87,10 @@ class ProcessActivity : AppCompatActivity() {
                 processViewModel.addRegularShootSummaryFragment.value = false
             }
         })
+    }
+
+    override fun onConnectionChange(isConnected: Boolean) {
+        showConnectionChangeView(isConnected,binding.root)
     }
 
     override fun onBackPressed() {

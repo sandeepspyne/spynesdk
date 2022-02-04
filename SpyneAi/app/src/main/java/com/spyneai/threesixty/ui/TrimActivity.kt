@@ -4,13 +4,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.spyneai.base.BaseActivity
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityTrimBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
+import com.spyneai.showConnectionChangeView
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 
-class TrimActivity : AppCompatActivity() {
+class TrimActivity : BaseActivity() {
 
     lateinit var binding : ActivityTrimBinding
     lateinit var threeSixtyViewModel : ThreeSixtyViewModel
@@ -47,6 +49,10 @@ class TrimActivity : AppCompatActivity() {
         binding.ivBack.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    override fun onConnectionChange(isConnected: Boolean) {
+        showConnectionChangeView(isConnected,binding.root)
     }
 
     override fun onBackPressed() {

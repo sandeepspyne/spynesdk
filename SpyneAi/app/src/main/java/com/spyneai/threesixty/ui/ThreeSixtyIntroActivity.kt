@@ -3,15 +3,17 @@ package com.spyneai.threesixty.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.spyneai.base.BaseActivity
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityThreeSixtyIntroBinding
 import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.setLocale
+import com.spyneai.showConnectionChangeView
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.data.model.VideoDetails
 
-class ThreeSixtyIntroActivity : AppCompatActivity() {
+class ThreeSixtyIntroActivity : BaseActivity() {
 
     lateinit var binding: ActivityThreeSixtyIntroBinding
 
@@ -46,6 +48,10 @@ class ThreeSixtyIntroActivity : AppCompatActivity() {
         binding.ivBack.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    override fun onConnectionChange(isConnected: Boolean) {
+        showConnectionChangeView(isConnected,binding.root)
     }
 
 }

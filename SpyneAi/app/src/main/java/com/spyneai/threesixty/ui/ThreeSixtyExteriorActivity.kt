@@ -118,7 +118,6 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
                 }
             }
         })
-
     }
 
 
@@ -134,7 +133,6 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
                         target: Target<Drawable>?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        Log.d(TAG, "onResourceReady: failed")
                         return false
                     }
 
@@ -145,11 +143,7 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        Log.d(TAG, "onResourceReady: paseed " + index)
-
-
                         if (index == tsvParams.framesList.size - 1) {
-
                             binding.ivFront.setOnTouchListener(this@ThreeSixtyExteriorActivity)
                         }
 
@@ -176,9 +170,6 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
         //front view listener
         binding.ivShare.setOnClickListener(this@ThreeSixtyExteriorActivity)
         binding.ivEmbed.setOnClickListener(this@ThreeSixtyExteriorActivity)
-
-
-
     }
 
     private fun loadImage(tsvParams: TSVParams, imageView: ImageView) {

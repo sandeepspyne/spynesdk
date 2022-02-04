@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesAdapter
 import com.spyneai.adapter.CategoriesDashboardAdapter
+import com.spyneai.base.BaseActivity
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
@@ -22,6 +23,7 @@ import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.ui.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.dashboard.ui.handleApiError
+import com.spyneai.databinding.ActivityCategoriesBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
@@ -30,12 +32,14 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
+import com.spyneai.showConnectionChangeView
 import kotlinx.android.synthetic.main.activity_categories.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CategoriesActivity : AppCompatActivity(){
+class CategoriesActivity : BaseActivity(){
+    lateinit var binding: ActivityCategoriesBinding
     private var viewModel: DashboardViewModel? = null
     lateinit var categoriesResponseList : ArrayList<NewCategoriesResponse.Category>
     lateinit var categoriesAdapter : CategoriesAdapter
@@ -45,10 +49,10 @@ class CategoriesActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_categories)
+        binding = ActivityCategoriesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
         viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
 
         setPreferences()
@@ -56,6 +60,10 @@ class CategoriesActivity : AppCompatActivity(){
         setRecycler()
         fetchCategories()
         observeCategories()
+    }
+
+    override fun onConnectionChange(isConnected: Boolean) {
+        showConnectionChangeView(isConnected,binding.root)
     }
 
     private fun setPreferences() {

@@ -46,8 +46,11 @@ import android.os.PowerManager
 import android.net.NetworkCapabilities
 
 import android.content.Context.CONNECTIVITY_SERVICE
+import android.graphics.Color
 import android.os.Build
+import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.service.*
 import com.spyneai.shoot.data.ImagesRepoV2
@@ -138,7 +141,7 @@ fun Context.isMyServiceRunning(serviceClass: Class<*>): Boolean {
 fun Context.isInternetActive() : Boolean {
     val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        val nw      = connectivityManager.activeNetwork ?: return false
+        val nw = connectivityManager.activeNetwork ?: return false
         val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
         return when {
             actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
@@ -527,6 +530,33 @@ fun getTimeStamp(date: String) : Long {
     val formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
     val date = formatter.parse(nd) as Date
     return date.time
+}
+
+fun Context.showConnectionChangeView(isConnected: Boolean,parent: View){
+    val layoutInflater = LayoutInflater.from(this)
+    val snackbar = Snackbar.make(parent, "", Snackbar.LENGTH_LONG)
+
+    // inflate the cutom_snackbar_view created previously
+    val customSnackView = if (isConnected) layoutInflater.inflate(R.layout.online_snackbar_view, null) else
+        layoutInflater.inflate(R.layout.offline_snackbar_view, null);
+
+    // set the background of the default snackbar as transparent
+    snackbar.view.setBackgroundColor(Color.TRANSPARENT)
+
+    // now change the layout of the snackbar
+    val snackbarLayout = snackbar.view as Snackbar.SnackbarLayout
+
+    // set padding of the all corners as 0
+    snackbarLayout.setPadding(0, 0, 0, 0)
+    snackbarLayout.layoutParams.height = pxFromDp(this,25F).toInt()
+
+    snackbarLayout.addView(customSnackView, 0)
+
+    snackbar.show()
+}
+
+fun pxFromDp(context: Context, dp: Float): Float {
+    return dp * context.resources.displayMetrics.density
 }
 
 

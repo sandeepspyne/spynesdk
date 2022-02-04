@@ -3,6 +3,7 @@ package com.spyneai.dashboard.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,9 +15,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.ExperimentalPagingApi
 import androidx.work.*
+import com.google.android.material.snackbar.Snackbar
 import com.spyneai.*
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
+import com.spyneai.base.BaseActivity
 import com.spyneai.base.network.Resource
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.ui.base.ViewModelFactory
@@ -42,10 +45,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainDashboardActivity : AppCompatActivity() {
+class MainDashboardActivity : BaseActivity() {
     private lateinit var binding: ActivityDashboardMainBinding
     private var viewModel: DashboardViewModel? = null
-    private var TAG = "MainDashboardActivity"
+    //private var TAG = "MainDashboardActivity"
 
     @OptIn(ExperimentalPagingApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,6 +139,10 @@ class MainDashboardActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    override fun onConnectionChange(isConnected: Boolean) {
+        showConnectionChangeView(isConnected,binding.root)
     }
 
 
