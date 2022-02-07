@@ -242,6 +242,8 @@ object AppConstants {
     val NOTOFIED_ONCE = "NOTOFIED_ONCE"
     val LAST_NOTIFIED = "LAST_NOTIFIED"
 
+    val IMAGE_COUNT = "IMAGE_COUNT"
+
     val imageCatNameMap = HashMap<String, String>().apply {
         put(ECOM_CATEGORY_ID, "Ecom")
         put(FOOTWEAR_CATEGORY_ID, "Footwear")

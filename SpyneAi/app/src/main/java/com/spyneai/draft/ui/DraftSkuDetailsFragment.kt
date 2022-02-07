@@ -13,6 +13,7 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.dashboard.ui.OutdatedVersionDialog
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentDraftSkuDetailsBinding
 import com.spyneai.draft.data.DraftViewModel
@@ -63,22 +64,22 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
         binding.tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
 
-
         fetchImages()
-//        if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB, false)) {
-
-//        } else {
-//            getSkuDetails()
-//
-//            observeSkuDeatils()
-//        }
 
         binding.btnContinueShoot.setOnClickListener {
             onResumeClick()
         }
+
+        viewModel.syncImages.observe(viewLifecycleOwner, {
+            fetchImages()
+        })
     }
 
     private fun fetchImages() {
+        binding.shimmerCompletedSKU.visibility = View.VISIBLE
+        binding.shimmerCompletedSKU.startShimmer()
+
+
         lifecycleScope.launch {
             viewModel.getImages(
                 requireActivity().intent.getStringExtra(AppConstants.SKU_ID),
@@ -87,14 +88,32 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             )
         }
 
-        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner,{
-            when(it){
-                is Resource.Success ->setData(it.value.data as ArrayList<Image>)
+        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.fromLocal && requireActivity().intent.getIntExtra(
+                            AppConstants.IMAGE_COUNT,
+                            0
+                        ) > it.value.data.size
+                    ) {
+                        //sync draft images data dialog
+                        binding.shimmerCompletedSKU.stopShimmer()
+                        binding.shimmerCompletedSKU.visibility = View.GONE
+
+                        ImageNotSyncedDialog().show(
+                            requireActivity().supportFragmentManager,
+                            "ImageNotSyncedDialog"
+                        )
+                        return@observe
+                    }
+
+                    setData(it.value.data as ArrayList<Image>)
+                }
 
                 is Resource.Failure -> {
-                    if (it.errorCode == 404){
+                    if (it.errorCode == 404) {
                         setData(ArrayList())
-                    }else {
+                    } else {
                         handleApiError(it) { fetchImages() }
                     }
                 }

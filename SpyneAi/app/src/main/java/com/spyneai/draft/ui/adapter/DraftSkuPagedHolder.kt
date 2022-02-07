@@ -187,7 +187,7 @@ class DraftSkuPagedHolder(
                     putExtra(AppConstants.SUB_CAT_NAME,item.subcategoryName)
                     putExtra(AppConstants.SKU_NAME, item.skuName)
                     putExtra(AppConstants.PROJECT_NAME, item.skuName)
-                   // putExtra(AppConstants.SKU_COUNT, skuList.size)
+                    putExtra(AppConstants.IMAGE_COUNT, item.imagesCount)
                     putExtra(AppConstants.SKU_CREATED, true)
                     putExtra(AppConstants.SKU_ID, item.skuId)
                     putExtra(AppConstants.SKU_UUID, item.uuid)

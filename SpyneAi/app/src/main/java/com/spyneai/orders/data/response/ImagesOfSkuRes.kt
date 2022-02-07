@@ -8,5 +8,6 @@ data class ImagesOfSkuRes(
     val message: String,
     val paid: String,
     val sku_status: String,
-    val staus: Int
+    val staus: Int,
+    var fromLocal: Boolean = true
 )

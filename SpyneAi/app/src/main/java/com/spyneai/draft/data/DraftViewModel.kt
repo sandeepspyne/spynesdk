@@ -44,6 +44,8 @@ class DraftViewModel : ViewModel() {
     private val imageRepositoryV2 = ImagesRepoV2(appDatabase.imageDao())
 
 
+    val syncImages: MutableLiveData<Boolean> = MutableLiveData()
+
     private val _draftResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
     val draftResponse: LiveData<Resource<GetProjectsResponse>>
         get() = _draftResponse
@@ -93,7 +95,8 @@ class DraftViewModel : ViewModel() {
                                 message = "done",
                                 "",
                                 "",
-                                200
+                                200,
+                                fromLocal = false
                             ))
                     }
                 }
@@ -113,7 +116,8 @@ class DraftViewModel : ViewModel() {
                             message = "done",
                             "",
                             "",
-                            200
+                            200,
+                            fromLocal = true
                         ))
                 }
             }
