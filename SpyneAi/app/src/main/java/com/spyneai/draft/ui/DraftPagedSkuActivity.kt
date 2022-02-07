@@ -2,6 +2,7 @@ package com.spyneai.draft.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -14,10 +15,12 @@ import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.draft.ui.adapter.DraftSkusAdapter
 import com.spyneai.draft.ui.adapter.LocalSkusAdapter
 import com.spyneai.draft.ui.adapter.SkuPagedAdapter
+import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
 import com.spyneai.orders.data.paging.LoaderStateAdapter
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.repository.model.sku.Sku
+import io.sentry.protocol.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
@@ -30,6 +33,7 @@ class DraftPagedSkuActivity : AppCompatActivity() {
     lateinit var viewModel: DraftViewModel
     var position = 0
     lateinit var adapter: SkuPagedAdapter
+    val TAG = "DraftPagedSkuActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +68,29 @@ class DraftPagedSkuActivity : AppCompatActivity() {
 
         binding.shimmerCompletedSKU.startShimmer()
 
-        GlobalScope.launch(Dispatchers.IO) {
-            getSkus()
+        fetchSkus()
+
+        viewModel.syncImages.observe(this,{
+            fetchSkus()
+        })
+
+        adapter.addLoadStateListener{
+            Log.d(TAG, "onCreate: "+it.append.endOfPaginationReached)
+
+            if (it.append.endOfPaginationReached){
+                if (!isInternetActive() && (adapter.itemCount == 0 && intent.getIntExtra(AppConstants.SKU_COUNT,0) > adapter.itemCount)){
+                    ImageNotSyncedDialog()
+                        .apply {
+                            arguments = Bundle().apply {
+                                putBoolean("sku_sync",true)
+                            }
+                        }
+                        .show(
+                        supportFragmentManager,
+                        "ImageNotSyncedDialog"
+                    )
+                }
+            }
         }
 
         //load data from local
@@ -152,6 +177,12 @@ class DraftPagedSkuActivity : AppCompatActivity() {
 //            )
 //        }
 
+    }
+
+    private fun fetchSkus(){
+        GlobalScope.launch(Dispatchers.IO) {
+            getSkus()
+        }
     }
 
     @ExperimentalPagingApi

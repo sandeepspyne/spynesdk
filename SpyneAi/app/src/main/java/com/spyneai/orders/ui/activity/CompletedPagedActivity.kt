@@ -2,6 +2,7 @@ package com.spyneai.orders.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +14,9 @@ import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityCompletedSkusBinding
 import com.spyneai.databinding.ActivityDraftSkusBinding
 import com.spyneai.draft.data.DraftViewModel
+import com.spyneai.draft.ui.ImageNotSyncedDialog
 import com.spyneai.draft.ui.adapter.SkuPagedAdapter
+import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
 import com.spyneai.orders.data.paging.LoaderStateAdapter
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
@@ -29,7 +32,7 @@ class CompletedPagedActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCompletedSkusBinding
 
-    lateinit var viewModel: MyOrdersViewModel
+    lateinit var viewModel: DraftViewModel
     var position = 0
     lateinit var adapter: SkuPagedAdapter
 
@@ -62,10 +65,37 @@ class CompletedPagedActivity : BaseActivity() {
         binding.tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
         binding.tvTotalSku.text = intent.getIntExtra(AppConstants.SKU_COUNT,0).toString()
 
-        viewModel = ViewModelProvider(this, ViewModelFactory()).get(MyOrdersViewModel::class.java)
+        viewModel = ViewModelProvider(this, ViewModelFactory()).get(DraftViewModel::class.java)
 
         binding.shimmerCompletedSKU.startShimmer()
 
+        fetchSkus()
+
+        viewModel.syncImages.observe(this,{
+            fetchSkus()
+        })
+
+        adapter.addLoadStateListener{
+            Log.d(TAG, "onCreate: "+it.append.endOfPaginationReached)
+
+            if (it.append.endOfPaginationReached){
+                if (!isInternetActive() && (adapter.itemCount == 0 && intent.getIntExtra(AppConstants.SKU_COUNT,0) > adapter.itemCount)){
+                    ImageNotSyncedDialog()
+                        .apply {
+                            arguments = Bundle().apply {
+                                putBoolean("sku_sync",true)
+                            }
+                        }
+                        .show(
+                        supportFragmentManager,
+                        "ImageNotSyncedDialog"
+                    )
+                }
+            }
+        }
+    }
+
+    private fun fetchSkus(){
         GlobalScope.launch(Dispatchers.IO) {
             getSkus()
         }

@@ -78,6 +78,9 @@ class ProjectDataSource(
         } catch (exception: HttpException) {
             return LoadResult.Error(exception)
         }
+        catch (exception : Exception){
+            return LoadResult.Error(exception)
+        }
     }
 
     override fun getRefreshKey(state: PagingState<Int, Project>): Int? {

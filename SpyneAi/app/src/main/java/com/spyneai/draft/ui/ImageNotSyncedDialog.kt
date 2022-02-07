@@ -19,6 +19,12 @@ class ImageNotSyncedDialog : BaseDialogFragment<DraftViewModel, DialogSyncDarftI
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        arguments?.let {
+            if (it.getBoolean("sku_sync")){
+                binding.tvReqCredit.text = "Project Sku's Not Synced"
+                binding.tvDescription.text = "Please connect with internet to\n and retry to sync sku's"
+            }
+        }
 
         binding?.tvRetry?.setOnClickListener {
             viewModel.syncImages.value = if(viewModel.syncImages.value == null) true

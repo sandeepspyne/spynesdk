@@ -27,11 +27,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class MyOrdersViewModel : ViewModel() {
-
-
     private val repository = MyOrdersRepository()
-
-
 
 
     @ExperimentalPagingApi
@@ -40,17 +36,6 @@ class MyOrdersViewModel : ViewModel() {
             ProjectApiClient().getClient(),
             AppDatabase.getInstance(BaseApplication.getContext()),
             status
-        ).getSearchResultStream()
-            .cachedIn(viewModelScope)
-    }
-
-    @ExperimentalPagingApi
-    fun getSkus(projectId: String?, projectUuid: String): Flow<PagingData<Sku>> {
-        return SkuRepository(
-            ProjectApiClient().getClient(),
-            AppDatabase.getInstance(BaseApplication.getContext()),
-            projectId,
-            projectUuid
         ).getSearchResultStream()
             .cachedIn(viewModelScope)
     }
