@@ -357,7 +357,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     "ConfirmReshootEcomDialog"
                 )
             }
-            AppConstants.SPYNE_AI->{
+            AppConstants.SPYNE_AI, AppConstants.SPYNE_AI_AUTOMOBILE->{
                 when(viewModel.categoryDetails.value?.categoryId){
                     AppConstants.FOOD_AND_BEV_CATEGORY_ID->{
                         ConfirmReshootEcomDialog().show(
@@ -488,11 +488,12 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                 }
 
-                if (getString(R.string.app_name) == AppConstants.KARVI)
+                if (getString(R.string.app_name) == AppConstants.KARVI) {
 //                    binding.imgOverlay?.visibility = View.GONE
                     viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                }
 
 
                 viewModel.categoryDetails.value?.imageType = if (data.type == "Misc") "Focus Shoot" else data.type

@@ -219,6 +219,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             ConfirmReshootDialog::class.java.simpleName,
             ServerSyncTypes.UPLOAD
         )
+        //requireContext().startUploadServiceWithCheck()
     }
 
 

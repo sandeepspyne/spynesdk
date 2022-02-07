@@ -42,6 +42,8 @@ class HomeDashboardFragment :
         tokenId = Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
+
+
         lisners()
 
 //        viewModel.getCategories(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())

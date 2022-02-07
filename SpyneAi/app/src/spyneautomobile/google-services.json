@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "400940894020",
+    "project_id": "spyne-automobile",
+    "storage_bucket": "spyne-automobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400940894020:android:b44a82437decc4a42ef911",
+        "android_client_info": {
+          "package_name": "com.spyneai.spyneautomobile.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "400940894020-oi753nqq7tlgbmdg1o4r9urhgo086je3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlh1BCsB5YDiEvFVj7w07Gw0bUnbyZcdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "400940894020-oi753nqq7tlgbmdg1o4r9urhgo086je3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="secondary">#FF000000</color>
+
+    <color name="primary_dark">#223263</color>
+
+    <color name="primary">#FF7700</color>
+    <color name="primary_light">#1AF69C4C</color>
+    <color name="light">#F69C4C</color>
+    <color name="light_soft">#FBF2EC</color>
+    <color name="light_">#EFCEB3</color>
+    <color name="dark">#c54700</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#26FFFFFF</color>
+    <color name="transparents">#90000000</color>
+    <color name="grey">#979797</color>
+    <color name="lightgrey">#DDD8D8</color>
+    <color name="errorcolor">#F92C2C</color>
+    <color name="wappcolor">#4CAF50</color>
+    <color name="wappcolor_light">#994CAF50</color>
+    <color name="darkgray">#354044</color>
+
+    <color name="dark_blue">#3F3D56</color>
+
+    <color name="categories_text">#4F4F4F</color>
+
+    <color name="credit_deducted">#B3B1B1</color>
+    <color name="line_separator">#F0EEEE</color>
+    <color name="image_download_preview">#5F5F5F</color>
+    <color name="shimmer_background">#dddddd</color>
+    <color name="credit_plan_selected">#F0EEEE</color>
+    <color name="credit_success">#40CE4E</color>
+    <color name="green">#40CE4E</color>
+    <color name="zero_credits">#FF1F1F</color>
+    <color name="red">#FF1F1F</color>
+    <color name="available_credits">#33AF38</color>
+
+    <color name="iv_light">#90FFAB40</color>
+
+    <color name="black_varient">#424242</color>
+
+    <color name="orders_text_light">#425466</color>
+    <color name="paid_text_colour">#00680A</color>
+    <color name="paid_background">#AE4CAF50</color>
+
+    <color name="test">#40CE4E</color>
+
+    <color name="start_shoot_text">#343434</color>
+    <color name="three_sixty_features_text">#333333</color>
+
+    <color name="gyro_in_level">#1F7900</color>
+    <color name="gyro_error_level">#64FF0B0B</color>
+</resources>

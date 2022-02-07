@@ -148,7 +148,7 @@ class SubCategoryAndAngleFragment :
                 viewModel.subCatName.value = data.sub_cat_name
 
                 when (getString(R.string.app_name)) {
-                    AppConstants.SPYNE_AI -> {
+                    AppConstants.SPYNE_AI, AppConstants.SPYNE_AI_AUTOMOBILE -> {
                         when (viewModel.categoryDetails.value?.categoryName) {
                             "Automobiles", "Bikes" -> {
                                 selectAngles()
@@ -161,7 +161,7 @@ class SubCategoryAndAngleFragment :
                             }
                         }
                     }
-                    AppConstants.KARVI, AppConstants.CARS24, AppConstants.CARS24_INDIA -> {
+                    AppConstants.KARVI,AppConstants.AUTO_FOTO, AppConstants.CARS24, AppConstants.CARS24_INDIA -> {
                         viewModel.exterirorAngles.value = 8
                         //create sku
                         if (viewModel.fromVideo) {

@@ -6,10 +6,12 @@ import com.spyneai.BaseApplication
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ProjectApiClient
+import com.spyneai.base.network.GCPApiClient
 import com.spyneai.base.network.SpyneAiApiClient
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.repository.model.category.DynamicLayout
 import com.spyneai.dashboard.response.NewCategoriesResponse
+import okhttp3.RequestBody
 import org.json.JSONObject
 
 class DashboardRepository() : BaseRepository() {
@@ -67,17 +69,20 @@ class DashboardRepository() : BaseRepository() {
     }
 
     suspend fun captureCheckInOut(
-        type : String,
         location : JSONObject,
         location_id : String,
         imageUrl : String = ""
     ) = safeApiCall {
-        clipperApi.captureCheckInOut(type,location,location_id,imageUrl)
+        clipperApi.captureCheckInOut(location,location_id,imageUrl)
     }
 
     suspend fun getLocations(
     )= safeApiCall {
         clipperApi.getLocations()
+    }
+    suspend fun getAttendanceStatus(
+    )= safeApiCall {
+        clipperApi.getAttendanceStatus()
     }
 
     fun insertCategories(data: List<NewCategoriesResponse.Category>,dynamicLayout: List<DynamicLayout>): List<Long> {

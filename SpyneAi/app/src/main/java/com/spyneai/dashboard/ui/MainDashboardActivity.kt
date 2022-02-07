@@ -37,18 +37,20 @@ import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.text.SimpleDateFormat
+
 import java.util.*
+
+import android.app.NotificationManager
+import android.content.Context
 
 
 class MainDashboardActivity : BaseActivity() {
     private lateinit var binding: ActivityDashboardMainBinding
     private var viewModel: DashboardViewModel? = null
     //private var TAG = "MainDashboardActivity"
+    companion object {
+        const val LOCATION_SETTING_REQUEST = 999
+    }
 
     @OptIn(ExperimentalPagingApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,6 +85,11 @@ class MainDashboardActivity : BaseActivity() {
                     val intent = Intent(this, CategoriesActivity::class.java)
                     startActivity(intent)
                 }
+            } AppConstants.SPYNE_AI_AUTOMOBILE -> {
+                binding.fab.setOnClickListener {
+                    val intent = Intent(this, CategoriesActivity::class.java)
+                    startActivity(intent)
+                }
             }
             else -> {
                 binding.fab.visibility = View.GONE
@@ -90,8 +97,6 @@ class MainDashboardActivity : BaseActivity() {
         }
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
-
-            Log.d(TAG, "onCreate: " + getString(R.string.app_name))
 
             when (it.itemId) {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
@@ -108,7 +113,7 @@ class MainDashboardActivity : BaseActivity() {
 //                }
 
                 R.id.completedOrdersFragment -> {
-                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
+                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI || getString(R.string.app_name) == AppConstants.SPYNE_AI_AUTOMOBILE) {
                         intent.putExtra("TAB_ID", 0)
                         setCurrentFragment(myOrdersFragment)
                     } else {
@@ -117,7 +122,7 @@ class MainDashboardActivity : BaseActivity() {
                         startActivity(intent)
                     }
                 }
-               R.id.wallet -> setCurrentFragment(SecondFragment)
+//                R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
@@ -144,6 +149,7 @@ class MainDashboardActivity : BaseActivity() {
     override fun onConnectionChange(isConnected: Boolean) {
         showConnectionChangeView(isConnected,binding.root)
     }
+
 
 
     private fun continueShoot() {
@@ -305,12 +311,20 @@ class MainDashboardActivity : BaseActivity() {
 
 
     open fun onPermissionGranted() {
-        Log.d(
-            TAG,
-            "onPermissionGranted: " + Utilities.getPreference
-                (this, AppConstants.CANCEL_ALL_WROKERS)
-        )
+        val properties = HashMap<String,Any?>()
+            .apply {
+                put("service_state", "Started")
+                put(
+                    "email",
+                    Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
+                        .toString()
+                )
+            }
+
+        captureEvent("ALL PERMISSIONS GRANTED", properties)
+
         cancelAllWorkers()
+        checkPendingDataSync()
         //startUploadService()
         //checkPendingDataSync()
        // checkFolderUpload()
@@ -330,7 +344,6 @@ class MainDashboardActivity : BaseActivity() {
 
         Utilities.savePrefrence(this, AppConstants.CANCEL_ALL_WROKERS, "Cancelled")
     }
-
 
     override fun onResume() {
         super.onResume()

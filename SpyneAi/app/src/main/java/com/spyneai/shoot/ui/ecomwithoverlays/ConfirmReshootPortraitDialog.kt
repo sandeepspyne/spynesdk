@@ -156,7 +156,9 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
             ConfirmReshootPortraitDialog::class.java.simpleName,
             ServerSyncTypes.UPLOAD
         )
+        //requireContext().startUploadServiceWithCheck()
     }
+
 
 
     private fun setOverlay(view: View, overlay : String) {

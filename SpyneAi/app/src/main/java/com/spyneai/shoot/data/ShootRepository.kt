@@ -205,4 +205,11 @@ class ShootRepository : BaseRepository() {
         projectApi.createProject(projectBody)
     }
 
+    suspend fun sendFilesData(
+        authKey: String,
+        data : String
+    ) = safeApiCall {
+        clipperApi.sendFilesData(authKey,data)
+    }
+
 }

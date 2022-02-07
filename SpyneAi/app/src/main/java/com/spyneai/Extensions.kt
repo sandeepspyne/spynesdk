@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.BATTERY_SERVICE
 import android.content.Intent
@@ -59,7 +60,12 @@ import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
 import java.lang.reflect.InvocationTargetException
 import java.text.DateFormat
-import java.time.format.DateTimeFormatter
+
+import com.spyneai.service.Actions
+import com.spyneai.service.ImageUploadingService
+import com.spyneai.service.getServiceState
+import com.spyneai.service.log
+import com.spyneai.shoot.ui.dialogs.ConfirmTagsDialog
 
 
 var TAG = "Locale_Check"
@@ -386,7 +392,7 @@ fun Context.startUploadingService(startedBy : String,syncTypes: ServerSyncTypes)
     val prperties = HashMap<String,Any?>()
         .apply {
             put("email", Utilities.getPreference(this@startUploadingService, AppConstants.EMAIL_ID).toString())
-            put("medium","Explicit Broadcast")
+            put("medium",startedBy)
         }
 
         var action = Actions.START
@@ -560,4 +566,65 @@ fun pxFromDp(context: Context, dp: Float): Float {
 }
 
 
+fun Context.getNotificationText(contentType: Int,id: Int) : String?{
+    val type = if (contentType == 0) "android.text" else "android.title"
+    var content:String? = ""
+    val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val barNotifications = notificationManager.activeNotifications
+        for (notification in barNotifications) {
+            if (notification.id == id) {
+                notification.notification.extras?.let {
+                    content = it.getString(type)
+                }
 
+            }
+        }
+    }
+
+    return content
+}
+
+fun Context.startUploadServiceWithCheck() {
+    if (!isMyServiceRunning(ImageUploadingService::class.java))
+        startUpload()
+    else {
+        val content = getNotificationText(1,100)
+        content?.let {
+            if (it.contains("Uploaded")){
+                var action = Actions.STOP
+                val serviceIntent = Intent(this, ImageUploadingService::class.java)
+                serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmTagsDialog::class.simpleName)
+                serviceIntent.action = action.name
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    ContextCompat.startForegroundService(this, serviceIntent)
+                    return
+                } else {
+                    startService(serviceIntent)
+                }
+
+                startUpload()
+            }
+        }
+    }
+}
+
+fun Context.startUpload() {
+    var action = Actions.START
+    if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+        return
+
+    val serviceIntent = Intent(this, ImageUploadingService::class.java)
+    serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmTagsDialog::class.simpleName)
+    serviceIntent.action = action.name
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        log("Starting the service in >=26 Mode")
+        ContextCompat.startForegroundService(this, serviceIntent)
+        return
+    } else {
+        log("Starting the service in < 26 Mode")
+        startService(serviceIntent)
+    }
+}

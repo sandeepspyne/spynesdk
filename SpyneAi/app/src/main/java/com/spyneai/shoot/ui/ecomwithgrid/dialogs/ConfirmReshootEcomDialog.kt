@@ -132,6 +132,7 @@ class ConfirmReshootEcomDialog :
                     insertImage(viewModel.shootData.value!!)
                 }
 
+                //requireContext().startUploadServiceWithCheck()
                 requireContext().startUploadingService(
                     ConfirmReshootEcomDialog::class.java.simpleName,
                     ServerSyncTypes.UPLOAD
@@ -146,6 +147,7 @@ class ConfirmReshootEcomDialog :
                     insertImage(viewModel.shootData.value!!)
                 }
 
+                //requireContext().startUploadServiceWithCheck()
                 requireContext().startUploadingService(
                     ConfirmReshootEcomDialog::class.java.simpleName,
                     ServerSyncTypes.UPLOAD

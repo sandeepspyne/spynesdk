@@ -65,7 +65,7 @@ class OrderSummary2Activity : AppCompatActivity() {
 
         Utilities.savePrefrence(this, AppConstants.PRICE, Utilities.getPreference(this, AppConstants.NO_OF_IMAGES))
 
-        tvTotalCost.setText(Utilities.getPreference(this, AppConstants.PRICE).toString())
+        tvTotalCost.text = Utilities.getPreference(this, AppConstants.PRICE).toString()
 
         fetchUserCreditDetails()
 
@@ -86,11 +86,9 @@ class OrderSummary2Activity : AppCompatActivity() {
             ).into(ivProductImage)
         }
 
-        tvCategoryName.setText(
-            Utilities.getPreference(
-                this@OrderSummary2Activity,
-                AppConstants.CATEGORY_NAME
-            )
+        tvCategoryName.text = Utilities.getPreference(
+            this@OrderSummary2Activity,
+            AppConstants.CATEGORY_NAME
         )
 
         tvNoOfImages.setText(
@@ -109,7 +107,16 @@ class OrderSummary2Activity : AppCompatActivity() {
                 .toString()
         )
 
+        if(getString(R.string.app_name)==AppConstants.AUTO_FOTO){
+            llTotalCost.visibility=View.GONE
+            llTotalImages.visibility=View.GONE
+            rlCreditAvailable.visibility=View.GONE
+            hdDownloaded=true
+        }
+
         tvDownloadHdImages.setOnClickListener {
+
+
 
             if (hdDownloaded){
                 startDownloadActivity()

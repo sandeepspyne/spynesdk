@@ -1,6 +1,8 @@
 package com.spyneai.shoot.ui.dialogs
 
 import android.app.Dialog
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -15,20 +17,21 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.spyneai.R
+import com.spyneai.*
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogConfirmTagsBinding
 import com.spyneai.databinding.ItemTagNotesBinding
 import com.spyneai.databinding.ItemTagsSpinnerBinding
-import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.service.*
 import com.spyneai.shoot.data.ShootViewModel
@@ -325,6 +328,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             ConfirmTagsDialog::class.java.simpleName,
             ServerSyncTypes.UPLOAD
         )
+        //requireContext().startUploadServiceWithCheck()
     }
 
     private fun getMetaValue(): String {

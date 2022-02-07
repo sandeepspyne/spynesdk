@@ -19,14 +19,21 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.model.image.Image
+import id.zelory.compressor.Compressor
 import kotlinx.coroutines.*
-
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONObject
 import java.io.*
 import java.util.*
 import kotlin.collections.HashMap
+import android.provider.MediaStore
+
+import android.content.ContentValues
+import android.os.Environment
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.resolution
+
 
 class ImageUploader(
     val context: Context,
@@ -137,6 +144,7 @@ class ImageUploader(
 
                 val imageProperties = HashMap<String, Any?>()
                     .apply {
+                        put("sku_id", image.skuId)
                         put("iteration_id", lastIdentifier)
                         put("retry_count", retryCount)
                         put("upload_type", imageType)
@@ -191,9 +199,7 @@ class ImageUploader(
                                     continue
 
                                 val imageMarkedDone = markDoneImage(image)
-                                Log.d(
-                                    TAG, "startUploading: imageMarkedDone " + imageMarkedDone
-                                )
+
                                 continue
                             }
                             else -> {
@@ -270,9 +276,6 @@ class ImageUploader(
                                     continue
 
                                 val imageMarkedDone = markDoneImage(image)
-                                Log.d(
-                                    TAG, "startUploading: imageMarkedDone " + imageMarkedDone
-                                )
                                 continue
                             }
                             else -> {
@@ -419,16 +422,16 @@ class ImageUploader(
     }
 
     private suspend fun uploadImage(image: Image): Boolean {
-        val requestFile =
-            File(image.path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+        val requestFile = File(image.path)
+        val compressedImageFile = Compressor.compress(context, requestFile)
 
         val uploadResponse = shootRepository.uploadImageToGcp(
             image.preSignedUrl!!,
-            requestFile
-        )
+            compressedImageFile.asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull()))
 
         val imageProperties = HashMap<String, Any?>()
             .apply {
+                put("sku_id", image.skuId)
                 put("iteration_id", lastIdentifier)
                 put("upload_type", imageType)
                 put("retry_count", retryCount)
@@ -572,6 +575,7 @@ class ImageUploader(
     ) {
         val properties = HashMap<String, Any?>()
             .apply {
+                put("sku_id", image.skuId)
                 put("iteration_id", lastIdentifier)
                 put("db_update_status", dbUpdateStatus)
                 put("data", Gson().toJson(image))

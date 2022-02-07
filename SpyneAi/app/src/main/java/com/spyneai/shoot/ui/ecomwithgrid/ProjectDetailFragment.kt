@@ -83,7 +83,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                     }
                 }
             }
-            AppConstants.SPYNE_AI -> {
+            AppConstants.SPYNE_AI, AppConstants.SPYNE_AI_AUTOMOBILE -> {
                 when (viewModel.categoryDetails.value?.categoryName) {
                     "Photo Box" -> {
                         binding.groupShadow.visibility = View.VISIBLE
@@ -119,7 +119,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                 }
                 else -> {
                     when (getString(R.string.app_name)) {
-                        AppConstants.SPYNE_AI -> {
+                        AppConstants.SPYNE_AI,AppConstants.SPYNE_AI_AUTOMOBILE -> {
                             when (viewModel.categoryDetails.value?.categoryId) {
                                 AppConstants.PHOTO_BOX_CATEGORY_ID,
                                 AppConstants.ECOM_CATEGORY_ID,

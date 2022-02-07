@@ -767,37 +767,49 @@ class ShootViewModel : ViewModel() {
        // localRepository.updateSkuExteriorAngles(skuId, angles)
     }
 
-    fun getCameraSetting(): CameraSettings {
-        return if (Utilities.getPreference(
-                BaseApplication.getContext(),
-                AppConstants.ENTERPRISE_ID
-            ) == AppConstants.KARVI_ENTERPRISE_ID
-        ) {
+    fun getCameraSetting() : CameraSettings {
+        return if (Utilities.getPreference(BaseApplication.getContext(),AppConstants.ENTERPRISE_ID) == AppConstants.KARVI_ENTERPRISE_ID){
             CameraSettings().apply {
                 isGryroActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO, true
-                )
+                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GYRO
+                    ,true)
                 isOverlayActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY, false
-                )
+                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_OVERLAY
+                    ,false)
                 isGridActive = Utilities.getBool(
                     BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GRID, true
-                )
+                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GRID
+                    ,true)
             }
-        } else {
-            CameraSettings().apply {
-                isGryroActive = Utilities.getBool(
-                    BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO, true)
-                isOverlayActive = Utilities.getBool(
-                    BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY, true)
-                isGridActive = Utilities.getBool(
-                    BaseApplication.getContext(),
-                    categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GRID, false)
+        }else {
+            if(startInteriorShots.value == true || startMiscShots.value==true){
+                CameraSettings().apply {
+                    isGryroActive = false
+                    isOverlayActive = false
+                    isGridActive = Utilities.getBool(
+                        BaseApplication.getContext(),
+                        categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GRID
+                        ,true)
+                }
+
+            }else {
+                CameraSettings().apply {
+                    isGryroActive = Utilities.getBool(
+                        BaseApplication.getContext(),
+                        categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO, true
+                    )
+                    isOverlayActive = Utilities.getBool(
+                        BaseApplication.getContext(),
+                        categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY,
+                        true
+                    )
+                    isGridActive = Utilities.getBool(
+                        BaseApplication.getContext(),
+                        categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GRID, true
+                    )
+                }
             }
         }
     }

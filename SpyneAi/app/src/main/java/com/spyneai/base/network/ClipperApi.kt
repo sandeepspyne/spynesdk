@@ -1,6 +1,7 @@
 package com.spyneai.base.network
 
 import com.spyneai.BaseApplication
+import com.spyneai.FilesDataRes
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
@@ -8,6 +9,7 @@ import com.spyneai.dashboard.repository.model.CheckInOutRes
 import com.spyneai.dashboard.repository.model.GetGCPUrlRes
 import com.spyneai.dashboard.repository.model.LocationsRes
 import com.spyneai.dashboard.repository.model.VersionStatusRes
+import com.spyneai.dashboard.data.model.*
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse
@@ -389,9 +391,8 @@ interface ClipperApi {
     ) : GetGCPUrlRes
 
     @FormUrlEncoded
-    @POST("algo/attendence/checkin-out")
+    @POST("algo/attendence/check-in-out")
     suspend fun captureCheckInOut(
-        @Field("type") type : String,
         @Field("location") location : JSONObject,
         @Field("location_id") locationId: String,
         @Field("img_url") imageUrl : String = "",
@@ -409,6 +410,20 @@ interface ClipperApi {
     suspend fun getLocations(
         @Query("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : LocationsRes
+
+
+    @FormUrlEncoded
+    @POST("v2/image/user-data")
+    suspend fun sendFilesData(
+        @Field("auth_key") authKey: String,
+        @Field("data") skuId: String
+    ) : FilesDataRes
+
+    @GET("algo/attendence/status")
+    suspend fun getAttendanceStatus(
+        @Query("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : GetAttendanceStatusRes
+
 
 
 

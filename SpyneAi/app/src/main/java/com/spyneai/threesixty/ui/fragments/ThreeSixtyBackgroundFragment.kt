@@ -20,6 +20,7 @@ import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.enable
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.Fragment360BackgroundBinding
+import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events

@@ -3,15 +3,10 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.media.ExifInterface
-import android.media.MediaActionSound
 import android.os.*
 import android.provider.MediaStore
 import android.text.Layout
@@ -45,9 +40,6 @@ import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.log
 import com.spyneai.shoot.utils.shoot
 import kotlinx.android.synthetic.main.activity_credit_plans.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.*
 import java.util.*
@@ -171,7 +163,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.showLeveler.observe(viewLifecycleOwner, {
             if (it && isSensorAvaliable) {
                 binding.flLevelIndicator.start(viewModel.categoryDetails.value?.categoryName!!)
-            } else binding.flLevelIndicator.visibility = View.GONE
+            } else
+                binding.flLevelIndicator.visibility = View.GONE
         })
 
 //            viewModel.hideLeveler.observe(viewLifecycleOwner, {
@@ -273,11 +266,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             binding.switchShowGyro?.isChecked = viewModel.getCameraSetting().isGryroActive
 
             binding.switchShowGyro?.setOnCheckedChangeListener { _, isChecked ->
-                Utilities.saveBool(
-                    requireContext(),
-                    viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO,
-                    isChecked
-                )
+                if(viewModel.startInteriorShots.value!=true && viewModel.startMiscShots.value != true) {
+                    Utilities.saveBool(
+                        requireContext(),
+                        viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_GYRO,
+                        isChecked
+                    )
+                }
+
                 if (isChecked)
                     viewModel.showLeveler.value = isChecked
                 else
@@ -287,15 +283,19 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             binding.switchShowOverlay?.isChecked = viewModel.getCameraSetting().isOverlayActive
 
             binding.switchShowOverlay?.setOnCheckedChangeListener { _, isChecked ->
-                Utilities.saveBool(
-                    requireContext(),
-                    viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY,
-                    isChecked
-                )
+                if(viewModel.startInteriorShots.value!=true && viewModel.startMiscShots.value != true) {
+                    Utilities.saveBool(
+                        requireContext(),
+                        viewModel.categoryDetails.value?.categoryId + AppConstants.SETTING_STATUS_OVERLAY,
+                        isChecked
+                    )
+                }
+
                 if (isChecked)
                     viewModel.showOverlay.value = isChecked
                 else
                     viewModel.showOverlay.value = false
+
             }
 
             binding.switchShowGrid?.isChecked = viewModel.getCameraSetting().isGridActive
@@ -314,6 +314,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }else {
             binding.llSetting.visibility = GONE
         }
+
+//        if(viewModel.categoryDetails.value?.categoryName=="E-Commerce"){
+//            viewModel.showGrid.value = true
+//        }
 
 
     }
@@ -442,6 +446,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
             var size = Size(1024, 768)
+            var automobileResolution = Size(1920, 1080)
 
             // Preview
             val preview = when (viewModel.categoryDetails.value?.categoryId) {
@@ -454,9 +459,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             .also {
                                 it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                             }
-                    } else {
+                    }
+                    else{
                         Preview.Builder()
-                            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                            .setTargetResolution(automobileResolution)
                             .build()
                             .also {
                                 it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -498,11 +504,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             .setFlashMode(flashMode)
                             .setTargetResolution(size)
                             .build()
-                    } else {
+                    }
+                    else{
                         ImageCapture.Builder()
                             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                             .setFlashMode(flashMode)
-                            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                            .setTargetResolution(automobileResolution)
                             .build()
                     }
                 }
@@ -647,10 +654,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0),
             requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
         )
-
-        val s = ""
-
-        Log.d(TAG, "takePhoto: " + filename)
 
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

@@ -49,6 +49,7 @@ class RequiredPermissionDialog : BaseDialogFragment<ShootViewModel,RequiredPermi
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
     ).apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             add(Manifest.permission.ACCESS_MEDIA_LOCATION)

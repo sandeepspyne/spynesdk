@@ -11,6 +11,7 @@ import androidx.paging.cachedIn
 import com.spyneai.BaseApplication
 import com.spyneai.base.network.ProjectApiClient
 import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.data.model.*
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.repository.model.CheckInOutRes
 import com.spyneai.dashboard.repository.model.GetGCPUrlRes
@@ -64,11 +65,16 @@ class DashboardViewModel() : ViewModel() {
     val checkInOutRes: LiveData<Resource<CheckInOutRes>>
         get() = _checkInOutRes
 
+    var _attendanceStatusRes: MutableLiveData<Resource<GetAttendanceStatusRes>> = MutableLiveData()
+    val attendanceStatusRes: LiveData<Resource<GetAttendanceStatusRes>>
+        get() = _attendanceStatusRes
+
     val isNewUser: MutableLiveData<Boolean> = MutableLiveData()
     val isStartAttendance: MutableLiveData<Boolean> = MutableLiveData()
     val creditsMessage: MutableLiveData<String> = MutableLiveData()
     var type = "checkin"
     var fileUrl = ""
+    var preSignedUrl = ""
     var siteImagePath = ""
     var resultCode: Int? = null
     val continueAnyway: MutableLiveData<Boolean> = MutableLiveData()
@@ -196,13 +202,12 @@ class DashboardViewModel() : ViewModel() {
     }
 
     fun captureCheckInOut(
-        type : String,
         location : JSONObject,
         location_id : String,
         imageUrl : String = ""
     )= viewModelScope.launch {
         _checkInOutRes.value = Resource.Loading
-        _checkInOutRes.value = repository.captureCheckInOut(type,location,location_id,imageUrl)
+        _checkInOutRes.value = repository.captureCheckInOut(location,location_id,imageUrl)
     }
 
 
@@ -212,6 +217,11 @@ class DashboardViewModel() : ViewModel() {
         _locationResponse.value = repository.getLocations()
     }
 
+    fun getAttendanceStatus(
+    )= viewModelScope.launch {
+        _attendanceStatusRes.value = Resource.Loading
+        _attendanceStatusRes.value = repository.getAttendanceStatus()
+    }
 
 
 

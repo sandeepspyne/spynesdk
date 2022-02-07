@@ -38,11 +38,11 @@
             android:background="@color/black"/>
 
         <ImageView
+            android:id="@+id/tvLevelIndicator"
             android:layout_width="@dimen/dp_30"
             android:layout_height="3dp"
-            android:background="@drawable/bg_gyro_error"
-            android:id="@+id/tvLevelIndicator"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:background="@drawable/bg_gyro_error" />
 
 
         <ImageView

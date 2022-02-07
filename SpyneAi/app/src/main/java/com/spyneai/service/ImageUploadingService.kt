@@ -184,6 +184,13 @@ class ImageUploadingService : Service(),DataSyncListener {
 
 
         } catch (e: Exception) {
+            val properties = java.util.HashMap<String, Any?>()
+                .apply {
+                    put("type", e::class.java.simpleName)
+                    put("error", e.message)
+                }
+
+            captureEvent("SERVICE_STOPPED_EXCEPTION",properties)
         }
 
         setServiceState(this, ServiceState.STOPPED)
