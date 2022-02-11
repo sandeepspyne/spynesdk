@@ -3,6 +3,7 @@ package com.spyneai.needs
 
 object AppConstants {
 
+    val STATUS = "STATUS"
     val IS_SKU_DATA_SENT = "IS_SKU_DATA_SENT"
 
     val VIDEO_VIDEO_UPLOADING_RUNNING = "VIDEO_VIDEO_UPLOADING_RUNNING"

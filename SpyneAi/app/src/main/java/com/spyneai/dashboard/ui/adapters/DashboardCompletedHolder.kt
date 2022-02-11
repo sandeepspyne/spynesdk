@@ -6,22 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.getFormattedDate
 import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
-import com.spyneai.orders.ui.MyOrdersActivity
-import com.spyneai.orders.ui.activity.CompletedSkusActivity
+import com.spyneai.orders.ui.activity.SkuPagedActivity
 import com.spyneai.shoot.repository.model.project.Project
-import com.spyneai.shoot.utils.log
-import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 
+@ExperimentalPagingApi
 class DashboardCompletedHolder(
     val context: Context,
     val view: View
@@ -103,11 +100,18 @@ class DashboardCompletedHolder(
                 if (item.skuCount == 0){
                     Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
                 }else{
-                    Intent(context, CompletedSkusActivity::class.java)
+                    Intent(context, SkuPagedActivity::class.java)
                         .apply {
+                            putExtra(AppConstants.STATUS,"completed")
                             putExtra("position", position)
+                            putExtra(AppConstants.FROM_LOCAL_DB, true)
+                            putExtra(AppConstants.PROJECT_NAME, item.projectName)
+                            putExtra(AppConstants.SKU_COUNT, item.skuCount)
+                            putExtra(AppConstants.PROJECT_UUIID, item.uuid)
+                            putExtra(AppConstants.PROJECT_ID, item.projectId)
                             context.startActivity(this)
                         }
+
                 }
 
 

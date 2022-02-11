@@ -70,11 +70,6 @@ class HomeDashboardFragment :
 
     var categoriesAdapter: CategoriesDashboardAdapter? = null
 
-    lateinit var ongoingDashboardAdapter: OngoingDashboardAdapter
-
-    lateinit var completedDashboardAdapter: CompletedDashboardAdapter
-    lateinit var completedProjectList: ArrayList<GetProjectsResponse.Project_data>
-    lateinit var ongoingProjectList: ArrayList<GetProjectsResponse.Project_data>
     var categoriesList: ArrayList<NewCategoriesResponse.Category>? = null
     var filteredList = ArrayList<NewCategoriesResponse.Category>()
 
@@ -163,8 +158,8 @@ class HomeDashboardFragment :
 
         if (PACKAGE_NAME.equals("com.spyneai.debug")) {
             newUserCreditDialog()
-            //getOngoingOrders()
-            //getCompletedOrders()
+            getOngoingOrders()
+            getCompletedOrders()
             setSliderRecycler()
             showTutorialVideos()
             lisners()
@@ -218,64 +213,6 @@ class HomeDashboardFragment :
                     adapter.submitData(it)
                 }
         }
-
-//        viewModel.getProjects(
-//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "ongoing"
-//        )
-//
-//        viewModel.getProjectsResponse.observe(
-//            viewLifecycleOwner, Observer {
-//                when (it) {
-//                    is Resource.Success -> {
-//                        binding.rvOngoingShoots.visibility = View.VISIBLE
-//                        binding.shimmerOngoing.stopShimmer()
-//                        binding.shimmerOngoing.visibility = View.GONE
-//                        if (it.value.data.project_data.isNullOrEmpty()) {
-//                            binding.rlOngoingShoots.visibility = View.GONE
-//                            refreshData = false
-//                        }
-//
-//                        if (it.value.data != null) {
-//                            ongoingProjectList = ArrayList()
-//                            ongoingProjectList.clear()
-//                            ongoingProjectList.addAll(it.value.data.project_data)
-//                            ongoingDashboardAdapter = OngoingDashboardAdapter(
-//                                requireContext(),
-//                                ongoingProjectList
-//                            )
-//
-//                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
-//                                requireContext(),
-//                                LinearLayoutManager.HORIZONTAL,
-//                                false
-//                            )
-//                            binding.rvOngoingShoots.setLayoutManager(layoutManager)
-//                            binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
-//
-//                        }
-//                    }
-//                    is Resource.Loading -> {
-//                        binding.shimmerOngoing.startShimmer()
-//                    }
-//                    is Resource.Failure -> {
-//                        binding.shimmerOngoing.stopShimmer()
-//                        binding.shimmerOngoing.visibility = View.GONE
-//
-//                        if (it.errorCode == 404) {
-//                            binding.rlOngoingShoots.visibility = View.GONE
-//                            refreshData = false
-//                        } else {
-//                            requireContext().captureFailureEvent(
-//                                Events.GET_ONGOING_ORDERS_FAILED, HashMap<String, Any?>(),
-//                                it.errorMessage!!
-//                            )
-//                            handleApiError(it)
-//                        }
-//                    }
-//
-//                }
-//            }
-//        )
     }
 
     private fun newUserCreditDialog() {
@@ -296,74 +233,6 @@ class HomeDashboardFragment :
                     completedPagedAdapter.submitData(it)
                 }
         }
-
-//        viewModel.getCompletedProjects(
-//            Utilities.getPreference(
-//                requireContext(),
-//                AppConstants.AUTH_KEY
-//            ).toString(), "completed"
-//        )
-
-//        viewModel.getCompletedProjectsResponse.observe(
-//            viewLifecycleOwner, Observer {
-//                when (it) {
-//                    is Resource.Success -> {
-//
-//                        requireContext().captureEvent(
-//                            Events.GET_COMPLETED_ORDERS,
-//                            HashMap<String, Any?>()
-//                        )
-//                        completedProjectList = ArrayList()
-//                        if (it.value.data.project_data.isNullOrEmpty()) {
-//                            binding.rlCompletedShoots.visibility = View.GONE
-//                            refreshData = false
-//                        }
-//
-//                        binding.rvCompletedShoots.visibility = View.VISIBLE
-//                        binding.shimmerCompleted.stopShimmer()
-//                        binding.shimmerCompleted.visibility = View.GONE
-//                        if (it.value.data != null) {
-//                            completedProjectList.clear()
-//                            completedProjectList.addAll(it.value.data.project_data)
-//
-//                            completedDashboardAdapter = CompletedDashboardAdapter(
-//                                requireContext(),
-//                                completedProjectList
-//                            )
-//
-//                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
-//                                requireContext(),
-//                                LinearLayoutManager.HORIZONTAL,
-//                                false
-//                            )
-//                            binding.rvCompletedShoots.setLayoutManager(layoutManager)
-//                            binding.rvCompletedShoots.setAdapter(completedDashboardAdapter)
-//                        }
-//
-//                    }
-//                    is Resource.Loading -> {
-//                        binding.shimmerCompleted.startShimmer()
-//                    }
-//                    is Resource.Failure -> {
-//                        binding.shimmerCompleted.stopShimmer()
-//                        binding.shimmerCompleted.visibility = View.GONE
-//
-//                        if (it.errorCode == 404) {
-//                            binding.rlCompletedShoots.visibility = View.GONE
-//                            refreshData = false
-//                        } else {
-//                            requireContext().captureFailureEvent(
-//                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String, Any?>(),
-//                                it.errorMessage!!
-//                            )
-//                            handleApiError(it)
-//                        }
-//                    }
-//
-//                }
-//            }
-//        )
-
     }
 
     private fun getCategories() {
@@ -491,23 +360,6 @@ class HomeDashboardFragment :
                 binding.viewWelcome.visibility = View.VISIBLE
                 binding.tvWelcomeHome.text = "Welcome Home"
             }
-        }
-    }
-
-    fun repeatRefreshData() {
-        try {
-            getOngoingOrders()
-            //getCompletedOrders()
-            runnable = Runnable {
-                if (refreshData)
-                    repeatRefreshData()
-            }
-            if (runnable != null)
-                handler.postDelayed(runnable!!, 15000)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 

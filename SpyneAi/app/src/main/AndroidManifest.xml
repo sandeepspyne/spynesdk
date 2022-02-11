@@ -61,7 +61,7 @@
             android:name=".processedimages.ui.ProcessedPagedImagesActivity"
             android:exported="false" />
         <activity
-            android:name=".orders.ui.activity.CompletedPagedActivity"
+            android:name=".orders.ui.activity.SkuPagedActivity"
             android:exported="false" />
         <activity
             android:name=".draft.ui.DraftPagedSkuActivity"

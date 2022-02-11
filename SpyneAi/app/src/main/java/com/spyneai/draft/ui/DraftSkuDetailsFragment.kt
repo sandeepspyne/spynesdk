@@ -79,7 +79,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         binding.shimmerCompletedSKU.visibility = View.VISIBLE
         binding.shimmerCompletedSKU.startShimmer()
 
-
         lifecycleScope.launch {
             viewModel.getImages(
                 requireActivity().intent.getStringExtra(AppConstants.SKU_ID),

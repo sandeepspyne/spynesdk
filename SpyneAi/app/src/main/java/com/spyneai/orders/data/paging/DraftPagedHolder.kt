@@ -17,6 +17,7 @@ import com.spyneai.getFormattedDate
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.ui.activity.SkuPagedActivity
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
@@ -174,7 +175,8 @@ class DraftPagedHolder(
     }
 
     @ExperimentalPagingApi
-    fun getDraftIntent(item: Project) = Intent(context, DraftPagedSkuActivity::class.java).apply {
+    fun getDraftIntent(item: Project) = Intent(context, SkuPagedActivity::class.java).apply {
+        putExtra(AppConstants.STATUS, "draft")
         putExtra("position", position)
         putExtra(AppConstants.FROM_LOCAL_DB, true)
         putExtra(AppConstants.PROJECT_NAME, item.projectName)

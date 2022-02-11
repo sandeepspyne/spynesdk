@@ -9,13 +9,11 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.RecyclerView
-import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.getFormattedDate
 import com.spyneai.needs.AppConstants
-import com.spyneai.orders.ui.activity.CompletedPagedActivity
-import com.spyneai.orders.ui.activity.CompletedSkusActivity
+import com.spyneai.orders.ui.activity.SkuPagedActivity
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 
@@ -144,8 +142,9 @@ class CompletedPagedHolder(
                 if (item.skuCount == 0) {
                     Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
                 } else {
-                    Intent(context, CompletedPagedActivity::class.java)
+                    Intent(context, SkuPagedActivity::class.java)
                         .apply {
+                            putExtra(AppConstants.STATUS,"completed")
                             putExtra("position", position)
                             putExtra(AppConstants.FROM_LOCAL_DB, true)
                             putExtra(AppConstants.PROJECT_NAME, item.projectName)

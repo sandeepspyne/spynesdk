@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.getFormattedDate
 import com.spyneai.needs.AppConstants
-import com.spyneai.orders.ui.activity.OngoingSkusActivity
+import com.spyneai.orders.ui.activity.SkuPagedActivity
 import com.spyneai.shoot.repository.model.project.Project
 
 @ExperimentalPagingApi
@@ -165,9 +165,15 @@ class OngoingPagedHolder(
                 if (item.skuCount == 0) {
                     Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
                 } else if (item.status.equals("Uploaded")) {
-                    Intent(context, OngoingSkusActivity::class.java)
+                    Intent(context, SkuPagedActivity::class.java)
                         .apply {
+                            putExtra(AppConstants.STATUS,"ongoing")
                             putExtra("position", position)
+                            putExtra(AppConstants.FROM_LOCAL_DB, true)
+                            putExtra(AppConstants.PROJECT_NAME, item.projectName)
+                            putExtra(AppConstants.SKU_COUNT, item.skuCount)
+                            putExtra(AppConstants.PROJECT_UUIID, item.uuid)
+                            putExtra(AppConstants.PROJECT_ID, item.projectId)
                             context.startActivity(this)
                         }
                 }

@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @ExperimentalPagingApi
-class CompletedPagedActivity : BaseActivity() {
+class SkuPagedActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCompletedSkusBinding
 
@@ -42,10 +42,14 @@ class CompletedPagedActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
 
-        adapter = SkuPagedAdapter(
-            this,
-            "completed"
-        )
+        intent.getStringExtra(AppConstants.STATUS)?.let {
+            adapter = SkuPagedAdapter(
+                this,
+                it
+            )
+        }
+
+
 
         binding.rvSkus.layoutManager =
             LinearLayoutManager(

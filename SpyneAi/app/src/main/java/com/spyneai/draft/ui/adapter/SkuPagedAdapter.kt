@@ -7,6 +7,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.orders.ui.adapter.CompletedSkuPagedHolder
+import com.spyneai.orders.ui.adapter.OngoingSkuPagedHolder
 import com.spyneai.shoot.repository.model.sku.Sku
 
 class SkuPagedAdapter(
@@ -32,7 +33,7 @@ class SkuPagedAdapter(
         getItem(position)?.let {
             when (status) {
                 "draft" -> (holder as DraftSkuPagedHolder).bind(it)
-                "ongoing" -> (holder as DraftSkuPagedHolder).bind(it)
+                "ongoing" -> (holder as OngoingSkuPagedHolder).bind(it)
                 "completed" -> (holder as CompletedSkuPagedHolder).bind(it)
             }
         }
@@ -41,7 +42,7 @@ class SkuPagedAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (status) {
             "draft" -> DraftSkuPagedHolder.getInstance(context,parent)
-            "ongoing" -> DraftSkuPagedHolder.getInstance(context,parent)
+            "ongoing" -> OngoingSkuPagedHolder.getInstance(context,parent)
             else -> CompletedSkuPagedHolder.getInstance(context,parent)
         }
     }
