@@ -68,28 +68,24 @@ class ProcessSkuSync(
         //update triggered value
         Utilities.saveBool(context, AppConstants.PROCESS_SKU_PARENT_TRIGGERED, true)
 
-        val handler = Handler(Looper.getMainLooper())
-
-        handler.postDelayed({
-            if (Utilities.getBool(context, AppConstants.PROCESS_SKU_PARENT_TRIGGERED, true)
-                &&
-                !isActive
-            ) {
-                if (context.isInternetActive())
-                    GlobalScope.launch(Dispatchers.Default) {
-                         isActive = true
-                        context.captureEvent(Events.PROCESS_SKU_STARTED,HashMap())
-                        startSkuProcessing()
-                    }
-                else {
-                   isActive = false
-                    listener.onConnectionLost("Process Sku Stopped",ServerSyncTypes.PROCESS)
-                    Log.d(TAG, "uploadParent: connection lost")
+        if (Utilities.getBool(context, AppConstants.PROCESS_SKU_PARENT_TRIGGERED, true)
+            &&
+            !isActive
+        ) {
+            if (context.isInternetActive())
+                GlobalScope.launch(Dispatchers.Default) {
+                    isActive = true
+                    context.captureEvent(Events.PROCESS_SKU_STARTED,HashMap())
+                    startSkuProcessing()
                 }
-            }else{
-                Log.d(TAG, "processSkuParent: running")
+            else {
+                isActive = false
+                listener.onConnectionLost("Process Sku Stopped",ServerSyncTypes.PROCESS)
+                Log.d(TAG, "uploadParent: connection lost")
             }
-        }, getRandomNumberInRange().toLong())
+        }else{
+            Log.d(TAG, "processSkuParent: running")
+        }
     }
 
     private suspend fun  startSkuProcessing(){
@@ -352,14 +348,5 @@ class ProcessSkuSync(
         }
         retryCount = 0
         return true
-    }
-
-
-
-
-
-    private fun getRandomNumberInRange(): Int {
-        val r = Random()
-        return r.nextInt(100 - 10 + 1) + 10
     }
 }

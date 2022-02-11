@@ -84,22 +84,18 @@ class ImageUploader(
         //update triggered value
         Utilities.saveBool(context, AppConstants.UPLOAD_TRIGGERED, true)
 
-        val handler = Handler(Looper.getMainLooper())
-
-        handler.postDelayed({
-            if (Utilities.getBool(context, AppConstants.UPLOAD_TRIGGERED, true) && !isActive) {
-                if (context.isInternetActive())
-                    scope.launch {
-                        this@ImageUploader.isActive = true
-                        context.captureEvent("START UPLOADING CALLED",HashMap())
-                        startUploading()
-                    }
-                else {
-                    this@ImageUploader.isActive = false
-                    listener.onConnectionLost("Image uploading paused",ServerSyncTypes.UPLOAD)
+        if (Utilities.getBool(context, AppConstants.UPLOAD_TRIGGERED, true) && !isActive) {
+            if (context.isInternetActive())
+                scope.launch {
+                    this@ImageUploader.isActive = true
+                    context.captureEvent("START UPLOADING CALLED",HashMap())
+                    startUploading()
                 }
+            else {
+                this@ImageUploader.isActive = false
+                listener.onConnectionLost("Image uploading paused",ServerSyncTypes.UPLOAD)
             }
-        }, getRandomNumberInRange().toLong())
+        }
     }
 
     suspend fun startUploading() {
@@ -627,11 +623,5 @@ class ImageUploader(
 
 
     val outputDirectory = "/storage/emulated/0/DCIM/Spynetemp/"
-
-
-    private fun getRandomNumberInRange(): Int {
-        val r = Random()
-        return r.nextInt(100 - 10 + 1) + 10
-    }
 
 }

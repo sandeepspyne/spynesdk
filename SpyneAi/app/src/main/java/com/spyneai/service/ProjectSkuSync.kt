@@ -67,27 +67,23 @@ class ProjectSkuSync(
         //update triggered value
         Utilities.saveBool(context, AppConstants.PROJECT_SYNC_TRIGGERED, true)
 
-        val handler = Handler(Looper.getMainLooper())
-
-        handler.postDelayed({
-            if (Utilities.getBool(context, AppConstants.PROJECT_SYNC_TRIGGERED, true)
-                &&
-                !isActive
-            ) {
-                if (context.isInternetActive())
-                    GlobalScope.launch(Dispatchers.Default) {
-                        Log.d(TAG, "uploadParent: start")
-                        isActive = true
-                        context.captureEvent(Events.PROJECT_SYNC_STARTED,HashMap())
-                        startProjectSync()
-                    }
-                else {
-                    isActive = false
-                    listener.onConnectionLost("Create Project Stopped",ServerSyncTypes.CREATE)
-                    Log.d(TAG, "uploadParent: connection lost")
+        if (Utilities.getBool(context, AppConstants.PROJECT_SYNC_TRIGGERED, true)
+            &&
+            !isActive
+        ) {
+            if (context.isInternetActive())
+                GlobalScope.launch(Dispatchers.Default) {
+                    Log.d(TAG, "uploadParent: start")
+                    isActive = true
+                    context.captureEvent(Events.PROJECT_SYNC_STARTED,HashMap())
+                    startProjectSync()
                 }
+            else {
+                isActive = false
+                listener.onConnectionLost("Create Project Stopped",ServerSyncTypes.CREATE)
+                Log.d(TAG, "uploadParent: connection lost")
             }
-        }, getRandomNumberInRange().toLong())
+        }
     }
 
     suspend fun  startProjectSync(){
@@ -358,10 +354,5 @@ class ProjectSkuSync(
 
         retryCount = 0
         return true
-    }
-
-    fun getRandomNumberInRange(): Int {
-        val r = Random()
-        return r.nextInt(100 - 10 + 1) + 10
     }
 }
