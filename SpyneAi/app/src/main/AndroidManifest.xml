@@ -63,9 +63,7 @@
         <activity
             android:name=".orders.ui.activity.SkuPagedActivity"
             android:exported="false" />
-        <activity
-            android:name=".draft.ui.DraftPagedSkuActivity"
-            android:exported="false" />
+
         <activity android:name=".RoomTestActivity" />
         <activity
             android:name=".VideoTestActivity"
@@ -102,9 +100,9 @@
             android:exported="true" />
 
         <activity android:name=".orders.ui.activity.ShowRawImagesActivity" />
-        <activity android:name=".orders.ui.activity.OngoingSkusActivity" />
+
         <activity android:name=".processedimages.ui.ProcessedImageActivity" />
-        <activity android:name=".orders.ui.activity.CompletedSkusActivity" />
+
         <activity
             android:name=".threesixty.ui.ThreeSixtyExteriorActivity"
             android:screenOrientation="portrait" />
@@ -212,16 +210,7 @@
         <activity
             android:name=".activity.OrderSummaryActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".extras.OnboardTwoActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.CompletedProjectsActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".extras.MainActivity2"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.OtpActivity"
             android:screenOrientation="portrait" />

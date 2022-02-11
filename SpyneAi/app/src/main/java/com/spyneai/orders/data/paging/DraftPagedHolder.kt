@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
-import com.spyneai.draft.ui.DraftPagedSkuActivity
 import com.spyneai.getFormattedDate
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants

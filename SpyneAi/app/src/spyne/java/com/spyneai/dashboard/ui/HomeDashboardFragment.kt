@@ -37,7 +37,6 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.ui.adapters.CompletedDashboardAdapter
 import com.spyneai.dashboard.ui.adapters.OngoingDashboardAdapter
 import com.spyneai.dashboard.ui.adapters.TutorialVideosAdapter
 import com.spyneai.dashboard.response.NewCategoriesResponse
@@ -190,9 +189,7 @@ class HomeDashboardFragment :
                     MY_REQUEST_CODE
                 )
             } else {
-
                 newUserCreditDialog()
-                repeatRefreshData()
                 setSliderRecycler()
                 showTutorialVideos()
                 lisners()

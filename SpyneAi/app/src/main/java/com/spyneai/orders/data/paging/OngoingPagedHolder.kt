@@ -159,24 +159,20 @@ class OngoingPagedHolder(
 
         cvMain.setOnClickListener {
 
-            if (item.categoryName.equals("cat_d8R14zUNE") || item.categoryName.equals("Automobiles")) {
-
+            if (item.skuCount == 0) {
+                Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
             } else {
-                if (item.skuCount == 0) {
-                    Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
-                } else if (item.status.equals("Uploaded")) {
-                    Intent(context, SkuPagedActivity::class.java)
-                        .apply {
-                            putExtra(AppConstants.STATUS,"ongoing")
-                            putExtra("position", position)
-                            putExtra(AppConstants.FROM_LOCAL_DB, true)
-                            putExtra(AppConstants.PROJECT_NAME, item.projectName)
-                            putExtra(AppConstants.SKU_COUNT, item.skuCount)
-                            putExtra(AppConstants.PROJECT_UUIID, item.uuid)
-                            putExtra(AppConstants.PROJECT_ID, item.projectId)
-                            context.startActivity(this)
-                        }
-                }
+                Intent(context, SkuPagedActivity::class.java)
+                    .apply {
+                        putExtra(AppConstants.STATUS,"ongoing")
+                        putExtra("position", position)
+                        putExtra(AppConstants.FROM_LOCAL_DB, true)
+                        putExtra(AppConstants.PROJECT_NAME, item.projectName)
+                        putExtra(AppConstants.SKU_COUNT, item.skuCount)
+                        putExtra(AppConstants.PROJECT_UUIID, item.uuid)
+                        putExtra(AppConstants.PROJECT_ID, item.projectId)
+                        context.startActivity(this)
+                    }
             }
         }
     }
