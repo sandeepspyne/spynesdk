@@ -419,7 +419,39 @@ class ImageUploader(
 
     private suspend fun uploadImage(image: Image): Boolean {
         val requestFile = File(image.path)
-        val compressedImageFile = Compressor.compress(context, requestFile)
+        var compressedImageFile: File? = null
+        try{
+            compressedImageFile = Compressor.compress(context, requestFile)
+            context.captureEvent(
+                Events.IMAGE_COMPRESSED,
+                HashMap<String, Any?>()
+                    .apply {
+                        put("sku_id", image.skuId)
+                        put("requestFile", requestFile)
+                        put("compressedFile", compressedImageFile)
+                        put("image", image)
+                    }
+            )
+
+        }catch (e: Exception){
+            if (e.localizedMessage.contains("The source file doesn't exist.")) {
+                val imageMarkDone = localRepository.markStatusUploaded(image.uuid)
+                val markUploadCount = localRepository.markUploaded(image.uuid)
+
+                Log.d(TAG, "Compressing Image:imageMarkedDone $imageMarkDone $markUploadCount $e  ")
+            }
+            Events.IMAGE_COMPRESSED_EXCEPTION
+            HashMap<String, Any?>()
+                .apply {
+                    put("sku_id", image.skuId)
+                    put("requestFile", requestFile)
+                    put("compressedFile", compressedImageFile)
+                    put("Exception", e)
+                    put("image", image)
+                }
+            e.printStackTrace()
+            return false
+        }
 
         val uploadResponse = shootRepository.uploadImageToGcp(
             image.preSignedUrl!!,
