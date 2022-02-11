@@ -305,7 +305,7 @@
             android:id="@+id/ivBottomRight"/>
     </FrameLayout>
 
-    <com.spyneai.camera.TapFocusExposure
+    <com.spyneai.camera2.TapFocusExposure
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/flTapToFocus"
@@ -315,7 +315,7 @@
         app:layout_constraintTop_toBottomOf="@+id/viewCamera"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
-    </com.spyneai.camera.TapFocusExposure>
+    </com.spyneai.camera2.TapFocusExposure>
 
     <TextView
         android:layout_width="wrap_content"

@@ -12,18 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDraftSkusBinding
 import com.spyneai.draft.data.DraftViewModel
-import com.spyneai.draft.ui.adapter.DraftSkusAdapter
-import com.spyneai.draft.ui.adapter.LocalSkusAdapter
 import com.spyneai.draft.ui.adapter.SkuPagedAdapter
 import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
 import com.spyneai.orders.data.paging.LoaderStateAdapter
-import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.repository.model.sku.Sku
-import io.sentry.protocol.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 

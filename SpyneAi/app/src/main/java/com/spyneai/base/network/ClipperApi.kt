@@ -13,19 +13,14 @@ import com.spyneai.dashboard.data.model.*
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse
-import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.paging.ProjectPagedRes
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
-import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.shoot.data.model.*
-import com.spyneai.shoot.repository.model.project.CreateProjectAndSkuRes
-import com.spyneai.shoot.repository.model.project.ProjectBody
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.response.UploadFolderRes
@@ -119,10 +114,6 @@ interface ClipperApi {
         @Part file: MultipartBody.Part
     ): Call<UploadImageResponse>
 
-    @Multipart
-    @POST("fetch-sku-name")
-    suspend fun getCompletedProjects(@Part("user_id") user_id: RequestBody?)
-            : List<CompletedProjectResponse>
 
     @GET("v2/product/fetch")
     suspend fun getCategories(@Query(

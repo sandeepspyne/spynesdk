@@ -56,9 +56,7 @@ import com.spyneai.base.room.AppDatabase
 import com.spyneai.service.*
 import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.threesixty.data.VideoLocalRepoV2
-import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
-import java.lang.reflect.InvocationTargetException
 import java.text.DateFormat
 
 import com.spyneai.service.Actions

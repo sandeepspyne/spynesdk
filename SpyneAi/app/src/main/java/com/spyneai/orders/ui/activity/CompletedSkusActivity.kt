@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
-import com.spyneai.adapter.CategoriesAdapter
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.base.ViewModelFactory
@@ -19,7 +18,6 @@ import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.adapter.SkusAdapter
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_completed_skus.*
 

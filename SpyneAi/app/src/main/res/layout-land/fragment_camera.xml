@@ -132,7 +132,7 @@
 
 
 
-    <com.spyneai.camera.TapFocusExposure
+    <com.spyneai.camera2.TapFocusExposure
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/flTapToFocus"
@@ -140,7 +140,7 @@
         app:layout_constraintRight_toLeftOf="@+id/llCapture"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
-    </com.spyneai.camera.TapFocusExposure>
+    </com.spyneai.camera2.TapFocusExposure>
     <View
         android:id="@+id/gridVertical1"
         android:layout_width="1dp"

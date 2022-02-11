@@ -22,8 +22,7 @@ import com.spyneai.threesixty.data.VideoDao
 import com.spyneai.threesixty.data.model.VideoDetails
 
 @Database(
-    entities = [User::class,
-        NewCategoriesResponse.Category::class,
+    entities = [NewCategoriesResponse.Category::class,
         NewSubCatResponse.Subcategory::class,
         NewSubCatResponse.Interior::class,
         NewSubCatResponse.Miscellaneous::class,

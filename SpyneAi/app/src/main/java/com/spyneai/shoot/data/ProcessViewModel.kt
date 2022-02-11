@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.*
 import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
 import com.spyneai.base.room.AppDatabase
@@ -17,11 +16,9 @@ import com.spyneai.shoot.data.model.UpdateTotalFramesRes
 import com.spyneai.shoot.repository.model.project.Project
 import com.spyneai.shoot.repository.model.sku.Sku
 import com.spyneai.shoot.response.SkuProcessStateResponse
-import com.spyneai.shoot.workmanager.ProjectStateUpdateWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.RequestBody
 
 class ProcessViewModel : ViewModel() {
 
@@ -183,26 +180,6 @@ class ProcessViewModel : ViewModel() {
         sku = localRepository.getSkuById(skuUuid)
     }
 
-    fun updateProjectState(authKey: String, projectId: String) {
-        val data = Data.Builder()
-            .putString("auth_key", authKey)
-            .putString("project_id", projectId)
-
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val longWorkRequest = OneTimeWorkRequest.Builder(ProjectStateUpdateWorker::class.java)
-            .addTag("Project State Update")
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .setInputData(data.build())
-                    .build()
-            )
-    }
 
     suspend fun updateBackground() = localRepository.updateBackground(HashMap<String,Any>()
         .apply {

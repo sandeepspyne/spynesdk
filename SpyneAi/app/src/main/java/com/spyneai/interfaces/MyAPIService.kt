@@ -10,9 +10,6 @@ import com.spyneai.loginsignup.models.SignupResponse
 import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
 import com.spyneai.model.otp.OtpResponse
-import com.spyneai.model.projects.CompletedProjectResponse
-import com.spyneai.needs.AppConstants
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -84,10 +81,5 @@ interface MyAPIService {
     ): Call<NewSubCatResponse>?
 
 
-
-    @Multipart
-    @POST("fetch-sku-name")
-    fun getCompletedProjects(@Part("user_id") user_id: RequestBody?)
-            : Call<List<CompletedProjectResponse>>?
 
 }

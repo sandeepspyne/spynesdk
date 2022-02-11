@@ -1,4 +1,4 @@
-package com.spyneai.camera
+package com.spyneai.camera2
 
 import android.annotation.SuppressLint
 import android.content.Context

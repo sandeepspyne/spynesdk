@@ -7,16 +7,12 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.*
-import android.util.Log
 import com.spyneai.*
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ImagesRepoV2
-import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.repository.model.image.Image
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

@@ -12,18 +12,11 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.draft.ui.DraftSkuDetailsActivity
-import com.spyneai.draft.ui.adapter.DraftSkuPagedHolder
 import com.spyneai.getFormattedDate
-import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.processedimages.ui.ProcessedImageActivity
 import com.spyneai.shoot.repository.model.sku.Sku
-import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.threesixty.data.VideoLocalRepository
-import com.spyneai.threesixty.ui.ThreeSixtyActivity
-import com.spyneai.threesixty.ui.TrimActivity
 
 class CompletedSkuPagedHolder(
     val context: Context,

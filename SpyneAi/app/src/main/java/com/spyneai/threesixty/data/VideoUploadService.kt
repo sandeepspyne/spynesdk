@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.*
-import android.util.Log
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.room.AppDatabase
@@ -17,11 +16,9 @@ import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
 import com.spyneai.service.*
-import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.utils.logUpload
 import com.spyneai.threesixty.data.model.VideoDetails
-import io.sentry.protocol.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

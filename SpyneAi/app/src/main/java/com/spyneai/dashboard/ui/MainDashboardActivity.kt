@@ -3,25 +3,20 @@ package com.spyneai.dashboard.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.ExperimentalPagingApi
 import androidx.work.*
-import com.google.android.material.snackbar.Snackbar
 import com.spyneai.*
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.base.BaseActivity
 import com.spyneai.base.network.Resource
-import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
@@ -30,18 +25,11 @@ import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.orders.ui.fragment.MyOrdersFragment
 import com.spyneai.posthog.Events
 import com.spyneai.service.*
-import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
-import com.spyneai.threesixty.data.VideoLocalRepository
-import com.spyneai.threesixty.data.VideoUploadService
 
 import java.util.*
-
-import android.app.NotificationManager
-import android.content.Context
 
 
 class MainDashboardActivity : BaseActivity() {
@@ -122,7 +110,7 @@ class MainDashboardActivity : BaseActivity() {
                         startActivity(intent)
                     }
                 }
-                R.id.wallet -> setCurrentFragment(SecondFragment)
+               // R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
@@ -322,28 +310,12 @@ class MainDashboardActivity : BaseActivity() {
             }
 
         captureEvent("ALL PERMISSIONS GRANTED", properties)
-
-        cancelAllWorkers()
         checkPendingDataSync()
         //startUploadService()
         //checkPendingDataSync()
        // checkFolderUpload()
     }
 
-    private fun cancelAllWorkers() {
-        //cancel all workers
-        WorkManager.getInstance(this).cancelAllWork()
-
-        WorkManager.getInstance(this).cancelAllWorkByTag("StoreImageFiles  Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("Manual Long Running Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("Long Running Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("Skipped Images Long Running Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("Periodic Processing Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("InternetWorker")
-
-        Utilities.savePrefrence(this, AppConstants.CANCEL_ALL_WROKERS, "Cancelled")
-    }
 
     override fun onResume() {
         super.onResume()

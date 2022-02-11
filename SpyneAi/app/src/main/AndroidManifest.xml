@@ -96,15 +96,11 @@
             android:name=".reshoot.ui.SelectImagesActivity"
             android:exported="true" />
         <activity android:name=".onboarding.SelectLanguageActivity" />
-        <activity
-            android:name=".draft.ui.DraftsActivity"
-            android:exported="true" />
+
         <activity
             android:name=".draft.ui.DraftSkuDetailsActivity"
             android:exported="true" />
-        <activity
-            android:name=".draft.ui.DraftSkusActivity"
-            android:exported="true" />
+
         <activity android:name=".orders.ui.activity.ShowRawImagesActivity" />
         <activity android:name=".orders.ui.activity.OngoingSkusActivity" />
         <activity android:name=".processedimages.ui.ProcessedImageActivity" />
@@ -159,10 +155,7 @@
         <activity
             android:name=".credits.WalletActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.OngoingOrdersActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".reshoot.ui.ReshootActivity"
             android:screenOrientation="landscape" />
