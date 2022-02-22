@@ -27,6 +27,7 @@ import com.spyneai.posthog.Events
 import com.spyneai.service.*
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 
 import java.util.*
@@ -89,16 +90,16 @@ class MainDashboardActivity : BaseActivity() {
             when (it.itemId) {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
 
-//                R.id.shootActivity -> {
-//                    if (isMagnatoMeterAvailable()) {
-//                        continueShoot()
-//                    } else {
-//                        NoMagnaotoMeterDialog().show(
-//                            supportFragmentManager,
-//                            "NoMagnaotoMeterDialog"
-//                        )
-//                    }
-//                }
+                R.id.shootActivity -> {
+                    if (isMagnatoMeterAvailable()) {
+                        continueShoot()
+                    } else {
+                        NoMagnaotoMeterDialog().show(
+                            supportFragmentManager,
+                            "NoMagnaotoMeterDialog"
+                        )
+                    }
+                }
 
                 R.id.completedOrdersFragment -> {
                     if (getString(R.string.app_name) == AppConstants.SPYNE_AI || getString(R.string.app_name) == AppConstants.SPYNE_AI_AUTOMOBILE) {

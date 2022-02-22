@@ -17,7 +17,7 @@ import retrofit2.http.Query
 
 interface ProjectApi {
 
-    @POST("v1/projects/offline-create-project-skus")
+    @POST("nv1/projects/offline-create-project-skus")
     suspend fun createProject(@Body projectBody: ProjectBody) : CreateProjectAndSkuRes
 
     @GET("nv1/app/get-project")

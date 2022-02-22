@@ -185,6 +185,8 @@ class ProjectSkuSync(
                         }
                     }
 
+                    val s = ""
+
                     projectBody?.let {
                         if (it.skuData.isNotEmpty()){
                             if (it.skuData[0].skuId != null && (it.skuData[0].imagePresent == 1 && it.skuData[0].videoPresent == 1)){
@@ -291,7 +293,7 @@ class ProjectSkuSync(
         )
 
         res.data.skusList.forEachIndexed { index, skus ->
-            db.shootDao().updateSkuAndImageIds(projectId,skus.localId,skus.skuId)
+            val ss = db.shootDao().updateSkuAndImageIds(projectId,skus.localId,skus.skuId)
 
             if (projectBody.skuData[index].prodSubCatId == "360_exterior"){
                 val s = db.shootDao().updateVideoSkuAndProjectIds(projectId,skus.skuId,skus.localId)
