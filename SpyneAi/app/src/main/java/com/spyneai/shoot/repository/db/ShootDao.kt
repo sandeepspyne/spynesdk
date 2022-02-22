@@ -113,14 +113,14 @@ interface ShootDao {
 
     @Transaction
     fun updateSubcategory(project: Project,sku: Sku){
-        val projectUpdate = updateProjectSubcategory(project.uuid,project.subCategoryName,project.subCategoryId)
-        Log.d(AppConstants.SHOOT_DAO_TAG, "updateSubcategory: $projectUpdate")
+//        val projectUpdate = updateProjectSubcategory(project.uuid,project.subCategoryName,project.subCategoryId)
+//        Log.d(AppConstants.SHOOT_DAO_TAG, "updateSubcategory: $projectUpdate")
         val skuUpdate = updateSku(sku)
         Log.d(AppConstants.SHOOT_DAO_TAG, "updateSubcategory: $skuUpdate")
     }
 
-    @Query("update project set subCategoryName = :subcategoryName, subCategoryId = :subcategoryId where uuid = :uuid ")
-    fun updateProjectSubcategory(uuid: String,subcategoryName: String?,subcategoryId: String?) : Int
+//    @Query("update project set subCategoryName = :subcategoryName, subCategoryId = :subcategoryId where uuid = :uuid ")
+//    fun updateProjectSubcategory(uuid: String,subcategoryName: String?,subcategoryId: String?) : Int
 
 
     @Insert

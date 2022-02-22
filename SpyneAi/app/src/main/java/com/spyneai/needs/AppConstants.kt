@@ -3,6 +3,7 @@ package com.spyneai.needs
 
 object AppConstants {
 
+    val VIDEO_DATA = "VIDEO_DATA"
     val STATUS = "STATUS"
     val IS_SKU_DATA_SENT = "IS_SKU_DATA_SENT"
 
@@ -25,7 +26,7 @@ object AppConstants {
     val SPYNE_ENTERPRISE_ID: String = "TaD1VC1Ko"
     val FLIPKART_ENTERPRISE_ID: String = "EVV1XVY4R"
     val KARVI_ENTERPRISE_ID: String = "DaD1JC1Fp"
-    val BASE_URL: String = "http://35.240.170.119/api/"
+    val BASE_URL: String = "http://35.247.153.169:4567/api/"
     val STATUS_PROJECT_NAME: String = "STATUS_PROJECT_NAME"
     val SETTING_STATUS_GYRO: String = "STATUS_SETTING_GYRO"
     val SETTING_STATUS_GRID: String = "STATUS_SETTING_GRID"

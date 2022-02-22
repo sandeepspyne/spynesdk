@@ -57,10 +57,6 @@ class CompletedPagedHolder(
 
 
     private fun showData(item: Project) {
-//        tvProjectName.text = item?.projectName
-//        tvCategory.text = item?.categoryName
-//        tvDate.text = item?.createdOn
-//        tvSkus.text = item?.skuCount.toString()
 
         if (context.getString(R.string.app_name) == AppConstants.KARVI)
             ivDownloadSKU.visibility = View.INVISIBLE
@@ -76,50 +72,24 @@ class CompletedPagedHolder(
                 tvCategories.visibility = View.INVISIBLE
                 tvSku.visibility = View.INVISIBLE
                 tvImage.visibility = View.INVISIBLE
-                //ivDownloadSKU.visibility = View.INVISIBLE
             }
         } else {
-            if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
-                llThreeSixty.visibility = View.VISIBLE
-                tvCategory.text = "Automobiles"
-            } else {
-                tvCategory.text = item.categoryName
-                llThreeSixty.visibility = View.GONE
-            }
-
+            tvCategory.text = item.categoryName
+            llThreeSixty.visibility = View.GONE
 
             tvSkus.text = item.skuCount.toString()
             tvImages.text = item.imagesCount.toString()
         }
 
         try {
-            if (item.skuCount == 0) {
-                if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
-                    Glide.with(context)
-                        .load(R.drawable.three_sixty_thumbnail)
-                        .into(ivThumbnail)
-                } else {
-                    Glide.with(context)
-                        .load(R.mipmap.defaults)
-                        .into(ivThumbnail)
-                }
+            if (item.thumbnail == null) {
+                Glide.with(context)
+                    .load(R.drawable.app_logo)
+                    .into(ivThumbnail)
             } else {
-                if (item.thumbnail == null) {
-                    if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
-                        Glide.with(context)
-                            .load(R.drawable.three_sixty_thumbnail)
-                            .into(ivThumbnail)
-                    } else {
-                        Glide.with(context)
-                            .load(R.mipmap.defaults)
-                            .into(ivThumbnail)
-                    }
-                } else {
-                    Glide.with(context) // replace with 'this' if it's in activity
-                        .load(item.thumbnail)
-                        .into(ivThumbnail)
-                }
-
+                Glide.with(context) // replace with 'this' if it's in activity
+                    .load(item.thumbnail)
+                    .into(ivThumbnail)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -131,29 +101,20 @@ class CompletedPagedHolder(
         tvProjectName.text = item.projectName
         cvMain.setOnClickListener {
 
-            if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
-                Intent(context, ThreeSixtyExteriorActivity::class.java)
+            if (item.skuCount == 0) {
+                Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
+            } else {
+                Intent(context, SkuPagedActivity::class.java)
                     .apply {
-                       // putExtra("sku_id", item.sku[0].sku_id)
+                        putExtra(AppConstants.STATUS,"completed")
+                        putExtra("position", position)
+                        putExtra(AppConstants.FROM_LOCAL_DB, true)
+                        putExtra(AppConstants.PROJECT_NAME, item.projectName)
+                        putExtra(AppConstants.SKU_COUNT, item.skuCount)
+                        putExtra(AppConstants.PROJECT_UUIID, item.uuid)
+                        putExtra(AppConstants.PROJECT_ID, item.projectId)
                         context.startActivity(this)
                     }
-            } else {
-
-                if (item.skuCount == 0) {
-                    Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
-                } else {
-                    Intent(context, SkuPagedActivity::class.java)
-                        .apply {
-                            putExtra(AppConstants.STATUS,"completed")
-                            putExtra("position", position)
-                            putExtra(AppConstants.FROM_LOCAL_DB, true)
-                            putExtra(AppConstants.PROJECT_NAME, item.projectName)
-                            putExtra(AppConstants.SKU_COUNT, item.skuCount)
-                            putExtra(AppConstants.PROJECT_UUIID, item.uuid)
-                            putExtra(AppConstants.PROJECT_ID, item.projectId)
-                            context.startActivity(this)
-                        }
-                }
             }
         }
     }

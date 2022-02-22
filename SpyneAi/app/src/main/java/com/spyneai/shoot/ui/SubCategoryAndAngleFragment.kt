@@ -300,11 +300,6 @@ class SubCategoryAndAngleFragment :
     }
 
     private fun setSubcategoryData(){
-        viewModel.project?.apply {
-            subCategoryName = viewModel.subCategory.value?.sub_cat_name
-            subCategoryId = viewModel.subCategory.value?.prod_sub_cat_id
-        }
-
         viewModel.sku?.apply {
             subcategoryName = viewModel.subCategory.value?.sub_cat_name
             subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id

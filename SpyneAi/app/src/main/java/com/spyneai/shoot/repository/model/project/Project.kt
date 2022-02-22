@@ -14,8 +14,6 @@ data class Project(
     @SerializedName("project_name") var projectName: String? = null,
     @SerializedName("category_id") val categoryId: String? = null,
     @SerializedName("category") val categoryName: String? = null,
-    @SerializedName("sub_category") var subCategoryName : String? = null,
-    @SerializedName("sub_category_id")var subCategoryId : String? = null,
     @SerializedName("project_id") val projectId: String? = null,
     @SerializedName("dynamic_layout") val dynamicLayout: String? = null,
     @SerializedName("location_data") val locationData: String? = null,

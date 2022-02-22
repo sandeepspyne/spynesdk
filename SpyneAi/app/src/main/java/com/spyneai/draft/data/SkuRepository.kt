@@ -15,6 +15,7 @@ class SkuRepository(
     val appDatabase: AppDatabase,
     val projectId: String?,
     val projectUuid : String,
+    val videoData : Int
 ) {
 
     fun getSearchResultStream(): Flow<PagingData<Sku>> {
@@ -23,7 +24,7 @@ class SkuRepository(
                 pageSize = DEFAULT_PAGE_SIZE,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { SkuDataSource(service,appDatabase,projectId,projectUuid) }
+            pagingSourceFactory = { SkuDataSource(service,appDatabase,projectId,projectUuid,videoData) }
         ).flow
     }
 

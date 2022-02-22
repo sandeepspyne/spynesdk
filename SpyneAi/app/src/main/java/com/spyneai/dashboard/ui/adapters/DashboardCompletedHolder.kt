@@ -51,35 +51,14 @@ class DashboardCompletedHolder(
 
 
         try {
-            if (item.imagesCount == 0) {
-                if (item.subCategoryName == "360_exterior"
-                    || item.subCategoryName.equals("360_interior")){
-                    Glide.with(context)
-                        .load(R.drawable.three_sixty_thumbnail)
-                        .into(ivImage)
-                }else {
-                    Glide.with(context)
-                        .load(R.mipmap.defaults)
-                        .into(ivImage)
-                }
-            }else {
-                if (item.thumbnail == null){
-                    if (item.subCategoryName == "360_exterior"
-                        || item.subCategoryName.equals("360_interior")){
-                        Glide.with(context)
-                            .load(R.drawable.three_sixty_thumbnail)
-                            .into(ivImage)
-                    }else {
-                        Glide.with(context)
-                            .load(R.mipmap.defaults)
-                            .into(ivImage)
-                    }
-                }else{
-                    Glide.with(context) // replace with 'this' if it's in activity
-                        .load(item.thumbnail)
-                        .into(ivImage)
-                }
-
+            if (item.thumbnail == null){
+                Glide.with(context)
+                    .load(R.drawable.app_logo)
+                    .into(ivImage)
+            }else{
+                Glide.with(context) // replace with 'this' if it's in activity
+                    .load(item.thumbnail)
+                    .into(ivImage)
             }
         }catch (e : Exception){
             e.printStackTrace()
@@ -88,33 +67,20 @@ class DashboardCompletedHolder(
         }
 
         clBackground.setOnClickListener{
-
-            if (item.subCategoryName.equals("360_interior") || item.subCategoryName.equals("360_exterior")){
-//                Intent(context, ThreeSixtyExteriorActivity::class.java)
-//                    .apply {
-//                        putExtra("sku_id",item.sku[0].sku_id)
-//                        context.startActivity(this)
-//                    }
+            if (item.skuCount == 0){
+                Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
             }else{
-
-                if (item.skuCount == 0){
-                    Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
-                }else{
-                    Intent(context, SkuPagedActivity::class.java)
-                        .apply {
-                            putExtra(AppConstants.STATUS,"completed")
-                            putExtra("position", position)
-                            putExtra(AppConstants.FROM_LOCAL_DB, true)
-                            putExtra(AppConstants.PROJECT_NAME, item.projectName)
-                            putExtra(AppConstants.SKU_COUNT, item.skuCount)
-                            putExtra(AppConstants.PROJECT_UUIID, item.uuid)
-                            putExtra(AppConstants.PROJECT_ID, item.projectId)
-                            context.startActivity(this)
-                        }
-
-                }
-
-
+                Intent(context, SkuPagedActivity::class.java)
+                    .apply {
+                        putExtra(AppConstants.STATUS,"completed")
+                        putExtra("position", position)
+                        putExtra(AppConstants.FROM_LOCAL_DB, true)
+                        putExtra(AppConstants.PROJECT_NAME, item.projectName)
+                        putExtra(AppConstants.SKU_COUNT, item.skuCount)
+                        putExtra(AppConstants.PROJECT_UUIID, item.uuid)
+                        putExtra(AppConstants.PROJECT_ID, item.projectId)
+                        context.startActivity(this)
+                    }
             }
 
         }

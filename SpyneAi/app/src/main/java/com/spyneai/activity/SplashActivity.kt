@@ -33,17 +33,12 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         when (getString(R.string.app_name)) {
-
             AppConstants.SPYNE_AI_AUTOMOBILE,AppConstants.SPYNE_AI, AppConstants.AUTO_FOTO ->{
                 ivPowredBy.visibility = View.INVISIBLE
             } else -> {
             ivPowredBy.visibility = View.VISIBLE
         } }
 
-
-
-        //Utilities.savePrefrence(this,AppConstants.AUTH_KEY,"e590700a-0f58-4b91-b947-93d1a32484a1")
-        //Utilities.savePrefrence(this,AppConstants.AUTH_KEY,"37d8c325-6663-462c-a6e4-27adaa88f2d6")
 
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         val manufacturer = Build.MANUFACTURER
@@ -53,6 +48,8 @@ class SplashActivity : AppCompatActivity() {
         val versionName: String = BuildConfig.VERSION_NAME
         val networkCarrier = getNetworkName()
 
+
+        Utilities.savePrefrence(this,AppConstants.AUTH_KEY,"69d928cc-7510-4578-8ed7-b5b53b4fb6d3")
         Utilities.savePrefrence(this,AppConstants.DEVICE_ID,deviceId)
         Utilities.savePrefrence(this,AppConstants.DEVICE_MANUFACTURER,manufacturer)
         Utilities.savePrefrence(this,AppConstants.MODEL,model)

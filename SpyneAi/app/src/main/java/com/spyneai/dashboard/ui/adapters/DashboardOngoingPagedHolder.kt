@@ -54,35 +54,14 @@ class DashboardOngoingPagedHolder(
         tvDate.text = getFormattedDate(item.createdAt)
 
         try {
-            if (item.imagesCount == 0) {
-                if (item.subCategoryName == "360_exterior"
-                    || item.subCategoryName.equals("360_interior")){
-                    Glide.with(context)
-                        .load(R.drawable.three_sixty_thumbnail)
-                        .into(ivImage)
-                }else {
-                    Glide.with(context)
-                        .load(R.mipmap.defaults)
-                        .into(ivImage)
-                }
-            }else {
-                if (item.thumbnail == null){
-                    if (item.subCategoryName == "360_exterior"
-                        || item.subCategoryName.equals("360_interior")){
-                        Glide.with(context)
-                            .load(R.drawable.three_sixty_thumbnail)
-                            .into(ivImage)
-                    }else {
-                        Glide.with(context)
-                            .load(R.mipmap.defaults)
-                            .into(ivImage)
-                    }
-                }else{
-                    Glide.with(context) // replace with 'this' if it's in activity
-                        .load(item.thumbnail)
-                        .into(ivImage)
-                }
-
+            if (item.thumbnail == null){
+                Glide.with(context)
+                    .load(R.drawable.app_logo)
+                    .into(ivImage)
+            }else{
+                Glide.with(context) // replace with 'this' if it's in activity
+                    .load(item.thumbnail)
+                    .into(ivImage)
             }
         }catch (e : Exception){
             e.printStackTrace()

@@ -51,8 +51,12 @@ import android.graphics.Color
 import android.os.Build
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
+import com.spyneai.base.network.Resource
 import com.spyneai.base.room.AppDatabase
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.service.*
 import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.threesixty.data.VideoLocalRepoV2
@@ -624,5 +628,20 @@ fun Context.startUpload() {
     } else {
         log("Starting the service in < 26 Mode")
         startService(serviceIntent)
+    }
+}
+
+fun Fragment.handleFirstPageError(loadState: CombinedLoadStates,retry: () -> Unit){
+    val error = when {
+        loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+        loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+        loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+        else -> null
+    }
+
+    error?.let {
+        handleApiError(Resource.Failure(false,errorCode = error.hashCode(),error.error.message)){
+            retry()
+        }
     }
 }

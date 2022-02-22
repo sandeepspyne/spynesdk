@@ -48,12 +48,17 @@ class DraftViewModel : ViewModel() {
         get() = _imagesOfSkuRes
 
     @ExperimentalPagingApi
-    fun getSkus(projectId: String?, projectUuid: String): Flow<PagingData<Sku>> {
+    fun getSkus(
+        projectId: String?,
+        projectUuid: String,
+        videoData : Int
+    ): Flow<PagingData<Sku>> {
         return SkuRepository(
             ProjectApiClient().getClient(),
             AppDatabase.getInstance(BaseApplication.getContext()),
             projectId,
-            projectUuid
+            projectUuid,
+            videoData
         ).getSearchResultStream()
             .cachedIn(viewModelScope)
     }

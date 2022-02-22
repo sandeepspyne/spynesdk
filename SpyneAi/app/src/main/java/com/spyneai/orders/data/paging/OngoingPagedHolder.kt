@@ -45,7 +45,7 @@ class OngoingPagedHolder(
     companion object {
         //get instance of the DoggoImageViewHolder
         fun getInstance(
-            context: Context, 
+            context: Context,
             parent: ViewGroup
         ): OngoingPagedHolder {
             val inflater = LayoutInflater.from(parent.context)
@@ -59,14 +59,8 @@ class OngoingPagedHolder(
     }
 
     private fun showData(item: Project) {
-        if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.subCategoryId == item.categoryId)) {
-            llThreeSixty.visibility = View.VISIBLE
-            tvCategory.text = "Automobiles"
-        } else {
-            llThreeSixty.visibility = View.GONE
-            tvCategory.text = item.categoryName
-        }
-
+        llThreeSixty.visibility = View.GONE
+        tvCategory.text = item.categoryName
 
         if (context.getString(R.string.app_name) == AppConstants.SWEEP) {
             tvCategory.visibility = View.INVISIBLE
@@ -116,44 +110,24 @@ class OngoingPagedHolder(
         tvSkus.text = item.skuCount.toString()
 
         tvImages.text = item.imagesCount.toString()
-        tvImageCount.text =
-            item.processedCount.toString() + "/" + item.imagesCount.toString()
+        tvImageCount.text = item.processedCount.toString() + "/" + item.imagesCount.toString()
 
         tvProjectName.text = item.projectName
         tvDate.text = getFormattedDate(item.createdAt)
         //need thumbnal
         try {
-            if (item.skuCount == 0) {
-                if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)){
-                    Glide.with(context)
-                        .load(R.drawable.three_sixty_thumbnail)
-                        .into(ivThumbnail)
-                }else {
-                    Glide.with(context)
-                        .load(R.mipmap.defaults)
-                        .into(ivThumbnail)
-                }
-            }else {
-                if (item.thumbnail == null){
-                    if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)){
-                        Glide.with(context)
-                            .load(R.drawable.three_sixty_thumbnail)
-                            .into(ivThumbnail)
-                    }else {
-                        Glide.with(context)
-                            .load(R.mipmap.defaults)
-                            .into(ivThumbnail)
-                    }
-                }else{
-                    Glide.with(context) // replace with 'this' if it's in activity
-                        .load(item.thumbnail)
-                        .into(ivThumbnail)
-                }
-
+            if (item.thumbnail == null) {
+                Glide.with(context)
+                    .load(R.drawable.app_logo)
+                    .into(ivThumbnail)
+            } else {
+                Glide.with(context) // replace with 'this' if it's in activity
+                    .load(item.thumbnail)
+                    .into(ivThumbnail)
             }
-        }catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
-        }catch (e : IndexOutOfBoundsException){
+        } catch (e: IndexOutOfBoundsException) {
             e.printStackTrace()
         }
 
@@ -164,7 +138,7 @@ class OngoingPagedHolder(
             } else {
                 Intent(context, SkuPagedActivity::class.java)
                     .apply {
-                        putExtra(AppConstants.STATUS,"ongoing")
+                        putExtra(AppConstants.STATUS, "ongoing")
                         putExtra("position", position)
                         putExtra(AppConstants.FROM_LOCAL_DB, true)
                         putExtra(AppConstants.PROJECT_NAME, item.projectName)

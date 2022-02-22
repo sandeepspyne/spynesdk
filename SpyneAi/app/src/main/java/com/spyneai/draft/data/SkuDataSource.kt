@@ -18,6 +18,7 @@ class SkuDataSource(
     val appDatabase: AppDatabase,
     val projectId: String?,
     val projectUuid : String,
+    val videoData : Int
 ) : PagingSource<Int, Sku>() {
 
     val TAG = "SkuDataSource"
@@ -30,7 +31,8 @@ class SkuDataSource(
             if (projectId != null && BaseApplication.getContext().isInternetActive()){
                 val response = service.getPagedSku(
                     pageNo = page,
-                    projectId = projectId
+                    projectId = projectId,
+                    videoData = videoData
                 )
 
                 val prevKey = if (page == 0) null else page - 1

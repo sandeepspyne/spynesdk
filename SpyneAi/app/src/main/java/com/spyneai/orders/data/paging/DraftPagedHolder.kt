@@ -54,61 +54,26 @@ class DraftPagedHolder(
 
     @ExperimentalPagingApi
     private fun showData(item: Project) {
-        if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
-            llThreeSixty.visibility = View.VISIBLE
-            tvCategory.text = "Automobiles"
-        } else {
-            tvCategory.text = item.categoryName
-            llThreeSixty.visibility = View.GONE
-        }
+        tvCategory.text = item.categoryName
+        llThreeSixty.visibility = View.GONE
 
         try {
-            if (item.imagesCount == 0) {
-                if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
-                    Glide.with(context)
-                        .load(R.drawable.three_sixty_thumbnail)
-                        .into(ivThumbnail)
-                } else if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME)
-                        .equals("Food & Beverages")
-                ) {
-                    Glide.with(context)
-                        .load(R.drawable.ic_food_thumbnail_draft)
-                        .into(ivThumbnail)
-                } else {
-                    Glide.with(context)
-                        .load(R.mipmap.defaults)
-                        .into(ivThumbnail)
-                }
+            if (item.thumbnail == null) {
+                Glide.with(context)
+                    .load(R.drawable.app_logo)
+                    .into(ivThumbnail)
             } else {
-                if (item.thumbnail == null) {
-                    if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subCategoryId)) {
-                        Glide.with(context)
-                            .load(R.drawable.three_sixty_thumbnail)
-                            .into(ivThumbnail)
-                    } else if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME)
-                            .equals("Food & Beverages")
-                    ) {
-                        Glide.with(context)
-                            .load(R.drawable.ic_food_thumbnail_draft)
-                            .into(ivThumbnail)
-                    } else {
-                        Glide.with(context)
-                            .load(R.mipmap.defaults)
-                            .into(ivThumbnail)
-                    }
-                } else {
-                    if (item.categoryId == AppConstants.CARS_CATEGORY_ID || item.categoryId == AppConstants.BIKES_CATEGORY_ID){
-                        Glide.with(context)
-                            .load(item.thumbnail)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(ivThumbnail)
-                    }else {
-                        context.loadSmartly(
-                            item.thumbnail,
-                            ivThumbnail
-                        )
-                    }
+                if (item.categoryId == AppConstants.CARS_CATEGORY_ID || item.categoryId == AppConstants.BIKES_CATEGORY_ID){
+                    Glide.with(context)
+                        .load(item.thumbnail)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .into(ivThumbnail)
+                }else {
+                    context.loadSmartly(
+                        item.thumbnail,
+                        ivThumbnail
+                    )
                 }
             }
         } catch (e: Exception) {
@@ -124,52 +89,7 @@ class DraftPagedHolder(
         tvImages.text = item.imagesCount.toString()
 
         cvMain.setOnClickListener {
-            if (item.categoryId == item.subCategoryId) {
-                context.startActivity(getDraftIntent(item))
-            } else {
-                when {
-                    item.skuCount == 0 -> {
-                        Intent(context, ShootActivity::class.java)
-                            .apply {
-                                putExtra(AppConstants.FROM_DRAFTS, true)
-                                putExtra(AppConstants.CATEGORY_ID, item.categoryId)
-                                putExtra(AppConstants.CATEGORY_NAME, item.categoryName)
-                                putExtra(AppConstants.PROJECT_ID, item.projectId)
-                                putExtra(AppConstants.SKU_NAME, item.projectName)
-                                putExtra(AppConstants.SKU_CREATED, false)
-                                context.startActivity(this)
-                            }
-                    }
-
-                    item.categoryName == "Footwear" && item.subCategoryName == "" -> {
-                        Utilities.savePrefrence(
-                            context,
-                            AppConstants.CATEGORY_NAME,
-                            item.categoryName
-                        )
-
-                        Intent(context, ShootPortraitActivity::class.java)
-                            .apply {
-                                putExtra(AppConstants.FROM_DRAFTS, true)
-                                putExtra(AppConstants.CATEGORY_NAME, item.categoryName)
-                                putExtra(AppConstants.CATEGORY_ID, item.categoryId)
-                                putExtra(AppConstants.PROJECT_ID, item.projectId)
-                                putExtra(AppConstants.SKU_NAME, item.projectName)
-                                putExtra(AppConstants.SUB_CAT_NAME, item.subCategoryId)
-                                putExtra(AppConstants.SUB_CAT_ID, item.subCategoryId)
-                                putExtra(AppConstants.SKU_CREATED, true)
-                                putExtra(AppConstants.FROM_DRAFTS, true)
-                                //putExtra(AppConstants.SKU_ID, item.sku[0].sku_id)
-                                context.startActivity(this)
-                            }
-
-                    }
-
-                    else -> {
-                        context.startActivity(getDraftIntent(item))
-                    }
-                }
-            }
+            context.startActivity(getDraftIntent(item))
         }
     }
 

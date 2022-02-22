@@ -9,9 +9,13 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentOngoingProjectsBinding
+import com.spyneai.handleFirstPageError
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -40,8 +44,11 @@ class PagedFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingProjectsBin
         val loaderStateAdapter = LoaderStateAdapter { adapter.retry() }
         binding.rvMyOngoingProjects.adapter = adapter.withLoadStateFooter(loaderStateAdapter)
 
-        //binding.rvMyOngoingProjects.adapter = adapter
-
+        adapter.addLoadStateListener { loadState ->
+            if (adapter.itemCount == 0){
+                handleFirstPageError(loadState){adapter.retry()}
+            }
+        }
         fetchProjects()
     }
 

@@ -54,12 +54,6 @@ class LoaderStateAdapter(private val retry: () -> Unit) :
             errorMsg.isVisible =
                 !(loadState as? LoadState.Error)?.error?.message.isNullOrBlank()
             errorMsg.text = (loadState as? LoadState.Error)?.error?.message
-
-//            if (loadState is LoadState.Loading) {
-//                motionLayout.transitionToEnd()
-//            } else {
-//                motionLayout.transitionToStart()
-//            }
         }
     }
 }

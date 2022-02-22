@@ -20,7 +20,7 @@ interface ProjectApi {
     @POST("v1/projects/offline-create-project-skus")
     suspend fun createProject(@Body projectBody: ProjectBody) : CreateProjectAndSkuRes
 
-    @GET("v1/get-data/get-project")
+    @GET("nv1/app/get-project")
     suspend fun getPagedProjects(
         @Query("pageNo") pageNo: Int,
         @Query("count") count: Int = 10,
@@ -30,12 +30,13 @@ interface ProjectApi {
     ) : ProjectPagedRes
 
 
-    @GET("v1/photographer/get-project-sku")
+    @GET("nv1/app/get-project-sku")
     suspend fun getPagedSku(
         @Query("pageNo") pageNo: Int,
         @Query("projectId") projectId: String,
         @Query("count") count: Int = 50,
         @Query("sortBy") sortBy: String = "DESC",
+        @Query("videoData") videoData: Int,
         @Query("auth_key") authKey: String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString(),
     ) : PagedSkuRes
 
