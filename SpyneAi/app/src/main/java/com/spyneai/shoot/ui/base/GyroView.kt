@@ -25,7 +25,7 @@ class GyroView : FrameLayout {
     var cameraAngle = 45
     var angle = 0
     var upcomingAngle = 0
-    var cateoryName : String? = null
+    var cateoryId : String? = null
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -44,11 +44,11 @@ class GyroView : FrameLayout {
         binding = GyroViewBinding.bind(this)
     }
 
-    fun start(cateoryName : String){
-        this.cateoryName = cateoryName
+    fun start(cateoryId : String){
+        this.cateoryId = cateoryId
 
-        this.cateoryName?.let {
-            if (cateoryName == "Footwear")
+        this.cateoryId?.let {
+            if (cateoryId == AppConstants.FOOTWEAR_CATEGORY_ID)
                 binding.tvLevelIndicator.visibility = View.GONE
             else
                 binding.flLevelIndicator.visibility = View.VISIBLE
@@ -307,9 +307,9 @@ class GyroView : FrameLayout {
             }
 
             AppConstants.SPYNE_AI, AppConstants.SPYNE_AI_AUTOMOBILE, AppConstants.SELL_ANY_CAR -> {
-                cateoryName?.let {
+                cateoryId?.let {
                     when (it) {
-                        "Automobiles", "Bikes" -> {
+                        AppConstants.CARS_CATEGORY_ID, AppConstants.BIKES_CATEGORY_ID -> {
                             if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
                                 gyroMeterOnLevel(true)
                             } else {
@@ -328,7 +328,7 @@ class GyroView : FrameLayout {
                             }
                         }
 
-                        "Food & Beverages", "E-Commerce", "Photo Box"  -> {
+                        AppConstants.FOOD_AND_BEV_CATEGORY_ID, AppConstants.ECOM_CATEGORY_ID, AppConstants.PHOTO_BOX_CATEGORY_ID  -> {
 
                             // angle name
                             if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))

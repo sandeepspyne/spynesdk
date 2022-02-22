@@ -111,24 +111,20 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         subCategoryAndAngleFragment = SubCategoryAndAngleFragment()
         angleSelectionFragment = AngleSelectionFragment()
 
-        when (shootViewModel.categoryDetails.value?.categoryName) {
-            "Automobiles","Bikes" -> {
-                shootViewModel.processSku = true
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    val transaction = supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
+        shootViewModel.processSku = true
 
-                    if (!intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false)){
-                        transaction.add(R.id.flCamerFragment, overlays)
-                        transaction.add(R.id.flCamerFragment,CreateProjectFragment())
-                    }else
-                        transaction.add(R.id.flCamerFragment, draftShootFragment)
+        if (savedInstanceState == null) { // initial transaction should be wrapped like this
+            val transaction = supportFragmentManager.beginTransaction()
+                .add(R.id.flCamerFragment, cameraFragment)
 
-                    transaction.commit()
-                }
-            }
+            if (!intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false)){
+                transaction.add(R.id.flCamerFragment, overlays)
+                transaction.add(R.id.flCamerFragment,CreateProjectFragment())
+            }else
+                transaction.add(R.id.flCamerFragment, draftShootFragment)
+
+            transaction.commit()
         }
-
 
         shootViewModel.stopShoot.observe(this, {
             if (it) {
@@ -230,22 +226,6 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 intent.getStringExtra(AppConstants.SKU_UUID)!!
             )
         }
-//        shootViewModel.project = Project(
-//            uuid =  intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-//            categoryName = shootViewModel.categoryDetails.value?.categoryName!!,
-//            categoryId = shootViewModel.categoryDetails.value?.categoryId!!
-//        )
-
-        //set sku data
-//        val sku = Sku(
-//            uuid = intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-//            skuName = intent.getStringExtra(AppConstants.SKU_NAME)!!,
-//            skuId = intent.getStringExtra(AppConstants.SKU_ID),
-//            categoryName = shootViewModel.categoryDetails.value?.categoryName!!,
-//            categoryId = shootViewModel.categoryDetails.value?.categoryId!!
-//        )
-//
-//        shootViewModel.sku = sku
     }
 
     private fun setUpDraftsData() {
@@ -264,8 +244,6 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 if (intent.getBooleanExtra(AppConstants.SKU_CREATED, false)) {
                     shootViewModel.exterirorAngles.value =
                         intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
-
-                    //shootViewModel.sku!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
 
                     shootViewModel.subCategory.value = getSubcategoryResponse()
 

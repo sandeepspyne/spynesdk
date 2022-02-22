@@ -45,23 +45,39 @@ class PagedFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingProjectsBin
         binding.rvMyOngoingProjects.adapter = adapter.withLoadStateFooter(loaderStateAdapter)
 
         adapter.addLoadStateListener { loadState ->
-            if (adapter.itemCount == 0){
-                handleFirstPageError(loadState){adapter.retry()}
+            when{
+                adapter.itemCount == 0 -> {
+                    val error = handleFirstPageError(loadState){adapter.retry()}
+                    if (error || loadState.append.endOfPaginationReached)
+                        stopLoader()
+
+                }
+
+                adapter.itemCount > 0 -> stopLoader()
+
+                loadState.append.endOfPaginationReached -> stopLoader()
+
+                else -> stopLoader()
             }
+
         }
         fetchProjects()
     }
 
+    private fun stopLoader(){
+        binding.shimmerCompletedSKU.stopShimmer()
+        binding.shimmerCompletedSKU.visibility = View.GONE
+        binding.rvMyOngoingProjects.visibility = View.VISIBLE
+    }
+
     private fun fetchProjects() {
+        binding.shimmerCompletedSKU.startShimmer()
+        binding.shimmerCompletedSKU.visibility = View.VISIBLE
+        binding.rvMyOngoingProjects.visibility = View.GONE
+
         lifecycleScope.launch {
             viewModel.getAllProjects(arguments?.getString("status").toString()).distinctUntilChanged().collectLatest {
-                if (!binding.rvMyOngoingProjects.isVisible){
-                    binding.shimmerCompletedSKU.stopShimmer()
-                    binding.shimmerCompletedSKU.visibility = View.GONE
-                    binding.rvMyOngoingProjects.visibility = View.VISIBLE
-                }
                 adapter.submitData(it)
-                
             }
         }
     }

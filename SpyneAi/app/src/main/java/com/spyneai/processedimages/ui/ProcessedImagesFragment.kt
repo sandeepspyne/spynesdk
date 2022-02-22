@@ -396,7 +396,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
     private fun fetchBulkUpload() {
         //Utilities.showProgressDialog(requireContext())
 
-        shootId = Utilities.getPreference(requireContext(), AppConstants.SKU_ID)!!
+        shootId = requireActivity().intent.getStringExtra(AppConstants.SKU_ID)!!
 
         getSkuImages()
     }

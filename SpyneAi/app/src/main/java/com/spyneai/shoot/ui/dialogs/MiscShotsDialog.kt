@@ -27,7 +27,7 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
 
         dialog?.setCancelable(false)
 
-       if (viewModel.categoryDetails.value?.categoryName != "Automobiles") {
+       if (viewModel.categoryDetails.value?.categoryId != AppConstants.CARS_CATEGORY_ID) {
            setSampleImages()
        }
 
@@ -68,7 +68,6 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
     }
 
     private fun setImage(ivOne: ImageView, interior: String) {
-        val s = ""
         Glide.with(requireContext())
             .load(interior)
             .into(ivOne)

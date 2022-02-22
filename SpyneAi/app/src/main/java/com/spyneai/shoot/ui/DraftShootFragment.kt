@@ -271,8 +271,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                                 }
                                 else -> {
                                     viewModel.startInteriorShots.value = true
-                                    viewModel.interiorAngles.value =
-                                        subCategoriesResponse.interior.size
+                                    viewModel.interiorAngles.value = subCategoriesResponse.interior.size
                                 }
                             }
                         }
@@ -442,9 +441,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             })
             .apply(requestOptions)
             .into(binding.imgOverlay!!)
-
     }
-
 
     private fun showViews() {
         binding.apply {
@@ -664,10 +661,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             binding.llAngles.visibility = View.VISIBLE
             rvSubcategories?.visibility = View.VISIBLE
             tvShoot.isClickable = false
-//            imgOverlay.visibility = View.INVISIBLE
         }
-
-//        viewModel.hideLeveler.value = true
 
         val subCatResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
@@ -768,7 +762,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
            binding.apply {
                binding.llAngles.visibility = View.VISIBLE
                rvSubcategories?.visibility = View.VISIBLE
-//               imgOverlay.visibility = View.INVISIBLE
            }
 
 
@@ -778,21 +771,14 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
            binding.rvSubcategories.scrollToPosition(0)
 
 
-           if (viewModel.fromDrafts) {
-               if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
-                   val filteredList: List<NewSubCatResponse.Miscellaneous> =
-                       subCatResponse.miscellaneous.filter {
-                           it.prod_sub_cat_id == viewModel.subCategory.value?.prod_sub_cat_id
-                       }
+           if (viewModel.categoryDetails.value?.categoryId == AppConstants.BIKES_CATEGORY_ID) {
+               val filteredList: List<NewSubCatResponse.Miscellaneous> =
+                   subCatResponse.miscellaneous.filter {
+                       it.prod_sub_cat_id == viewModel.subCategory.value?.prod_sub_cat_id
+                   }
 
-                   subCatResponse.miscellaneous = filteredList
-                   viewModel.miscAngles.value = subCatResponse.miscellaneous.size
-               }
-
-           } else {
-               val myMiscShootList = viewModel.shootList.value?.filter {
-                   it.image_category == "Focus Shoot"
-               }
+               subCatResponse.miscellaneous = filteredList
+               viewModel.miscAngles.value = subCatResponse.miscellaneous.size
            }
 
            val selctedDraftList = DraftClickedImages.clickedImagesMap
@@ -838,6 +824,8 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                this@DraftShootFragment,
                this@DraftShootFragment
            )
+
+           val s = ""
 
            binding.rvSubcategories.apply {
                visibility = View.VISIBLE

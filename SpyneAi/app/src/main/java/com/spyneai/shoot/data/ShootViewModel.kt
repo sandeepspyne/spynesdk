@@ -185,15 +185,23 @@ class ShootViewModel : ViewModel() {
             val subcatList = localRepository.getSubcategories()
 
             if (!subcatList.isNullOrEmpty()) {
+                val interiorList = localRepository.getInteriorList(prodId)
+                val miscList = localRepository.getMiscList(prodId)
+
+                val exteriorTags = localRepository.getExteriorTags()
+                val interiorTags = localRepository.getInteriorTags()
+                val focusTags = localRepository.getFocusTags()
+
+
                 GlobalScope.launch(Dispatchers.Main) {
                     _subCategoriesResponse.value = Resource.Success(
                         NewSubCatResponse(
-                            subcatList,
-                            ArrayList(),
+                            data = subcatList,
+                            interior = interiorList,
                             "",
-                            ArrayList(),
+                            miscellaneous = miscList,
                             200,
-                            NewSubCatResponse.Tags(ArrayList(), ArrayList(), ArrayList())
+                            tags = NewSubCatResponse.Tags(exteriorTags, focusTags,interiorTags)
                         )
                     )
                 }
@@ -559,6 +567,7 @@ class ShootViewModel : ViewModel() {
 
         GlobalScope.launch(Dispatchers.IO) {
             val MiscList = getMiscList()
+
             if (!MiscList.isNullOrEmpty()) {
                 response.miscellaneous = MiscList
                 GlobalScope.launch(Dispatchers.Main) {
@@ -836,6 +845,7 @@ class ShootViewModel : ViewModel() {
             }
 
             val MiscList =getMiscList()
+
             if (!MiscList.isNullOrEmpty()){
                 response.miscellaneous = MiscList
                 GlobalScope.launch(Dispatchers.Main) {

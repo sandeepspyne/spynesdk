@@ -302,7 +302,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
         if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
             if (threeSixtyIntSelected()) {
-                Log.d(TAG, "onViewCreated: " + "Three Sixty Selected")
                 startProcessActivty(
                     shootIntent!!,
                     localInteriorList.size

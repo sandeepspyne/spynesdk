@@ -191,7 +191,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                 )
 
                 if (isSensorAvaliable) {
-                    binding.flLevelIndicator.start(viewModel.videoDetails?.categoryName!!)
+                    binding.flLevelIndicator.start(viewModel.videoDetails?.categoryId!!)
                 }
 
 

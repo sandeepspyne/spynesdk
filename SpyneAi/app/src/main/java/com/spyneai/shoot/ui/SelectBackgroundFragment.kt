@@ -174,8 +174,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             binding.tvGenerateGif.text = getString(R.string.generate_output)
         }
 
-
-
         binding.tvGenerateGif.setOnClickListener {
             //update total frame if user clicked interior and misc
             if (viewModel.interiorMiscShootsCount > 0)
@@ -235,23 +233,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
     }
 
     private fun getBackground() {
-
-        when (getString(R.string.app_name)) {
-            AppConstants.SWIGGY -> {
-                viewModel.getBackgroundGifCars("Food")
-            }
-            AppConstants.SPYNE_AI -> {
-                if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
-                        .equals("Food & Beverages")
-                ) {
-                    viewModel.getBackgroundGifCars("Food")
-                } else {
-                    viewModel.getBackgroundGifCars(Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!)
-                }
-            }
-            else -> {
-                viewModel.getBackgroundGifCars(Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!)
-            }
+        when(viewModel.categoryId){
+            AppConstants.CARS_CATEGORY_ID -> viewModel.getBackgroundGifCars("Automobiles")
+            AppConstants.FOOD_AND_BEV_CATEGORY_ID -> viewModel.getBackgroundGifCars("Food")
         }
     }
 

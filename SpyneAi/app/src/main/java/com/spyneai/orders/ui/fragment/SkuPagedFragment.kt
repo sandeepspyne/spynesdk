@@ -74,32 +74,52 @@ class SkuPagedFragment : BaseFragment<DraftViewModel, FragmentSkuPagedBinding>()
             fetchSkus()
         })
 
-        adapter.addLoadStateListener{
+        adapter.addLoadStateListener{ loadState ->
+            when{
+                adapter.itemCount == 0 -> {
+                    val error = handleFirstPageError(loadState){adapter.retry()}
+                    if (error || loadState.append.endOfPaginationReached)
+                        stopLoader()
+                }
+
+                adapter.itemCount > 0 -> stopLoader()
+
+                loadState.append.endOfPaginationReached -> {
+                    stopLoader()
+                    if (!requireContext().isInternetActive() && (adapter.itemCount == 0 && intent.getIntExtra(AppConstants.SKU_COUNT,0) > adapter.itemCount)){
+                        ImageNotSyncedDialog()
+                            .apply {
+                                arguments = Bundle().apply {
+                                    putBoolean("sku_sync",true)
+                                }
+                            }
+                            .show(
+                                requireActivity().supportFragmentManager,
+                                "ImageNotSyncedDialog"
+                            )
+                    }
+                }
+            }
 
             adapter.addLoadStateListener { loadState ->
                 if (adapter.itemCount == 0){
                     handleFirstPageError(loadState){adapter.retry()}
                 }
             }
-
-            if (it.append.endOfPaginationReached){
-                if (!requireContext().isInternetActive() && (adapter.itemCount == 0 && intent.getIntExtra(AppConstants.SKU_COUNT,0) > adapter.itemCount)){
-                    ImageNotSyncedDialog()
-                        .apply {
-                            arguments = Bundle().apply {
-                                putBoolean("sku_sync",true)
-                            }
-                        }
-                        .show(
-                            requireActivity().supportFragmentManager,
-                            "ImageNotSyncedDialog"
-                        )
-                }
-            }
         }
     }
-    
+
+    private fun stopLoader() {
+        binding.shimmerCompletedSKU.stopShimmer()
+        binding.shimmerCompletedSKU.visibility = View.GONE
+        binding.rvSkus.visibility = View.VISIBLE
+    }
+
     private fun fetchSkus(){
+        binding.shimmerCompletedSKU.startShimmer()
+        binding.shimmerCompletedSKU.visibility = View.VISIBLE
+        binding.rvSkus.visibility = View.GONE
+
         GlobalScope.launch(Dispatchers.IO) {
             getSkus()
         }
@@ -114,11 +134,6 @@ class SkuPagedFragment : BaseFragment<DraftViewModel, FragmentSkuPagedBinding>()
                 intent.getStringExtra(AppConstants.PROJECT_UUIID)!!,
                 1
             ).distinctUntilChanged().collectLatest {
-                if (!binding.rvSkus.isVisible) {
-                    binding.shimmerCompletedSKU.stopShimmer()
-                    binding.shimmerCompletedSKU.visibility = View.GONE
-                    binding.rvSkus.visibility = View.VISIBLE
-                }
                 adapter.submitData(it)
             }
         }

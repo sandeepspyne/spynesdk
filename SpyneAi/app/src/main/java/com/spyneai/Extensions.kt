@@ -455,7 +455,6 @@ fun Context.checkPendingDataSync() {
     GlobalScope.launch(Dispatchers.IO) {
         val db = AppDatabase.getInstance(BaseApplication.getContext())
         val imageDao = db.imageDao()
-        val shootDao = db.shootDao()
         val videoDao = db.videoDao()
 
         if (ImagesRepoV2(imageDao).getOldestImage() != null
@@ -471,10 +470,6 @@ fun Context.checkPendingDataSync() {
         ) {
 
             startVideoUploadService()
-//            startVideoUploadService(
-//                MainDashboardActivity::class.java.simpleName,
-//                ServerSyncTypes.UPLOAD
-//            )
         }
 
         val pendingProjects = db.projectDao().getPendingProjects()
@@ -631,7 +626,7 @@ fun Context.startUpload() {
     }
 }
 
-fun Fragment.handleFirstPageError(loadState: CombinedLoadStates,retry: () -> Unit){
+fun Fragment.handleFirstPageError(loadState: CombinedLoadStates,retry: () -> Unit) : Boolean{
     val error = when {
         loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
         loadState.append is LoadState.Error -> loadState.append as LoadState.Error
@@ -643,5 +638,8 @@ fun Fragment.handleFirstPageError(loadState: CombinedLoadStates,retry: () -> Uni
         handleApiError(Resource.Failure(false,errorCode = error.hashCode(),error.error.message)){
             retry()
         }
+        return true
     }
+
+    return false
 }

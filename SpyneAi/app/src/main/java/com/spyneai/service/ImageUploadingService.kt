@@ -257,27 +257,29 @@ class ImageUploadingService : Service(),DataSyncListener {
                 processSkuSync?.connectionLost = false
                 imageUploader?.connectionLost = false
 
-               GlobalScope.launch(Dispatchers.IO) {
-                   val db = AppDatabase.getInstance(BaseApplication.getContext())
-                   val shootLocalRepository = ImagesRepoV2(db.imageDao())
-                   if (shootLocalRepository.getOldestImage() != null
-                   ) {
+                checkPendingDataSync()
 
-                       resumeUpload("onReceive")
-                   }
-
-                   val pendingProjects = db.projectDao().getPendingProjects()
-
-                   if (pendingProjects > 0){
-                       startProjectSync("onReceive")
-                   }
-
-                   val pendingSkus = db.skuDao().getPendingSku()
-
-                   if (pendingSkus > 0){
-                       startProcessSync("onReceive")
-                   }
-               }
+//               GlobalScope.launch(Dispatchers.IO) {
+//                   val db = AppDatabase.getInstance(BaseApplication.getContext())
+//                   val shootLocalRepository = ImagesRepoV2(db.imageDao())
+//                   if (shootLocalRepository.getOldestImage() != null
+//                   ) {
+//
+//                       resumeUpload("onReceive")
+//                   }
+//
+//                   val pendingProjects = db.projectDao().getPendingProjects()
+//
+//                   if (pendingProjects > 0){
+//                       startProjectSync("onReceive")
+//                   }
+//
+//                   val pendingSkus = db.skuDao().getPendingSku()
+//
+//                   if (pendingSkus > 0){
+//                       startProcessSync("onReceive")
+//                   }
+//               }
 
             }else {
                 //push event of internet not connected

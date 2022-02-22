@@ -52,13 +52,14 @@ class ProcessActivity : AppCompatActivity() {
             )
         }
 
-
-        if (intent.getBooleanExtra("process_sku",true)){
-            supportFragmentManager.beginTransaction()
-                .add(R.id.flContainer, SelectBackgroundFragment())
-                .commit()
-        }else{
-           processViewModel.startTimer.value = true
+        when(intent.getStringExtra(AppConstants.CATEGORY_ID)){
+            AppConstants.CARS_CATEGORY_ID,
+            AppConstants.FOOD_AND_BEV_CATEGORY_ID -> {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flContainer, SelectBackgroundFragment())
+                    .commit()
+            }
+            else -> processViewModel.startTimer.value = true
         }
 
         processViewModel.startTimer.observe(this,{
