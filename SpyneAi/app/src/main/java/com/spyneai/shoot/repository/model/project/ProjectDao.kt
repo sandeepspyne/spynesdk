@@ -83,7 +83,7 @@ interface ProjectDao {
     @Query("select * from project")
     fun getAllProjects() : List<Project>
 
-    @Query("Select * from project where isCreated = :isCreated  and toProcessAt <= :currentTime LIMIT :limit")
+    @Query("Select * from project where isCreated = :isCreated  and skuCount > 0 and toProcessAt <= :currentTime LIMIT :limit")
     fun getProjectWithSkus(isCreated: Boolean = false, currentTime: Long = System.currentTimeMillis(),limit: Int = 1) : ProjectWithSku
 
     @Query("update project set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid ")
