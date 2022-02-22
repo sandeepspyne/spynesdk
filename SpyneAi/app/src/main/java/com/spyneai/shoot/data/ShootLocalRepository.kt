@@ -17,13 +17,15 @@ import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.repository.db.ShootDao
+import com.spyneai.shoot.repository.model.image.ImageDao
 import com.spyneai.shoot.repository.model.project.ProjectDao
 import com.spyneai.shoot.repository.model.sku.SkuDao
 
 class ShootLocalRepository(
     val shootDao: ShootDao,
     val projectDao: ProjectDao,
-    val skuDao: SkuDao
+    val skuDao: SkuDao,
+    val imageDao: ImageDao? = null
 ) {
 
     private val TAG = "ShootLocalRepository"
@@ -121,4 +123,5 @@ class ShootLocalRepository(
 
     fun updateVideoSkuLocally(sku: com.spyneai.shoot.repository.model.sku.Sku) = shootDao.updateComboSkuAndProject(sku)
 
+    fun getExteriorImages(uuid: String) = imageDao?.getExteriorImages(uuid)
 }

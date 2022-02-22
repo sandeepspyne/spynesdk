@@ -24,7 +24,12 @@ class ProcessViewModel : ViewModel() {
 
     private val repository = ProcessRepository()
     private val db = AppDatabase.getInstance(BaseApplication.getContext())
-    private val localRepository = ShootLocalRepository(db.shootDao(),db.projectDao(),db.skuDao())
+    private val localRepository = ShootLocalRepository(
+        db.shootDao(),
+        db.projectDao(),
+        db.skuDao(),
+        imageDao = db.imageDao()
+    )
 
     var fromVideo = false
     val exteriorAngles: MutableLiveData<Int> = MutableLiveData()
@@ -49,8 +54,8 @@ class ProcessViewModel : ViewModel() {
 
     var interiorMiscShootsCount = 0
 
-   // var categoryName: String? = null
-    var categoryId : String? = null
+    // var categoryName: String? = null
+    var categoryId: String? = null
 
     val _carGifRes: MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
     val carGifRes: LiveData<Resource<CarsBackgroundRes>>
@@ -93,7 +98,7 @@ class ProcessViewModel : ViewModel() {
         GlobalScope.launch(Dispatchers.IO) {
             val backgroundList = localRepository.getBackgrounds(category)
 
-            if (!backgroundList.isNullOrEmpty()){
+            if (!backgroundList.isNullOrEmpty()) {
                 GlobalScope.launch(Dispatchers.Main) {
                     _carGifRes.value = Resource.Success(
                         CarsBackgroundRes(
@@ -103,10 +108,10 @@ class ProcessViewModel : ViewModel() {
                         )
                     )
                 }
-            }else {
-                val response =repository.getBackgroundGifCars(category)
+            } else {
+                val response = repository.getBackgroundGifCars(category)
 
-                if (response is Resource.Success){
+                if (response is Resource.Success) {
                     //insert overlays
                     val bgList = response.value.data
 
@@ -118,7 +123,7 @@ class ProcessViewModel : ViewModel() {
                     GlobalScope.launch(Dispatchers.Main) {
                         _carGifRes.value = response
                     }
-                }else {
+                } else {
                     GlobalScope.launch(Dispatchers.Main) {
                         _carGifRes.value = response
                     }
@@ -127,7 +132,6 @@ class ProcessViewModel : ViewModel() {
         }
 
     }
-
 
 
 //    fun checkImagesUploadStatus(backgroundSelect: String) {
@@ -158,7 +162,7 @@ class ProcessViewModel : ViewModel() {
         skuId: String
     ) = viewModelScope.launch {
         _reduceCreditResponse.value = Resource.Loading
-        _reduceCreditResponse.value = repository.reduceCredit(userId, creditReduce,skuId)
+        _reduceCreditResponse.value = repository.reduceCredit(userId, creditReduce, skuId)
     }
 
     fun updateDownloadStatus(
@@ -173,15 +177,13 @@ class ProcessViewModel : ViewModel() {
     }
 
 
-
-
     suspend fun setProjectAndSkuData(projectUuid: String, skuUuid: String) {
         project = localRepository.getProject(projectUuid)
         sku = localRepository.getSkuById(skuUuid)
     }
 
 
-    suspend fun updateBackground() = localRepository.updateBackground(HashMap<String,Any>()
+    suspend fun updateBackground() = localRepository.updateBackground(HashMap<String, Any>()
         .apply {
             put("project_uuid", sku!!.projectUuid!!)
             put("sku_uuid", sku!!.uuid!!)
@@ -193,4 +195,6 @@ class ProcessViewModel : ViewModel() {
     private fun getTotalFrames(): Int {
         return if (fromVideo) sku?.threeSixtyFrames?.plus(sku?.imagesCount!!)!! else sku?.imagesCount!!
     }
+
+    fun getExteriorImages() = localRepository.getExteriorImages(sku?.uuid!!)
 }

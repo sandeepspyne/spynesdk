@@ -79,12 +79,17 @@ interface SkuDao {
             val dbItem = getSku(it.uuid)
 
             if (dbItem == null){
-                if (it.backgroundId == null)
-                    it.backgroundId = AppConstants.DEFAULT_BG_ID
+                val sku = getSkuBySkuId(it.skuId)
 
-                it.createdAt = getTimeStamp(it.createdOn)
+                if (sku == null){
+                    if (it.backgroundId == null)
+                        it.backgroundId = AppConstants.DEFAULT_BG_ID
 
-                list.add(it)
+                    it.createdAt = getTimeStamp(it.createdOn)
+
+                    list.add(it)
+                }
+
             }else {
                 if (it.backgroundId == null){
                     it.backgroundId = dbItem.backgroundId
@@ -106,6 +111,9 @@ interface SkuDao {
 
     @Query("select * from sku where uuid = :uuid")
     fun getSku(uuid: String) : Sku
+
+    @Query("select * from sku where skuId = :skuId")
+    fun getSkuBySkuId(skuId: String?) : Sku
 
     @Query("Select * from sku where isProcessed = :isProcessed and isCreated = :isCreated and backgroundId != 'DEFAULT_BG_ID' and toProcessAt <= :currentTime LIMIT :limit")
     fun getProcessAbleSku(isProcessed: Boolean = false, isCreated: Boolean = true, currentTime: Long = System.currentTimeMillis(),limit: Int = 1) : Sku

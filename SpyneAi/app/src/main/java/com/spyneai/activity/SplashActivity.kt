@@ -49,7 +49,7 @@ class SplashActivity : AppCompatActivity() {
         val networkCarrier = getNetworkName()
 
 
-        Utilities.savePrefrence(this,AppConstants.AUTH_KEY,"69d928cc-7510-4578-8ed7-b5b53b4fb6d3")
+        //Utilities.savePrefrence(this,AppConstants.AUTH_KEY,"69d928cc-7510-4578-8ed7-b5b53b4fb6d3")
         Utilities.savePrefrence(this,AppConstants.DEVICE_ID,deviceId)
         Utilities.savePrefrence(this,AppConstants.DEVICE_MANUFACTURER,manufacturer)
         Utilities.savePrefrence(this,AppConstants.MODEL,model)
@@ -62,7 +62,6 @@ class SplashActivity : AppCompatActivity() {
         if(Utilities.getPreference(this, AppConstants.STATUS_PROJECT_NAME).isNullOrEmpty()){
             Utilities.savePrefrence(this,AppConstants.STATUS_PROJECT_NAME,"true")
         }
-
 
         setSplash()
     }

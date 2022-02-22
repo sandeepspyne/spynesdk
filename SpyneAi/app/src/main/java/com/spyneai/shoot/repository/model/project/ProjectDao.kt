@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.room.*
 import com.spyneai.getTimeStamp
 import com.spyneai.getUuid
+import java.lang.Exception
 
 @Dao
 interface ProjectDao {
@@ -46,8 +47,12 @@ interface ProjectDao {
             val dbItem = getProject(it.uuid)
 
             if (dbItem == null){
-                it.createdAt = getTimeStamp(it.createdOn)
-                list.add(it)
+                val project = getProjectByProjectId(it.projectId)
+                if (project == null){
+                    it.createdAt = getTimeStamp(it.createdOn)
+                    list.add(it)
+                }
+
             }else {
                 if (it.skuCount > dbItem.skuCount || it.processedCount > dbItem.processedCount)
                     list.add(it)
@@ -56,6 +61,12 @@ interface ProjectDao {
 
         insertAll(list)
     }
+
+
+
+    @Query("Select * from project where projectId = :projectId")
+    fun getProjectByProjectId(projectId: String?) : Project
+
 
     @Query("SELECT * FROM project where status = :status")
     fun getAllProjects(status: String = "draft"): PagingSource<Int, Project>

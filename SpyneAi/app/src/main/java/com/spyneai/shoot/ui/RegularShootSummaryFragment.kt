@@ -36,7 +36,6 @@ import kotlinx.coroutines.launch
 class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegularShootSummaryBinding>(),View.OnTouchListener {
 
     private var availableCredits = 0
-    private lateinit var frontFramesList: List<String>
     lateinit var tsvParamFront : TSVParams
     var handler = Handler()
     var TAG = "RegularShootSummaryFragment"
@@ -51,7 +50,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
         binding.tvGenerateGif.isEnabled = true
 
-        //setup360View()
+        setup360View()
 
 //        getUserCredits()
 //        observeCredits()
@@ -130,51 +129,54 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
     }
 
     private fun setup360View() {
-        frontFramesList = viewModel.frontFramesList
 
-        tsvParamFront = TSVParams()
-        tsvParamFront.type = 0
-        tsvParamFront.framesList = frontFramesList
-        tsvParamFront.mImageIndex = frontFramesList.size / 2
+        viewModel.getExteriorImages()?.observe(viewLifecycleOwner) { it ->
+            tsvParamFront = TSVParams()
+            tsvParamFront.type = 0
+            tsvParamFront.framesList = it
+            tsvParamFront.mImageIndex = it.size / 2
 
-        binding.svFront.startShimmer()
+            binding.svFront.startShimmer()
 
-        preLoadFront(tsvParamFront)
+            preLoadFront(tsvParamFront)
 
-        //load front image
-        Glide.with(this)
-            .load(frontFramesList.get(tsvParamFront.mImageIndex))
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    binding.ivFront.visibility = View.VISIBLE
-                    binding.svFront.stopShimmer()
-                    binding.svFront.visibility = View.GONE
+            //load front image
+            Glide.with(this)
+                .load(it[tsvParamFront.mImageIndex])
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.ivFront.visibility = View.VISIBLE
+                        binding.svFront.stopShimmer()
+                        binding.svFront.visibility = View.GONE
 
-                    return false
-                }
+                        return false
+                    }
 
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    binding.ivFront.visibility = View.VISIBLE
-                    binding.svFront.stopShimmer()
-                    binding.svFront.visibility = View.GONE
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.ivFront.visibility = View.VISIBLE
+                        binding.svFront.stopShimmer()
+                        binding.svFront.visibility = View.GONE
 
-                    return false
-                }
+                        return false
+                    }
 
-            })
-            .into(binding.ivFront)
+                })
+                .into(binding.ivFront)
+        }
+
     }
+
 
     fun refreshText(){
         requireContext().setLocale()

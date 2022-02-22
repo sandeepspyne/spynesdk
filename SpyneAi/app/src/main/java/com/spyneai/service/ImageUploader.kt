@@ -250,10 +250,10 @@ class ImageUploader(
                             if (image.tags.isNullOrEmpty()) JSONObject().toString() else JSONObject(
                                 image.tags
                             ).toString()
-                        image.debugData =
-                            if (image.debugData.isNullOrEmpty()) JSONObject().toString() else JSONObject(
-                                image.debugData
-                            ).toString()
+//                        image.debugData =
+//                            if (image.debugData.isNullOrEmpty()) JSONObject().toString() else JSONObject(
+//                                image.debugData
+//                            ).toString()
 
                         val gotPresigned = getPresigned(image, uploadType)
 

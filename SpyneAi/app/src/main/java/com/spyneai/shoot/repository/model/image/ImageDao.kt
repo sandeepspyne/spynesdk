@@ -1,5 +1,6 @@
 package com.spyneai.shoot.repository.model.image
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
@@ -92,4 +93,7 @@ interface ImageDao {
 
     @Query("select * from image where skuUuid = :skuUuid")
     fun getImagesBySkuId(skuUuid: String): List<Image>
+
+    @Query("select path from image where skuUuid = :skuUuid and image_category = :imageCategory ")
+    fun getExteriorImages(skuUuid: String,imageCategory: String = "Exterior"): LiveData<List<String>>
 }
