@@ -18,7 +18,6 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.shoot.data.model.*
-import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.Dispatchers
@@ -166,6 +165,7 @@ class ShootViewModel : ViewModel() {
     val addMoreAngle: MutableLiveData<Boolean> = MutableLiveData()
     var isReshoot = false
     var isReclick = false
+    var reclickSequence = 0
     var reshotImageName = ""
     var reshootSequence = 0
     var updateSelectItem: MutableLiveData<Boolean> = MutableLiveData()
@@ -411,8 +411,9 @@ class ShootViewModel : ViewModel() {
         }
     }
 
-    suspend fun insertImage(shootData: ShootData) {
+    suspend fun isImageExist(skuUuid: String, overlayId:String) = imageRepositoryV2.isImageExist(skuUuid,overlayId)
 
+    suspend fun insertImage(shootData: ShootData) {
 
         val name = if (shootData.image_category == "360int")
             sku?.skuName?.uppercase() + "_" + sku?.uuid + "_360int_1.JPG"
@@ -424,7 +425,7 @@ class ShootViewModel : ViewModel() {
 
         Log.d(TAG, "insertImage: $name")
 
-        val image = imageRepositoryV2.isImageExist(sku?.uuid!!, name)
+        val image = isImageExist(sku?.uuid!!, overlayId.toString())
 
         if (image == null){
             val newImage = com.spyneai.shoot.repository.model.image.Image(
@@ -453,10 +454,13 @@ class ShootViewModel : ViewModel() {
             image.isUploaded = false
             image.isMarkedDone = false
             image.isReclick = true
+            image.preSignedUrl = AppConstants.DEFAULT_PRESIGNED_URL
 
             val data = imageRepositoryV2.updateImage(image)
             val s = ""
         }
+
+        isReclick = false
     }
 
 

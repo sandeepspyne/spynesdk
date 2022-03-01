@@ -11,7 +11,7 @@ import com.spyneai.shoot.repository.model.image.ImageDao
 
 class ImagesRepoV2(val imageDao: ImageDao) {
 
-    fun isImageExist(skuUuid: String,imageName: String) = imageDao.getImage(skuUuid,imageName)
+    fun isImageExist(skuUuid: String,overlayId: String) = imageDao.getImage(skuUuid,overlayId)
 
     fun updateImage(image: Image) = imageDao.updateImage(image)
 

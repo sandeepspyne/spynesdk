@@ -9,12 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.FragmentEcomGridReshootBinding
-import com.spyneai.databinding.FragmentEcomOverlayReshootBinding
 import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.reshoot.ReshootAdapter
-import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.reshoot.data.SelectedImagesHelper
-import com.spyneai.shoot.adapters.ClickedAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData

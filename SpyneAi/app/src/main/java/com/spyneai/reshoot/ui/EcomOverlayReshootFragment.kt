@@ -2,7 +2,6 @@ package com.spyneai.reshoot.ui
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,14 +21,11 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.base.network.Resource
-import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentEcomOverlayReshootBinding
-import com.spyneai.databinding.FragmentReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.repository.model.image.Image
 import com.spyneai.posthog.Events
 import com.spyneai.reshoot.ReshootAdapter
 import com.spyneai.reshoot.data.ReshootOverlaysRes
@@ -37,8 +33,6 @@ import com.spyneai.reshoot.data.SelectedImagesHelper
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
-import com.spyneai.shoot.ui.dialogs.ConfirmTagsDialog
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.ui.ecomwithoverlays.ConfirmReshootPortraitDialog
 import org.json.JSONArray

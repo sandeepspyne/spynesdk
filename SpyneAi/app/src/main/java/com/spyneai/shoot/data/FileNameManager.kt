@@ -9,7 +9,7 @@ class FileNameManager {
         currentShoot : Int,
         list : ArrayList<ShootData>?,
         interiorSize : Int?,
-        miscSize : Int?
+        miscSize : Int?,
     ) : String{
         return when (imageType) {
             "Exterior" -> {

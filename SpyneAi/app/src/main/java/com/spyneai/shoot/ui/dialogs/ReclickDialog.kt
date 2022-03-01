@@ -8,6 +8,9 @@ import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.DialogReclickBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>() {
 
@@ -19,6 +22,7 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
         }
 
         binding.btnYes.setOnClickListener {
+            viewModel.isReclick = true
 
             arguments?.let {
                 if (it.getString("name").toString().contains("Info")) {
@@ -28,10 +32,6 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
                     viewModel.hideLeveler.value = true
                     viewModel.showLeveler.value = false
                     viewModel.showGrid.value = false
-//                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-//                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-//                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
-//                    viewModel.overlayId = it.getInt("overlay_id")
                     viewModel.updateSelectItem.value = true
 
                 } else {

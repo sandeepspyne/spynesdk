@@ -34,14 +34,16 @@ interface ImageDao {
     @Query("select * from image where imageId = :imageId")
     fun getImageWithImageId(imageId: String?) : Image
 
-    @Query("select * from image where skuUuid = :skuUuid and name = :imageName")
-    fun getImage(skuUuid: String,imageName: String) : Image
+    @Query("select * from image where skuUuid = :skuUuid and overlayId = :overlayId")
+    fun getImage(skuUuid: String,overlayId: String) : Image
 
     @Update
     fun updateImage(image: Image): Int
 
-    @Query("update image set path = :path and isReclick = :isReclick and isUploaded = :isUploaded and isMarkedDone = :isMarkedDone and toProcessAT = :toProcessAT where  uuid = :uuid")
-    fun updateImagePathOnReclick(path: String, uuid: String,isReclick: Boolean = true,isUploaded: Boolean = false,isMarkedDone: Boolean = false,toProcessAT: Long = System.currentTimeMillis()): Int
+
+
+    @Query("update image set path = :path and isReclick = :isReclick and isUploaded = :isUploaded and isMarkedDone = :isMarkedDone and toProcessAT = :toProcessAT and preSignedUrl = :preSignedUrl where  uuid = :uuid")
+    fun updateImagePathOnReclick(path: String, uuid: String,isReclick: Boolean = true,isUploaded: Boolean = false,isMarkedDone: Boolean = false,toProcessAT: Long = System.currentTimeMillis(),preSignedUrl: String = AppConstants.DEFAULT_PRESIGNED_URL): Int
 
     @Transaction
     suspend fun insertImagesWithCheck(response: ArrayList<Image>,projectUuid: String,skuUuid: String){

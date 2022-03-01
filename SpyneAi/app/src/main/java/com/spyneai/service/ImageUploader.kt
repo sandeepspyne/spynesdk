@@ -105,6 +105,8 @@ class ImageUploader(
 
             var image = localRepository.getOldestImage()
 
+            val s = ""
+
             if (connectionLost){
                 context.captureEvent(
                     AppConstants.CONNECTION_BREAK,
