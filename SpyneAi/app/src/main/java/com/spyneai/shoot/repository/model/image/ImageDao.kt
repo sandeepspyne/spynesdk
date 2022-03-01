@@ -40,6 +40,9 @@ interface ImageDao {
     @Update
     fun updateImage(image: Image): Int
 
+    @Query("update image set path = :path and isReclick = :isReclick and isUploaded = :isUploaded and isMarkedDone = :isMarkedDone and toProcessAT = :toProcessAT where  uuid = :uuid")
+    fun updateImagePathOnReclick(path: String, uuid: String,isReclick: Boolean = true,isUploaded: Boolean = false,isMarkedDone: Boolean = false,toProcessAT: Long = System.currentTimeMillis()): Int
+
     @Transaction
     suspend fun insertImagesWithCheck(response: ArrayList<Image>,projectUuid: String,skuUuid: String){
         val list = ArrayList<Image>()

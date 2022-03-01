@@ -412,6 +412,8 @@ class ShootViewModel : ViewModel() {
     }
 
     suspend fun insertImage(shootData: ShootData) {
+
+
         val name = if (shootData.image_category == "360int")
             sku?.skuName?.uppercase() + "_" + sku?.uuid + "_360int_1.JPG"
         else{
@@ -420,29 +422,40 @@ class ShootViewModel : ViewModel() {
             )
         }
 
-        val newImage = com.spyneai.shoot.repository.model.image.Image(
-            uuid = getUuid(),
-            projectUuid = project?.uuid,
-            skuUuid = sku?.uuid,
-            image_category = shootData.image_category,
-            skuName = sku?.skuName,
-            name = name,
-            sequence = shootData.sequence,
-            overlayId = overlayId.toString(),
-            isReclick = isReclick,
-            isReshoot = isReshoot,
-            path = shootData.capturedImage,
-            angle = shootData.angle,
-            tags = shootData.meta,
-            debugData = shootData.debugData
-        )
+        Log.d(TAG, "insertImage: $name")
 
-        if (imageRepositoryV2.isImageExist(newImage.skuUuid!!, newImage.name!!)) {
-            imageRepositoryV2.updateImage(newImage)
-        } else {
+        val image = imageRepositoryV2.isImageExist(sku?.uuid!!, name)
+
+        if (image == null){
+            val newImage = com.spyneai.shoot.repository.model.image.Image(
+                uuid = getUuid(),
+                projectUuid = project?.uuid,
+                skuUuid = sku?.uuid,
+                image_category = shootData.image_category,
+                skuName = sku?.skuName,
+                name = name,
+                sequence = shootData.sequence,
+                overlayId = overlayId.toString(),
+                isReclick = isReclick,
+                isReshoot = isReshoot,
+                path = shootData.capturedImage,
+                angle = shootData.angle,
+                tags = shootData.meta,
+                debugData = shootData.debugData
+            )
+
             localRepository.insertImage(
                 newImage
             )
+        }else {
+            image.path = shootData.capturedImage
+            image.toProcessAT = System.currentTimeMillis()
+            image.isUploaded = false
+            image.isMarkedDone = false
+            image.isReclick = true
+
+            val data = imageRepositoryV2.updateImage(image)
+            val s = ""
         }
     }
 

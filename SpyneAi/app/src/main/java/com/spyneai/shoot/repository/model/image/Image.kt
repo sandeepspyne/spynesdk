@@ -36,7 +36,7 @@ data class Image(
     @SerializedName("image_id") var imageId: String? = null,
     @SerializedName("tags") var tags: String? = null,
     @SerializedName("debug_data") var debugData: String? = null,
-    @SerializedName("to_process_at") val toProcessAT: Long = System.currentTimeMillis(),
+    @SerializedName("to_process_at") var toProcessAT: Long = System.currentTimeMillis(),
     @SerializedName("retry_count") val retryCount: Int = 1,
     @SerializedName("is_uploaded") var isUploaded: Boolean = false,
     @SerializedName("is_marked_done") var isMarkedDone: Boolean = false,

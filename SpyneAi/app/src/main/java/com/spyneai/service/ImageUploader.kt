@@ -31,6 +31,7 @@ import android.provider.MediaStore
 
 import android.content.ContentValues
 import android.os.Environment
+import com.google.gson.GsonBuilder
 import id.zelory.compressor.constraint.quality
 import id.zelory.compressor.constraint.resolution
 
@@ -194,8 +195,7 @@ class ImageUploader(
                                 if (!imageUploaded)
                                     continue
 
-                                val imageMarkedDone = markDoneImage(image)
-
+                                markDoneImage(image)
                                 continue
                             }
                             else -> {
@@ -226,9 +226,6 @@ class ImageUploader(
                                         continue
 
                                     val imageMarkedDone = markDoneImage(image)
-                                    Log.d(
-                                        TAG, "startUploading: imageMarkedDone " + imageMarkedDone
-                                    )
                                     continue
                                 } catch (
                                     e: Exception
@@ -271,7 +268,7 @@ class ImageUploader(
                                 if (!imageUploaded)
                                     continue
 
-                                val imageMarkedDone = markDoneImage(image)
+                                markDoneImage(image)
                                 continue
                             }
                             else -> {
@@ -303,9 +300,6 @@ class ImageUploader(
                                         continue
 
                                     val imageMarkedDone = markDoneImage(image)
-                                    Log.d(
-                                        TAG, "startUploading: imageMarkedDone " + imageMarkedDone
-                                    )
                                     continue
 
                                 } catch (
@@ -358,10 +352,12 @@ class ImageUploader(
         image.name = if (image.image_category == "360int")
             image.skuName?.uppercase() + "_" + image.skuId + "_360int_1.JPG"
         else{
-            image.skuName?.uppercase()+"_"+image.skuId+"_"+image.image_category+"_"+image.sequence+ "." + image.path.substringAfter(
-                "."
-            )
+            val imageNameArray = image.name.split("_").toMutableList()
+            imageNameArray[1] = image.skuId.toString()
+            imageNameArray[0]+"_"+imageNameArray[1]+"_"+imageNameArray[2]+"_"+imageNameArray[3]
         }
+
+        Log.d(TAG, "getPresigned: ${image.name} ${image.sequence}")
 
         var response = shootRepository.getPreSignedUrl(
             uploadType,
