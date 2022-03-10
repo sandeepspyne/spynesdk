@@ -142,6 +142,7 @@ class ProjectSkuSync(
                                 put("db_count",skip)
                             }
                         )
+                        retryCount = 0
                         continue
                     }
                     var projectBody: ProjectBody? = null
