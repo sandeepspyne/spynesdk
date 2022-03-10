@@ -2,6 +2,7 @@ package com.spyneai.posthog
 
 object Events {
 
+    val PROJECT_BODY = "PROJECT_BODY"
     val IMAGE_COMPRESSED = "IMAGE_COMPRESSED"
     val IMAGE_COMPRESSED_EXCEPTION = "IMAGE_COMPRESSED_EXCEPTION"
 

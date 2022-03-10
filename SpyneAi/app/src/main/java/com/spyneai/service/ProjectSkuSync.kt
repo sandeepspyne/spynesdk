@@ -185,7 +185,12 @@ class ProjectSkuSync(
                         }
                     }
 
-                    val s = ""
+                    context.captureEvent(
+                        Events.PROJECT_BODY,
+                        properties.apply {
+                            put("project_body",Gson().toJson(projectBody))
+                        }
+                    )
 
                     projectBody?.let {
                         if (it.skuData.isNotEmpty()){
@@ -196,6 +201,8 @@ class ProjectSkuSync(
                                 createProject(it)
                             }
                         }
+                        else
+                            retryCount++
                     }
 
                     continue
