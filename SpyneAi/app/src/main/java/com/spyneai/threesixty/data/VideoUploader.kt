@@ -3,9 +3,16 @@ package com.spyneai.threesixty.data
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.core.content.FileProvider
+import com.abedelazizshe.lightcompressorlibrary.CompressionListener
+import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
+import com.abedelazizshe.lightcompressorlibrary.VideoQuality
+import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.google.gson.Gson
 import com.spyneai.*
 import com.spyneai.base.network.ClipperApi
@@ -25,6 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
 import org.json.JSONObject
@@ -37,6 +45,7 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.coroutines.suspendCoroutine
 
 
 class VideoUploader(val context: Context,
@@ -313,9 +322,148 @@ class VideoUploader(val context: Context,
         return true
     }
 
+
+    private suspend fun compressVideo(videoUri: Uri, video_detail:VideoDetails): RequestBody =
+        suspendCoroutine { continuation ->
+            try {
+                VideoCompressor.start(
+                    context = context, // => This is required
+                    uris = listOf(videoUri), // => Source can be provided as content uris
+                    isStreamable = true,
+                    saveAt = Environment.DIRECTORY_MOVIES, // => the directory to save the compressed video(s)
+                    listener = object : CompressionListener {
+                        override fun onProgress(index: Int, percent: Float) {
+                            Log.d(TAG, "onProgress:$percent")
+                            context.captureEvent( Events.VIDEO_COMPRESSION_PROGRESS,
+                                HashMap<String, Any?>()
+                                    .apply {
+                                        put("sku_id", video_detail.skuId)
+                                        put("COMPRESSION_PROGRESS",percent)
+                                        put("VIDEO_URI",videoUri)
+                                    })
+                        }
+
+                        override fun onStart(index: Int) {
+                            Log.d(TAG, "Compression Start")
+                            context.captureEvent(Events.VIDEO_COMPRESSION_START,
+                                HashMap<String, Any?>()
+                                    .apply {
+                                        put("sku_id", video_detail.skuId)
+                                        put("COMPRESSION_START",videoUri)
+                                    })
+
+                        }
+
+                        override fun onSuccess(index: Int, size: Long, path: String?) {
+                            Log.d(TAG, "Compression Complete$path")
+                            val requestFile = File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+                            context.captureEvent(Events.VIDEO_COMPRESSION_SUCCESS,
+                                HashMap<String, Any?>()
+                                    .apply {
+                                        put("sku_id", video_detail.skuId)
+                                        put("COMPRESSION_SUCCESS",videoUri)
+                                        put("RESULT_REQUEST_FILE",requestFile)
+                                    })
+
+                            continuation.resumeWith(Result.success(requestFile))
+
+
+                        }
+
+                        override fun onFailure(index: Int, failureMessage: String) {
+                            Log.d(TAG, "Compression Fail$failureMessage")
+                            context.captureEvent(Events.VIDEO_COMPRESSION_FAIL,
+                                HashMap<String, Any?>()
+                                    .apply {
+                                        put("sku_id", video_detail.skuId)
+                                        put("VIDEO_URI",videoUri)
+                                        put("FAIL_MESSAGE",failureMessage)
+                                    })
+                        }
+
+                        override fun onCancelled(index: Int) {
+                            Log.d(TAG, "Compression Canceled")
+                            context.captureEvent( Events.VIDEO_COMPRESSION_CANCEL,
+                                HashMap<String, Any?>()
+                                    .apply {
+                                        put("sku_id", video_detail.skuId)
+                                        put("VIDEO_URI",videoUri)
+                                    })
+                        }
+
+                    },
+                    configureWith = Configuration(
+                        quality = VideoQuality.MEDIUM,
+//                    frameRate = 24, /*Int, ignore, or null*/
+                        isMinBitrateCheckEnabled = false,
+//                    videoBitrate = 3677198, /*Int, ignore, or null*/
+                        disableAudio = true, /*Boolean, or ignore*/
+                        keepOriginalResolution = true, /*Boolean, or ignore*/
+                        videoWidth = 1920.0, /*Double, ignore, or null*/
+                        videoHeight = 1080.0 /*Double, ignore, or null*/
+                    )
+                )
+
+
+            } catch (e: Exception) {
+//                continuation.resumeWith(Result.failure(e))
+                context.captureEvent(Events.VIDEO_COMPRESSED_EXCEPTION,
+                    HashMap<String, Any?>()
+                        .apply {
+                            put("sku_id", video_detail.skuId)
+                            put("VIDEO_URI",videoUri)
+                            put("EXCEPTION",e)
+                        })
+                Log.d(TAG, "Compression Catch exception$e")
+            }
+        }
+
     private suspend fun uploadvideo(video: VideoDetails): Boolean {
-        val requestFile =
-            File(video.videoPath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+        var requestFile:RequestBody?=null
+
+
+        if(File(video.videoPath).exists()){
+            try{
+                val videoContentUri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".fileprovider", File(video.videoPath))
+                context.captureEvent(Events.VIDEO_CONTENT_URI_CREATED,
+                    HashMap<String, Any?>()
+                        .apply {
+                            put("sku_id", video.skuId)
+                            put("video_content_uri_created", videoContentUri)
+                            put("video", video)
+                        }
+                )
+                requestFile= compressVideo(videoContentUri,video)
+
+            }catch (e: Exception){
+                if (e.localizedMessage.contains("No such file or directory")) {
+                    video.isUploaded = true
+                    video.isMarkedDone = true
+                    localRepository.updateVideo(video)
+                }
+                context.captureEvent( Events.VIDEO_CONTENT_URI_CREATION_FAIL,
+                    HashMap<String, Any?>()
+                        .apply {
+                            put("sku_id", video.skuId)
+                            put("Exception", e)
+                            put("video", video)
+                        })
+                e.printStackTrace()
+                return false
+            }
+        }
+        else{
+            context.captureEvent(Events.VIDEO_FILE_NOT_EXIST,
+                HashMap<String, Any?>()
+                    .apply {
+                        put("sku_id", video.skuId)
+                        put("video", video)
+                    })
+            video.isUploaded = true
+            video.isMarkedDone = true
+            localRepository.updateVideo(video)
+            return false
+        }
 
         val uploadResponse = threeSixtyRepository.uploadVideoToGcp(
             video.preSignedUrl!!,

@@ -501,5 +501,9 @@ dependencies {
     implementation("io.github.thanosfisherman.wifiutils:wifiutils:1.6.6")
 
 
+    //video COmpressor
+    implementation 'com.github.AbedElazizShe:LightCompressor:1.1.1'
+
+
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

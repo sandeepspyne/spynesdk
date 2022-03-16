@@ -27,7 +27,7 @@ interface VideoDao {
     @Query("select * from videodetails where uuid= :id")
     fun getVideo(id: String) : VideoDetails
 
-    @Query("select * from videodetails where skuId NOT NUll and projectId NOT NULL and (isUploaded = :isUploaded or isMarkedDone = :isMarkedDone) and toProcessAt <= :currentTime limit 1")
+    @Query("select * from videodetails where skuId NOT NUll and projectId NOT NULL and (isUploaded = :isUploaded or isMarkedDone = :isMarkedDone) and toProcessAt <= :currentTime and videoPath NOT NULL limit 1")
     fun getOldestVideo(isUploaded: Boolean = false,isMarkedDone : Boolean = false,currentTime: Long = System.currentTimeMillis()) : VideoDetails
 
     @Query("update videodetails set toProcessAt = :toProcessAt, retryCount = retryCount + 1 where uuid = :uuid")

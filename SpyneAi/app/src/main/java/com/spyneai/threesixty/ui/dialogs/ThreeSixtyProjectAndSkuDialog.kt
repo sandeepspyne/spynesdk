@@ -84,6 +84,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
 
             viewModel.videoDetails?.let {
                 it.type = "360_exterior"
+                it.skuName=name
                 val sku = com.spyneai.shoot.repository.model.sku.Sku(
                     uuid = it.skuUuid,
                     projectUuid = it.projectUuid,
