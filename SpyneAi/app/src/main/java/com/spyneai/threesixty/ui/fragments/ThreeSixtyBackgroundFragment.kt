@@ -88,6 +88,8 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
             //set background id
             viewModel.videoDetails?.backgroundId = backgroundSelect
 
+
+
             Navigation.findNavController(binding.btnContinue)
                 .navigate(R.id.action_threeSixtyBackgroundFragment_to_threeSixtyShootSummaryFragment)
 
@@ -104,10 +106,10 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
         getBackgorund()
 
-        viewModel.carGifRes.observe(viewLifecycleOwner,{
-            when(it) {
+        viewModel.carGifRes.observe(viewLifecycleOwner) {
+            when (it) {
                 is Resource.Success -> {
-                    requireContext().captureEvent(Events.GET_BACKGROUND, HashMap<String,Any?>())
+                    requireContext().captureEvent(Events.GET_BACKGROUND, HashMap<String, Any?>())
                     binding.shimmer.stopShimmer()
                     binding.shimmer.visibility = View.GONE
                     binding.rvBackgroundsCars.visibility = View.VISIBLE
@@ -127,7 +129,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
                     backgroundSelect = response.data[0].imageId
 
-                    for (i in 0..response.data.size-1)
+                    for (i in 0..response.data.size - 1)
                         (carBackgroundGifList).add(response.data[i])
 
                     setBackgroundsCar()
@@ -135,7 +137,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.GET_BACKGROUND_FAILED, HashMap<String,Any?>(),
+                        Events.GET_BACKGROUND_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
                     handleApiError(it) { getBackgorund() }
@@ -143,7 +145,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
                 is Resource.Loading -> binding.shimmer.startShimmer()
             }
-        })
+        }
     }
 
     private fun setBackgroundsCar() {
@@ -175,8 +177,8 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                 LinearLayoutManager.HORIZONTAL, false
             )
 
-        binding.rvBackgroundsCars.setLayoutManager(layoutManager)
-        binding.rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
+        binding.rvBackgroundsCars.layoutManager = layoutManager
+        binding.rvBackgroundsCars.adapter = carbackgroundsAdapter
     }
 
 

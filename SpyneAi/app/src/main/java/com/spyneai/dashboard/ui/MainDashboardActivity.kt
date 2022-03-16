@@ -127,11 +127,11 @@ class MainDashboardActivity : BaseActivity() {
         checkAppVersion()
         observeAppVersion()
 
-        viewModel?.continueAnyway?.observe(this,{
-            if (it){
+        viewModel?.continueAnyway?.observe(this) {
+            if (it) {
                 continueShoot()
             }
-        })
+        }
 
     }
 
@@ -216,7 +216,7 @@ class MainDashboardActivity : BaseActivity() {
     }
 
     private fun observeAppVersion() {
-        viewModel?.versionResponse?.observe(this, {
+        viewModel?.versionResponse?.observe(this) {
             when (it) {
                 is Resource.Success -> {
                     capture(
@@ -244,7 +244,7 @@ class MainDashboardActivity : BaseActivity() {
                     }
                 }
             }
-        })
+        }
     }
 
     protected fun allPermissionsGranted() = permissions.all {

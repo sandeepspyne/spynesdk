@@ -126,16 +126,16 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             transaction.commit()
         }
 
-        shootViewModel.stopShoot.observe(this, {
+        shootViewModel.stopShoot.observe(this) {
             if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, skuDetailFragment)
                     .commit()
             }
-        })
+        }
 
-        shootViewModel.showProjectDetail.observe(this, {
+        shootViewModel.showProjectDetail.observe(this) {
             if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
@@ -145,9 +145,9 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     .add(R.id.flCamerFragment, projectDetailFragment)
                     .commit()
             }
-        })
+        }
 
-        shootViewModel.showFoodBackground.observe(this, {
+        shootViewModel.showFoodBackground.observe(this) {
             if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
@@ -158,20 +158,26 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     .add(R.id.flCamerFragment, selectBackgroundFragment)
                     .commit()
             }
-        })
+        }
 
-        shootViewModel.addMoreAngle.observe(this, {
+        shootViewModel.addMoreAngle.observe(this) {
             if (it)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
-        })
+        }
 
-        shootViewModel.selectBackground.observe(this, {
+        shootViewModel.selectBackground.observe(this) {
             if (it) {
                 // start process activity
                 val processIntent = Intent(this, ProcessActivity::class.java)
                 processIntent.apply {
-                    this.putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
-                    this.putExtra(AppConstants.CATEGORY_ID, intent.getStringExtra(AppConstants.CATEGORY_ID))
+                    this.putExtra(
+                        AppConstants.CATEGORY_NAME,
+                        intent.getStringExtra(AppConstants.CATEGORY_NAME)
+                    )
+                    this.putExtra(
+                        AppConstants.CATEGORY_ID,
+                        intent.getStringExtra(AppConstants.CATEGORY_ID)
+                    )
                     this.putExtra(AppConstants.SKU_UUID, shootViewModel.sku?.uuid)
                     this.putExtra("sku_id", shootViewModel.sku?.uuid)
                     this.putExtra(AppConstants.PROJECT_UUIID, shootViewModel.sku?.projectUuid)
@@ -187,30 +193,30 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     startActivity(this)
                 }
             }
-        })
+        }
 
         observeProjectCreated()
 
-        shootViewModel.selectAngles.observe(this,{
+        shootViewModel.selectAngles.observe(this) {
             supportFragmentManager.beginTransaction()
                 .remove(subCategoryAndAngleFragment)
-                .add(R.id.flCamerFragment,AngleSelectionFragment())
+                .add(R.id.flCamerFragment, AngleSelectionFragment())
                 .commit()
-        })
+        }
 
     }
 
     private fun observeProjectCreated() {
         //add subcat selection fragment
         shootViewModel.getSubCategories.observe(
-            this,{
-                if (!shootViewModel.isSubcategoriesSelectionShown && shootViewModel.isSkuCreated.value == null){
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment,SubCategoryAndAngleFragment())
-                        .commit()
-                }
+            this
+        ) {
+            if (!shootViewModel.isSubcategoriesSelectionShown && shootViewModel.isSkuCreated.value == null) {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, SubCategoryAndAngleFragment())
+                    .commit()
             }
-        )
+        }
     }
 
 

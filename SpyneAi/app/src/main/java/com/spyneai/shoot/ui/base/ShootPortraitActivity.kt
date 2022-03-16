@@ -178,7 +178,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             }
         })
 
-        shootViewModel.showProjectDetail.observe(this, {
+        shootViewModel.showProjectDetail.observe(this) {
             if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
@@ -188,14 +188,17 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                     .add(R.id.flCamerFragment, projectDetailFragment)
                     .commit()
             }
-        })
+        }
 
-        shootViewModel.showFoodBackground.observe(this, {
+        shootViewModel.showFoodBackground.observe(this) {
             if (it) {
                 val bundle = Bundle()
-                bundle.putString(AppConstants.SKU_UUID,shootViewModel.sku?.uuid)
-                bundle.putString(AppConstants.PROJECT_UUIID,shootViewModel.sku?.projectUuid)
-                bundle.putString(AppConstants.CATEGORY_ID, shootViewModel.categoryDetails?.value!!.categoryId)
+                bundle.putString(AppConstants.SKU_UUID, shootViewModel.sku?.uuid)
+                bundle.putString(AppConstants.PROJECT_UUIID, shootViewModel.sku?.projectUuid)
+                bundle.putString(
+                    AppConstants.CATEGORY_ID,
+                    shootViewModel.categoryDetails?.value!!.categoryId
+                )
                 selectBackgroundFragment.arguments = bundle
 
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -207,14 +210,14 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                     .add(R.id.flCamerFragment, selectBackgroundFragment)
                     .commit()
             }
-        })
+        }
 
-        shootViewModel.addMoreAngle.observe(this, {
+        shootViewModel.addMoreAngle.observe(this) {
             if (it)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
-        })
+        }
 
-        shootViewModel.selectBackground.observe(this, {
+        shootViewModel.selectBackground.observe(this) {
             if (it) {
                 // start process activity
                 val processIntent = Intent(this, ProcessActivity::class.java)
@@ -227,24 +230,27 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 //                    this.putExtra("project_id", shootViewModel.sku?.projectUuid)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku", shootViewModel.processSku)
-                    this.putExtra(AppConstants.FROM_VIDEO, intent.getBooleanExtra(AppConstants.FROM_VIDEO, false))
+                    this.putExtra(
+                        AppConstants.FROM_VIDEO,
+                        intent.getBooleanExtra(AppConstants.FROM_VIDEO, false)
+                    )
                     startActivity(this)
                 }
             }
-        })
+        }
     }
 
     private fun observeProjectCreated() {
         //add subcat selection fragment
         shootViewModel.getSubCategories.observe(
-            this, {
-                if (!shootViewModel.isSubcategoriesSelectionShown) {
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, SubCategoryAndAngleFragment())
-                        .commit()
-                }
+            this
+        ) {
+            if (!shootViewModel.isSubcategoriesSelectionShown) {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, SubCategoryAndAngleFragment())
+                    .commit()
             }
-        )
+        }
     }
 
     private fun setUpVideoShoot() {

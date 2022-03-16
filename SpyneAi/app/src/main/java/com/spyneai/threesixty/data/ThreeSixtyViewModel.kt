@@ -191,6 +191,11 @@ class ThreeSixtyViewModel : ViewModel() {
         }
     }
 
+    suspend fun setProjectAndSkuData(projectUuid: String, skuUuid: String) {
+        project = localRepository.getProject(projectUuid)
+        sku = localRepository.getSkuById(skuUuid)
+    }
+
     suspend fun updateBackground(totalFrames: Int) =
         localRepository.updateBackground(HashMap<String, Any>()
             .apply {

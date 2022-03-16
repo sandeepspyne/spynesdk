@@ -303,7 +303,7 @@ class ProjectSkuSync(
         res.data.skusList.forEachIndexed { index, skus ->
             val ss = db.shootDao().updateSkuAndImageIds(projectId,skus.localId,skus.skuId)
 
-            if (projectBody.skuData[index].prodSubCatId == "360_exterior"){
+            if (projectBody.skuData[index].videoPresent == 1){
                 val s = db.shootDao().updateVideoSkuAndProjectIds(projectId,skus.skuId,skus.localId)
                 Log.d(TAG, "createProject: $s")
             }

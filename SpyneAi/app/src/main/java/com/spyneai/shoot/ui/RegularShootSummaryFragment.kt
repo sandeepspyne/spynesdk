@@ -87,16 +87,16 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
     }
 
     private fun observeProcessSku() {
-        viewModel.processSkuRes.observe(viewLifecycleOwner,{
-            when(it) {
+        viewModel.processSkuRes.observe(viewLifecycleOwner) {
+            when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
                     requireContext().captureEvent(
                         Events.PROCESS,
-                        HashMap<String,Any?>()
+                        HashMap<String, Any?>()
                             .apply {
                                 this.put("sku_id", viewModel.sku?.skuId!!)
-                                this.put("background_id",viewModel.backgroundSelect!!)
+                                this.put("background_id", viewModel.backgroundSelect!!)
                                 this.put("response", Gson().toJson(it).toString())
                             }
 
@@ -109,18 +109,20 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                     Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
                         Events.PROCESS_FAILED,
-                        HashMap<String,Any?>()
+                        HashMap<String, Any?>()
                             .apply {
-                                this.put("sku_id",viewModel.sku?.skuId!!)
+                                this.put("sku_id", viewModel.sku?.skuId!!)
                                 this.put("throwable", it.throwable)
                             },
-                        it.errorMessage!!)
+                        it.errorMessage!!
+                    )
 
-                    handleApiError(it) { processSku()
+                    handleApiError(it) {
+                        processSku()
                     }
                 }
             }
-        })
+        }
     }
 
     override fun onResume() {
@@ -381,8 +383,8 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
     }
 
     private fun observepaidStatus() {
-        viewModel.downloadHDRes.observe(viewLifecycleOwner,{
-            when(it) {
+        viewModel.downloadHDRes.observe(viewLifecycleOwner) {
+            when (it) {
                 is Resource.Success -> {
                     processSku()
                 }
@@ -392,7 +394,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                     handleApiError(it) { updatePaidStatus(true) }
                 }
             }
-        })
+        }
     }
 
     private fun observeCredits() {

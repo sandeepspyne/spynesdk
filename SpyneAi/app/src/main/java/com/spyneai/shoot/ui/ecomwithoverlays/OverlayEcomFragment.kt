@@ -133,7 +133,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     }
 
     private fun observeOverlays() {
-        viewModel.overlaysResponse.observe(viewLifecycleOwner, { it ->
+        viewModel.overlaysResponse.observe(viewLifecycleOwner) { it ->
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
@@ -146,17 +146,17 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     }
 
                     //update exterior angles in local DB
-                   GlobalScope.launch(Dispatchers.IO) {
-                       viewModel.updateSkuExteriorAngles()
+                    GlobalScope.launch(Dispatchers.IO) {
+                        viewModel.updateSkuExteriorAngles()
 
-                       //start sync service
-                       GlobalScope.launch(Dispatchers.Main) {
-                           requireContext().startUploadingService(
-                               OverlayEcomFragment::class.java.simpleName,
-                               ServerSyncTypes.CREATE
-                           )
-                       }
-                   }
+                        //start sync service
+                        GlobalScope.launch(Dispatchers.Main) {
+                            requireContext().startUploadingService(
+                                OverlayEcomFragment::class.java.simpleName,
+                                ServerSyncTypes.CREATE
+                            )
+                        }
+                    }
 
                     viewModel.displayName = it.value.data[0].display_name
                     viewModel.displayThumbanil = it.value.data[0].display_thumbnail
@@ -254,7 +254,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     handleApiError(it) { getOverlays() }
                 }
             }
-        })
+        }
     }
 
 

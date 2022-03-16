@@ -243,7 +243,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         getBackground()
 
-        viewModel.carGifRes.observe(viewLifecycleOwner, {
+        viewModel.carGifRes.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
                     requireContext().captureEvent(Events.GET_BACKGROUND, HashMap<String, Any?>())
@@ -282,7 +282,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                 is Resource.Loading -> binding.shimmer.startShimmer()
             }
-        })
+        }
     }
 
     private fun setBackgroundsCar() {

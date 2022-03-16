@@ -38,13 +38,13 @@ class TrimActivity : BaseActivity() {
 //            shootMode = intent.getIntExtra("shoot_mode",0)
 //        }
 
-        threeSixtyViewModel.title.observe(this,{
+        threeSixtyViewModel.title.observe(this) {
             binding.tvTitle.text = it
-        })
+        }
 
-        threeSixtyViewModel.processingStarted.observe(this,{
+        threeSixtyViewModel.processingStarted.observe(this) {
             if (it) binding.ivBack.visibility = View.INVISIBLE
-        })
+        }
 
         binding.ivBack.setOnClickListener {
             onBackPressed()

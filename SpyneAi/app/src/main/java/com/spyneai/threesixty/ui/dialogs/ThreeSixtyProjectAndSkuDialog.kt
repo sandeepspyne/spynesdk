@@ -64,7 +64,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
 
-    private fun createProject(projectName : String,skuName : String) {
+    private fun createProject(projectName : String,name : String) {
 
         viewModel.videoDetails?.let {
             val project = com.spyneai.shoot.repository.model.project.Project(
@@ -89,7 +89,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                     projectUuid = it.projectUuid,
                     categoryId = it.categoryId,
                     categoryName = it.categoryName,
-                    skuName = skuName,
+                    skuName = name,
                     subcategoryName = it.subCategory,
                     subcategoryId = it.categoryId,
                     threeSixtyFrames = it.frames,

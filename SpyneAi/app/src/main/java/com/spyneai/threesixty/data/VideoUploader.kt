@@ -146,7 +146,8 @@ class VideoUploader(val context: Context,
                         }
                 )
                 break
-            }else {
+            }
+            else {
                 lastIdentifier = video.skuName+ "_" + video.skuId
 
                 val videoProperties = HashMap<String, Any?>()

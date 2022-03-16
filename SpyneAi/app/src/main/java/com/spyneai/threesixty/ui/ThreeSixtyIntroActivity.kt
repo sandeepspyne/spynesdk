@@ -41,9 +41,9 @@ class ThreeSixtyIntroActivity : BaseActivity() {
         //insert video details
         threeSixtyViewModel.insertVideo(videoDetails)
 
-        threeSixtyViewModel.title.observe(this,{
+        threeSixtyViewModel.title.observe(this) {
             binding.tvTitle.text = it
-        })
+        }
 
         binding.ivBack.setOnClickListener {
             onBackPressed()

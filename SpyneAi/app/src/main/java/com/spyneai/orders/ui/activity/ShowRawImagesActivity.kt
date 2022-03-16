@@ -60,7 +60,7 @@ class ShowRawImagesActivity : AppCompatActivity() {
 
         fetchImages()
 
-        viewModel.imagesOfSkuRes.observe(this, {
+        viewModel.imagesOfSkuRes.observe(this) {
             when (it) {
                 is Resource.Success -> {
                     shimmerRawImages.stopShimmer()
@@ -94,7 +94,7 @@ class ShowRawImagesActivity : AppCompatActivity() {
                     }
                 }
             }
-        })
+        }
 
 
     }

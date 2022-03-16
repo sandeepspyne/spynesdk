@@ -26,7 +26,7 @@ object AppConstants {
     val SPYNE_ENTERPRISE_ID: String = "TaD1VC1Ko"
     val FLIPKART_ENTERPRISE_ID: String = "EVV1XVY4R"
     val KARVI_ENTERPRISE_ID: String = "DaD1JC1Fp"
-    val BASE_URL: String = "https://www.clippr.ai/api/"
+    val BASE_URL: String = "https://stagingapi.spyne.xyz/api/"
     val STATUS_PROJECT_NAME: String = "STATUS_PROJECT_NAME"
     val SETTING_STATUS_GYRO: String = "STATUS_SETTING_GYRO"
     val SETTING_STATUS_GRID: String = "STATUS_SETTING_GRID"
@@ -227,8 +227,7 @@ object AppConstants {
     val FROM_VIDEO = "FROM_VIDEO"
 
     val VIDEO_PATH = "VIDEO_PATH"
-
-    val MINIMUM_VIDEO_DURATION = 2
+    val MINIMUM_VIDEO_DURATION = 5
     val DEFAULT_PRESIGNED_URL = "DEFAULT_PRESIGNED_URL"
 
     val UPLOAD_TRIGGERED = "UPLOAD_TRIGGERED"

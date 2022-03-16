@@ -56,16 +56,17 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
 
 
     private fun observeTotalFrameUpdate() {
-        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
-            when(it) {
+        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner) {
+            when (it) {
                 is Resource.Success -> {
-                    val properties = HashMap<String,Any?>()
+                    val properties = HashMap<String, Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku?.skuId!!
-                        this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+                        this["total_frames"] =
+                            viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
                     }
 
-                    requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED,properties)
+                    requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED, properties)
 
                     Utilities.hideProgressDialog()
                 }
@@ -73,20 +74,22 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
 
-                    val properties = HashMap<String,Any?>()
+                    val properties = HashMap<String, Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku?.skuId!!
-                        this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+                        this["total_frames"] =
+                            viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
                     }
 
                     requireContext().captureFailureEvent(
-                        Events.TOTAL_FRAMES_UPDATE_FAILED,properties,
-                        it.errorMessage!!)
+                        Events.TOTAL_FRAMES_UPDATE_FAILED, properties,
+                        it.errorMessage!!
+                    )
 
-                    handleApiError(it) { updateTotalFrames()}
+                    handleApiError(it) { updateTotalFrames() }
                 }
             }
-        })
+        }
     }
 
 

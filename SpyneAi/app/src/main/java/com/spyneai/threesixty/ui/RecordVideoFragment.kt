@@ -181,7 +181,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
             }
         }, 300)
 
-        viewModel.enableRecording.observe(viewLifecycleOwner, {
+        viewModel.enableRecording.observe(viewLifecycleOwner) {
             if (it) {
                 binding.btnRecordVideo.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -203,7 +203,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                     recordVideo()
                 }
             }
-        })
+        }
     }
 
     private fun setPermissions() {

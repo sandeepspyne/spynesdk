@@ -62,10 +62,13 @@ class ProcessActivity : AppCompatActivity() {
             else -> processViewModel.startTimer.value = true
         }
 
-        processViewModel.startTimer.observe(this,{
+        processViewModel.startTimer.observe(this) {
             if (it) {
                 val bundle = Bundle()
-                bundle.putString(AppConstants.CATEGORY_ID,intent.getStringExtra(AppConstants.CATEGORY_ID))
+                bundle.putString(
+                    AppConstants.CATEGORY_ID,
+                    intent.getStringExtra(AppConstants.CATEGORY_ID)
+                )
 
                 val fragment = ImageProcessingStartedFragment()
                 fragment.arguments = bundle
@@ -75,9 +78,9 @@ class ProcessActivity : AppCompatActivity() {
                     .add(R.id.flContainer, fragment)
                     .commit()
             }
-        })
+        }
 
-        processViewModel.addRegularShootSummaryFragment.observe(this,{
+        processViewModel.addRegularShootSummaryFragment.observe(this) {
             if (it) {
                 // add select background fragment
                 supportFragmentManager.beginTransaction()
@@ -87,7 +90,7 @@ class ProcessActivity : AppCompatActivity() {
 
                 processViewModel.addRegularShootSummaryFragment.value = false
             }
-        })
+        }
     }
 
 

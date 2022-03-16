@@ -24,6 +24,7 @@ import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import com.spyneai.startUploadingService
+import com.spyneai.startVideoUploadService
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.data.VideoUploadService
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +35,13 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.setProjectAndSkuData(
+                viewModel.videoDetails!!.projectUuid,
+                viewModel.videoDetails!!.skuUuid,
+            )
+        }
 
         Glide.with(requireContext()) // replace with 'this' if it's in activity
             .load(viewModel.videoDetails?.sample360)
@@ -69,12 +77,13 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
             uploadWithService()
         }
 
-        viewModel.isFramesUpdated.observe(viewLifecycleOwner,{
+        viewModel.isFramesUpdated.observe(viewLifecycleOwner) {
             if (it) {
                 binding.tvTotalCost.text = viewModel.videoDetails?.frames.toString() + " Credits"
-                binding.tvSelectedFrames.text = viewModel.videoDetails?.frames.toString() + " Frames"
+                binding.tvSelectedFrames.text =
+                    viewModel.videoDetails?.frames.toString() + " Frames"
             }
-        })
+        }
     }
 
     private fun uploadWithService(){
@@ -86,10 +95,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
             GlobalScope.launch(Dispatchers.Main) {
                 //start process sync service
 
-                requireContext().startUploadingService(
-                    ThreeSixtyShootSummaryFragment::class.java.simpleName,
-                    ServerSyncTypes.PROCESS
-                )
+                requireContext().startVideoUploadService()
 
                 //startService()
 
@@ -99,6 +105,8 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
                 viewModel.title.value = "Processing Started"
                 viewModel.processingStarted.value = true
             }
+        }
+
 
         }
 
@@ -139,7 +147,6 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 //                }
 //            }
 //        })
-    }
 
     private fun startService() {
         var action = Actions.START
