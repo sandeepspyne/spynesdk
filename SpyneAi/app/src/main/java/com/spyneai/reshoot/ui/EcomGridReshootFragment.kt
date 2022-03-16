@@ -45,7 +45,7 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
         }
 
         //observe new image clicked
-        viewModel.shootList.observe(viewLifecycleOwner, {
+        viewModel.shootList.observe(viewLifecycleOwner) {
             try {
                 if (viewModel.showConfirmReshootDialog.value == true && !it.isNullOrEmpty()) {
                     val element = viewModel.getCurrentShoot()
@@ -54,10 +54,10 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        })
+        }
 
         //observe new image clicked
-        viewModel.onImageConfirmed.observe(viewLifecycleOwner, {
+        viewModel.onImageConfirmed.observe(viewLifecycleOwner) {
             if (viewModel.shootList.value != null) {
                 var list = reshootAdapter?.listItems as List<Image>
 
@@ -106,9 +106,9 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
 
                 viewModel.allReshootClicked = list.all { it.imageClicked }
             }
-        })
+        }
 
-        viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
+        viewModel.onImageConfirmed.observe(viewLifecycleOwner) {
             if (viewModel.shootList.value != null) {
                 var list = reshootAdapter?.listItems as List<Image>
 
@@ -155,13 +155,13 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
                     }
                 }
 
-                val s =""
+                val s = ""
                 viewModel.allReshootClicked = list.all { it.imageClicked }
             }
-        })
+        }
 
-        viewModel.updateSelectItem.observe(viewLifecycleOwner,{ it ->
-            if (it){
+        viewModel.updateSelectItem.observe(viewLifecycleOwner) { it ->
+            if (it) {
                 val list = reshootAdapter?.listItems as List<Image>
 
                 val element = list.firstOrNull {
@@ -177,7 +177,7 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
                     binding.rvImages.scrollToPosition(viewModel.currentShoot)
                 }
             }
-        })
+        }
 
         viewModel.notifyItemChanged.observe(viewLifecycleOwner, {
             reshootAdapter?.notifyItemChanged(it)

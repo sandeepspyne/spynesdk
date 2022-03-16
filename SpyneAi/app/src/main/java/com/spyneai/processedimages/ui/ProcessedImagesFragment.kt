@@ -122,15 +122,15 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
 
     private fun observeSkuData() {
 
-        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner,{
-            when(it){
+        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner) {
+            when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
                     var dataList: List<Image> = it.value.data
 
                     val s = ""
-                    for (i in 0..(dataList.size) -1) {
+                    for (i in 0..(dataList.size) - 1) {
                         if (dataList!![i].image_category.equals("Exterior")) {
                             Category = dataList!![i].image_category
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
@@ -156,7 +156,10 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                             )
 
                             hideData(0)
-                        } else  if (dataList!![i].image_category.equals("Food") || dataList!![i].image_category.equals("Food & Beverages") || dataList!![i].image_category.equals("E-Commerce")) {
+                        } else if (dataList!![i].image_category.equals("Food") || dataList!![i].image_category.equals(
+                                "Food & Beverages"
+                            ) || dataList!![i].image_category.equals("E-Commerce")
+                        ) {
                             Category = dataList!![i].image_category
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
                             (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
@@ -182,9 +185,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
 
                             binding.tvYourEmailIdReplaced.text = "Images"
                             hideData(0)
-                        }
-
-                        else if (dataList!![i].image_category.equals("Interior")) {
+                        } else if (dataList!![i].image_category.equals("Interior")) {
                             Category = dataList!![i].image_category
                             (imageListInterior as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
@@ -228,7 +229,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                     }
 
                     //show 360 view
-                    if (intent.getBooleanExtra(AppConstants.IS_360,false))
+                    if (intent.getBooleanExtra(AppConstants.IS_360, false))
                         showThreeSixtyView()
 
                     showReplacedImagesAdapter.notifyDataSetChanged()
@@ -238,10 +239,10 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    handleApiError(it){fetchBulkUpload()}
+                    handleApiError(it) { fetchBulkUpload() }
                 }
             }
-        })
+        }
     }
 
     private fun hideData(i: Int) {

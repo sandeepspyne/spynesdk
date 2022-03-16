@@ -93,14 +93,14 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
 
     private fun observeSkuData() {
 
-        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner,{
-            when(it){
+        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner) {
+            when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
                     var dataList: List<Image> = it.value.data
 
-                    for (i in 0..(dataList.size) -1) {
+                    for (i in 0..(dataList.size) - 1) {
                         if (dataList!![i].image_category.equals("Exterior")) {
                             Category = dataList!![i].image_category
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
@@ -174,10 +174,10 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    handleApiError(it){fetchBulkUpload()}
+                    handleApiError(it) { fetchBulkUpload() }
                 }
             }
-        })
+        }
     }
 
 //    private fun hideData(i: Int) {

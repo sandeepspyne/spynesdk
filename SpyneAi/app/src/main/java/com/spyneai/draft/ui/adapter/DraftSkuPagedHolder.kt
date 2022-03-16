@@ -25,6 +25,9 @@ import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.threesixty.data.VideoLocalRepoV2
 import com.spyneai.threesixty.ui.ThreeSixtyActivity
 import com.spyneai.threesixty.ui.TrimActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class DraftSkuPagedHolder(
     val context: Context,
@@ -119,45 +122,53 @@ class DraftSkuPagedHolder(
             )
 
             if (item.categoryId == AppConstants.CARS_CATEGORY_ID && (item.categoryId == item.subcategoryId)) {
-                val videoPath = VideoLocalRepoV2(AppDatabase.getInstance(BaseApplication.getContext()).videoDao()).getVideoPath(item.uuid)
 
-                val intent = when{
-                    item.videoId != null -> {
-                        Intent(context, ShootActivity::class.java)
+                GlobalScope.launch(Dispatchers.IO) {
+                    val video = VideoLocalRepoV2(
+                        AppDatabase.getInstance(BaseApplication.getContext()).videoDao()
+                    ).getVideoByProjectUuid(item.projectUuid!!)
+
+                    val videoPath = video.videoPath
+
+                    val intent = when {
+                        item.videoId != null -> {
+                            Intent(context, ShootActivity::class.java)
+                        }
+                        videoPath != null && videoPath != "" -> {
+                            Intent(context, TrimActivity::class.java)
+                        }
+                        else -> {
+                            Intent(context, ThreeSixtyActivity::class.java)
+                        }
                     }
-                    videoPath != null && videoPath != "" -> {
-                        Intent(context, TrimActivity::class.java)
+
+                    intent.apply {
+                        putExtra(AppConstants.FROM_LOCAL_DB, true)
+                        putExtra(AppConstants.FROM_DRAFTS, true)
+                        putExtra(AppConstants.FROM_VIDEO, true)
+                        putExtra(AppConstants.PROJECT_ID, item.projectId)
+                        putExtra(AppConstants.PROJECT_UUIID, item.projectUuid)
+                        putExtra(AppConstants.CATEGORY_ID, item.categoryId)
+                        putExtra(AppConstants.SUB_CAT_ID, item.subcategoryId)
+                        putExtra(AppConstants.SUB_CAT_NAME, item.subcategoryName)
+                        putExtra(AppConstants.CATEGORY_NAME, item.categoryName)
+                        putExtra(AppConstants.SKU_NAME, item.skuName)
+                        putExtra(AppConstants.PROJECT_NAME, item.skuName)
+                        putExtra(AppConstants.VIDEO_UUID, video.uuid)
+                        // putExtra(AppConstants.SKU_COUNT, item.imagesCount)
+                        putExtra(AppConstants.SKU_CREATED, false)
+                        putExtra(AppConstants.SKU_ID, item.skuId)
+                        putExtra(AppConstants.SKU_UUID, item.uuid)
+                        putExtra(AppConstants.EXTERIOR_ANGLES, item.initialFrames)
+                        //putExtra("is_paid",item.paid)
+                        //putExtra(AppConstants.IMAGE_TYPE,item.category)
+                        putExtra(AppConstants.IS_360, item.isThreeSixty)
+                        putExtra(AppConstants.VIDEO_PATH, videoPath)
                     }
-                    else -> {
-                        Intent(context, ThreeSixtyActivity::class.java)
-                    }
+
+                    context.startActivity(intent)
                 }
-
-                intent.apply {
-                    putExtra(AppConstants.FROM_LOCAL_DB, true)
-                    putExtra(AppConstants.FROM_DRAFTS, true)
-                    putExtra(AppConstants.FROM_VIDEO, true)
-                    putExtra(AppConstants.PROJECT_ID, item.projectId)
-                    putExtra(AppConstants.PROJECT_UUIID, item.projectUuid)
-                    putExtra(AppConstants.CATEGORY_ID, item.categoryId)
-                    putExtra(AppConstants.SUB_CAT_ID,item.subcategoryId)
-                    putExtra(AppConstants.SUB_CAT_NAME,item.subcategoryName)
-                    putExtra(AppConstants.CATEGORY_NAME, item.categoryName)
-                    putExtra(AppConstants.SKU_NAME, item.skuName)
-                    putExtra(AppConstants.PROJECT_NAME, item.skuName)
-                   // putExtra(AppConstants.SKU_COUNT, item.imagesCount)
-                    putExtra(AppConstants.SKU_CREATED, false)
-                    putExtra(AppConstants.SKU_ID, item.skuId)
-                    putExtra(AppConstants.SKU_UUID, item.uuid)
-                    putExtra(AppConstants.EXTERIOR_ANGLES, item.initialFrames)
-                    //putExtra("is_paid",item.paid)
-                    //putExtra(AppConstants.IMAGE_TYPE,item.category)
-                    putExtra(AppConstants.IS_360,item.isThreeSixty)
-                    putExtra(AppConstants.VIDEO_PATH,videoPath)
-                }
-
-                context.startActivity(intent)
-            }else {
+                }else {
                 val intent = if (item.imagesCount > 0) {
                     Intent(
                         context,

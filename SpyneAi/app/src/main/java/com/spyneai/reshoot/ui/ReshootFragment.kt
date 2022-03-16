@@ -56,18 +56,18 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         getOverlayIds()
         observerOverlayIds()
 
-        viewModel.showOverlay.observe(viewLifecycleOwner, {
+        viewModel.showOverlay.observe(viewLifecycleOwner) {
             if (it) {
-                binding.imgOverlay?.visibility= View.VISIBLE
-            }else binding.imgOverlay?.visibility = View.INVISIBLE
-        })
+                binding.imgOverlay?.visibility = View.VISIBLE
+            } else binding.imgOverlay?.visibility = View.INVISIBLE
+        }
 
         binding.apply {
             tvSkuName.text = viewModel.sku?.skuName
 
         }
         //observe new image clicked
-        viewModel.shootList.observe(viewLifecycleOwner, {
+        viewModel.shootList.observe(viewLifecycleOwner) {
             try {
                 if (viewModel.showConfirmReshootDialog.value == true && !it.isNullOrEmpty()) {
                     val element = viewModel.getCurrentShoot()
@@ -77,16 +77,16 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 Log.d(TAG, "onViewCreated: " + e.localizedMessage)
                 e.printStackTrace()
             }
-        })
+        }
 
-        viewModel.onImageConfirmed.observe(viewLifecycleOwner, {
+        viewModel.onImageConfirmed.observe(viewLifecycleOwner) {
             if (viewModel.shootList.value != null) {
 
 
                 when (viewModel.categoryDetails.value?.categoryId) {
                     AppConstants.ECOM_CATEGORY_ID,
                     AppConstants.PHOTO_BOX_CATEGORY_ID,
-                    AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
+                    AppConstants.FOOD_AND_BEV_CATEGORY_ID -> {
                         var list = reshootAdapter?.listItems as List<Image>
 
                         val position = viewModel.currentShoot
@@ -186,11 +186,11 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     }
                 }
             }
-        })
+        }
 
-        viewModel.updateSelectItem.observe(viewLifecycleOwner,{
-            if (it){
-                when(viewModel.categoryDetails.value?.imageType){
+        viewModel.updateSelectItem.observe(viewLifecycleOwner) {
+            if (it) {
+                when (viewModel.categoryDetails.value?.imageType) {
                     "Exterior" -> {
                         val list = reshootAdapter?.listItems as List<OverlaysResponse.Overlays>
 
@@ -202,7 +202,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
                         viewModel.overlayId = data.id
 
-                        if (element != null && data != element){
+                        if (element != null && data != element) {
                             data.isSelected = true
                             element.isSelected = false
                             reshootAdapter?.notifyItemChanged(viewModel.currentShoot)
@@ -221,7 +221,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                         val data = list[viewModel.currentShoot]
                         viewModel.overlayId = data.overlayId
 
-                        if (element != null && data != element){
+                        if (element != null && data != element) {
                             data.isSelected = true
                             element.isSelected = false
                             reshootAdapter?.notifyItemChanged(viewModel.currentShoot)
@@ -231,7 +231,8 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     }
 
                     "Focus Shoot" -> {
-                        val list = reshootAdapter?.listItems as List<NewSubCatResponse.Miscellaneous>
+                        val list =
+                            reshootAdapter?.listItems as List<NewSubCatResponse.Miscellaneous>
 
                         val element = list.firstOrNull {
                             it.isSelected
@@ -240,7 +241,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                         val data = list[viewModel.currentShoot]
                         viewModel.overlayId = data.overlayId
 
-                        if (element != null && data != element){
+                        if (element != null && data != element) {
                             data.isSelected = true
                             element.isSelected = false
                             reshootAdapter?.notifyItemChanged(viewModel.currentShoot)
@@ -251,17 +252,17 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 }
 
             }
-        })
+        }
 
         viewModel.isCameraButtonClickable = true
 
-        viewModel.notifyItemChanged.observe(viewLifecycleOwner,{
+        viewModel.notifyItemChanged.observe(viewLifecycleOwner) {
             reshootAdapter?.notifyItemChanged(it)
-        })
+        }
 
-        viewModel.scrollView.observe(viewLifecycleOwner,{
+        viewModel.scrollView.observe(viewLifecycleOwner) {
             binding.rvImages.scrollToPosition(it)
-        })
+        }
 
     }
 
@@ -278,7 +279,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
     }
 
     private fun observerOverlayIds() {
-        viewModel.reshootOverlaysRes.observe(viewLifecycleOwner, { it ->
+        viewModel.reshootOverlaysRes.observe(viewLifecycleOwner) { it ->
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
@@ -287,7 +288,8 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
                     list.forEach {
                         it.imageName = SelectedImagesHelper.selectedOverlayIds[it.id]!!.imageName
-                        it.sequenceNumber = SelectedImagesHelper.selectedOverlayIds[it.id]!!.sequenceNumber
+                        it.sequenceNumber =
+                            SelectedImagesHelper.selectedOverlayIds[it.id]!!.sequenceNumber
                     }
 
                     if (viewModel.shootList.value != null) {
@@ -337,7 +339,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     handleApiError(it) { getOverlayIds() }
                 }
             }
-        })
+        }
     }
 
     private fun showImageConfirmDialog(shootData: ShootData) {

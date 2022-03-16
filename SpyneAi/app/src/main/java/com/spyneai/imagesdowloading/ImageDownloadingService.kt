@@ -257,7 +257,7 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
     }
 
     override fun onRefresh(filePath: String) {
-        Log.d(TAG, "onRefresh: " + filePath)
+        Log.d(TAG, "onRefresh: $filePath")
         val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
         var file = File(filePath)
         val contentUri: Uri = Uri.fromFile(file)

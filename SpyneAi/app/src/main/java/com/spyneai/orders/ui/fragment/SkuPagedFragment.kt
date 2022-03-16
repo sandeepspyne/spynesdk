@@ -70,9 +70,9 @@ class SkuPagedFragment : BaseFragment<DraftViewModel, FragmentSkuPagedBinding>()
 
         fetchSkus()
 
-        viewModel.syncImages.observe(viewLifecycleOwner,{
+        viewModel.syncImages.observe(viewLifecycleOwner) {
             fetchSkus()
-        })
+        }
 
         adapter.addLoadStateListener{ loadState ->
             when{

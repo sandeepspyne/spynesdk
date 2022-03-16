@@ -63,13 +63,13 @@ class ReshootPortraitActivity : AppCompatActivity() {
 
 
 
-        shootViewModel.reshootCompleted.observe(this, {
+        shootViewModel.reshootCompleted.observe(this) {
             Intent(this, ReshootDoneActivity::class.java)
                 .apply {
                     putExtra(AppConstants.CATEGORY_ID, categoryDetails.categoryId)
                     startActivity(this)
                 }
-        })
+        }
     }
 
     private fun setShoot() {

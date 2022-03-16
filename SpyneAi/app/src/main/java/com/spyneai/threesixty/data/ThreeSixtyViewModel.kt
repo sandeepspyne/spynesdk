@@ -212,7 +212,9 @@ class ThreeSixtyViewModel : ViewModel() {
 
     fun setVideoDatils(uuid: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            videoDetails = videoRepository.getVideo(uuid)
+          videoDetails = videoRepository.getVideo(uuid)
+
+            val s = ""
         }
     }
 }

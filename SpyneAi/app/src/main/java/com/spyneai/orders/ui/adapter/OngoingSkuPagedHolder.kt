@@ -13,9 +13,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.BaseApplication
 import com.spyneai.R
-import com.spyneai.base.room.AppDatabase
-import com.spyneai.draft.ui.DraftSkuDetailsActivity
-import com.spyneai.draft.ui.adapter.DraftSkuPagedHolder
 import com.spyneai.getFormattedDate
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants

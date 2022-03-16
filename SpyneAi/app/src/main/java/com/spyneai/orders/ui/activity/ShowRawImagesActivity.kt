@@ -6,6 +6,7 @@ import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -23,7 +24,6 @@ import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.adapter.RawImagesAdapter
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.repository.model.image.Image
-import kotlinx.android.synthetic.main.activity_completed_skus.*
 import kotlinx.coroutines.launch
 
 class ShowRawImagesActivity : AppCompatActivity() {
@@ -88,9 +88,12 @@ class ShowRawImagesActivity : AppCompatActivity() {
                     gridView.visibility = View.VISIBLE
 
                     if (it.errorCode == 404) {
-                        rvSkus.visibility = View.GONE
-                    } else {
-                        handleApiError(it) { fetchImages() }
+                        gridView?.isVisible = false
+                        tvTotalImages.text="0"
+                   } else {
+                        handleApiError(it) {
+                            fetchImages()
+                        }
                     }
                 }
             }

@@ -36,8 +36,12 @@ interface VideoDao {
     @Query("select videoPath from videodetails where uuid= :id")
     fun getVideoPath(id: String) : String
 
+    @Query("select * from videodetails where projectUuid= :id")
+    fun getVideoByProjectUuid(id: String) : VideoDetails
+
     @Query("select videoId from videodetails where uuid= :id")
     fun getVideoId(id: String) : String
+
 
     @Query("select Count(*) from videodetails where isUploaded = :isUploaded and isMarkedDone = :isMarkedDone")
     fun totalRemainingUpload(isUploaded: Boolean = false,isMarkedDone : Boolean = false) : Int

@@ -87,7 +87,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             )
         }
 
-        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner, {
+        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
                     if (it.value.fromLocal && requireActivity().intent.getIntExtra(
@@ -117,7 +117,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     }
                 }
             }
-        })
+        }
     }
 
     private fun setData(list: ArrayList<Image>) {
@@ -382,7 +382,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
     }
 
     private fun observeMisc(intent: Intent) {
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
+        viewModel.subCategoriesResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
@@ -427,7 +427,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     handleApiError(it) { checkMiscSize(intent) }
                 }
             }
-        })
+        }
     }
 
     private fun startProcessActivty(intent: Intent, count: Int) {
@@ -525,7 +525,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
     }
 
     private fun observeSkuDeatils() {
-        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner, {
+        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
                     binding.shimmerCompletedSKU.stopShimmer()
@@ -628,7 +628,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
                 }
             }
-        })
+        }
     }
 
     override fun getViewModel() = DraftViewModel::class.java

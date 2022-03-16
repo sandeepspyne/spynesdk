@@ -48,11 +48,11 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.showOverlay.observe(viewLifecycleOwner, {
+        viewModel.showOverlay.observe(viewLifecycleOwner) {
             if (it) {
                 binding.imgOverlay.visibility = View.VISIBLE
-            }else binding.imgOverlay.visibility = View.INVISIBLE
-        })
+            } else binding.imgOverlay.visibility = View.INVISIBLE
+        }
 
         getOverlayIds()
         observerOverlayIds()
@@ -67,7 +67,7 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
             requireActivity().onBackPressed()
         }
         //observe new image clicked
-        viewModel.shootList.observe(viewLifecycleOwner, {
+        viewModel.shootList.observe(viewLifecycleOwner) {
             try {
                 if (viewModel.showConfirmReshootDialog.value == true && !it.isNullOrEmpty()) {
                     val element = viewModel.getCurrentShoot()
@@ -76,9 +76,9 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        })
+        }
 
-        viewModel.onImageConfirmed.observe(viewLifecycleOwner, {
+        viewModel.onImageConfirmed.observe(viewLifecycleOwner) {
             if (viewModel.shootList.value != null) {
                 var list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
 
@@ -127,10 +127,10 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
 
                 viewModel.allReshootClicked = list.all { it.imageClicked }
             }
-        })
+        }
 
-        viewModel.updateSelectItem.observe(viewLifecycleOwner,{ it ->
-            if (it){
+        viewModel.updateSelectItem.observe(viewLifecycleOwner) { it ->
+            if (it) {
                 val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
 
                 val element = list.firstOrNull {
@@ -146,15 +146,15 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
                     binding.rvImages.scrollToPosition(viewModel.currentShoot)
                 }
             }
-        })
+        }
 
         viewModel.notifyItemChanged.observe(viewLifecycleOwner, {
             reshootAdapter?.notifyItemChanged(it)
         })
 
-        viewModel.scrollView.observe(viewLifecycleOwner, {
+        viewModel.scrollView.observe(viewLifecycleOwner) {
             binding.rvImages.scrollToPosition(it)
-        })
+        }
         viewModel.isCameraButtonClickable = true
     }
 
@@ -170,7 +170,7 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
     }
 
     private fun observerOverlayIds() {
-        viewModel.reshootOverlaysRes.observe(viewLifecycleOwner, {
+        viewModel.reshootOverlaysRes.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
@@ -179,7 +179,8 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
 
                     list.forEach {
                         it.imageName = SelectedImagesHelper.selectedOverlayIds[it.id]?.imageName!!
-                        it.sequenceNumber = SelectedImagesHelper.selectedOverlayIds[it.id]?.sequenceNumber!!
+                        it.sequenceNumber =
+                            SelectedImagesHelper.selectedOverlayIds[it.id]?.sequenceNumber!!
                     }
 
                     if (viewModel.shootList.value != null) {
@@ -224,12 +225,13 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
                     }
 
                     //show leveler
-                    when(viewModel.categoryDetails.value?.categoryId){
-                        AppConstants.FOOTWEAR_CATEGORY_ID ->{
+                    when (viewModel.categoryDetails.value?.categoryId) {
+                        AppConstants.FOOTWEAR_CATEGORY_ID -> {
 //                            viewModel.showLeveler.value = true
                             viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
                             viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-                            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                            viewModel.showOverlay.value =
+                                viewModel.getCameraSetting().isOverlayActive
                         }
                     }
                 }
@@ -239,7 +241,7 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
                     handleApiError(it) { getOverlayIds() }
                 }
             }
-        })
+        }
     }
 
     private fun showImageConfirmDialog(shootData: ShootData) {

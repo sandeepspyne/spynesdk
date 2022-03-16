@@ -71,7 +71,8 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                 uuid = it.projectUuid,
                 categoryId = it.categoryId,
                 categoryName = it.categoryName,
-                projectName = projectName
+                projectName = projectName,
+                imagesCount = it.frames
             )
 
             viewModel.project = project
@@ -98,7 +99,9 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                     totalFrames = it.frames,
                     isSelectAble = true,
                     imagePresent = 0,
-                    videoPresent = 1
+                    videoPresent = 1,
+                    imagesCount = it.frames
+
                 )
 
                 viewModel.sku = sku

@@ -72,7 +72,7 @@ public class ShowReplacedImagesFocusedAdapter(
 
     fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
         itemView.setOnClickListener {
-            event.invoke(getAdapterPosition(), getItemViewType())
+            event.invoke(adapterPosition, itemViewType)
         }
         return this
     }

@@ -33,11 +33,11 @@ class ProcessedImageActivity : AppCompatActivity() {
 
         processViewModel.categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
 
-        processViewModel.reshoot.observe(this,{
+        processViewModel.reshoot.observe(this) {
             supportFragmentManager
                 .beginTransaction()
-                .add(binding.flContainer.id,SelectImagesFragment())
+                .add(binding.flContainer.id, SelectImagesFragment())
                 .commit()
-        })
+        }
     }
 }

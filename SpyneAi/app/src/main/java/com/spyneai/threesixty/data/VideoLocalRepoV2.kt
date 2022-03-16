@@ -20,6 +20,9 @@ class VideoLocalRepoV2(val videoDao: VideoDao) {
 
     fun getVideoPath(uuid: String) = videoDao.getVideoPath(uuid)
 
+    fun getVideoByProjectUuid(uuid: String) = videoDao.getVideoByProjectUuid(uuid)
+
+
     fun getVideoId(uuid: String) = videoDao.getVideoId(uuid)
 
     fun totalRemainingUpload() = videoDao.totalRemainingUpload()
