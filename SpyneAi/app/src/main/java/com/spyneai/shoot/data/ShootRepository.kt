@@ -74,18 +74,6 @@ class ShootRepository : BaseRepository() {
         clipperApi.markUploaded(imageId)
     }
 
-    suspend fun uploadImageWithAngle(
-        project_id: RequestBody,
-        sku_id: RequestBody,
-        image_category: RequestBody,
-        auth_key: RequestBody,
-        upload_type: RequestBody,
-        sequenceNo : Int,
-        angle : Int,
-        image: MultipartBody.Part,
-    ) = safeApiCall {
-        clipperApi.uploadImageWithAngle(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo, angle, image)
-    }
 
     suspend fun createProject(authKey: String,
                               projectName : String,

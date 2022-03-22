@@ -49,6 +49,17 @@ class MainDashboardActivity : BaseActivity() {
         setContentView(view)
         setLocale()
 
+        //send data to server
+        if (!Utilities.getBool(this,AppConstants.IS_SKU_DATA_SENT,false)){
+            //send files data
+
+            BaseApplication.getContext().captureEvent(
+                Events.SKU_DATA_NOT_SENT,
+                HashMap<String,Any?>())
+
+            SendFilesData().start()
+        }
+
         if (intent.getBooleanExtra("show_ongoing", false)) {
             val intent = Intent(this, MyOrdersActivity::class.java)
             intent.putExtra("TAB_ID", 1)

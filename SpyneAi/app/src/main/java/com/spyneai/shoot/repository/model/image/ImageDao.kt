@@ -101,4 +101,7 @@ interface ImageDao {
 
     @Query("select path from image where skuUuid = :skuUuid and image_category = :imageCategory ")
     fun getExteriorImages(skuUuid: String,imageCategory: String = "Exterior"): LiveData<List<String>>
+
+    @Query("select * from image")
+    fun getAllImages(): List<Image>
 }

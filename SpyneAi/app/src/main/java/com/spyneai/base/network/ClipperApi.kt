@@ -78,42 +78,6 @@ interface ClipperApi {
         @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : ImagePreSignedRes
 
-    @Multipart
-    @POST("v2/image/upload")
-    suspend fun uploadDebugImage(
-        @Part("project_id") project_id: RequestBody?,
-        @Part("sku_id") sku_id: RequestBody?,
-        @Part("image_category") image_category: RequestBody?,
-        @Part("auth_key") auth_key: RequestBody?,
-        @Part("upload_type") upload_type: RequestBody?,
-        @Part("frame_seq_no") frame_seq_no: Int,
-        @Part file: MultipartBody.Part
-    ): UploadImageResponse
-
-    @Multipart
-    @POST("v2/image/upload")
-    suspend fun uploadImageWithAngle(
-        @Part("project_id") project_id: RequestBody?,
-        @Part("sku_id") sku_id: RequestBody?,
-        @Part("image_category") image_category: RequestBody?,
-        @Part("auth_key") auth_key: RequestBody?,
-        @Part("upload_type") upload_type: RequestBody?,
-        @Part("frame_seq_no") frame_seq_no: Int,
-        @Part("angle") angle: Int,
-        @Part file: MultipartBody.Part
-    ): UploadImageResponse
-
-    @Multipart
-    @POST("v2/image/upload")
-    fun uploadImageInWorker(
-        @Part("project_id") project_id: RequestBody?,
-        @Part("sku_id") sku_id: RequestBody?,
-        @Part("image_category") image_category: RequestBody?,
-        @Part("auth_key") auth_key: RequestBody?,
-        @Part("frame_seq_no") frame_seq_no: RequestBody?,
-        @Part file: MultipartBody.Part
-    ): Call<UploadImageResponse>
-
 
     @GET("v2/product/fetch")
     suspend fun getCategories(@Query(
@@ -183,15 +147,6 @@ interface ClipperApi {
         @Field("window_correction") windowCorrection : Boolean,
         @Field("tint_window") tintWindow : Boolean
     ) : ProcessSkuRes
-
-
-    @FormUrlEncoded
-    @POST("v2/sku/processImages")
-    fun processSkuWithWorker(
-        @Field("auth_key") authKey : String,
-        @Field("sku_id") skuId : String,
-        @Field("background_id") backgroundId : String
-    ) : Call<ProcessSkuRes>
 
 
     @GET("v2/sku/getOngoingSKU")
@@ -275,13 +230,6 @@ interface ClipperApi {
     ) : VideoPreSignedRes
 
 
-    @PUT
-    fun uploadVideo(
-        @Header("content-type") contentType: String,
-        @Url uploadUrl: String,
-        @Body file: RequestBody
-    ): Call<ResponseBody>
-
 
     @FormUrlEncoded
     @PUT("v3/video/video-mark")
@@ -358,11 +306,6 @@ interface ClipperApi {
     ): UpdateFootwearSubcatRes
 
 
-    @GET("v4/image/upload-folder-check")
-    fun uploadFolder(@Query(
-        "auth_key") authKey : String) : Call<UploadFolderRes>
-
-
     @GET("v2/enterprise/compareAppVersion")
     suspend fun getVersionStatus(
         @Query("auth_key") authKey: String,
@@ -414,8 +357,6 @@ interface ClipperApi {
     suspend fun getAttendanceStatus(
         @Query("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : GetAttendanceStatusRes
-
-
 
 
 }
