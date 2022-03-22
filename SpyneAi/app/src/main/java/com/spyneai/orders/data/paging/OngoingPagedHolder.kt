@@ -13,6 +13,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.getFormattedDate
+import com.spyneai.getTimeStamp
 import com.spyneai.needs.AppConstants
 import com.spyneai.orders.ui.activity.SkuPagedActivity
 import com.spyneai.shoot.repository.model.project.Project
@@ -113,7 +114,12 @@ class OngoingPagedHolder(
         tvImageCount.text = item.processedCount.toString() + "/" + item.imagesCount.toString()
 
         tvProjectName.text = item.projectName
-        tvDate.text = getFormattedDate(item.createdAt)
+        if(item.processedCount.equals(0)){
+            tvDate.text = getFormattedDate(item.createdOn.toLong())
+        }else{
+            tvDate.text = getFormattedDate(getTimeStamp(item.createdOn))
+        }
+//        tvDate.text = getFormattedDate(getTimeStamp(item.createdOn))
         //need thumbnal
         try {
             if (item.thumbnail == null) {

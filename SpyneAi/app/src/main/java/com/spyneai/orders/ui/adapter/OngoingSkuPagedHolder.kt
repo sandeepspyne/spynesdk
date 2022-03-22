@@ -11,7 +11,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.getFormattedDate
 import com.spyneai.loadSmartly
@@ -19,11 +18,6 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.activity.ShowRawImagesActivity
 import com.spyneai.shoot.repository.model.sku.Sku
-import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.base.ShootPortraitActivity
-import com.spyneai.threesixty.data.VideoLocalRepoV2
-import com.spyneai.threesixty.ui.ThreeSixtyActivity
-import com.spyneai.threesixty.ui.TrimActivity
 
 class OngoingSkuPagedHolder(
     val context: Context,
