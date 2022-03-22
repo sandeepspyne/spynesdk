@@ -48,18 +48,9 @@ class ThreeSixtyRepository : BaseRepository() {
     }
 
     suspend fun getVideoPreSignedUrl(
-        preSignedVideoBody : PreSignedVideoBody
+        map: MutableMap<String, Any>
     )= safeApiCall {
-        clipperApi.getVideoPreSignedUrl(
-            preSignedVideoBody.authKey,
-            preSignedVideoBody.projectId,
-            preSignedVideoBody.skuId,
-            preSignedVideoBody.category,
-            preSignedVideoBody.categoryId,
-            preSignedVideoBody.totalFrames,
-            preSignedVideoBody.videoName,
-            preSignedVideoBody.backgroundId
-        )
+        clipperApi.getVideoPreSignedUrl(map)
     }
 
 //    suspend fun uploadVideo(

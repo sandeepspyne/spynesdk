@@ -260,17 +260,14 @@ class VideoUploader(val context: Context,
     private suspend fun getPresigned(video: VideoDetails): Boolean {
         //upload video
         val response = threeSixtyRepository.getVideoPreSignedUrl(
-            PreSignedVideoBody(
-                Utilities.getPreference(context,AppConstants.AUTH_KEY).toString(),
-                video.projectId!!,
-                video.skuId!!,
-                video.categoryName,
-                AppConstants.CARS_CATEGORY_ID,
-                AppConstants.CARS_CATEGORY_ID,
-                video.frames,
-                File(video.videoPath).name,
-                video.backgroundId.toString()
-            )
+            video.processDataMap?.apply {
+                put("project_id", sku.projectId.toString())
+                put("sku_id", sku.skuId.toString())
+                put("prod_sub_cat_id", sku.subcategoryId.toString())
+                put("background_id", sku.backgroundId.toString())
+                put("auth_key", Utilities.getPreference(context, AppConstants.AUTH_KEY).toString())
+            }!!
+        )
         )
 
         captureEvent(

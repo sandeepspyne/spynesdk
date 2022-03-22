@@ -264,14 +264,7 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v3/video/video-upload")
     suspend fun getVideoPreSignedUrl(
-        @Field("auth_key") authKey : String,
-        @Field("project_id") projectId:String,
-        @Field("sku_id") skuId : String,
-        @Field("category") category : String,
-        @Field("sub_category") sub_category : String,
-        @Field("total_frames_no") totalFrames: Int,
-        @Field("video_name") videoName : String,
-        @Field("background_id") backgroundId : String? = null
+        @FieldMap map: MutableMap<String, Any>
     ) : VideoPreSignedRes
 
 
