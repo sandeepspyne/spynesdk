@@ -48,7 +48,7 @@ class ThreeSixtyRepository : BaseRepository() {
     }
 
     suspend fun getVideoPreSignedUrl(
-        map: MutableMap<String, Any>
+        map: HashMap<String, Any>
     )= safeApiCall {
         clipperApi.getVideoPreSignedUrl(map)
     }

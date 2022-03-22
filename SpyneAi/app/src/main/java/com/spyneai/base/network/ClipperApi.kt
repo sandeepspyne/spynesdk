@@ -264,7 +264,7 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v3/video/video-upload")
     suspend fun getVideoPreSignedUrl(
-        @FieldMap map: MutableMap<String, Any>
+        @FieldMap map: HashMap<String, Any>
     ) : VideoPreSignedRes
 
 
