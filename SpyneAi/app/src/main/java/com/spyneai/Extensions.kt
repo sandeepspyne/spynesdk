@@ -54,6 +54,7 @@ import androidx.core.content.ContextCompat
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.spyneai.base.network.Resource
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.ui.handleApiError
@@ -457,22 +458,47 @@ fun Context.checkPendingDataSync() {
         val imageDao = db.imageDao()
         val videoDao = db.videoDao()
 
-        if (ImagesRepoV2(imageDao).getOldestImage() != null
-        ) {
+        val properties = HashMap<String,Any?>()
+        properties["email"] = Utilities.getPreference(this@checkPendingDataSync,AppConstants.USER_EMAIL).toString()
 
+        val image = ImagesRepoV2(imageDao).getOldestImage()
+
+        captureEvent(
+            Events.OLDEST_IMAGE,
+            properties.apply {
+                put("data",Gson().toJson(image))
+            }
+        )
+
+        if (image != null
+        ) {
             startUploadingService(
                 MainDashboardActivity::class.java.simpleName,
                 ServerSyncTypes.UPLOAD
             )
         }
 
-        if (VideoLocalRepoV2(videoDao).getOldestVideo() != null
-        ) {
+        val video = VideoLocalRepoV2(videoDao).getOldestVideo()
 
+        captureEvent(
+            Events.OLDEST_VIDEO,
+            properties.apply {
+                put("data",Gson().toJson(video))
+            }
+        )
+
+        if (video != null) {
             startVideoUploadService()
         }
 
         val pendingProjects = db.projectDao().getPendingProjects()
+
+        captureEvent(
+            Events.CREATE_PROJECT_PENDING,
+            properties.apply {
+                put("project_pending",pendingProjects)
+            }
+        )
 
         if (pendingProjects > 0){
             startUploadingService(
@@ -482,6 +508,13 @@ fun Context.checkPendingDataSync() {
         }
 
         val pendingSkus = db.skuDao().getPendingSku()
+
+        captureEvent(
+            Events.PROCESS_SKU_PENDING,
+            properties.apply {
+                put("sku_pending",pendingSkus)
+            }
+        )
 
         if (pendingSkus > 0){
             startUploadingService(

@@ -133,6 +133,7 @@ class ProcessSkuSync(
                             put("db_count",skip)
                         }
                     )
+                    retryCount = 0
                     continue
                 }
 
