@@ -155,6 +155,7 @@
         <entry key="app/src/main/res/layout/fragment_signup.xml" value="0.25092592592592594" />
         <entry key="app/src/main/res/layout/fragment_sku_detail.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_sku_paged.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_trim_video.xml" value="0.24" />
         <entry key="app/src/main/res/layout/fragment_video_processing_started.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/gyro_view.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />

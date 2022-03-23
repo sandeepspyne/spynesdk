@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.getFormattedDate
+import com.spyneai.getTimeStamp
 import com.spyneai.needs.AppConstants
 import com.spyneai.orders.ui.activity.SkuPagedActivity
 import com.spyneai.shoot.repository.model.project.Project
-import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 
 @ExperimentalPagingApi
 class CompletedPagedHolder(
@@ -97,7 +97,7 @@ class CompletedPagedHolder(
             e.printStackTrace()
         }
 
-        tvDate.text = getFormattedDate(item.createdAt)
+        tvDate.text = getFormattedDate(getTimeStamp(item.createdOn))
         tvProjectName.text = item.projectName
         cvMain.setOnClickListener {
 

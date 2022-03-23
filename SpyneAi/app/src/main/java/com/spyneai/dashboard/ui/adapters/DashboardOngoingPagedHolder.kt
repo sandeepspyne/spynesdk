@@ -5,21 +5,16 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.getFormattedDate
-import com.spyneai.orders.data.paging.OngoingPagedHolder
 import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.shoot.repository.model.project.Project
-import com.spyneai.toDate
 
 class DashboardOngoingPagedHolder(
     val context: Context,

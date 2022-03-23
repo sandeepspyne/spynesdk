@@ -15,11 +15,8 @@ import com.spyneai.R
 import com.spyneai.getFormattedDate
 import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.activity.SkuPagedActivity
 import com.spyneai.shoot.repository.model.project.Project
-import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.base.ShootPortraitActivity
 
 class DraftPagedHolder(
     val view: View,

@@ -68,7 +68,13 @@ class ShowRawImagesActivity : AppCompatActivity() {
                     gridView.visibility = View.VISIBLE
 
                     if (it.value.data != null) {
-                        val images = it.value.data.map { it.path }
+                        val images = it.value.data.map {
+                            if (it.image_category=="360_exterior") {
+                                it.input_image_hres_url
+                            }else{
+                                it.path
+                            }
+                        }
 
 
                         skuName.text = intent.getStringExtra(AppConstants.SKU_NAME)

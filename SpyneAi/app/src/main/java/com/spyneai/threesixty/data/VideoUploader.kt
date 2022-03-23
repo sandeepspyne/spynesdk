@@ -258,69 +258,79 @@ class VideoUploader(val context: Context,
     }
 
     private suspend fun getPresigned(video: VideoDetails): Boolean {
+        val properties = HashMap<String, Any>()
         //upload video
         val response = threeSixtyRepository.getVideoPreSignedUrl(
-            PreSignedVideoBody(
-                Utilities.getPreference(context,AppConstants.AUTH_KEY).toString(),
-                video.projectId!!,
-                video.skuId!!,
-                video.categoryName,
-                AppConstants.CARS_CATEGORY_ID,
-                AppConstants.CARS_CATEGORY_ID,
-                video.frames,
-                File(video.videoPath).name,
-                video.backgroundId.toString()
-            )
+                  properties.apply {
+                      if (video.backgroundId != null) {
+                          put("auth_key", Utilities.getPreference(context, AppConstants.AUTH_KEY).toString())
+                          put("project_id", video.projectId!!)
+                          put("sku_id", video.skuId!!)
+                          put("category", video.categoryName)
+                          put("sub_category", AppConstants.CARS_CATEGORY_ID)
+                          put("total_frames_no", video.frames)
+                          put("video_name", File(video.videoPath).name)
+                          put("background_id", video.backgroundId.toString())
+                      } else {
+                          put("auth_key", Utilities.getPreference(context, AppConstants.AUTH_KEY).toString())
+                          put("project_id", video.projectId!!)
+                          put("sku_id", video.skuId!!)
+                          put("category", video.categoryName)
+                          put("sub_category", AppConstants.CARS_CATEGORY_ID)
+                          put("total_frames_no", video.frames)
+                          put("video_name", File(video.videoPath).name)
+                      }
+                  }
         )
 
-        captureEvent(
-            Events.GET_VIDEO_PRESIGNED_CALL_INITIATED, video, true, null,
-            retryCount = retryCount
-        )
+                    captureEvent(
+                        Events.GET_VIDEO_PRESIGNED_CALL_INITIATED, video, true, null,
+                        retryCount = retryCount
+                    )
 
-        when (response) {
-            is Resource.Failure -> {
-                captureEvent(
-                    Events.GET_VIDEO_PRESIGNED_FAILED,
-                    video,
-                    false,
-                    getErrorMessage(response),
-                    response = Gson().toJson(response).toString(),
-                    retryCount = retryCount,
-                    throwable = response.throwable
-                )
+                    when (response) {
+                        is Resource.Failure -> {
+                            captureEvent(
+                                Events.GET_VIDEO_PRESIGNED_FAILED,
+                                video,
+                                false,
+                                getErrorMessage(response),
+                                response = Gson().toJson(response).toString(),
+                                retryCount = retryCount,
+                                throwable = response.throwable
+                            )
 
-                retryCount++
-                return false
-            }
-        }
+                            retryCount++
+                            return false
+                        }
+                    }
 
-        val imagePreSignedRes = (response as Resource.Success).value
+                    val imagePreSignedRes = (response as Resource.Success).value
 
-        video.preSignedUrl = imagePreSignedRes.data.presignedUrl
-        video.videoId = imagePreSignedRes.data.videoId
+                    video.preSignedUrl = imagePreSignedRes.data.presignedUrl
+                    video.videoId = imagePreSignedRes.data.videoId
 
-        captureEvent(
-            Events.GOT_VIDEO_PRESIGNED_VIDEO_URL, video,
-            true,
-            null,
-            response = Gson().toJson(response.value).toString(),
-            retryCount = retryCount
-        )
+                    captureEvent(
+                        Events.GOT_VIDEO_PRESIGNED_VIDEO_URL, video,
+                        true,
+                        null,
+                        response = Gson().toJson(response.value).toString(),
+                        retryCount = retryCount
+                    )
 
-        val count = localRepository.updateVideo(video)
+                    val count = localRepository.updateVideo(video)
 
-        captureEvent(
-            Events.IS_VIDEO_PRESIGNED_URL_UPDATED,
-            localRepository.getVideo(video.uuid),
-            true,
-            null,
-            count,
-            retryCount = retryCount
-        )
+                    captureEvent(
+                        Events.IS_VIDEO_PRESIGNED_URL_UPDATED,
+                        localRepository.getVideo(video.uuid),
+                        true,
+                        null,
+                        count,
+                        retryCount = retryCount
+                    )
 
-        return true
-    }
+                    return true
+                }
 
 
     private suspend fun compressVideo(videoUri: Uri, video_detail:VideoDetails): RequestBody =
