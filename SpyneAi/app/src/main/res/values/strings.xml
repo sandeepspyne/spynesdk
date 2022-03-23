@@ -362,5 +362,7 @@
     <string name="images_saved">Your images are saved</string>
     <string name="connet_to_start_processing">Please connect to the internet to begin processing</string>
 
-
+    <string name="dialog_permission_title">Permission required</string>
+    <string name="dialog_permission_default_message">Default message</string>
+    <string name="dialog_permission_button_positive">OK</string>
 </resources>

@@ -27,6 +27,8 @@ data class ProjectBody(
         var locationData: LocationData? = null,
         @SerializedName("project_name")
         val projectName: String,
+        @SerializedName("foreign_sku_id")
+        val foreignSkuId: String? = null,
         @SerializedName("source")
         val source: String = "App_android"
     ) {

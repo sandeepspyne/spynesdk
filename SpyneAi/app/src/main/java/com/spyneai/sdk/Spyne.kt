@@ -17,39 +17,32 @@ class Spyne(
     companion object {
         var intent: Intent? = null
         var apiKey: String? = null
-        var email: String? = null
         var userId: String? = null
-        var contactNo: String? = null
+        var foreignSkuId: String? = null
         var enterpriseid: String? = null
 
-        fun init(context: Context, apiKey: String, enterpriseid: String) {
+        fun init(context: Context, apiKey: String,categoryId: String) {
+            BaseApplication.setContext(context)
             this.apiKey = apiKey
             this.enterpriseid = enterpriseid
+            Utilities.savePrefrence(context, AppConstants.CATEGORY_ID, categoryId)
             Utilities.savePrefrence(context, AppConstants.API_KEY, apiKey)
-            Utilities.savePrefrence(context, AppConstants.ENTERPRISE_ID, enterpriseid)
+            Utilities.saveBool(context, AppConstants.FROM_SDK, true)
         }
 
         fun start(
-            applicationContext: Context,
             context: Context,
-            email: String,
-            contactNo: String,
             userId: String,
+            foreignSkuId: String,
             intent: Intent
         ) {
-            BaseApplication.setContext(applicationContext)
-            this.intent = intent
-            this.email = email
             this.userId = userId
-            this.contactNo = contactNo
+            this.foreignSkuId = foreignSkuId
+            this.intent = intent
 
             //go to SignupSDK from here once SDK is integrated with app
-            try {
-                val signupIntent = Intent(context, SignupSDK::class.java)
-                context.startActivity(signupIntent)
-            }catch (e : Exception){
-                Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
-            }
+            val signupIntent = Intent(context, SignupSDK::class.java)
+            context.startActivity(signupIntent)
         }
 
     }

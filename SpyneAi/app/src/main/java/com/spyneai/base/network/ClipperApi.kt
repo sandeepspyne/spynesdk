@@ -20,6 +20,7 @@ import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.reshoot.data.ReshootOverlaysRes
+import com.spyneai.sdk.Spyne
 import com.spyneai.sdk.model.SignupIntoSDKRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
@@ -354,11 +355,9 @@ interface ClipperApi {
 
 
     @FormUrlEncoded
-    @POST("v2/user/sdk/login")
+    @POST("fv1/users/sdk/auth")
     suspend fun signupIntoSDK(
-        @Field("api_key") api_key: String,
-        @Field("contact_no") contact_no: String,
-        @Field("email_id") email_id: String,
-        @Field("username") username: String,
+        @FieldMap map: HashMap<String,String>,
+        @Header("x-api-key") apiKey: String = Spyne.apiKey.toString(),
     ): SignupIntoSDKRes
 }

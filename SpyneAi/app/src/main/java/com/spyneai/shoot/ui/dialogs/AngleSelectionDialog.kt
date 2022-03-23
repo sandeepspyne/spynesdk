@@ -6,11 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import com.spyneai.*
 import com.spyneai.base.BaseDialogFragment
+import com.spyneai.base.network.Resource
+import com.spyneai.base.room.AppDatabase
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.sdk.Spyne
 import com.spyneai.service.ServerSyncTypes
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.repository.model.project.ProjectBody
 import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -175,13 +180,49 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 
             //start sync service
             GlobalScope.launch(Dispatchers.Main) {
-                requireContext().startUploadingService(
-                    AngleSelectionDialog::class.java.simpleName,
-                    ServerSyncTypes.CREATE
-                )
+                if (Utilities.getBool(requireContext(),AppConstants.FROM_SDK,false)){
+                    //create project and sku
+                    val projectData = ProjectBody.ProjectData(
+                        categoryId = Utilities.getPreference(requireContext(),AppConstants.CATEGORY_ID).toString(),
+                        localId = viewModel.project?.uuid!!,
+                        projectId = viewModel.project?.projectId,
+                        projectName = viewModel.project?.projectName!!,
+                        foreignSkuId = Spyne.foreignSkuId
+                    )
 
-                dismiss()
+                    val sku = viewModel.sku
+
+                    val skuData = ProjectBody.SkuData(
+                        skuId = sku?.skuId,
+                        localId = sku?.uuid!!,
+                        skuName = sku?.skuName!!,
+                        prodCatId = sku.categoryId!!,
+                        prodSubCatId = sku.subcategoryId,
+                        initialNo = sku.initialFrames!!,
+                        totalFramesNo = sku.totalFrames!!,
+                        imagePresent = sku.imagePresent,
+                        videoPresent = sku.videoPresent
+                    )
+
+                    val projectBody = ProjectBody(
+                        projectData = projectData,
+                        skuData = ArrayList<ProjectBody.SkuData>().apply {
+                            add(skuData)
+                        }
+                    )
+                    createProjectAndSkuOnServer(projectBody)
+                    observeCreateProject(projectBody)
+                }else {
+                    requireContext().startUploadingService(
+                        AngleSelectionDialog::class.java.simpleName,
+                        ServerSyncTypes.CREATE
+                    )
+
+                    dismiss()
+                }
             }
+
+
         }
 
 
@@ -249,9 +290,43 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 //        })
     }
 
+    private fun observeCreateProject(projectBody: ProjectBody) {
+        viewModel.createProjectRes.observe(viewLifecycleOwner,{
+            when(it){
+                is Resource.Success -> {
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val db = AppDatabase.getInstance(BaseApplication.getContext())
+                        val projectId = it.value.data.projectId
+
+                        val update = db.projectDao().updateProjectServerId(projectBody.projectData.localId,projectId)
+
+
+                        it.value.data.skusList.forEachIndexed { index, skus ->
+                            val ss = db.shootDao().updateSkuAndImageIds(projectId,skus.localId,skus.skuId)
+                        }
+                    }
+                    Utilities.hideProgressDialog()
+                    viewModel.project?.projectId = it.value.data.projectId
+                    viewModel.sku?.skuId = it.value.data.skusList[0].skuId
+                    dismiss()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it){createProjectAndSkuOnServer(projectBody) }
+                }
+            }
+        })
+    }
+
+    private fun createProjectAndSkuOnServer(projectBody: ProjectBody) {
+        Utilities.showProgressDialog(requireContext())
+
+        viewModel.createProject(projectBody)
+    }
+
     override fun onStop() {
         super.onStop()
-        shoot("onStop called(angleSlectionDialog-> dismissAllowingStateLoss)")
         dismissAllowingStateLoss()
     }
 

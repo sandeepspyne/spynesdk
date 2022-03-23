@@ -3,6 +3,7 @@ package com.spyneai.needs
 
 object AppConstants {
 
+    val FROM_SDK = "FROM_SDK"
     val API_KEY ="API_KEY"
     val VIDEO_DATA = "VIDEO_DATA"
     val STATUS = "STATUS"
@@ -27,7 +28,7 @@ object AppConstants {
     val SPYNE_ENTERPRISE_ID: String = "TaD1VC1Ko"
     val FLIPKART_ENTERPRISE_ID: String = "EVV1XVY4R"
     val KARVI_ENTERPRISE_ID: String = "DaD1JC1Fp"
-    val BASE_URL: String = "https://www.clippr.ai/api/"
+    val BASE_URL: String = "https://stagingapi.spyne.xyz/api/"
     val STATUS_PROJECT_NAME: String = "STATUS_PROJECT_NAME"
     val SETTING_STATUS_GYRO: String = "STATUS_SETTING_GYRO"
     val SETTING_STATUS_GRID: String = "STATUS_SETTING_GRID"

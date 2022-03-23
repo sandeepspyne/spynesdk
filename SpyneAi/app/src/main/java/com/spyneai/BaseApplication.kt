@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.*
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
+import com.spyneai.dashboard.ui.WhiteLabelConstants
+import com.spyneai.needs.AppConstants
+import com.spyneai.sdk.Spyne
 import com.spyneai.shoot.workmanager.InternetWorker
-import io.sentry.Sentry
 import java.util.concurrent.TimeUnit
 
 
@@ -36,7 +38,9 @@ class BaseApplication : Application() {
         super.onCreate()
         context = this
 
-        Sentry.init(SENTRY_DSN)
+        Spyne.init(context,WhiteLabelConstants.API_KEY,AppConstants.CARS_CATEGORY_ID)
+
+        //Sentry.init(SENTRY_DSN)
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
 

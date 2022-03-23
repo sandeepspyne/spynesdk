@@ -46,7 +46,7 @@ class Sku(
     val imagePresent: Int = 1,
     val videoPresent: Int = 0,
     var totalFramesUpdated: Boolean = false,
-    val isCreated: Boolean = false,
+    var isCreated: Boolean = false,
     var isSelectAble: Boolean = false,
     val toProcessAt: Long = System.currentTimeMillis(),
     val retryCount: Int = 1,

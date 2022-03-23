@@ -201,12 +201,9 @@ class ShootRepository : BaseRepository() {
     }
 
     suspend fun signupIntoSDK(
-        api_key: String,
-        contact_no: String,
-        email_id: String,
-        username: String
+        map: HashMap<String,String>
     ) = safeApiCall {
-        clipperApi.signupIntoSDK(api_key, contact_no, email_id, username)
+        clipperApi.signupIntoSDK(map)
     }
 
 }

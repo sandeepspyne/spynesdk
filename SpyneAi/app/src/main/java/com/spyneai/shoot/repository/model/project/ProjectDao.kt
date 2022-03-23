@@ -63,7 +63,6 @@ interface ProjectDao {
     }
 
 
-
     @Query("Select * from project where projectId = :projectId")
     fun getProjectByProjectId(projectId: String?) : Project
 

@@ -71,6 +71,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
             projectName = removeWhiteSpace(binding.etVinNumber.text.toString())
         )
 
+
         viewModel.project = project
 
         //update shoot session
@@ -87,6 +88,10 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
             viewModel.sku = sku
 
             GlobalScope.launch(Dispatchers.IO) {
+                if (Utilities.getBool(requireContext(),AppConstants.FROM_SDK,false)){
+                    project.isCreated = true
+                    sku.isCreated = true
+                }
                 Log.d(TAG, "createProject: "+project.uuid)
                 val id = viewModel.insertProject()
                 Log.d(TAG, "createProject: $id")

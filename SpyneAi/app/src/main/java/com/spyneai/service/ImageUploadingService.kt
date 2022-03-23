@@ -11,6 +11,7 @@ import com.spyneai.*
 import com.spyneai.base.room.AppDatabase
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImagesRepoV2
 import com.spyneai.shoot.repository.model.image.Image
@@ -301,17 +302,22 @@ class ImageUploadingService : Service(),DataSyncListener {
     }
 
     private fun startProjectSync(type: String) {
-        prjSync = ProjectSkuSync.getInstance(this,this)
+        if (!Utilities.getBool(this,AppConstants.FROM_SDK,false)){
+            prjSync = ProjectSkuSync.getInstance(this,this)
 
-        prjSync?.projectSyncParent(type,serviceStartedBy)
+            prjSync?.projectSyncParent(type,serviceStartedBy)
+        }
     }
 
 
     private fun startProcessSync(type: String) {
-        processSkuSync = ProcessSkuSync.getInstance(
-            this, this)
+        if (!Utilities.getBool(this,AppConstants.FROM_SDK,false)){
+            processSkuSync = ProcessSkuSync.getInstance(
+                this, this)
 
-        processSkuSync?.processSkuParent(type,serviceStartedBy)
+            processSkuSync?.processSkuParent(type,serviceStartedBy)
+        }
+
     }
 
 }

@@ -9,7 +9,7 @@ data class SignupIntoSDKRes (
 ) {
     data class Data(
 
-        @SerializedName("auth_key") val auth_auth_key: String,
+        @SerializedName("auth_key") val authKey: String,
         @SerializedName("secret_key") val secretKey: String
     )
 }

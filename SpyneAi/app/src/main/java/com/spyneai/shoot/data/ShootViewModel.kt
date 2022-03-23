@@ -19,6 +19,8 @@ import com.spyneai.needs.Utilities
 import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.sdk.model.SignupIntoSDKRes
 import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.repository.model.project.CreateProjectAndSkuRes
+import com.spyneai.shoot.repository.model.project.ProjectBody
 import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.Dispatchers
@@ -88,7 +90,6 @@ class ShootViewModel : ViewModel() {
 
 
 
-
     private val _updateTotalFramesRes: MutableLiveData<Resource<UpdateTotalFramesRes>> =
         MutableLiveData()
     val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
@@ -106,6 +107,11 @@ class ShootViewModel : ViewModel() {
         MutableLiveData()
     val updateFootwearSubcatRes: LiveData<Resource<UpdateFootwearSubcatRes>>
         get() = _updateFootwearSubcatRes
+
+    private var _createProjectRes: MutableLiveData<Resource<CreateProjectAndSkuRes>> =
+        MutableLiveData()
+    val createProjectRes: LiveData<Resource<CreateProjectAndSkuRes>>
+        get() = _createProjectRes
 
 
     val shootDimensions: MutableLiveData<ShootDimensions> = MutableLiveData()
@@ -343,11 +349,11 @@ class ShootViewModel : ViewModel() {
 
     }
 
-    fun getProjectName(
-        authKey: String
+    fun createProject(
+        projectBody: ProjectBody
     ) = viewModelScope.launch {
-        _getProjectNameResponse.value = Resource.Loading
-        _getProjectNameResponse.value = repository.getProjectName(authKey)
+        _createProjectRes.value = Resource.Loading
+        _createProjectRes.value = repository.createProject(projectBody)
     }
 
 
@@ -432,7 +438,9 @@ class ShootViewModel : ViewModel() {
             val newImage = com.spyneai.shoot.repository.model.image.Image(
                 uuid = getUuid(),
                 projectUuid = project?.uuid,
+                projectId = project?.projectId,
                 skuUuid = sku?.uuid,
+                skuId = sku?.skuId,
                 image_category = shootData.image_category,
                 skuName = sku?.skuName,
                 name = name,
@@ -488,7 +496,6 @@ class ShootViewModel : ViewModel() {
         sku?.isSelectAble = true
         localRepository.updateSubcategory(project!!,sku!!)
     }
-
 
 
     fun getImagesbySkuId(skuId: String) = imageRepositoryV2.getImagesBySkuId(skuId)
@@ -918,12 +925,9 @@ class ShootViewModel : ViewModel() {
 
 
     fun signupIntoSDK(
-        api_key: String,
-        contact_no: String,
-        email_id: String,
-        username: String
+        map: HashMap<String,String>
     ) = viewModelScope.launch {
         _signupIntoSDKRes.value = Resource.Loading
-        _signupIntoSDKRes.value = repository.signupIntoSDK(api_key, contact_no, email_id, username)
+        _signupIntoSDKRes.value = repository.signupIntoSDK(map)
     }
 }

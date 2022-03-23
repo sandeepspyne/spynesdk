@@ -54,6 +54,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".activity.DemoActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".sdk.SignupSDK"
             android:exported="false" />
         <activity
@@ -68,7 +76,7 @@
         <activity android:name=".RoomTestActivity" />
         <activity
             android:name=".VideoTestActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".reshoot.ui.ReshootPortraitActivity"
             android:exported="false"
@@ -229,11 +237,7 @@
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data
