@@ -59,7 +59,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
             )
         }
 
-        val lastSelectedAngles = viewModel.getSelectedAngles(getString(R.string.app_name))
         var newSelectedAngles = viewModel.getSelectedAngles(getString(R.string.app_name))
 
         when (getString(R.string.app_name)) {
@@ -167,13 +166,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
             initialFrames = viewModel.exterirorAngles.value
             totalFrames = viewModel.exterirorAngles.value
         }
-
-        viewModel.isSubCategoryConfirmed.value = true
-        viewModel.isSkuCreated.value = true
-        viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-        viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
-
         //add sku to local database
         GlobalScope.launch(Dispatchers.IO) {
             viewModel.updateSubcategory()
@@ -213,6 +205,11 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                     createProjectAndSkuOnServer(projectBody)
                     observeCreateProject(projectBody)
                 }else {
+                    viewModel.isSubCategoryConfirmed.value = true
+                    viewModel.isSkuCreated.value = true
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                     requireContext().startUploadingService(
                         AngleSelectionDialog::class.java.simpleName,
                         ServerSyncTypes.CREATE
@@ -293,7 +290,10 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
     private fun observeCreateProject(projectBody: ProjectBody) {
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it){
+                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
+
                 is Resource.Success -> {
+
                     GlobalScope.launch(Dispatchers.IO) {
                         val db = AppDatabase.getInstance(BaseApplication.getContext())
                         val projectId = it.value.data.projectId
@@ -304,11 +304,21 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                         it.value.data.skusList.forEachIndexed { index, skus ->
                             val ss = db.shootDao().updateSkuAndImageIds(projectId,skus.localId,skus.skuId)
                         }
+
+                        GlobalScope.launch(Dispatchers.Main) {
+                            Utilities.hideProgressDialog()
+                            viewModel.project?.projectId = it.value.data.projectId
+                            viewModel.sku?.skuId = it.value.data.skusList[0].skuId
+
+                            viewModel.isSubCategoryConfirmed.value = true
+                            viewModel.isSkuCreated.value = true
+                            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                            dismiss()
+                        }
                     }
-                    Utilities.hideProgressDialog()
-                    viewModel.project?.projectId = it.value.data.projectId
-                    viewModel.sku?.skuId = it.value.data.skusList[0].skuId
-                    dismiss()
+
                 }
 
                 is Resource.Failure -> {
@@ -320,8 +330,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
     }
 
     private fun createProjectAndSkuOnServer(projectBody: ProjectBody) {
-        Utilities.showProgressDialog(requireContext())
-
         viewModel.createProject(projectBody)
     }
 
