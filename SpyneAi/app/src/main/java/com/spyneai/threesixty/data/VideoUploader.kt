@@ -262,24 +262,16 @@ class VideoUploader(val context: Context,
         //upload video
         val response = threeSixtyRepository.getVideoPreSignedUrl(
                   properties.apply {
-                      if (video.backgroundId != null) {
-                          put("auth_key", Utilities.getPreference(context, AppConstants.AUTH_KEY).toString())
-                          put("project_id", video.projectId!!)
-                          put("sku_id", video.skuId!!)
-                          put("category", video.categoryName)
-                          put("sub_category", AppConstants.CARS_CATEGORY_ID)
-                          put("total_frames_no", video.frames)
-                          put("video_name", File(video.videoPath).name)
+                      if (video.backgroundId != null)
                           put("background_id", video.backgroundId.toString())
-                      } else {
-                          put("auth_key", Utilities.getPreference(context, AppConstants.AUTH_KEY).toString())
-                          put("project_id", video.projectId!!)
-                          put("sku_id", video.skuId!!)
-                          put("category", video.categoryName)
-                          put("sub_category", AppConstants.CARS_CATEGORY_ID)
-                          put("total_frames_no", video.frames)
-                          put("video_name", File(video.videoPath).name)
-                      }
+
+                      put("auth_key", Utilities.getPreference(context, AppConstants.AUTH_KEY).toString())
+                      put("project_id", video.projectId!!)
+                      put("sku_id", video.skuId!!)
+                      put("category", video.categoryName)
+                      put("sub_category", AppConstants.CARS_CATEGORY_ID)
+                      put("total_frames_no", video.frames)
+                      put("video_name", File(video.videoPath).name)
                   }
         )
 

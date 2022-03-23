@@ -114,12 +114,11 @@ class OngoingPagedHolder(
         tvImageCount.text = item.processedCount.toString() + "/" + item.imagesCount.toString()
 
         tvProjectName.text = item.projectName
-        if(item.processedCount.equals(0)){
+        if(item.processedCount == 0){
             tvDate.text = getFormattedDate(item.createdOn.toLong())
         }else{
             tvDate.text = getFormattedDate(getTimeStamp(item.createdOn))
         }
-//        tvDate.text = getFormattedDate(getTimeStamp(item.createdOn))
         //need thumbnal
         try {
             if (item.thumbnail == null) {
