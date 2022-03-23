@@ -8,6 +8,7 @@ import androidx.work.*
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
 import com.spyneai.shoot.workmanager.InternetWorker
+import io.sentry.Sentry
 import java.util.concurrent.TimeUnit
 
 
@@ -17,8 +18,14 @@ class BaseApplication : Application() {
     private val POSTHOG_API_KEY = "FoIzpWdbY_I9T_4jr5k4zzNuVJPcpzs_mIpO6y7581M"
     private val POSTHOG_HOST = "https://app.posthog.com"
 
+    private val SENTRY_DSN = "https://cb29df9ea3bf465ba3c7af863fe67a3a@o1145224.ingest.sentry.io/6212690"
+
     companion object {
         private lateinit var context: Context
+
+        fun setContext(con: Context){
+            context = con
+        }
 
         fun getContext(): Context {
             return context;
@@ -29,7 +36,7 @@ class BaseApplication : Application() {
         super.onCreate()
         context = this
 
-
+        Sentry.init(SENTRY_DSN)
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
 
@@ -42,27 +49,8 @@ class BaseApplication : Application() {
             // .recordScreenViews() // Record screen views automatically!
             .build()
 
-
         // Set the initialized instance as a globally accessible instance.
         PostHog.setSingletonInstance(posthog)
-
-
-        //process periodic worker
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-//        val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
-//            12, TimeUnit.HOURS)
-//            .addTag("Periodic Processing Worker")
-//
-//        WorkManager.getInstance(context)
-//            .enqueueUniquePeriodicWork(
-//                "Process Unique",
-//                ExistingPeriodicWorkPolicy.KEEP,
-//                longWorkRequest
-//                    .setConstraints(constraints)
-//                    .build())
 
         val repeatInternal = 30L
         val flexInterval = 25L
@@ -81,7 +69,5 @@ class BaseApplication : Application() {
                 WorkManager.getInstance(context).enqueueUniquePeriodicWork(workerTag,
                     ExistingPeriodicWorkPolicy.REPLACE, it)
             }
-
     }
-
 }

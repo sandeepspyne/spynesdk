@@ -13,8 +13,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-<!--    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- Always include this permission -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -55,6 +54,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".sdk.SignupSDK"
+            android:exported="false" />
+        <activity
             android:name=".base.BaseActivity"
             android:exported="false" />
         <activity
@@ -63,13 +65,10 @@
         <activity
             android:name=".orders.ui.activity.SkuPagedActivity"
             android:exported="false" />
-
         <activity android:name=".RoomTestActivity" />
         <activity
             android:name=".VideoTestActivity"
-            android:exported="false" >
-
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".reshoot.ui.ReshootPortraitActivity"
             android:exported="false"
@@ -94,15 +93,11 @@
             android:name=".reshoot.ui.SelectImagesActivity"
             android:exported="true" />
         <activity android:name=".onboarding.SelectLanguageActivity" />
-
         <activity
             android:name=".draft.ui.DraftSkuDetailsActivity"
             android:exported="true" />
-
         <activity android:name=".orders.ui.activity.ShowRawImagesActivity" />
-
         <activity android:name=".processedimages.ui.ProcessedImageActivity" />
-
         <activity
             android:name=".threesixty.ui.ThreeSixtyExteriorActivity"
             android:screenOrientation="portrait" />
@@ -153,7 +148,6 @@
         <activity
             android:name=".credits.WalletActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".reshoot.ui.ReshootActivity"
             android:screenOrientation="landscape" />
@@ -210,7 +204,6 @@
         <activity
             android:name=".activity.OrderSummaryActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.OtpActivity"
             android:screenOrientation="portrait" />
@@ -245,13 +238,11 @@
 
         <meta-data
             android:name="com.razorpay.ApiKey"
-            android:value="@string/api_key_razorpay" />
-
-<!--        <provider-->
-<!--            android:name="com.iceteck.silicompressorr.provider.GenericFileProvider"-->
-<!--            android:authorities="${applicationId}.AUTH_SILI_COMPRESS"-->
-<!--            android:exported="false"-->
-<!--            tools:replace="android:authorities" />-->
+            android:value="@string/api_key_razorpay" /> <!-- <provider -->
+        <!-- android:name="com.iceteck.silicompressorr.provider.GenericFileProvider" -->
+        <!-- android:authorities="${applicationId}.AUTH_SILI_COMPRESS" -->
+        <!-- android:exported="false" -->
+        <!-- tools:replace="android:authorities" /> -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

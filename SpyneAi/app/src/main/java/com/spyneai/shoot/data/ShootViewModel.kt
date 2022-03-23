@@ -17,6 +17,7 @@ import com.spyneai.getUuid
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.reshoot.data.ReshootOverlaysRes
+import com.spyneai.sdk.model.SignupIntoSDKRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
@@ -908,6 +909,21 @@ class ShootViewModel : ViewModel() {
 
         if (isProjectCreated.value == true)
             getSubCategories.value = true
+    }
 
+    private val _signupIntoSDKRes: MutableLiveData<Resource<SignupIntoSDKRes>> =
+        MutableLiveData()
+    val signupIntoSDKRes: LiveData<Resource<SignupIntoSDKRes>>
+        get() = _signupIntoSDKRes
+
+
+    fun signupIntoSDK(
+        api_key: String,
+        contact_no: String,
+        email_id: String,
+        username: String
+    ) = viewModelScope.launch {
+        _signupIntoSDKRes.value = Resource.Loading
+        _signupIntoSDKRes.value = repository.signupIntoSDK(api_key, contact_no, email_id, username)
     }
 }
