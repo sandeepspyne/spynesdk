@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui.dialogs
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,9 @@ import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.DialogExitBinding
 import com.spyneai.gotoHome
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
+import com.spyneai.sdk.Spyne
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 
@@ -23,9 +27,15 @@ class ShootExitDialog : BaseDialogFragment<ShootViewModel, DialogExitBinding>() 
         }
 
         binding.btnYes.setOnClickListener {
-            requireContext().gotoHome()
+            if (Utilities.getBool(requireContext(),AppConstants.FROM_SDK,false)){
+                val intent = Spyne.intent
+                intent?.let {
+                    it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(it)
+                }
+            }else
+                requireContext().gotoHome()
             dismiss()
-
         }
     }
 
