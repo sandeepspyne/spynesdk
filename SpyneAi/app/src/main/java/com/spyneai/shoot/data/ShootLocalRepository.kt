@@ -96,16 +96,11 @@ class ShootLocalRepository(
         shootDao.updateSku(sku)
     }
 
-
-
     fun getSkusByProjectId(uuid: String) = skuDao.getSkusByProjectId(uuid)
-
 
     fun getProject(uuid: String) = projectDao.getProject(uuid)
 
-
     fun getSkuById(uuid: String) = shootDao.getSku(uuid)
-
 
     fun updateBackground(map: HashMap<String, Any>) {
         val list = skuDao.getDraftSkusByProjectId(map["project_uuid"].toString())

@@ -106,7 +106,6 @@ interface ShootDao {
     fun updateSkuAndImageIds(projectId: String,skuUuid: String,skuId: String){
         val s = updateSKuServerId(skuUuid,skuId,projectId)
         val ss = updateImageIds(skuUuid,skuId,projectId)
-        val a = ""
     }
 
     @Update
