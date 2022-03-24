@@ -596,8 +596,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
                     }
 
-                    val s = ""
-
                     overlaysAdapter = OverlaysAdapter(
                         list,
                         this@DraftShootFragment,

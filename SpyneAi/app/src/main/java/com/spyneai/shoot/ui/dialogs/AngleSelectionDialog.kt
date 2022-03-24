@@ -318,7 +318,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                             dismiss()
                         }
                     }
-
                 }
 
                 is Resource.Failure -> {

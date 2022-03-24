@@ -34,6 +34,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.setLocale
 import com.spyneai.shoot.adapters.OverlaysAdapter
+import com.spyneai.shoot.data.DraftClickedImages
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
@@ -372,7 +373,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             }
         }
 
-        if (getString(R.string.app_name) == AppConstants.KARVI){
+        if (getString(R.string.app_name) == AppConstants.KARVI) {
             viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
             viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
             viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
@@ -422,35 +423,80 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                     val overlaysList = it.value.data
                     var index = 0
 
-                    if (viewModel.shootList.value != null) {
-                        overlaysList.forEach { overlay ->
-                            val element = viewModel.shootList.value!!.firstOrNull {
-                                it.overlayId == overlay.id
-                            }
+                    val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
 
-                            if (element != null) {
-                                overlay.imageClicked = true
-                                overlay.imagePath = element.capturedImage
+                    if (Utilities.getBool(requireContext(), AppConstants.FROM_SDK, false)
+                        && createProjectRes.data.draftAvailable) {
+
+                        val selctedDraftList = createProjectRes.data.draftData[0].imageList
+
+                        //set overlays
+//                        overlaysList.forEachIndexed { index, data ->
+//                            if (selctedDraftList.get(data.id.toString()) != null) {
+//                                overlaysList[index].imageClicked = true
+//                                overlaysList[index].imagePath = selctedDraftList.get(data.id.toString())!!
+//                            }
+//                        }
+
+                        if (viewModel.shootList.value != null) {
+                            overlaysList.forEach { overlay ->
+                                val element = viewModel.shootList.value!!.firstOrNull {
+                                    it.overlayId == overlay.id
+                                }
+
+                                if (element != null) {
+                                    overlay.imageClicked = true
+                                    overlay.imagePath = element.capturedImage
+                                }
                             }
                         }
 
-                        val element = overlaysList.firstOrNull {
+                        val notSelected = overlaysList.firstOrNull {
                             !it.isSelected && !it.imageClicked
                         }
 
-                        if (element != null) {
-                            element.isSelected = true
-                            viewModel.displayName = element.display_name
-                            viewModel.displayThumbanil = element.display_thumbnail
+                        var index = -1
+                        if (notSelected != null) {
+                            index = overlaysList.indexOf(notSelected)
 
-                            index = overlaysList.indexOf(element)
+                            overlaysList[index].isSelected = true
+
+                            viewModel.displayName = overlaysList[index].display_name
+                            viewModel.displayThumbanil = overlaysList[index].display_thumbnail
+
                         }
                     } else {
-                        //set overlays
-                        overlaysList[0].isSelected = true
-                        viewModel.displayName = it.value.data[0].display_name
-                        viewModel.displayThumbanil = it.value.data[0].display_thumbnail
+                        if (viewModel.shootList.value != null) {
+                            overlaysList.forEach { overlay ->
+                                val element = viewModel.shootList.value!!.firstOrNull {
+                                    it.overlayId == overlay.id
+                                }
+
+                                if (element != null) {
+                                    overlay.imageClicked = true
+                                    overlay.imagePath = element.capturedImage
+                                }
+                            }
+
+                            val element = overlaysList.firstOrNull {
+                                !it.isSelected && !it.imageClicked
+                            }
+
+                            if (element != null) {
+                                element.isSelected = true
+                                viewModel.displayName = element.display_name
+                                viewModel.displayThumbanil = element.display_thumbnail
+
+                                index = overlaysList.indexOf(element)
+                            }
+                        } else {
+                            //set overlays
+                            overlaysList[0].isSelected = true
+                            viewModel.displayName = it.value.data[0].display_name
+                            viewModel.displayThumbanil = it.value.data[0].display_thumbnail
+                        }
                     }
+
 
 
                     overlaysAdapter = OverlaysAdapter(
