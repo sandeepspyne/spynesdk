@@ -119,4 +119,6 @@ class ShootLocalRepository(
     fun updateVideoSkuLocally(sku: com.spyneai.shoot.repository.model.sku.Sku) = shootDao.updateComboSkuAndProject(sku)
 
     fun getExteriorImages(uuid: String) = imageDao?.getExteriorImages(uuid)
+
+    fun updateSkuProcessed(uuid: String) = skuDao.updateSkuProcessed(uuid)
 }

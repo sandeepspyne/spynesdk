@@ -19,6 +19,11 @@ class DemoActivity : AppCompatActivity() {
         binding = ActivityDemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        intent.getStringExtra("sku_id")?.let {
+            binding.tvSkuId.text = it
+        }
+
         binding.btnStart.setOnClickListener {
             Spyne.start(
                 this,

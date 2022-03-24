@@ -17,4 +17,16 @@
         android:id="@+id/btnStart"
         android:layout_margin="@dimen/dp_30"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvSkuId"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnStart"
+        android:layout_marginTop="@dimen/dp_20"
+        android:textSize="@dimen/sp_16"
+        tools:text="sandeep singh"
+        android:textColor="@color/primary"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

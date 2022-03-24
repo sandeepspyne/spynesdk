@@ -1,14 +1,13 @@
 package com.spyneai.shoot.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
 import com.spyneai.*
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -18,6 +17,7 @@ import com.spyneai.databinding.FragmentSelectBackgroundBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.sdk.Spyne
 import com.spyneai.service.ServerSyncTypes
 import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
@@ -338,21 +338,88 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         }
                 )
 
-                //start sync service
-                requireContext().startUploadingService(
-                    SelectBackgroundFragment::class.java.simpleName,
-                    ServerSyncTypes.PROCESS
-                )
+                if (Utilities.getBool(requireContext(),AppConstants.FROM_SDK,false)){
+                    //update total frames
+                    updateTotalFramesOnServer()
+                    observeUpdateTotalFrames()
+                }else {
+                    //start sync service
+                    requireContext().startUploadingService(
+                        SelectBackgroundFragment::class.java.simpleName,
+                        ServerSyncTypes.PROCESS
+                    )
 
-                if (gotoHome)
-                    requireContext().gotoHome()
-                else
-                    viewModel.startTimer.value = true
+                    if (gotoHome)
+                        requireContext().gotoHome()
+                    else
+                        viewModel.startTimer.value = true
+                }
             }
         }
     }
 
+    private fun updateTotalFramesOnServer() {
+        Utilities.showProgressDialog(requireContext())
 
+        viewModel.updateCarTotalFrames(
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            viewModel.sku?.skuId!!,
+            viewModel.getTotalFrames().toString()
+        )
+    }
+
+
+    private fun observeUpdateTotalFrames() {
+        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
+            when(it){
+                is Resource.Success -> {
+                    processSdkSku(false)
+                    observeSdkSkuProcess()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it){
+                        updateTotalFramesOnServer()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun processSdkSku(showDialog: Boolean) {
+        if (showDialog)
+            Utilities.showProgressDialog(requireContext())
+
+        viewModel.processSku(
+            Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString(),
+            viewModel.sku?.skuId!!,
+            viewModel.backgroundSelect!!
+        )
+    }
+
+    private fun observeSdkSkuProcess() {
+        viewModel.processSkuRes.observe(viewLifecycleOwner,{ it ->
+            when(it){
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    val intent = Spyne.intent
+                    intent?.let { intent ->
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        intent.putExtra("sku_id",viewModel.sku?.skuId)
+                        startActivity(intent)
+                    }
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it){
+                        processSdkSku(true)
+                    }
+                }
+            }
+        })
+    }
 
     override fun getViewModel() = ProcessViewModel::class.java
 

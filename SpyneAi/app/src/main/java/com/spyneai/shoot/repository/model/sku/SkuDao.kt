@@ -29,6 +29,9 @@ interface SkuDao {
     @Update
     fun updateSku(sku: Sku): Int
 
+    @Query("update sku set totalFramesUpdated =:isTotalFramesUpdated, isProcessed = :isProcessed where uuid = :uuid ")
+    fun updateSkuProcessed(uuid: String,isTotalFramesUpdated: Boolean = true, isProcessed: Boolean = true)
+
     @Query("select COUNT(*) from sku where isProcessed = :isProcessed and isCreated = :isCreated and backgroundId != 'DEFAULT_BG_ID'")
     fun getPendingSku(isProcessed: Boolean = false,isCreated: Boolean = true) : Int
 

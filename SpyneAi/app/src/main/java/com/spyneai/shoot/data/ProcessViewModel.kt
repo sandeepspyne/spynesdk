@@ -10,6 +10,8 @@ import com.spyneai.base.room.AppDatabase
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.UpdateTotalFramesRes
@@ -90,6 +92,7 @@ class ProcessViewModel : ViewModel() {
     val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
         get() = _updateTotalFramesRes
 
+
     fun getBackgroundGifCars(
         category: String
     ) = viewModelScope.launch {
@@ -118,7 +121,7 @@ class ProcessViewModel : ViewModel() {
                     bgList.forEach {
                         it.category = category
                     }
-                    localRepository.insertBackgrounds(bgList)
+                    //localRepository.insertBackgrounds(bgList)
 
                     GlobalScope.launch(Dispatchers.Main) {
                         _carGifRes.value = response
@@ -147,6 +150,20 @@ class ProcessViewModel : ViewModel() {
         viewModelScope.launch {
             _updateTotalFramesRes.value = Resource.Loading
             _updateTotalFramesRes.value = repository.updateTotalFrames(authKey, skuId, totalFrames)
+        }
+
+    fun processSku(authKey: String, skuId: String, backgroundId: String) =
+        viewModelScope.launch {
+            _processSkuRes.value = Resource.Loading
+            _processSkuRes.value = repository.processSku(
+                authKey = authKey,
+                skuId = skuId,
+                backgroundId = backgroundId,
+                is360 = false,
+                numberPlateBlur = false,
+                windowCorrection = false,
+                tintWindow = false
+            )
         }
 
     fun getUserCredits(
@@ -183,16 +200,21 @@ class ProcessViewModel : ViewModel() {
     }
 
 
-    suspend fun updateBackground() = localRepository.updateBackground(HashMap<String, Any>()
-        .apply {
-            put("project_uuid", sku!!.projectUuid!!)
-            put("sku_uuid", sku!!.uuid!!)
-            put("bg_id", backgroundSelect!!)
-            put("bg_name", bgName!!)
-            put("total_frames", getTotalFrames())
-        })
+    suspend fun updateBackground() {
+        if (Utilities.getBool(BaseApplication.getContext(), AppConstants.FROM_SDK, false))
+            localRepository.updateSkuProcessed(sku!!.uuid!!)
 
-    private fun getTotalFrames(): Int {
+        localRepository.updateBackground(HashMap<String, Any>()
+            .apply {
+                put("project_uuid", sku!!.projectUuid!!)
+                put("sku_uuid", sku!!.uuid!!)
+                put("bg_id", backgroundSelect!!)
+                put("bg_name", bgName!!)
+                put("total_frames", getTotalFrames())
+            })
+    }
+
+    fun getTotalFrames(): Int {
         return if (fromVideo) sku?.threeSixtyFrames?.plus(sku?.imagesCount!!)!! else sku?.imagesCount!!
     }
 
