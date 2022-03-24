@@ -62,6 +62,8 @@ data class CreateProjectAndSkuRes(
                 val imageCategory: String,
                 @SerializedName("image_id")
                 val imageId: String,
+                @SerializedName("overlay_id")
+                val overlayId: Int,
                 @SerializedName("image_name")
                 val imageName: String,
                 @SerializedName("input_image_hres_url")

@@ -38,6 +38,7 @@ import com.spyneai.shoot.data.DraftClickedImages
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.repository.model.project.CreateProjectAndSkuRes
 import com.spyneai.shoot.ui.dialogs.*
 import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
@@ -431,12 +432,15 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                         val selctedDraftList = createProjectRes.data.draftData[0].imageList
 
                         //set overlays
-//                        overlaysList.forEachIndexed { index, data ->
-//                            if (selctedDraftList.get(data.id.toString()) != null) {
-//                                overlaysList[index].imageClicked = true
-//                                overlaysList[index].imagePath = selctedDraftList.get(data.id.toString())!!
-//                            }
-//                        }
+                        overlaysList.forEachIndexed { index, data ->
+                            val item = getItem(data.id)
+
+                            item?.let {
+                                overlaysList[index].imageClicked = true
+                                overlaysList[index].imagePath = item.inputImageLresUrl
+                            }
+
+                        }
 
                         if (viewModel.shootList.value != null) {
                             overlaysList.forEach { overlay ->
@@ -540,6 +544,20 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 }
             }
         })
+    }
+
+    private fun getItem(id: Int): CreateProjectAndSkuRes.Data.DraftData.Image? {
+        var image: CreateProjectAndSkuRes.Data.DraftData.Image? = null
+        val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
+
+        val list = createProjectRes.data.draftData[0].imageList
+
+        list.forEach {
+            if (it.overlayId == id)
+                image = it
+        }
+
+        return image
     }
 
     private fun initInteriorShots() {

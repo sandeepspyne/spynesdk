@@ -294,28 +294,41 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 
                 is Resource.Success -> {
 
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val db = AppDatabase.getInstance(BaseApplication.getContext())
-                        val projectId = it.value.data.projectId
+                    if (it.value.data.draftAvailable){
+                        Utilities.hideProgressDialog()
+                        viewModel.project?.projectId = it.value.data.projectId
+                        viewModel.sku?.skuId = it.value.data.draftData[0].skuId
 
-                        val update = db.projectDao().updateProjectServerId(projectBody.projectData.localId,projectId)
+                        viewModel.isSubCategoryConfirmed.value = true
+                        viewModel.isSkuCreated.value = true
+                        viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                        viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                        dismiss()
+                    }else {
+                        GlobalScope.launch(Dispatchers.IO) {
+                            val db = AppDatabase.getInstance(BaseApplication.getContext())
+                            val projectId = it.value.data.projectId
+
+                            val update = db.projectDao().updateProjectServerId(projectBody.projectData.localId,projectId)
 
 
-                        it.value.data.skusList.forEachIndexed { index, skus ->
-                            val ss = db.shootDao().updateSkuAndImageIds(projectId,skus.localId,skus.skuId)
-                        }
+                            it.value.data.skusList.forEachIndexed { index, skus ->
+                                val ss = db.shootDao().updateSkuAndImageIds(projectId,skus.localId,skus.skuId)
+                            }
 
-                        GlobalScope.launch(Dispatchers.Main) {
-                            Utilities.hideProgressDialog()
-                            viewModel.project?.projectId = it.value.data.projectId
-                            viewModel.sku?.skuId = it.value.data.skusList[0].skuId
+                            GlobalScope.launch(Dispatchers.Main) {
+                                Utilities.hideProgressDialog()
+                                viewModel.project?.projectId = it.value.data.projectId
+                                viewModel.sku?.skuId = it.value.data.skusList[0].skuId
 
-                            viewModel.isSubCategoryConfirmed.value = true
-                            viewModel.isSkuCreated.value = true
-                            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-                            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-                            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
-                            dismiss()
+                                viewModel.isSubCategoryConfirmed.value = true
+                                viewModel.isSkuCreated.value = true
+                                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                                dismiss()
+                            }
                         }
                     }
                 }

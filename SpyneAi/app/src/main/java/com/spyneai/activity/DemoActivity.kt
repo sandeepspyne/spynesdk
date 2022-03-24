@@ -23,7 +23,7 @@ class DemoActivity : AppCompatActivity() {
             Spyne.start(
                 this,
                 "external_user_id_one",
-                "123456",
+                "0396",
                 Intent(this,DemoActivity::class.java)
             )
         }
