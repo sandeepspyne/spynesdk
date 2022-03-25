@@ -8,10 +8,13 @@ import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.preference.PreferenceManager
 import android.util.Patterns
+import android.view.LayoutInflater
 import android.view.Window
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.spyneai.R
+import com.spyneai.databinding.DialogProgressBinding
 import com.spyneai.isValidGlideContext
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.dialog_progress.*
@@ -68,10 +71,21 @@ object Utilities {
         if (context.isValidGlideContext()) {
             dialog = Dialog(context!!)
             dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog!!.setContentView(R.layout.dialog_progress)
+            val view = LayoutInflater.from(context).inflate(R.layout.dialog_progress,null)
+            val binding = DialogProgressBinding.bind(view)
+            dialog!!.setContentView(binding.root)
             dialog!!.setCancelable(false)
-            Glide.with(context).load(R.raw.loader).into(dialog!!.ivLoaders);
-            dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            if (getBool(context,AppConstants.FROM_SDK,false)){
+                binding.ivAppLogo.isVisible = false
+                binding.ivLoaders.isVisible = false
+
+                binding.progressbar.isVisible = true
+                binding.tvPleaseWait.isVisible = true
+                dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.WHITE))
+            }else {
+                Glide.with(context).load(R.raw.loader).into(dialog!!.ivLoaders)
+                dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            }
             dialog!!.show()
         }
 
