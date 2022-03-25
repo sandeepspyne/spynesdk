@@ -426,48 +426,53 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
                     val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
 
+
                     if (Utilities.getBool(requireContext(), AppConstants.FROM_SDK, false)
                         && createProjectRes.data.draftAvailable) {
 
                         val selctedDraftList = createProjectRes.data.draftData[0].imageList
 
-                        //set overlays
-                        overlaysList.forEachIndexed { index, data ->
-                            val item = getItem(data.id)
+                        if (overlaysList.size == selctedDraftList.size){
+                            viewModel.checkInteriorShootStatus()
+                        }else{
+                            //set overlays
+                            overlaysList.forEachIndexed { index, data ->
+                                val item = getItem(data.id)
 
-                            item?.let {
-                                overlaysList[index].imageClicked = true
-                                overlaysList[index].imagePath = item.inputImageLresUrl
-                            }
-
-                        }
-
-                        if (viewModel.shootList.value != null) {
-                            overlaysList.forEach { overlay ->
-                                val element = viewModel.shootList.value!!.firstOrNull {
-                                    it.overlayId == overlay.id
+                                item?.let {
+                                    overlaysList[index].imageClicked = true
+                                    overlaysList[index].imagePath = item.inputImageLresUrl
                                 }
 
-                                if (element != null) {
-                                    overlay.imageClicked = true
-                                    overlay.imagePath = element.capturedImage
+                            }
+
+                            if (viewModel.shootList.value != null) {
+                                overlaysList.forEach { overlay ->
+                                    val element = viewModel.shootList.value!!.firstOrNull {
+                                        it.overlayId == overlay.id
+                                    }
+
+                                    if (element != null) {
+                                        overlay.imageClicked = true
+                                        overlay.imagePath = element.capturedImage
+                                    }
                                 }
                             }
-                        }
 
-                        val notSelected = overlaysList.firstOrNull {
-                            !it.isSelected && !it.imageClicked
-                        }
+                            val notSelected = overlaysList.firstOrNull {
+                                !it.isSelected && !it.imageClicked
+                            }
 
-                        var index = -1
-                        if (notSelected != null) {
-                            index = overlaysList.indexOf(notSelected)
+                            var index = -1
+                            if (notSelected != null) {
+                                index = overlaysList.indexOf(notSelected)
 
-                            overlaysList[index].isSelected = true
+                                overlaysList[index].isSelected = true
 
-                            viewModel.displayName = overlaysList[index].display_name
-                            viewModel.displayThumbanil = overlaysList[index].display_thumbnail
+                                viewModel.displayName = overlaysList[index].display_name
+                                viewModel.displayThumbanil = overlaysList[index].display_thumbnail
 
+                            }
                         }
                     } else {
                         if (viewModel.shootList.value != null) {

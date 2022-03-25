@@ -133,18 +133,7 @@ class ProcessViewModel : ViewModel() {
                 }
             }
         }
-
     }
-
-
-//    fun checkImagesUploadStatus(backgroundSelect: String) {
-//        if (localRepository.isImagesUploaded(sku?.skuId!!)) {
-//            processsku = true
-//        } else {
-//            // localRepository.queueProcessRequest(sku?.skuId!!, backgroundSelect)
-//            skuQueued.value = true
-//        }
-//    }
 
     fun updateCarTotalFrames(authKey: String, skuId: String, totalFrames: String) =
         viewModelScope.launch {
