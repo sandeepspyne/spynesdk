@@ -141,7 +141,10 @@ class ImageUploadingService : Service(),DataSyncListener {
             notificationManager.createNotificationChannel(channel)
         }
 
-        var pendingIntent: PendingIntent = Intent(this, MainDashboardActivity::class.java).let { notificationIntent ->
+        var pendingIntent: PendingIntent = if (Utilities.getBool(this,AppConstants.FROM_SDK,false)) Intent().let { notificationIntent ->
+            PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        }
+        else Intent(this, MainDashboardActivity::class.java).let { notificationIntent ->
             PendingIntent.getActivity(this, 0, notificationIntent, 0)
         }
 
@@ -152,17 +155,21 @@ class ImageUploadingService : Service(),DataSyncListener {
             ) else
                 Notification.Builder(this)
 
-        return builder
+        val build =  builder
             .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(pendingIntent)
-            .setSmallIcon(R.drawable.app_logo)
             .setOngoing(isOngoing)
             .setAutoCancel(isOngoing)
             .setOnlyAlertOnce(true)
             .setPriority(Notification.PRIORITY_HIGH) // for under android 26 compatibility
-            .build()
 
+        if (Utilities.getBool(this,AppConstants.FROM_SDK,false))
+            build.setSmallIcon(R.drawable.upload)
+        else
+            build.setSmallIcon(R.drawable.app_logo)
+
+        return build.build()
     }
 
     private fun stopService() {
@@ -206,7 +213,6 @@ class ImageUploadingService : Service(),DataSyncListener {
     }
 
     override fun onCompleted(title: String, type: ServerSyncTypes) {
-
         val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
         val content = getString(R.string.innter_connection_label)+internet
         var notification = createNotification(title,content, true)
@@ -223,10 +229,9 @@ class ImageUploadingService : Service(),DataSyncListener {
 
                 notificationManager.notify(notificationId, notification)
                 stopService()
-            },180000)
+            },5000)
         }
     }
-
 
     override fun onConnectionLost(title: String, type: ServerSyncTypes) {
         captureEvent(Events.INTERNET_DISCONNECTED,
@@ -259,29 +264,6 @@ class ImageUploadingService : Service(),DataSyncListener {
                 imageUploader?.connectionLost = false
 
                 checkPendingDataSync()
-
-//               GlobalScope.launch(Dispatchers.IO) {
-//                   val db = AppDatabase.getInstance(BaseApplication.getContext())
-//                   val shootLocalRepository = ImagesRepoV2(db.imageDao())
-//                   if (shootLocalRepository.getOldestImage() != null
-//                   ) {
-//
-//                       resumeUpload("onReceive")
-//                   }
-//
-//                   val pendingProjects = db.projectDao().getPendingProjects()
-//
-//                   if (pendingProjects > 0){
-//                       startProjectSync("onReceive")
-//                   }
-//
-//                   val pendingSkus = db.skuDao().getPendingSku()
-//
-//                   if (pendingSkus > 0){
-//                       startProcessSync("onReceive")
-//                   }
-//               }
-
             }else {
                 //push event of internet not connected
                 captureEvent(Events.INTERNET_DISCONNECTED,

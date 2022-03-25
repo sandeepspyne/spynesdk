@@ -491,36 +491,38 @@ fun Context.checkPendingDataSync() {
             startVideoUploadService()
         }
 
-        val pendingProjects = db.projectDao().getPendingProjects()
+        if (!Utilities.getBool(this@checkPendingDataSync,AppConstants.FROM_SDK,false)){
+            val pendingProjects = db.projectDao().getPendingProjects()
 
-        captureEvent(
-            Events.CREATE_PROJECT_PENDING,
-            properties.apply {
-                put("project_pending",pendingProjects)
-            }
-        )
-
-        if (pendingProjects > 0){
-            startUploadingService(
-                MainDashboardActivity::class.java.simpleName,
-                ServerSyncTypes.CREATE
+            captureEvent(
+                Events.CREATE_PROJECT_PENDING,
+                properties.apply {
+                    put("project_pending",pendingProjects)
+                }
             )
-        }
 
-        val pendingSkus = db.skuDao().getPendingSku()
-
-        captureEvent(
-            Events.PROCESS_SKU_PENDING,
-            properties.apply {
-                put("sku_pending",pendingSkus)
+            if (pendingProjects > 0){
+                startUploadingService(
+                    MainDashboardActivity::class.java.simpleName,
+                    ServerSyncTypes.CREATE
+                )
             }
-        )
 
-        if (pendingSkus > 0){
-            startUploadingService(
-                MainDashboardActivity::class.java.simpleName,
-                ServerSyncTypes.PROCESS
+            val pendingSkus = db.skuDao().getPendingSku()
+
+            captureEvent(
+                Events.PROCESS_SKU_PENDING,
+                properties.apply {
+                    put("sku_pending",pendingSkus)
+                }
             )
+
+            if (pendingSkus > 0){
+                startUploadingService(
+                    MainDashboardActivity::class.java.simpleName,
+                    ServerSyncTypes.PROCESS
+                )
+            }
         }
     }
 }

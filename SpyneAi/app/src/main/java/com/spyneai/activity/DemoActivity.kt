@@ -19,7 +19,6 @@ class DemoActivity : AppCompatActivity() {
         binding = ActivityDemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         intent.getStringExtra("sku_id")?.let {
             binding.tvSkuId.text = it
         }
@@ -28,7 +27,7 @@ class DemoActivity : AppCompatActivity() {
             Spyne.start(
                 this,
                 "external_user_id_two",
-                "0398",
+                getSaltString(),
                 Intent(this,DemoActivity::class.java)
             )
         }
