@@ -2,7 +2,6 @@ package com.spyneai.sdk
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import com.spyneai.BaseApplication
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -19,12 +18,16 @@ class Spyne(
         var apiKey: String? = null
         var userId: String? = null
         var foreignSkuId: String? = null
-        var enterpriseid: String? = null
+        var enterpriseId: String? = null
 
-        fun init(context: Context, apiKey: String,categoryId: String) {
+        fun init(
+            context: Context,
+            apiKey: String,
+            categoryId: String
+        ) {
             BaseApplication.setContext(context)
             this.apiKey = apiKey
-            this.enterpriseid = enterpriseid
+            this.enterpriseId = enterpriseId
             Utilities.savePrefrence(context, AppConstants.CATEGORY_ID, categoryId)
             Utilities.savePrefrence(context, AppConstants.API_KEY, apiKey)
             Utilities.saveBool(context, AppConstants.FROM_SDK, true)
@@ -44,6 +47,5 @@ class Spyne(
             val signupIntent = Intent(context, SignupSDK::class.java)
             context.startActivity(signupIntent)
         }
-
     }
 }

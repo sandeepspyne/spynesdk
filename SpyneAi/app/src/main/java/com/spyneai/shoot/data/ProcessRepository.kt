@@ -1,8 +1,11 @@
 package com.spyneai.shoot.data
 
+import com.spyneai.BaseApplication
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ClipperApiStagingClient
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import okhttp3.RequestBody
 
 class ProcessRepository : BaseRepository() {
@@ -17,6 +20,15 @@ class ProcessRepository : BaseRepository() {
         clipperApi.getBackgroundGifCars(category)
     }
 
+    suspend fun getBackgroundGifCars(
+        map: HashMap<String, String>
+    ) =  safeApiCall {
+        map.apply {
+            put("auth_key",
+                Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString())
+        }
+        clipperApi.getBackgrounds(map)
+    }
 
 
     suspend fun processSku(

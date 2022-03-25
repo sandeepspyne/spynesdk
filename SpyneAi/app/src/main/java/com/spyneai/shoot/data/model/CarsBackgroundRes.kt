@@ -2,6 +2,7 @@ package com.spyneai.shoot.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 data class CarsBackgroundRes(
     val `data`: List<Background>,
@@ -15,8 +16,11 @@ data class CarsBackgroundRes(
         var category : String,
         val bgName: String,
         val gifUrl: String,
+        @SerializedName("backgroundCredit")
         val imageCredit: Int,
+        @SerializedName("backgroundId")
         val imageId: String,
+        @SerializedName("lowResImageUrl")
         val imageUrl: String
     )
 }

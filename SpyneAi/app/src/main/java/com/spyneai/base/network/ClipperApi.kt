@@ -138,6 +138,11 @@ interface ClipperApi {
         @Field("auth_key") auth_key: String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : CarsBackgroundRes
 
+    @GET("nv1/background/fetch-enterprise-bgs")
+    suspend fun getBackgrounds(
+        @QueryMap map: MutableMap<String, String>
+    ): CarsBackgroundRes
+
     @FormUrlEncoded
     @POST("v2/sku/processImages")
     suspend fun processSku(

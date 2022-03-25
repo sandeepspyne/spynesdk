@@ -222,69 +222,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 
         }
 
-
-//        viewModel.createSku(
-//            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
-//            projectId,
-//            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-//            prod_sub_cat_id!!,
-//            viewModel.sku?.skuName.toString(),
-//            viewModel.exterirorAngles.value!!
-//        )
-//
-//        viewModel.createSkuRes.observe(viewLifecycleOwner, {
-//            when (it) {
-//                is Resource.Success -> {
-//                    Utilities.hideProgressDialog()
-//
-//                    val items = HashMap<String, Any?>()
-//                    items["sku_name"] = viewModel.sku?.skuName.toString()
-//                    items.put("project_id", projectId)
-//                    items.put("prod_sub_cat_id", prod_sub_cat_id)
-//                    items.put("angles", viewModel.exterirorAngles.value!!)
-//
-//                    BaseApplication.getContext().captureEvent(
-//                        Events.CREATE_SKU,
-//                        items
-//                    )
-//
-//                    val sku = viewModel.sku
-//                    sku?.skuId = it.value.sku_id
-//                    sku?.projectId = projectId
-//                    sku?.createdOn = System.currentTimeMillis()
-//                    sku?.totalImages = viewModel.exterirorAngles.value
-//                    sku?.categoryName = viewModel.categoryDetails.value?.categoryName
-//                    sku?.categoryId = viewModel.categoryDetails.value?.categoryId
-//                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
-//                    sku?.subcategoryId = prod_sub_cat_id
-//                    sku?.exteriorAngles = viewModel.exterirorAngles.value
-//
-//                    viewModel.sku = sku
-//                    viewModel.isSubCategoryConfirmed.value = true
-//                    viewModel.isSkuCreated.value = true
-//                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
-//                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
-//                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
-//
-//                    //add sku to local database
-//                    viewModel.insertSku(sku!!)
-//
-//                    val s = ""
-//                    dismiss()
-//                }
-//
-//
-//                is Resource.Failure -> {
-//                    viewModel.isCameraButtonClickable = true
-//                    BaseApplication.getContext().captureFailureEvent(
-//                        Events.CREATE_SKU_FAILED, HashMap<String, Any?>(),
-//                        it.errorMessage!!
-//                    )
-//                    Utilities.hideProgressDialog()
-//                    handleApiError(it) { createSku(projectId, prod_sub_cat_id) }
-//                }
-//            }
-//        })
     }
 
     private fun observeCreateProject(projectBody: ProjectBody) {

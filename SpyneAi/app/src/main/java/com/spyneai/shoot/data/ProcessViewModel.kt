@@ -94,12 +94,13 @@ class ProcessViewModel : ViewModel() {
 
 
     fun getBackgroundGifCars(
-        category: String
+        fetchId : String,
+        map: HashMap<String, String>
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
 
         GlobalScope.launch(Dispatchers.IO) {
-            val backgroundList = localRepository.getBackgrounds(category)
+            val backgroundList = localRepository.getBackgrounds(fetchId)
 
             if (!backgroundList.isNullOrEmpty()) {
                 GlobalScope.launch(Dispatchers.Main) {
@@ -112,16 +113,16 @@ class ProcessViewModel : ViewModel() {
                     )
                 }
             } else {
-                val response = repository.getBackgroundGifCars(category)
+                val response = repository.getBackgroundGifCars(map)
 
                 if (response is Resource.Success) {
                     //insert overlays
                     val bgList = response.value.data
 
                     bgList.forEach {
-                        it.category = category
+                        it.category = fetchId
                     }
-                    //localRepository.insertBackgrounds(bgList)
+                    localRepository.insertBackgrounds(bgList)
 
                     GlobalScope.launch(Dispatchers.Main) {
                         _carGifRes.value = response

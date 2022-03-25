@@ -174,43 +174,58 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             binding.tvGenerateGif.text = getString(R.string.generate_output)
         }
 
+        if (Utilities.getBool(requireContext(),AppConstants.FROM_SDK,false)){
+            binding.cb360.visibility = View.GONE
+            binding.tv360.visibility = View.GONE
+            binding.tvGenerateGif.text = getString(R.string.generate_output)
+        }
+
         binding.tvGenerateGif.setOnClickListener {
             //update total frame if user clicked interior and misc
-            if (viewModel.interiorMiscShootsCount > 0)
-                updateTotalFrames()
-            else {
-                processRequest()
-            }
+            processRequest()
         }
 
     }
 
     private fun processRequest() {
-        when (getString(R.string.app_name)) {
-            AppConstants.KARVI,
-            AppConstants.SWEEP,
-            AppConstants.CARS24,
-            AppConstants.CARS24_INDIA -> {
-                //process image call
-                processSku(false)
-            }
-            AppConstants.SWIGGY -> {
+        if (Utilities.getBool(requireContext(),AppConstants.FROM_SDK,false)){
+            processSku(false)
+        }else{
+            when (getString(R.string.app_name)) {
+                AppConstants.KARVI,
+                AppConstants.SWEEP,
+                AppConstants.CARS24,
+                AppConstants.CARS24_INDIA -> {
+                    //process image call
+                    processSku(false)
+                }
+                AppConstants.SWIGGY -> {
 //                processFoodImage()
 //                Utilities.showProgressDialog(requireContext())
-                processSku(true)
-            }
-            AppConstants.SPYNE_AI -> {
-                viewModel.interiorMiscShootsCount = viewModel.sku?.imagesCount!!
+                    processSku(true)
+                }
+                AppConstants.SPYNE_AI -> {
+                    viewModel.interiorMiscShootsCount = viewModel.sku?.imagesCount!!
 
-                if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
-                        .equals("Food & Beverages")
-                ) {
+                    if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)
+                            .equals("Food & Beverages")
+                    ) {
 //                    processFoodImage()
 //                    Utilities.showProgressDialog(requireContext())
 
-                    processSku(true)
-                } else {
-                    if (binding.cb360.isChecked) {
+                        processSku(true)
+                    } else {
+                        if (binding.cb360.isChecked) {
+                            viewModel.backgroundSelect = backgroundSelect
+                            viewModel.addRegularShootSummaryFragment.value = true
+                        } else {
+                            //process image call
+                            processSku(false)
+                        }
+                    }
+                }
+                else -> {
+                    if (binding.cb360.visibility == View.VISIBLE && binding.cb360.isChecked) {
                         viewModel.backgroundSelect = backgroundSelect
                         viewModel.addRegularShootSummaryFragment.value = true
                     } else {
@@ -219,24 +234,17 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     }
                 }
             }
-            else -> {
-                if (binding.cb360.visibility == View.VISIBLE && binding.cb360.isChecked) {
-                    viewModel.backgroundSelect = backgroundSelect
-                    viewModel.addRegularShootSummaryFragment.value = true
-                } else {
-                    //process image call
-                    processSku(false)
-                }
-            }
         }
+
 
     }
 
     private fun getBackground() {
-        when(viewModel.categoryId){
-            AppConstants.CARS_CATEGORY_ID -> viewModel.getBackgroundGifCars("Automobiles")
-            AppConstants.FOOD_AND_BEV_CATEGORY_ID -> viewModel.getBackgroundGifCars("Food")
-        }
+        val map = HashMap<String,String>()
+
+        map["prodCatId"] = viewModel.categoryId!!
+
+        viewModel.getBackgroundGifCars(viewModel.categoryId!!,map)
     }
 
     private fun initSelectBackground() {
@@ -258,7 +266,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
 
-                    viewModel.backgroundSelect = response.data[0].imageId
                     backgroundSelect = response.data[0].imageId
                     viewModel.backgroundSelect = backgroundSelect
                     viewModel.bgName = response.data[0].bgName
@@ -314,12 +321,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         binding.rvBackgroundsCars.setLayoutManager(layoutManager)
         binding.rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
     }
-
-
-    private fun updateTotalFrames() {
-        processRequest()
-    }
-
 
 
     private fun processSku(gotoHome: Boolean) {

@@ -27,8 +27,8 @@ class DemoActivity : AppCompatActivity() {
         binding.btnStart.setOnClickListener {
             Spyne.start(
                 this,
-                "external_user_id_one",
-                "0395",
+                "external_user_id_two",
+                "0398",
                 Intent(this,DemoActivity::class.java)
             )
         }
