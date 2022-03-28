@@ -1,0 +1,31 @@
+
+Fkotlin:S108Ğ")Either remove or fill this block of code.(±ß–ûÿÿÿÿ
+Pkotlin:S1172É"2Use "_" instead of these unused lambda parameters.(Ğ¸ºãùÿÿÿÿ
+rkotlin:S6306§"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(š£Œúÿÿÿÿ
+rkotlin:S6306ü"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(š£Œúÿÿÿÿ
+rkotlin:S6306Á"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(š£Œúÿÿÿÿ
+>kotlin:S1481¡"&Remove this unused "s" local variable.(Í´íx
+Ckotlin:S1481®"*Remove this unused "after" local variable.(æùØì
+Ikotlin:S1481«"+Remove this unused "before" local variable.(‘“†ôıÿÿÿÿ
+>kotlin:S1481£"&Remove this unused "s" local variable.(Í´íx
+>kotlin:S1128"Remove this unused import.(œô”şúÿÿÿÿ8™–Õ‚ı/
+>kotlin:S1128"Remove this unused import.(ÖÇØıÿÿÿÿ8™–Õ‚ı/
+9kotlin:S1128"Remove this unused import.(¶õÌ8š–Õ‚ı/
+7kotlin:S11287"Remove this unused import.(÷çÃ˜ûÿÿÿÿ
+7kotlin:S1128:"Remove this unused import.(üåñùÿÿÿÿ
+Akotlin:S1874ö"#Deprecated code should not be used.(½ÄÜ»ûÿÿÿÿ
+Akotlin:S1874Í"#Deprecated code should not be used.(¬ğıßûÿÿÿÿ
+jkotlin:S3776U"RRefactor this method to reduce its Cognitive Complexity from 46 to the 15 allowed.(ëü«
+kkotlin:S117«"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(»ß€©
+pkotlin:S117Î"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ö‘Íÿÿÿÿÿÿ
+pkotlin:S117ş"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ö‘Íÿÿÿÿÿÿ
+pkotlin:S117ÿ"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ÔÛç›üÿÿÿÿ
+5kotlin:S6310¨"Avoid hardcoded dispatchers.(©ªŸ³
+5kotlin:S6310Ã"Avoid hardcoded dispatchers.(Í¡·Ş
+5kotlin:S6310ı"Avoid hardcoded dispatchers.(Í¡·Ş
+5kotlin:S6310Â"Avoid hardcoded dispatchers.(Í¡·Ş
+jkotlin:S6311ı"QRemove this dispatcher. It is pointless when used with only suspending functions.(Í¡·Ş
+jkotlin:S6311Â"QRemove this dispatcher. It is pointless when used with only suspending functions.(Í¡·Ş
+Tkotlin:S1144é"4Remove this unused private "createImageFile" method.(ËÈï÷8Ï–Õ‚ı/
+rkotlin:S1186„"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ÛÆ<
+rkotlin:S1186›"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ÛÆ<

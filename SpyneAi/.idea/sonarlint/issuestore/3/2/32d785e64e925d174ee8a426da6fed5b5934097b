@@ -1,0 +1,16 @@
+
+mkotlin:S6306‚"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €
+7kotlin:S1128"Remove this unused import.(Â¾º°ùÿÿÿÿ
+7kotlin:S1128"Remove this unused import.(ÊÒÅ­ùÿÿÿÿ
+7kotlin:S1128"Remove this unused import.(µ““ûÿÿÿÿ
+7kotlin:S1128"Remove this unused import.(Ã¾¤†øÿÿÿÿ
+7kotlin:S1128"Remove this unused import.(ÍÆ”ÿÿÿÿÿ
+7kotlin:S1128"Remove this unused import.(§Øíıÿÿÿÿ
+>kotlin:S1128"Remove this unused import.(ì¤™Õıÿÿÿÿ8‡Çà‚ı/
+9kotlin:S1128"Remove this unused import.(¢œŞ8‡Çà‚ı/
+2kotlin:S1128"Remove this unused import.(Üº¸¡
+8kotlin:S1128"Remove this unused import.(–¯&8‡Çà‚ı/
+8kotlin:S1128"Remove this unused import.(±ÿu8‡Çà‚ı/
+7kotlin:S1128"Remove this unused import.(ÙÃä¡şÿÿÿÿ
+5kotlin:S6310‚"Avoid hardcoded dispatchers.(á¥ €
+Kkotlin:S1066R".Merge this "if" statement with the nested one.(İÔÂ’ıÿÿÿÿ

@@ -1,0 +1,20 @@
+
+mkotlin:S6306å"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €
+>kotlin:S1128"Remove this unused import.(ì¤™Õıÿÿÿÿ8„äá‚ı/
+9kotlin:S1128"Remove this unused import.(¢œŞ8„äá‚ı/
+8kotlin:S1128	"Remove this unused import.(–¯&8„äá‚ı/
+8kotlin:S1128"Remove this unused import.(±ÿu8…äá‚ı/
+7kotlin:S1128"Remove this unused import.(ÙÃä¡şÿÿÿÿ
+7kotlin:S1128!"Remove this unused import.(Â¾º°ùÿÿÿÿ
+7kotlin:S1128""Remove this unused import.(ÊÒÅ­ùÿÿÿÿ
+7kotlin:S1128#"Remove this unused import.(¦âÜúÿÿÿÿ
+9kotlin:S1128$"Remove this unused import.(¥ïú8…äá‚ı/
+2kotlin:S1128%"Remove this unused import.(°ÎÑĞ
+7kotlin:S1128&"Remove this unused import.(µ““ûÿÿÿÿ
+7kotlin:S1128'"Remove this unused import.(Ã¾¤†øÿÿÿÿ
+kkotlin:S117ı"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ÃòŒ”ûÿÿÿÿ
+5kotlin:S6310å"Avoid hardcoded dispatchers.(á¥ €
+skotlin:S1186³"ZAdd a nested comment explaining why this function is empty or complete the implementation.(¨í÷
+xkotlin:S1186·"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ù¸š²úÿÿÿÿ
+xkotlin:S1186»"ZAdd a nested comment explaining why this function is empty or complete the implementation.(Ò–ûøÿÿÿÿ
+Lkotlin:S1066Â".Merge this "if" statement with the nested one.(İÔÂ’ıÿÿÿÿ
