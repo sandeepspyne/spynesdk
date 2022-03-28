@@ -366,4 +366,12 @@
     <string name="dialog_permission_default_message">Default message</string>
     <string name="dialog_permission_button_positive">OK</string>
     <string name="terms_and_conditions_url">https://www.flipkart.com/pages/privacypolicy</string>
+
+    <string name="slide_one_title">Shoot</string>
+    <string name="slide_one_description">camera that helps you to click product images accepted worldwide.</string>
+    <string name="slide_two_title">Edit</string>
+    <string name="slide_two_description">Our AI solves your daily editing hurdle.  One single tap saving your manual effort.
+</string>
+    <string name="slide_three_tittle">Publish</string>
+    <string name="slide_three_description">Upload the best quality images directly to your desirable e-commerce website.</string>
 </resources>
