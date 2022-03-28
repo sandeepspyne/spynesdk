@@ -507,38 +507,38 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun dispatchTakePictureIntent() {
-        try {
-            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                // Ensure that there's a camera activity to handle the intent
-                takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
-                    // Create the File where the photo should go
-                    val photoFile: File? = try {
-                        createImageFile()
-                    } catch (ex: IOException) {
-                        // Error occurred while creating the File
-                        null
-                    }
-                    // Continue only if the File was successfully created
-                    photoFile?.also {
-                        val photoURI: Uri = FileProvider.getUriForFile(
-                            requireContext(),
-                            "${BuildConfig.APPLICATION_ID}.fileprovider",
-                            it
-                        )
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                        takePictureIntent.putExtra(
-                            "android.intent.extras.CAMERA_FACING",
-                            android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT
-                        )
-                        takePictureIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
-                        takePictureIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
-                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            val s = ""
-        }
+//        try {
+//            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+//                // Ensure that there's a camera activity to handle the intent
+//                takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
+//                    // Create the File where the photo should go
+//                    val photoFile: File? = try {
+//                        createImageFile()
+//                    } catch (ex: IOException) {
+//                        // Error occurred while creating the File
+//                        null
+//                    }
+//                    // Continue only if the File was successfully created
+//                    photoFile?.also {
+//                        val photoURI: Uri = FileProvider.getUriForFile(
+//                            requireContext(),
+//                            "${BuildConfig.APPLICATION_ID}.fileprovider",
+//                            it
+//                        )
+//                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+//                        takePictureIntent.putExtra(
+//                            "android.intent.extras.CAMERA_FACING",
+//                            android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT
+//                        )
+//                        takePictureIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
+//                        takePictureIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
+//                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+//                    }
+//                }
+//            }
+//        } catch (e: Exception) {
+//            val s = ""
+//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -365,4 +365,5 @@
     <string name="dialog_permission_title">Permission required</string>
     <string name="dialog_permission_default_message">Default message</string>
     <string name="dialog_permission_button_positive">OK</string>
+    <string name="terms_and_conditions_url">https://www.flipkart.com/pages/privacypolicy</string>
 </resources>

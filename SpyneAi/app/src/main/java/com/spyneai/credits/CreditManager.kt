@@ -5,7 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
-import com.spyneai.dashboard.ui.WhiteLabelConstants
+
 
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
@@ -109,7 +109,7 @@ class CreditManager {
 
         var call = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
             .updateDownloadStatus(Utilities.getPreference(context,AppConstants.TOKEN_ID)!!.toString(),skuId,
-                WhiteLabelConstants.ENTERPRISE_ID,true)
+                "WhiteLabelConstants.ENTERPRISE_ID",true)
 
             call?.enqueue(object : Callback<DownloadHDRes> {
                 override fun onResponse(

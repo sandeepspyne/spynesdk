@@ -2,7 +2,7 @@ package com.spyneai.interfaces
 
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.dashboard.ui.WhiteLabelConstants
+
 import com.spyneai.loginsignup.models.ForgotPasswordResponse
 import com.spyneai.loginsignup.models.GetCountriesResponse
 import com.spyneai.loginsignup.models.LoginEmailPasswordResponse
@@ -10,6 +10,7 @@ import com.spyneai.loginsignup.models.SignupResponse
 import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
 import com.spyneai.model.otp.OtpResponse
+import com.spyneai.sdk.Spyne
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -46,7 +47,7 @@ interface MyAPIService {
     @GET("v2/user/forgot-password")
     fun forgotPassword(
         @Query("email_id") userId: String?,
-        @Query("api_key") apiKey: String = WhiteLabelConstants.API_KEY
+        @Query("api_key") apiKey: String =  Spyne.apiKey!!
     ): Call<ForgotPasswordResponse>?
 
     @POST("user/phone")

@@ -69,7 +69,7 @@ class MainDashboardActivity : BaseActivity() {
         binding.bottomNavigation.background = null
         viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
 
-        val firstFragment = HomeDashboardFragment()
+        val firstFragment = WalletDashboardFragment()
         val SecondFragment = WalletDashboardFragment()
         val myOrdersFragment = MyOrdersFragment()
         val thirdFragment = PreferenceFragment()
@@ -210,20 +210,20 @@ class MainDashboardActivity : BaseActivity() {
     }
 
     private fun checkAppVersion() {
-        if (BuildConfig.VERSION_NAME.contains("debug")) {
-            if (allPermissionsGranted()) {
-                onPermissionGranted()
-            } else {
-                permissionRequest.launch(permissions.toTypedArray())
-            }
-        } else {
-            Utilities.showProgressDialog(this)
-
-            viewModel?.getVersionStatus(
-                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                BuildConfig.VERSION_NAME
-            )
-        }
+//        if (BuildConfig.VERSION_NAME.contains("debug")) {
+//            if (allPermissionsGranted()) {
+//                onPermissionGranted()
+//            } else {
+//                permissionRequest.launch(permissions.toTypedArray())
+//            }
+//        } else {
+//            Utilities.showProgressDialog(this)
+//
+//            viewModel?.getVersionStatus(
+//                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
+//                BuildConfig.VERSION_NAME
+//            )
+//        }
     }
 
     private fun observeAppVersion() {

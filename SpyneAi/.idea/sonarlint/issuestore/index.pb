@@ -19,10 +19,6 @@ d
 4app/src/main/java/com/spyneai/logout/LogoutDialog.kt,6/2/62532aa10117e08a190c4cf53ea5654db5abf82a
 d
 4app/src/main/java/com/spyneai/posthog/TrackMatric.kt,8/c/8c1c2d8af3fef9154a8332d1fe1a03ff195d26c1
-s
-Capp/src/main/java/com/spyneai/loginsignup/activity/LoginActivity.kt,2/f/2f01978e2e7805008d20241712b54798d97c78f9
-h
-8app/src/main/java/com/spyneai/interfaces/MyAPIService.kt,5/a/5ae93ece70c313326f8429e23ba12f244c0c44db
 t
 Dapp/src/olacabs/java/com/spyneai/dashboard/ui/WhiteLabelConstants.kt,7/c/7c952868de43fa10c92b57ef90b39b1e88639088
 n
@@ -33,8 +29,6 @@ x
 Happ/src/main/java/com/spyneai/shoot/ui/ecomwithgrid/SkuDetailFragment.kt,a/a/aaf01dd299abca5a3f5803450f90058268bd0714
 k
 ;app/src/main/java/com/spyneai/shoot/data/FileNameManager.kt,3/b/3b1ed7b1158f539ed346b87cf9984a6e99e42afa
-P
- app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
 p
 @app/src/main/java/com/spyneai/shoot/ui/AngleSelectionFragment.kt,f/a/fa980a8cc7af670c5ab9a161fec76f63d464e1a0
 {
@@ -57,8 +51,6 @@ Fapp/src/main/java/com/spyneai/shoot/repository/model/image/ImageDao.kt,a/a/aaf
 Napp/src/main/java/com/spyneai/shoot/ui/ecomwithoverlays/OverlayEcomFragment.kt,6/8/68c25167178b7f58308e320ecc04c45d022fd6d9
 l
 <app/src/main/java/com/spyneai/shoot/ui/DraftShootFragment.kt,3/f/3f5b33f11f033d73259b915994a53e1801296046
-s
-Capp/src/main/java/com/spyneai/dashboard/ui/MainDashboardActivity.kt,b/e/bec2e28986ea2be18bc829fd116251e1d16ed345
 l
 <app/src/main/java/com/spyneai/activity/CategoriesActivity.kt,2/8/284eccc4b3dcff31454f0b2fb73081bd99df78f8
 l
@@ -79,8 +71,6 @@ u
 Eapp/src/main/java/com/spyneai/orders/data/paging/ProjectDataSource.kt,d/0/d0e15c10715479d742c8ed7b6bd37f7f7296b7a7
 z
 Japp/src/main/java/com/spyneai/shoot/repository/model/project/ProjectDao.kt,b/5/b549cf80499a068d8405cbf49d9a269d7bd3de9e
-@
-app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
 w
 Gapp/src/main/java/com/spyneai/shoot/repository/model/project/Project.kt,7/7/7733406418f44667795b593a4ce4da8667a90da9
 †
@@ -97,8 +87,6 @@ k
 ;app/src/main/java/com/spyneai/shoot/data/ShootRepository.kt,e/3/e31a406280352bdac951067f7e9de5295e52d1c3
 r
 Bapp/src/main/java/com/spyneai/shoot/repository/model/sku/SkuDao.kt,9/1/91d60de1d225aa69a8435cae7666658d335449ed
-u
-Eapp/src/main/java/com/spyneai/shoot/ui/RegularShootSummaryFragment.kt,7/f/7f65da135af21f95267a60c27f14ee44342bcad5
 g
 7app/src/main/java/com/spyneai/service/ProcessSkuSync.kt,0/3/03777ace43383cccb429e2f5870b7a512c2fad88
 f
@@ -139,8 +127,6 @@ f
 6app/src/main/java/com/spyneai/service/ImageUploader.kt,1/b/1b5e57d4266944bbc47e84d5db46c705a426abc1
 f
 6app/src/main/java/com/spyneai/activity/DemoActivity.kt,d/2/d2441b4fe3ffc9dcd56b4894826927cff8825845
-`
-0app/src/main/java/com/spyneai/BaseApplication.kt,7/2/72c377c7d46fd48a279482309acf2c4ccb09aeb5
 Z
 *app/src/main/java/com/spyneai/sdk/Spyne.kt,f/d/fd4a800e5a214fcc65a16577ca32688bb3732f63
 n

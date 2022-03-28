@@ -19,7 +19,7 @@ import com.google.gson.Gson
 import com.spyneai.*
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.ui.WhiteLabelConstants
+
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentRegularShootSummaryBinding
 import com.spyneai.fragment.TopUpFragment
@@ -377,7 +377,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         viewModel.updateDownloadStatus(
             Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
             viewModel.sku?.skuId!!,
-            WhiteLabelConstants.ENTERPRISE_ID,
+            "WhiteLabelConstants.ENTERPRISE_ID",
             true
         )
     }

@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.spyneai.R
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.ui.WhiteLabelConstants
+
 import com.spyneai.databinding.ActivitySignInUsingOtpBinding
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClients
@@ -19,6 +19,7 @@ import com.spyneai.model.login.LoginResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.sdk.Spyne
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -94,7 +95,7 @@ class SignInUsingOtpActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClients.buildService(MyAPIService::class.java)
-        val call = request.loginEmailApp(binding.etEmail.text.toString().trim(), WhiteLabelConstants.API_KEY)
+        val call = request.loginEmailApp(binding.etEmail.text.toString().trim(),  Spyne.apiKey!!)
 //        val call = request.loginEmailApp(etEmail.text.toString(),"value")
 
         call?.enqueue(object : Callback<LoginResponse> {

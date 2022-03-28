@@ -14,7 +14,7 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.captureIdentity
 import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.dashboard.ui.WhiteLabelConstants
+
 import com.spyneai.databinding.ActivityLoginBinding
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClients
@@ -22,6 +22,7 @@ import com.spyneai.loginsignup.models.LoginEmailPasswordResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.sdk.Spyne
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import retrofit2.Call
@@ -122,7 +123,7 @@ class LoginActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
 
         val call = RetrofitClients.buildService(MyAPIService::class.java)
-            .loginEmailPassword(email, WhiteLabelConstants.API_KEY, password, "PASSWORD")
+            .loginEmailPassword(email,  Spyne.apiKey!!, password, "PASSWORD")
 
 
         call?.enqueue(object : Callback<LoginEmailPasswordResponse> {

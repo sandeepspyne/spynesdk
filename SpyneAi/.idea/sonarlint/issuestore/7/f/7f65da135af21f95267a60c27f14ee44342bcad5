@@ -1,11 +1,0 @@
-
-Fkotlin:S108")Either remove or fill this block of code.(»æŸ®üÿÿÿÿ
-mkotlin:S6306¥"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €
-;kotlin:S1874("#Deprecated code should not be used.(ŸçŒ
-Akotlin:S1874¦"#Deprecated code should not be used.(üÌ÷Ùüÿÿÿÿ
-kkotlin:S3776¤"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(‰¦şà
-5kotlin:S6310¥"Avoid hardcoded dispatchers.(á¥ €
-Skotlin:S1144Y"6Remove this unused private "observeProcessSku" method.(´‚›Œüÿÿÿÿ
-Wkotlin:S1144æ"9Remove this unused private "observeReduceCredits" method.(ÿÒ×üÿÿÿÿ
-Tkotlin:S1144"6Remove this unused private "observepaidStatus" method.(ÇŠÔòûÿÿÿÿ
-Qkotlin:S1144"3Remove this unused private "observeCredits" method.(İû‚Âüÿÿÿÿ

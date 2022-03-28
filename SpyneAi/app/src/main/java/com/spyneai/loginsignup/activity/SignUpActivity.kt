@@ -14,7 +14,7 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.captureIdentity
 import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.dashboard.ui.WhiteLabelConstants
+
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.models.GetCountriesResponse
@@ -22,6 +22,7 @@ import com.spyneai.loginsignup.models.SignupResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.sdk.Spyne
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_sign_in_using_otp.*
@@ -173,7 +174,7 @@ class SignUpActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
 
         val call = RetrofitClients.buildService(MyAPIService::class.java)
-            .signUp(WhiteLabelConstants.API_KEY,
+            .signUp( Spyne.apiKey!!,
                 email,
                 password,
                 "PASSWORD",

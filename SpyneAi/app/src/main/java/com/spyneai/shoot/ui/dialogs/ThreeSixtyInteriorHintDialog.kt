@@ -28,7 +28,6 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import com.theta360.sample.v2.ImageListActivity
 import kotlinx.coroutines.launch
 import android.app.Activity.RESULT_OK
 import android.net.wifi.ScanResult
@@ -102,28 +101,28 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
 
 
         binding.tvShoot.setOnClickListener {
-            if (binding.tvShoot.text.toString() == "Shoot 360") {
-                imageName= viewModel.sku?.skuName!!+ "_"+ viewModel.sku?.uuid!!+"_360int_1.JPG"
-
-                val wm = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-                val ip: String = Formatter.formatIpAddress(wm.connectionInfo.ipAddress)
-                val gatewayInfo: String = Formatter.formatIpAddress(wm.dhcpInfo.gateway)
-
-            if(ip=="192.168.1.5" && gatewayInfo=="192.168.1.1") {
-                val color:Int= ContextCompat.getColor(requireContext(), R.color.primary)
-                val hexColor = java.lang.String.format("#%06X", 0xFFFFFF and color)
-                Toast.makeText(requireContext(), "Connected With Camera", Toast.LENGTH_SHORT).show()
-                var intent = Intent(requireContext(), ImageListActivity::class.java)
-                intent.putExtra("file_name",imageName)
-                intent.putExtra("primary_color",hexColor)
-                startActivityForResult(intent,SECOND_ACTIVITY_REQUEST_CODE)
-            }
-            else{
-                ScanWifiDialog().show(requireActivity().supportFragmentManager, "ScanWifiDialog")
-            }
-            }else {
-                selectImageFromFiles()
-            }
+//            if (binding.tvShoot.text.toString() == "Shoot 360") {
+//                imageName= viewModel.sku?.skuName!!+ "_"+ viewModel.sku?.uuid!!+"_360int_1.JPG"
+//
+//                val wm = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+//                val ip: String = Formatter.formatIpAddress(wm.connectionInfo.ipAddress)
+//                val gatewayInfo: String = Formatter.formatIpAddress(wm.dhcpInfo.gateway)
+//
+//            if(ip=="192.168.1.5" && gatewayInfo=="192.168.1.1") {
+//                val color:Int= ContextCompat.getColor(requireContext(), R.color.primary)
+//                val hexColor = java.lang.String.format("#%06X", 0xFFFFFF and color)
+//                Toast.makeText(requireContext(), "Connected With Camera", Toast.LENGTH_SHORT).show()
+//                var intent = Intent(requireContext(), ImageListActivity::class.java)
+//                intent.putExtra("file_name",imageName)
+//                intent.putExtra("primary_color",hexColor)
+//                startActivityForResult(intent,SECOND_ACTIVITY_REQUEST_CODE)
+//            }
+//            else{
+//                ScanWifiDialog().show(requireActivity().supportFragmentManager, "ScanWifiDialog")
+//            }
+//            }else {
+//                selectImageFromFiles()
+//            }
         }
 
 

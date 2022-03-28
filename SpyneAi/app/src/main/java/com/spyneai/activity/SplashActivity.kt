@@ -8,7 +8,6 @@ import android.provider.Settings
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import com.spyneai.BuildConfig
 import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.getNetworkName
@@ -44,8 +43,8 @@ class SplashActivity : AppCompatActivity() {
         val manufacturer = Build.MANUFACTURER
         val model = Build.MODEL
         val version = Build.VERSION.SDK_INT
-        val versionCode: Int = BuildConfig.VERSION_CODE
-        val versionName: String = BuildConfig.VERSION_NAME
+//        val versionCode: Int = BuildConfig.VERSION_CODE
+//        val versionName: String = BuildConfig.VERSION_NAME
         val networkCarrier = getNetworkName()
 
 
@@ -53,8 +52,8 @@ class SplashActivity : AppCompatActivity() {
         Utilities.savePrefrence(this,AppConstants.DEVICE_MANUFACTURER,manufacturer)
         Utilities.savePrefrence(this,AppConstants.MODEL,model)
         Utilities.savePrefrence(this,AppConstants.OS_VERSION,version.toString())
-        Utilities.savePrefrence(this,AppConstants.APP_VERSION,versionName)
-        Utilities.savePrefrence(this,AppConstants.APP_VERSION_CODE,versionCode.toString())
+//        Utilities.savePrefrence(this,AppConstants.APP_VERSION,versionName)
+//        Utilities.savePrefrence(this,AppConstants.APP_VERSION_CODE,versionCode.toString())
         Utilities.savePrefrence(this,AppConstants.NETWORK_TYPE,networkCarrier)
         Utilities.savePrefrence(this,AppConstants.DEVICE_ID,deviceId)
 

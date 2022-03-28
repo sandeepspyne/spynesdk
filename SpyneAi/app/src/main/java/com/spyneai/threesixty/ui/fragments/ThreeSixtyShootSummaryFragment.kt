@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.ui.WhiteLabelConstants
+
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.Fragment360ShotSummaryBinding
 import com.spyneai.fragment.TopUpFragment

@@ -5,9 +5,7 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.*
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
-import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.needs.AppConstants
 import com.spyneai.sdk.Spyne
 import com.spyneai.shoot.workmanager.InternetWorker
@@ -43,7 +41,7 @@ class BaseApplication : Application() {
 
         //Sentry.init(SENTRY_DSN)
 
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+       // FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
 
         //disable night mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

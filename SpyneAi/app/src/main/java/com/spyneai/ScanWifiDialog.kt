@@ -31,7 +31,6 @@ import com.spyneai.needs.Utilities
 import com.spyneai.service.*
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ThreeSixtyInteriorHintDialog
-import com.theta360.sample.v2.ImageListActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -63,22 +62,22 @@ class ScanWifiDialog : BaseDialogFragment<ShootViewModel, FragmentScanWifiDialog
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0) {
-            val wm = context?.applicationContext?.getSystemService(WIFI_SERVICE) as WifiManager
-            val ip: String = Formatter.formatIpAddress(wm.connectionInfo.ipAddress)
-            val gatewayInfo: String = Formatter.formatIpAddress(wm.dhcpInfo.gateway)
-            if (ip == "192.168.1.5" && gatewayInfo == "192.168.1.1") {
-                val color: Int? = context?.let { ContextCompat.getColor(it, R.color.primary) }
-                val hexColor = java.lang.String.format("#%06X", 0xFFFFFF and color!!)
-                Toast.makeText(context, "Connected With Ricoh Camera", Toast.LENGTH_SHORT).show()
-                var intent = Intent(context, ImageListActivity::class.java)
-                intent.putExtra("file_name", imageName)
-                intent.putExtra("primary_color", hexColor)
-                startActivityForResult(intent, SECOND_ACTIVITY_REQUEST_CODE)
-            } else {
-                Toast.makeText(
-                    context, "You are Not connected with Ricoh Theta Camera", Toast.LENGTH_LONG
-                ).show()
-            }
+//            val wm = context?.applicationContext?.getSystemService(WIFI_SERVICE) as WifiManager
+//            val ip: String = Formatter.formatIpAddress(wm.connectionInfo.ipAddress)
+//            val gatewayInfo: String = Formatter.formatIpAddress(wm.dhcpInfo.gateway)
+//            if (ip == "192.168.1.5" && gatewayInfo == "192.168.1.1") {
+//                val color: Int? = context?.let { ContextCompat.getColor(it, R.color.primary) }
+//                val hexColor = java.lang.String.format("#%06X", 0xFFFFFF and color!!)
+//                Toast.makeText(context, "Connected With Ricoh Camera", Toast.LENGTH_SHORT).show()
+//                var intent = Intent(context, ImageListActivity::class.java)
+//                intent.putExtra("file_name", imageName)
+//                intent.putExtra("primary_color", hexColor)
+//                startActivityForResult(intent, SECOND_ACTIVITY_REQUEST_CODE)
+//            } else {
+//                Toast.makeText(
+//                    context, "You are Not connected with Ricoh Theta Camera", Toast.LENGTH_LONG
+//                ).show()
+//            }
         }
         if (requestCode == SECOND_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
