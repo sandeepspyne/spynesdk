@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.spyneai.base.network.Resource
 import com.spyneai.logout.InvalidAuthDialog
+import com.spyneai.sdk.RefreshAuthToken
+import com.spyneai.shoot.data.ShootRepository
 
 fun <A : Activity> Activity.startNewActivity(activity: Class<A>) {
     Intent(this, activity).also {
@@ -49,7 +51,8 @@ fun Fragment.handleApiError(
             retry
         )
         failure.errorCode == 401 -> {
-            InvalidAuthDialog().show(requireFragmentManager(), "InvalidAuthDialog")
+            RefreshAuthToken(requireContext(), ShootRepository()).refresh()
+            //InvalidAuthDialog().show(requireFragmentManager(), "InvalidAuthDialog")
         }
         else -> {
             val error = failure.errorMessage

@@ -1,0 +1,9 @@
+
+lkotlin:S6306K"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(‘Â¿¹
+Ckotlin:S1481Ú"*Remove this unused "count" local variable.(Í…Øâ
+@kotlin:S1481°"'Remove this unused "ss" local variable.(õå…
+7kotlin:S1128"Remove this unused import.(ü‘»¡ıÿÿÿÿ
+2kotlin:S1128"Remove this unused import.(åå
+nkotlin:S1192ü"PDefine a constant instead of duplicating this literal "createProject: " 3 times.(àØ¡¦ûÿÿÿÿ
+ikotlin:S3776Y"RRefactor this method to reduce its Cognitive Complexity from 35 to the 15 allowed.(ß¬¿!
+4kotlin:S6310K"Avoid hardcoded dispatchers.(‘Â¿¹

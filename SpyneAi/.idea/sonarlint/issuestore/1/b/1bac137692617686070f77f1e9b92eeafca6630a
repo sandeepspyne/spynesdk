@@ -1,0 +1,19 @@
+
+Fkotlin:S108­")Either remove or fill this block of code.(ÍÖ¥ºÿÿÿÿÿ
+Fkotlin:S1172›"-Remove this unused function parameter "name".(–ñš¥
+>kotlin:S1481˜"&Remove this unused "s" local variable.(Í´íx
+2kotlin:S1128"Remove this unused import.(ÁÈÚø
+1kotlin:S1128
+"Remove this unused import.(±ÿu
+2kotlin:S1128"Remove this unused import.(™¢ı§
+7kotlin:S1128"Remove this unused import.(»«¦úøÿÿÿÿ
+1kotlin:S1128"Remove this unused import.(Ë›Ë7
+1kotlin:S1128"Remove this unused import.(Ö¢çn
+7kotlin:S1128"Remove this unused import.(İáÛ¦ÿÿÿÿÿ
+2kotlin:S1128"Remove this unused import.(ü§¤˜
+dkotlin:S1192{"LDefine a constant instead of duplicating this literal "Focus Shoot" 5 times.(£Ô˜ã
+jkotlin:S37768"RRefactor this method to reduce its Cognitive Complexity from 47 to the 15 allowed.(ëü«
+pkotlin:S3776›"RRefactor this method to reduce its Cognitive Complexity from 47 to the 15 allowed.(‡»¼Úıÿÿÿÿ
+wkotlin:S3776"RRefactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.(ù°Ô´ÿÿÿÿÿ8æã­ÿû/
+Fkotlin:S1066Q".Merge this "if" statement with the nested one.(ÔÁñ¯
+Gkotlin:S1066†".Merge this "if" statement with the nested one.(ıšÏ

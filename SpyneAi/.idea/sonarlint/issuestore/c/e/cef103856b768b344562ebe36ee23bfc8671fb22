@@ -1,0 +1,12 @@
+
+Xkotlin:S1172º"8Use "_" instead of this unused lambda parameter "index".(£¢šÜ8ŞÃØÿû/
+tkotlin:S6306Æ"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8áÃØÿû/
+tkotlin:S6306ö"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8âÃØÿû/
+ykotlin:S6306ú"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8âÃØÿû/
+tkotlin:S6306²"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8âÃØÿû/
+ykotlin:S6306¿"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8âÃØÿû/
+<kotlin:S6310Æ"Avoid hardcoded dispatchers.(á¥ €8òÃØÿû/
+<kotlin:S6310ö"Avoid hardcoded dispatchers.(á¥ €8òÃØÿû/
+Akotlin:S6310ú"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8òÃØÿû/
+<kotlin:S6310²"Avoid hardcoded dispatchers.(á¥ €8óÃØÿû/
+Akotlin:S6310¿"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8óÃØÿû/

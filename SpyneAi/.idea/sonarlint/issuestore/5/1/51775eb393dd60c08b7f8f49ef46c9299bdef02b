@@ -1,0 +1,25 @@
+
+tkotlin:S6306å"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8ÿòğÕû/
+tkotlin:S6306ó"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8óğÕû/
+ykotlin:S6306ù"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8‚óğÕû/
+Bkotlin:S1874H"#Deprecated code should not be used.(’©Ê8’óğÕû/
+Gkotlin:S1874I"#Deprecated code should not be used.(øÒÁûÿÿÿÿ8’óğÕû/
+Ckotlin:S1874ƒ"#Deprecated code should not be used.(Ş«ƒ8’óğÕû/
+Ckotlin:S1874Œ"#Deprecated code should not be used.(Ş«ƒ8’óğÕû/
+Ckotlin:S1874˜"#Deprecated code should not be used.(Ş«ƒ8’óğÕû/
+Hkotlin:S1874ù"#Deprecated code should not be used.(ÄœåÈÿÿÿÿÿ8’óğÕû/
+Ckotlin:S1874"#Deprecated code should not be used.(Ÿˆ§µ8’óğÕû/
+Gkotlin:S1874"#Deprecated code should not be used.(üšÏØøÿÿÿÿ8’óğÕû/
+Bkotlin:S1874/"#Deprecated code should not be used.(Ã¡™æ8’óğÕû/
+Bkotlin:S1874/"#Deprecated code should not be used.(Ã¡™æ8’óğÕû/
+Bkotlin:S18740"#Deprecated code should not be used.(Ò¢Ì®8’óğÕû/
+Bkotlin:S18740"#Deprecated code should not be used.(Ò¢Ì®8’óğÕû/
+Bkotlin:S1874@"#Deprecated code should not be used.(ƒ‰¼Ã8’óğÕû/
+Gkotlin:S1874N"#Deprecated code should not be used.(Ï“§µüÿÿÿÿ8’óğÕû/
+Gkotlin:S1874N"#Deprecated code should not be used.(Ï“§µüÿÿÿÿ8’óğÕû/
+vkotlin:S3776B"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(¶Á»¬şÿÿÿÿ8˜óğÕû/
+<kotlin:S6310å"Avoid hardcoded dispatchers.(á¥ €8›óğÕû/
+<kotlin:S6310ó"Avoid hardcoded dispatchers.(á¥ €8›óğÕû/
+Akotlin:S6310ù"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8›óğÕû/
+ykotlin:S1186”"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ƒ½¿k8œ¸Õû/
+kotlin:S1186Á"ZAdd a nested comment explaining why this function is empty or complete the implementation.(–ºÄøÿÿÿÿ8¡óğÕû/

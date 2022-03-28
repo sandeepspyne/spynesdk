@@ -1,0 +1,11 @@
+
+Fkotlin:S108—")Either remove or fill this block of code.(Î†üŒøÿÿÿÿ
+mkotlin:S6306†"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €
+mkotlin:S6306·"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €
+Rkotlin:S1481Æ"4Remove this unused "creditAvailable" local variable.(ÉøÖ·ùÿÿÿÿ
+kkotlin:S1192»"MDefine a constant instead of duplicating this literal "onResponse: " 3 times.(©¤‚îûÿÿÿÿ
+pkotlin:S117¥"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ŽçÌñÿÿÿÿÿ
+5kotlin:S6310†"Avoid hardcoded dispatchers.(á¥ €
+5kotlin:S6310·"Avoid hardcoded dispatchers.(á¥ €
+jkotlin:S6311†"QRemove this dispatcher. It is pointless when used with only suspending functions.(á¥ €
+jkotlin:S6311·"QRemove this dispatcher. It is pointless when used with only suspending functions.(á¥ €

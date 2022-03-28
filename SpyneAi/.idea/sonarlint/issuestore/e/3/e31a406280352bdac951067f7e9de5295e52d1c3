@@ -1,0 +1,21 @@
+
+ekotlin:S107"GThis function has 8 parameters, which is greater than the 7 authorized.(“¹Ò×8¶®ÔÛû/
+jkotlin:S107W"GThis function has 8 parameters, which is greater than the 7 authorized.(ÓÆ×´úÿÿÿÿ8¶®ÔÛû/
+>kotlin:S1128"Remove this unused import.(É¨Šåüÿÿÿÿ8Æ®ÔÛû/
+qkotlin:S117"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(½³Ïûÿÿÿÿ8Ê®ÔÛû/
+lkotlin:S117 "NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¬àœ¤8Ê®ÔÛû/
+qkotlin:S117!"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(öÆæßşÿÿÿÿ8Ê®ÔÛû/
+lkotlin:S117""NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ŞËí8Ê®ÔÛû/
+lkotlin:S117#"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(÷ğÃÄ8Ê®ÔÛû/
+qkotlin:S117R"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ÀãÕúÿÿÿÿ8Ë®ÔÛû/
+kkotlin:S117Y"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(°Ñÿk8Ë®ÔÛû/
+qkotlin:S117~"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ö–÷ıÿÿÿÿ8Ë®ÔÛû/
+lkotlin:S117"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(Ö€˜†8Ë®ÔÛû/
+rkotlin:S117…"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ö–÷ıÿÿÿÿ8Ë®ÔÛû/
+mkotlin:S117†"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ö¶„¾8Ë®ÔÛû/
+rkotlin:S117•"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ö–÷ıÿÿÿÿ8Ë®ÔÛû/
+mkotlin:S117–"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(Ö€˜†8Ë®ÔÛû/
+mkotlin:S117—"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ñûÇ 8Ë®ÔÛû/
+rkotlin:S117"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ö–÷ıÿÿÿÿ8Ë®ÔÛû/
+mkotlin:S117"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(Ö€˜†8Ë®ÔÛû/
+mkotlin:S117Ÿ"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(©¯À8Ë®ÔÛû/

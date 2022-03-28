@@ -1,0 +1,55 @@
+
+tkotlin:S6306Ñ"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8º·ìÙû/
+tkotlin:S6306İ"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8¼·ìÙû/
+tkotlin:S6306¿"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8½·ìÙû/
+tkotlin:S6306"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8¾·ìÙû/
+ykotlin:S6306Ü"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8¾·ìÙû/
+ykotlin:S6306ò"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8¾·ìÙû/
+ykotlin:S6306Ö"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8¿·ìÙû/
+ykotlin:S6306â"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8Î·ìÙû/
+ykotlin:S6306ì"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8Ñ·ìÙû/
+ykotlin:S6306Ë"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8Ò·ìÙû/
+ykotlin:S6306“"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8Ò·ìÙû/
+tkotlin:S6306Ü"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8Ò·ìÙû/
+ykotlin:S6306"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8Ó·ìÙû/
+ykotlin:S6306©"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8Ó·ìÙû/
+ykotlin:S6306­"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8Ó·ìÙû/
+ykotlin:S6306ó"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8Ó·ìÙû/
+Ekotlin:S1481Õ"&Remove this unused "s" local variable.(Í´íx8á·ìÙû/
+Ikotlin:S1481Ô")Remove this unused "data" local variable.(Ş†ô‘8â·ìÙû/
+Ekotlin:S1481Œ"&Remove this unused "s" local variable.(Í´íx8ä·ìÙû/
+Gkotlin:S1125¬"'Remove the unnecessary Boolean literal.(şä’´8î·ìÙû/
+qkotlin:S1192’"LDefine a constant instead of duplicating this literal "Focus Shoot" 4 times.(şÿ¢Òşÿÿÿÿ8ı·ìÙû/
+rkotlin:S3776º"RRefactor this method to reduce its Cognitive Complexity from 39 to the 15 allowed.(Î¦ºö8–¸ìÙû/
+rkotlin:S3776ø"RRefactor this method to reduce its Cognitive Complexity from 91 to the 15 allowed.(ˆ—Ê´8—¸ìÙû/
+rkotlin:S117Ò"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(“Ùµ£8›¸ìÙû/
+rkotlin:S117è"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(“Ùµ£8›¸ìÙû/
+<kotlin:S6310Ñ"Avoid hardcoded dispatchers.(á¥ €8œ¸ìÙû/
+<kotlin:S6310İ"Avoid hardcoded dispatchers.(á¥ €8œ¸ìÙû/
+<kotlin:S6310¿"Avoid hardcoded dispatchers.(á¥ €8œ¸ìÙû/
+<kotlin:S6310"Avoid hardcoded dispatchers.(á¥ €8œ¸ìÙû/
+Akotlin:S6310Ü"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+Akotlin:S6310ò"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+Akotlin:S6310Ö"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+Akotlin:S6310â"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+Akotlin:S6310ì"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+Akotlin:S6310Ë"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+Akotlin:S6310“"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+<kotlin:S6310Ü"Avoid hardcoded dispatchers.(á¥ €8¸ìÙû/
+Akotlin:S6310"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+Akotlin:S6310©"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+Akotlin:S6310­"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+Akotlin:S6310ó"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8¸ìÙû/
+ekotlin:S6313»"EClasses extending "ViewModel" should not expose suspending functions.(Ûıò8´¸ìÙû/
+jkotlin:S6313è"EClasses extending "ViewModel" should not expose suspending functions.(Ú´Ìıÿÿÿÿ8´¸ìÙû/
+ekotlin:S6313¥"EClasses extending "ViewModel" should not expose suspending functions.(ŸËè8´¸ìÙû/
+ekotlin:S6313§"EClasses extending "ViewModel" should not expose suspending functions.(ØÚÕÏ8´¸ìÙû/
+ekotlin:S6313å"EClasses extending "ViewModel" should not expose suspending functions.(õ«¯8´¸ìÙû/
+ekotlin:S6313ë"EClasses extending "ViewModel" should not expose suspending functions.(ãûêõ8µ¸ìÙû/
+ekotlin:S6313ï"EClasses extending "ViewModel" should not expose suspending functions.(®í¹‹8µ¸ìÙû/
+jkotlin:S6313›"EClasses extending "ViewModel" should not expose suspending functions.(ÃÄÑœüÿÿÿÿ8µ¸ìÙû/
+ekotlin:S6313Ó"EClasses extending "ViewModel" should not expose suspending functions.(²©é8µ¸ìÙû/
+jkotlin:S6313Ø"EClasses extending "ViewModel" should not expose suspending functions.(´Ñ”úüÿÿÿÿ8µ¸ìÙû/
+jkotlin:S6313ø"EClasses extending "ViewModel" should not expose suspending functions.(¸ÎœÜşÿÿÿÿ8µ¸ìÙû/
+ekotlin:S6313ú"EClasses extending "ViewModel" should not expose suspending functions.(ö¸éã8µ¸ìÙû/
+{kotlin:S3923ú"[Remove this conditional structure or edit its code blocks so that they're not all the same.(î¾ô¥8¹¸ìÙû/

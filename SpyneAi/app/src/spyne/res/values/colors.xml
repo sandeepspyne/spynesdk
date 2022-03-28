@@ -12,7 +12,7 @@
 
     <color name="primary">#000000</color>
     <color name="primary_light">#1AF69C4C</color>
-    <color name="light">#F69C4C</color>
+    <color name="light">#000000</color>
     <color name="light_soft">#FBF2EC</color>
     <color name="light_">#EFCEB3</color>
     <color name="dark">#c54700</color>

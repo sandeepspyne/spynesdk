@@ -1,0 +1,19 @@
+
+Qkotlin:S1172ò"8Use "_" instead of this unused lambda parameter "index".(£¢šÜ
+mkotlin:S6306"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €
+mkotlin:S6306ª"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €
+rkotlin:S6306’"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ
+rkotlin:S6306®"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ
+mkotlin:S6306é"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €
+rkotlin:S6306÷"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ
+Ckotlin:S1481ì"+Remove this unused "update" local variable.(İûp
+Ekotlin:S1481ğ"&Remove this unused "s" local variable.(Í´íx8ºå¢Ûû/
+?kotlin:S1481ï"'Remove this unused "ss" local variable.(¯˜ñ8
+@kotlin:S1481ó"'Remove this unused "ss" local variable.(õå…
+okotlin:S3776#"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(ÚÿØ’ùÿÿÿÿ
+5kotlin:S6310"Avoid hardcoded dispatchers.(á¥ €
+5kotlin:S6310ª"Avoid hardcoded dispatchers.(á¥ €
+:kotlin:S6310’"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ
+:kotlin:S6310®"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ
+5kotlin:S6310é"Avoid hardcoded dispatchers.(á¥ €
+:kotlin:S6310÷"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ

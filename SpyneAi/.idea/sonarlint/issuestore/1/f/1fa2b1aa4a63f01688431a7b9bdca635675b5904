@@ -1,0 +1,14 @@
+
+Ukotlin:S1172A"=Use "_" instead of this unused lambda parameter "buttonView".(¦´ÙÁ
+Zkotlin:S1172D"=Use "_" instead of this unused lambda parameter "buttonView".(úçıÿÿÿÿ
+Zkotlin:S1172G"=Use "_" instead of this unused lambda parameter "buttonView".(˜ÔáÇùÿÿÿÿ
+Vkotlin:S1172¢"=Use "_" instead of this unused lambda parameter "buttonView".(Ç¤§æ
+Vkotlin:S1172˜"=Use "_" instead of this unused lambda parameter "buttonView".(Ç¤§æ
+mkotlin:S6306Ç"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €
+ykotlin:S6306Ê"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(äÕ”øÿÿÿÿ8æ”Ü‚ü/
+skotlin:S63064"TUsing "GlobalScope" here leads to the breaking of structured concurrency principles.(á¥ €8æ”Ü‚ü/
+jkotlin:S3776'"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(ëü«
+wkotlin:S3776¾"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(¢Ãÿ£ûÿÿÿÿ8¢³ï‚ü/
+5kotlin:S6310Ç"Avoid hardcoded dispatchers.(á¥ €
+Akotlin:S6310Ê"Avoid hardcoded dispatchers.(äÕ”øÿÿÿÿ8ú”Ü‚ü/
+;kotlin:S63104"Avoid hardcoded dispatchers.(á¥ €8ú”Ü‚ü/

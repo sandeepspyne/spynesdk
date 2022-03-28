@@ -13,31 +13,30 @@ class RefreshAuthToken(
     val context: Context,
     val shootRepository: ShootRepository
 ) {
-//
-//    fun refresh() {
-//        GlobalScope.launch(Dispatchers.Default) {
-//            val response = shootRepository.signupIntoSDK(
-//                Spyne.apiKey.toString(),
-//                Spyne.contactNo.toString(),
-//                Spyne.email.toString(),
-//                Spyne.userId.toString()
-//            )
-//
-//            when (response) {
-//                is Resource.Success -> {
-//                    // auth save
-//                    Utilities.savePrefrence(
-//                        context,
-//                        AppConstants.AUTH_KEY,
-//                        response.value.data.secretKey
-//                    )
-//                }
-//
-//                is Resource.Failure -> {
-//                    refresh()
-//                }
-//            }
-//        }
-//
-//    }
+
+    fun refresh() {
+        GlobalScope.launch(Dispatchers.Default) {
+            val response = shootRepository.signupIntoSDK(
+                HashMap<String,String>().apply {
+                    put("external_id", Spyne.userId.toString())
+                }
+            )
+
+            when (response) {
+                is Resource.Success -> {
+                    // auth save
+                    Utilities.savePrefrence(
+                        context,
+                        AppConstants.AUTH_KEY,
+                        response.value.data.secretKey
+                    )
+                }
+
+                is Resource.Failure -> {
+                    refresh()
+                }
+            }
+        }
+
+    }
 }
